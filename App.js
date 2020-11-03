@@ -204,7 +204,7 @@ const Trace = (props) => {
         {equipe.map((r, index) => 
         <Svg>
             <Polyline
-               points= "50,100 100,50 200,50 200,50 200,100"
+               points= {index +50 + ",100 "+ index +50+",50 200,50 200,50 200,100"}
                fill="none"
                stroke="black"
                strokeWidth="3"
