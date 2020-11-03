@@ -1,0 +1,34 @@
+{
+    "Sports": [
+        {
+            "Beerpong": {
+                "Teams": [
+                    {
+                        "Players": "Ugo/MAX",
+                        "stillingame": "True",
+                        "uniqueid": "1"
+                    },
+                    {
+                        "Players": "Mams/willy",
+                        "stillingame": "True",
+                        "uniqueid": "2"
+                    }
+                ]
+            }
+        },
+        {
+            "Trail": [
+                {
+                    "Players": "Ugo/MAX",
+                    "stillingame": "True",
+                    "uniqueid": "1"
+                },
+                {
+                    "Players": "Mams/willy",
+                    "stillingame": "True",
+                    "uniqueid": "2"
+                }
+            ]
+        }
+    ]
+}
