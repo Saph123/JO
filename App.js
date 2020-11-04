@@ -152,7 +152,7 @@ function BeerpongDetailsScreen({ navigation }) {
     <Trace equipe={get_arrayteam("Beerpong")}/>
     <View style={{ flex: 1, alignItems: 'stretch', width:"500", height:"50"}}>{console.log(Dimensions.get("window").width + "/" + arrayteam.length)}
         
-    <Team equipe={get_arrayteam("Beerpong")}/>
+    {/* <Team equipe={get_arrayteam("Beerpong")}/> */}
     </View>
     <View style={{ flex: 1, alignItems: 'center'}}>
     <Button style={{width:"100", height:"50", alignItems:"center"}} color='red' title="back to menu" onPress={() => navigation.navigate('Home')} />
@@ -189,7 +189,7 @@ const Team = (props) => {
     return(
         <View style={{flexDirection: 'row', alignItems:"stretch", justifyContent:"space-between"}}>
             
-                {equipe.map(r => <Text style={{backgroundColor:"powderblue", alignItems:"stretch",justifyContent:"space-between"}}>{r}</Text>)}
+                {equipe.map(r => <Text style={{backgroundColor:"powderblue", width:"300", alignItems:"stretch",justifyContent:"space-between"}}>{r}</Text>)}
             
         </View>
     )
@@ -199,21 +199,27 @@ const Team = (props) => {
 const Trace = (props) => {
     const{equipe} = props;
     const window=Dimensions.get("window").width
-    return(
-        <View style={{flexDirection: 'row', alignItems:"stretch", justifyContent:"space-between"}}>
-        {equipe.map((r, index) => 
-        <Svg>
-            <Polyline
-               points= {index +50 + ",100 "+ index +50+",50 200,50 200,50 200,100"}
+    const widdth = window/equipe.length
+    console.log(widdth)
+    const test = equipe.map((r, index) => 
+           
+<Svg>
+            <Polyline 
+            //    points= {console.log(Math.floor(window/(equipe.length-0) - 250).toString() + ",100 "+ Math.floor(window/(equipe.length-0) - 250).toString()  +",50 " + Math.floor(window/(equipe.length-0) - 50).toString()  + ",50 " + Math.floor(window/(equipe.length-0) - 50).toString()  + ",50 " + Math.floor(window/(equipe.length-0) - 50).toString()  +",100"),Math.floor(window/(equipe.length-0) - 250).toString() + ",100 "+ Math.floor(window/(equipe.length-0) - 250).toString()  +",50 " + Math.floor(window/(equipe.length-0) - 50).toString()  + ",50 " + Math.floor(window/(equipe.length-0) - 50).toString()  + ",50 " + Math.floor(window/(equipe.length-0) - 50).toString()  +",100"}
+               points={30-index*30+",50 30,50 30,200 30,50 300,50"}
                fill="none"
                stroke="black"
                strokeWidth="3"
-             />  </Svg>)}
-
-             </View>
-    )
-        }
-
+             /> 
+          <Text x="100" y="75" stroke="#600" fill="#600" textAnchor="middle">
+      Text grouped with shapes
+    </Text>
+             </Svg>);
+    return(
+        
+        <View style={{flexDirection: 'row', alignItems:"stretch", justifyContent:"space-between"}}>{test}</View>
+    );
+}
 function WaterpoloDetailsScreen({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent:'flex-start'}}>
