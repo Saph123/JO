@@ -1,11 +1,13 @@
 import * as React from 'react';
-import { Button, View, FlatList, Dimensions, ActivityIndicator, StyleSheet } from 'react-native';
+import { Button, View, FlatList, Dimensions, ActivityIndicator, StyleSheet, TextInput, Text } from 'react-native';
 import { NavigationContainer, useNavigation, useNavigationParam } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { render } from 'react-dom';
-import { Svg, Rect, Circle, Path, Line, Text, Polyline } from 'react-native-svg';
-import { TextInput } from 'react-native-gesture-handler';
+import { Svg, Rect, Circle, Path, Line, Polyline } from 'react-native-svg';
 import { setStatusBarHidden } from 'expo-status-bar';
+import matches_json from './assets/Beerpong_matches.json';
+import { ScrollView } from 'react-native-gesture-handler';
+import Orientation from 'react-native-orientation';
 class Match {
     constructor(sport, team1, team2, uniqueId, score, over, level) {
         // this.numberOfPlayer = Number(numberOfPlayer)
@@ -81,7 +83,8 @@ function HomeScreen({ navigation }) {
 }
 async function fetch_matches(sportname, setfunc, setlevel) {
 
-    let matches = await fetch("http://localhost:7070/teams/" + sportname + "_matches.json").then(response => response.json()).then(data => { return data });
+    // let matches = await fetch("http://localhost:7070/teams/" + sportname + "_matches.json").then(response => response.json()).then(data => { return data });
+    let matches = matches_json;
     let level = [];
     let local_array_match = [[]];
     for (let j = 0; j < await matches['levels']; j++) {
@@ -126,17 +129,16 @@ function get_arraymatch(sport) {
 
 function BeerpongDetailsScreen({ navigation }) {
     const width = Dimensions.get("window").width;
-    const height = Dimensions.get("window").height/2;
-console.log("0,0 0,"+width/2+" 300,"+width/2)
+    const height = Dimensions.get("window").height / 2;
+    console.log("0,0 0," + width / 2 + " 300," + width / 2)
     // let local_match = React.useState("");
     return (
-
-
-        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center' }}>
-            <Trace style={{position:'absolute',top: 0, left: 0, height:{height}}} sport={"Beerpong"} />
-            <View style={{ flex: 1, alignItems: 'center' }}>
-                <Button style={{ width: "100", height: "50", alignItems: "center" }} color='red' title="back to menu" onPress={() => navigation.navigate('Home')} />
+<View style={{flex:1}}>
+        <ScrollView>
+            <View >
+                <Trace style={{ position: 'absolute', top: 0, left: 0, height: { height } }} sport={"Beerpong"} />
             </View>
+        </ScrollView>
         </View>
     )
 };
@@ -166,9 +168,9 @@ const Matchcomp = (props) => {
     const matches = props.matches;
     const level = props.level;
     const sport = props.sport;
+    const [local_load, setLoading] = React.useState(true)
     const [score, setScore] = React.useState([]);
     const match_array = [];
-    // console.log(matches.then(r => console.log("yourmom")));
     const array_score = [];
     for (var i = 0; i < matches.length; i++) {
 
@@ -178,26 +180,20 @@ const Matchcomp = (props) => {
             array_score.push(matches[i].score);
         }
     }
-    
     React.useEffect(() => {
+        setLoading(false);
         setScore(array_score);
-    }, [])
-
-
+    }, []);
+    if (local_load) {
+        return (<View></View>);
+    }
     return (
         <View style={styles.line}>
             {match_array.map((r, index) => {
                 return (<View style={r.over == 0 ? styles.match : styles.matchover}>
-                    <Text style={r.over ==2 ? styles.lose : styles.teamnormal}>{r.team1}</Text><Text style={r.over == 1? styles.lose:styles.teamnormal}>{r.team2}</Text><TextInput style={styles.score} onChangeText={text => { console.logarray_score[0] = text; setScore(array_score) }} value={text}/></View>)
+                    <Text style={r.over == 2 ? styles.lose : styles.teamnormal}>{r.team1}</Text>
+                    <Text>{"vs"}</Text><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text><TextInput style={styles.score} value={score[index]} onChangeText={(text) => { array_score[index] = text; setScore(array_score) }} /></View>)
             })}
-            {/* <Svg style={styles.svg}>
-            <Polyline 
-               points={"0,50 30,50 30,200 30,50 300,50"}
-               fill="none"
-               stroke="black"
-               strokeWidth="3"
-               /> 
-             </Svg> */}
         </View>
     );
 
@@ -215,7 +211,10 @@ const Trace = (props) => {
     // console.log(width);
     // const widdth = window/equipe.length
     React.useEffect(() => {
-        fetch_matches("Beerpong", setmatches, setlevels).then(r => setloading(false));
+        fetch_matches("Beerpong", setmatches, setlevels).then(r => {
+            setloading(false)
+        });
+
         // setloading(false);
     }, []);
     // const array_level
@@ -225,33 +224,37 @@ const Trace = (props) => {
     }
     return (
         <View onLayout={(event) => {
-            var {x, y, width, height} = event.nativeEvent.layout;
+            var { x, y, width, height } = event.nativeEvent.layout;
             setWidth(width);
-          }} style={{ flexDirection: 'column', alignItems: "center", justifyContent: "space-between" }}>
-            {levels.slice(0).reverse().map(r => <View onLayout={(event) => {
-            var {x, y, width, height} = event.nativeEvent.layout;
-            setHeight(height);
-          }}  style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-evenly" }}><Matchcomp matches={matches[r]} level={r} sport={sport}></Matchcomp></View>)}
+        }} style={{ flexDirection: 'column', alignItems: "center", justifyContent: "space-between" }}>
+            {levels.slice(0).reverse().map((r, index) => {matches[r].map((m,index) => 
             <Svg style={styles.svg}>
-                <Polyline style={{position:"absolute"}}
-                    points={width/2+","+(height-30)+" "+width/2+","+(height + (height-30)/2)+" "+(width/2 -30)+","+(height + (height-30)/2)+" "+(width/2 +30)+","+(height + (height-30)/2)}
+                <Polyline test={console.log(index)} style={{ position: "absolute" }}
+                    points={width /2 + "," + (height - 30) + " " + width / 2 + "," + (height + (height - 30) / 2) + " " + (width/2) + "," + (height + (height - 30) / 2) + " " + (width-200) + "," + (height + (height - 30) / 2)}
+                    fill="none"
+                    stroke="black"
+                    strokeWidth="5"
+                />
+                {/* <Polyline style={{ position: "absolute" }}
+                    points={(width / 4 + 30) + "," + (height + (height - 30) / 2) + " " + width / 4 + "," + (height + (height - 30) / 2) + " " + width / 4 + "," + (2 * height + (height - 30) / 2) + " " + (100) + "," + (2 * height + (height - 30) / 2) + " " + (300) + "," + (2 * height + (height - 30) / 2)}
                     fill="none"
                     stroke="black"
                     strokeWidth="3"
                 />
-                <Polyline style={{position:"absolute"}}
-                    points={(width/4+30)+","+(height + (height-30)/2)+" "+width/4+","+(height + (height-30)/2)+" "+width/4+","+(2*height + (height-30)/2)+" "+(width/4 -30)+","+(2*height + (height-30)/2)+" "+(width/4 +30)+","+(2*height + (height-30)/2)}
+                <Polyline style={{ position: "absolute" }}
+                    points={(3 * width / 4 - 30) + "," + (height + (height - 30) / 2) + " " + 3 * width / 4 + "," + (height + (height - 30) / 2) + " " + 3 * width / 4 + "," + (2 * height + (height - 30) / 2) + " " + (width-300) + "," + (2 * height + (height - 30) / 2) + " " + (width-100) + "," + (2 * height + (height - 30) / 2)}
                     fill="none"
                     stroke="black"
                     strokeWidth="3"
-                />
-                <Polyline style={{position:"absolute"}}
-                    points={(3*width/4-30)+","+(height + (height-30)/2)+" "+3*width/4+","+(height + (height-30)/2)+" "+3*width/4+","+(2*height + (height-30)/2)+" "+(3*width/4 -30)+","+(2*height + (height-30)/2)+" "+(3*width/4 +30)+","+(2*height + (height-30)/2)}
-                    fill="none"
-                    stroke="black"
-                    strokeWidth="3"
-                />
-            </Svg>
+                /> */}
+            </Svg>)})}
+            {levels.slice(0).reverse().map(r => 
+            
+            <View onLayout={(event) => {
+                var { x, y, width, height } = event.nativeEvent.layout;
+                setHeight(height);
+            }} style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-evenly" }}><Matchcomp loading={loading} matches={matches[r]} level={r} sport={sport}></Matchcomp></View>)}
+
         </View>
     );
 }
@@ -275,6 +278,7 @@ function TrailDetailsScreen({ navigation }) {
         </View>
     );
 }
+
 
 const Stack = createStackNavigator();
 
@@ -301,68 +305,67 @@ const styles = StyleSheet.create({
         padding: 20,
         margin: 10,
     },
-    match: {
-        flexDirection: 'column',
-        justifyContent: "space-between",
-        backgroundColor: "#2A9D8F",
-        borderWidth: 1,
-        alignItems: "stretch",
-        marginLeft: "30px",
-        marginRight: "30px",
-        fontFamily: "cochin",
-        textShadowColor: '#2A9D8F',
-        textShadowOffset: { width: 5, height: 5 },
-        textShadowRadius: 10,
-        minWidth: "100px",
-        maxWidth: "200px"
-    },
-    textmatch: {
-        textAlign: "center",
-        fontSize: "12px",
-        maxWidth: "200px"
-    },
-    teamnormal: {
-        textAlign: "center",
-        fontSize: "16px",
-        maxWidth: "200px",
-    },
-    lose: {
-        textAlign: "center",
-        fontSize: "12px",
-        maxWidth: "200px",
-        // backgroundColor:"grey",
-        color:"grey",
-        textDecorationLine:"line-through",
-        fontSize:"16px"
-    },
-
+    
     matchover: {
         flexDirection: 'column',
         alignItems: "center",
-
         justifyContent: "space-between",
         backgroundColor: "#D62628",
         borderWidth: 1,
-        marginLeft: "30px",
-        marginRight: "30px",
-        fontFamily: "cochin",
-        textShadowColor: '#D62628',
-        textShadowOffset: { width: 5, height: 5 },
-        textShadowRadius: 10,
-        minWidth: "100px",
-        maxWidth: "200px"
+        marginLeft: 30,
+        marginRight: 30,
+        width: 100,
+        // maxWidth: 200,
+        // height:500
     },
+    match: {
+        flexDirection: 'column',
+        justifyContent: "space-between",
+        backgroundColor: "#A8DADC",
+        borderWidth: 1,
+        alignItems: "center",
+        marginLeft: 30,
+        marginRight: 30,
+        width: 100,
+        // width:"100%"
+        // maxWidth: 200
+    },
+    textmatch: {
+        textAlign: "center",
+        fontSize: 12,
+        fontFamily: "calibri",
+        // maxWidth: 200,
+        width: "100%"
+    },
+    teamnormal: {
+        textAlign: "center",
+        width: "100%",
+        fontFamily: "Roboto",
+        fontSize: 16,
+        // maxWidth: 200,
+    },
+    lose: {
+        textAlign: "center",
+        width: "100%",
+        // backgroundColor:"grey",
+        color: "grey",
+        textDecorationLine: "line-through",
+        // fontSize: 16
+    },
+
     middle: {
         flex: 0.3,
         backgroundColor: "beige",
         borderWidth: 5,
     },
     line: {
+        flex:1,
         flexDirection: "row",
-        marginBottom: "30px",
-        alignSelf: "center",
-        alignItems: "center",
-        alignContent: "center",
+        justifyContent:"space-around",
+        marginBottom: 30,
+        // alignSelf: "center",
+        // alignItems: "center",
+        // alignContent: "center",
         // backgroundColor: "grey",
     },
     bottom: {
@@ -374,20 +377,21 @@ const styles = StyleSheet.create({
     },
     bottom: {
         fontFamily: "cochin",
-        textAlign: "justify"
+        // textAlign: "justify"
     },
     score: {
         // alignSelf: "flex-end",
         textAlign: "center",
-        borderColor:"black",
-        borderWidth:1
+        borderColor: "black",
+        borderWidth: 1
     },
     svg: {
-        position:"absolute",
-        top:0,
-        left:0,
-        width:"100%",
-        height:"100%"
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        // zIndex:0
     },
 });
 export default App;
