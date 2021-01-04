@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Button, View, Dimensions, ActivityIndicator, StyleSheet, TextInput, Text, Image, Modal } from 'react-native';
 import { NavigationContainer, useTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import ReactNativeZoomableView from '@dudigital/react-native-zoomable-view/src/ReactNativeZoomableView';
 import { Table, Row } from 'react-native-table-component';
 import { Svg, Polyline } from 'react-native-svg';
 import beerpong_matches_json from './assets/Beerpong_matches.json';
