@@ -9,6 +9,8 @@ import ventriglisse_matches_json from './assets/ventriglisse_match.json';
 import matches_status from './assets/beerpong_status.json';
 import matches_group from './assets/Beerpong_poules.json';
 import beerpong_autho from './assets/Beerpong_autho.json';
+import ReactNativeZoomableView from '@dudigital/react-native-zoomable-view/src/ReactNativeZoomableView';
+import PinchZoomView from 'react-native-pinch-zoom-view';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import Orientation from 'react-native-orientation';
 import { add } from 'react-native-reanimated';
@@ -213,7 +215,9 @@ function Login({ navigation }) {
 };
 function BeerpongDetailsScreen({ navigation }) {
     const width = Dimensions.get("window").width;
-    const height = Dimensions.get("window").height / 2;
+    const height = Dimensions.get("window").height;
+    const [window_width, setWidth] = React.useState(5000);
+    const [window_height, setHeigth] = React.useState(5000);
     const [authorized, setauthorized] = React.useState(false);
     // console.log("0,0 0," + width / 2 + " 300," + width / 2)
     // let local_match = React.useState("");
@@ -223,10 +227,12 @@ function BeerpongDetailsScreen({ navigation }) {
             if (beerpong_autho.autho[authouser] == username) {
                 setauthorized(true);
             }
+            setWidth(width);
+            setHeigth(height);
         }
     }, []);
     return (
-        <View>
+        <PinchZoomView style={{ position:'absolute', top:0,left:0, width: window_width * 5, height: window_width * 2, backgroundColor:"lightgrey",margin:0 }} maxScale={1} minScale={0.5} >
             <ArbitreContext.Consumer>
                 {value => {
                     return (
@@ -250,14 +256,39 @@ function BeerpongDetailsScreen({ navigation }) {
 
                 }
             </ArbitreContext.Consumer>
-                <ScrollView horizontal={true}>
-                    <ScrollView>
-                        <View >
-                            <Trace style={{ position: 'absolute', top: 0, left: 0, height: { height } }} sport={"Beerpong"} autho={authorized} />
-                        </View>
-                    </ScrollView>
-                </ScrollView>
-        </View>
+
+            {/* <ReactNativeZoomableView
+   maxZoom={1.5}
+   minZoom={0.5}
+   zoomStep={0.5}
+   initialZoom={1}
+   bindToBorders={true}
+   onZoomAfter={(event, gestureState, zoomableViewEventObject) => {
+    console.log('');
+    console.log('');
+    console.log('-------------');
+    console.log('Event: ', event);
+    console.log('GestureState: ', gestureState);
+    console.log('ZoomableEventObject: ', zoomableViewEventObject);
+    console.log('');
+    console.log(`Zoomed from ${zoomableViewEventObject.lastZoomLevel} to  ${zoomableViewEventObject.zoomLevel}`);
+  }}
+   style={{
+      padding: 10,
+      backgroundColor: 'red',
+   }}
+> */}
+            {/* <ScrollView horizontal={true}> */}
+            {/* <ScrollView> */}
+            {/* <View styles={{}}> */}
+            <Trace sport={"Beerpong"} autho={authorized} />
+            {/* </View> */}
+
+            {/* </ScrollView> */}
+            {/* </ScrollView> */}
+            {/* </ReactNativeZoomableView> */}
+            {/* </ScrollView> */}
+        </PinchZoomView>
 
 
     )
@@ -468,7 +499,7 @@ const Trace = (props) => {
             <View test={console.log(levels)} onLayout={(event) => {
                 var { x, y, width, height } = event.nativeEvent.layout;
                 setWidth(width);
-            }} style={{ flexDirection: 'column', alignItems: "center", justifyContent: "space-between" }}>
+            }} style={{ flexDirection: 'column', alignItems: "center", justifyContent: "space-between"}}>
                 <Svg style={styles.svg}>
                     {levels.slice(1).reverse().map((r, index) => matches[r].map((m, index2) =>
                         <Polyline style={{ position: "absolute" }}

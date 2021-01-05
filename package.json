@@ -33,6 +33,7 @@
   "devDependencies": {
     "@babel/core": "^7.8.6",
     "babel-preset-expo": "~8.1.0",
+    "install-peers": "^1.0.3",
     "react-native-web": "^0.11.7"
   },
   "private": true
