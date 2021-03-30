@@ -33,7 +33,7 @@ class Group {
         this.over = over
     }
 }
-let username = "max";
+let username = "didier";
 let offline = true;
 const ArbitreContext = React.createContext(false);
 function HomeScreen({ route, navigation }) {
@@ -146,7 +146,8 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setPlay
         setgroups(array_groups);
         setmatchesgroup(array_matches_groups);
         setWidth(200 * (array_groups.length + 1));
-        setHeight(Math.max(200 * (array_groups.length + 1), Dimensions.get("window").height + 100));
+        console.log((array_matches_groups.length + 1))
+        setHeight(100 * (array_groups.length + 1)*4);
     }
     else {
         setPlayoff(1);
@@ -430,9 +431,11 @@ const Matchpoule = (props) => {
     return (
         <View style={styles.column}>
             {match_array.map((r, index) => {
-                return (<View style={r.over == 0 ? styles.matchpoule : styles.matchpouleover}>
+                return (
+                <View style={r.over == 0 ? styles.matchpoule : styles.matchpouleover}>
                     <Text style={r.over == 2 ? styles.lose : styles.teamnormal}>{r.team1}</Text>
-                    <Text>{"vs"}</Text><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text><Text style={styles.score}>{score[index]}</Text></View>)
+                    <Text>{"vs"}</Text><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text><Text style={styles.score}>{score[index]}</Text>
+                    </View>)
             })}
         </View>
     );
@@ -491,7 +494,7 @@ const Trace = (props) => {
     return (
 
 
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: "row", flex: 1, position:"absolute", top:0, left:0 }}>
             {groups.map((r, index) =>
                 <View style={styles.tablecontainer}>
                     <Text style={{ textAlign: "center" }}>{r.name}</Text>
@@ -500,7 +503,7 @@ const Trace = (props) => {
                         {r.teams.map(q =>
                             <Row data={[q.name, q.played, q.wins, q.loses]} widthArr={[150, 30, 30, 30]} textStyle={{ margin: 6 }}></Row>)}
                     </Table>
-                    <View style={{ flexDirection: "column" }}>
+                    <View style={{ flexDirection: "column", justifyContent:"space-around" }}>
                         <Matchpoule loading={loading} matches={groupmatches[index]} level={0} sport={sport} autho={autho}></Matchpoule>
                     </View>
                 </View>)}
@@ -569,6 +572,7 @@ const styles = StyleSheet.create({
     },
     tablecontainer: {
         flex: 1,
+        alignSelf:"flex-start",
         margin: 30,
         width: 242,
         backgroundColor: "#EFF8FF"
@@ -590,7 +594,9 @@ const styles = StyleSheet.create({
         backgroundColor: "#D62628",
         borderWidth: 1,
         margin: 30,
-        width: 100,
+        flex:1,
+        // width: 100,
+        // height: 100,
         borderRadius: 15
     },
     match: {
@@ -608,9 +614,11 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         backgroundColor: "#A8DADC",
         borderWidth: 1,
+        flex:1,
         alignItems: "center",
         margin: 30,
-        width: 100,
+        // width: 100,
+        // height:100,
         borderRadius: 15
     },
     textmatch: {
@@ -648,7 +656,7 @@ const styles = StyleSheet.create({
     column: {
         flex: 1,
         flexDirection: "column",
-        justifyContent: "space-around",
+        justifyContent: "space-between",
         margin: 30
     },
     bottom: {
