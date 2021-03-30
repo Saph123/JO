@@ -105,7 +105,7 @@ function HomeScreen({ route, navigation }) {
 
     );
 }
-async function fetch_matches(sportname, setmatches, setgroups, setlevel, setPlayoff, setmatchesgroup) {
+async function fetch_matches(sportname, setmatches, setgroups, setlevel, setPlayoff, setmatchesgroup, setWidth, setHeight) {
 
     let matches = {};
     if (offline) {
@@ -147,6 +147,8 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setPlay
         }
         setgroups(array_groups);
         setmatchesgroup(array_matches_groups);
+        setWidth(200 * (array_groups.length+1));
+        setHeight(Math.max(200 * (array_groups.length+1), Dimensions.get("window").height + 100));
     }
     else {
         setPlayoff(1);
@@ -159,7 +161,9 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setPlay
                 local_array_match[matches[prop][match_iter]["level"]].push(new Match(sportname, matches[prop][match_iter]["team1"], matches[prop][match_iter]["team2"], matches[prop][match_iter]["match"], matches[prop][match_iter]["score"], matches[prop][match_iter]["over"], matches[prop][match_iter]["level"]));
             }
         }
-        setlevel(level)
+        setlevel(level);
+        setWidth(400 * (level.length+1));
+        setHeight(Math.max(200 * (level.length+1), Dimensions.get("window").height + 100));
         setmatches(local_array_match);
     }
 }
@@ -216,8 +220,8 @@ function Login({ navigation }) {
 function BeerpongDetailsScreen({ navigation }) {
     const width = Dimensions.get("window").width;
     const height = Dimensions.get("window").height;
-    const [window_width, setWidth] = React.useState(5000);
-    const [window_height, setHeigth] = React.useState(5000);
+    const [window_width, setWidth] = React.useState(width);
+    const [window_height, setHeight] = React.useState(height);
     const [authorized, setauthorized] = React.useState(false);
     // console.log("0,0 0," + width / 2 + " 300," + width / 2)
     // let local_match = React.useState("");
@@ -227,12 +231,10 @@ function BeerpongDetailsScreen({ navigation }) {
             if (beerpong_autho.autho[authouser] == username) {
                 setauthorized(true);
             }
-            setWidth(width);
-            setHeigth(height);
         }
     }, []);
     return (
-        <PinchZoomView style={{ position:'absolute', top:0,left:0, width: window_width * 5, height: window_width * 2, backgroundColor:"lightgrey",margin:0 }} maxScale={1} minScale={0.5} >
+        <PinchZoomView  style={{position:'absolute', backgroundColor:"lightgrey", top:0, left:0, width:window_width, height:window_height}} maxScale={1} minScale={0.5} >
             <ArbitreContext.Consumer>
                 {value => {
                     return (
@@ -257,37 +259,7 @@ function BeerpongDetailsScreen({ navigation }) {
                 }
             </ArbitreContext.Consumer>
 
-            {/* <ReactNativeZoomableView
-   maxZoom={1.5}
-   minZoom={0.5}
-   zoomStep={0.5}
-   initialZoom={1}
-   bindToBorders={true}
-   onZoomAfter={(event, gestureState, zoomableViewEventObject) => {
-    console.log('');
-    console.log('');
-    console.log('-------------');
-    console.log('Event: ', event);
-    console.log('GestureState: ', gestureState);
-    console.log('ZoomableEventObject: ', zoomableViewEventObject);
-    console.log('');
-    console.log(`Zoomed from ${zoomableViewEventObject.lastZoomLevel} to  ${zoomableViewEventObject.zoomLevel}`);
-  }}
-   style={{
-      padding: 10,
-      backgroundColor: 'red',
-   }}
-> */}
-            {/* <ScrollView horizontal={true}> */}
-            {/* <ScrollView> */}
-            {/* <View styles={{}}> */}
-            <Trace sport={"Beerpong"} autho={authorized} />
-            {/* </View> */}
-
-            {/* </ScrollView> */}
-            {/* </ScrollView> */}
-            {/* </ReactNativeZoomableView> */}
-            {/* </ScrollView> */}
+            <Trace sport={"Beerpong"} setWidth={(w) => setWidth(w)} setHeight={(h) => setHeight(h)} autho={authorized} />
         </PinchZoomView>
 
 
@@ -325,7 +297,7 @@ const Matchcomp = (props) => {
     const [score, setScore] = React.useState([]);
     const match_array = [];
     const array_score = [];
-    console.log(matches)
+    // console.log(matches)
     for (var i = 0; i < matches.length; i++) {
         if (matches[i]['level'] == level) {
 
@@ -348,7 +320,7 @@ const Matchcomp = (props) => {
                 {match_array.map((r, index) => {
                     return (<View style={r.over == 0 ? styles.match : styles.matchover}>
                         <Text style={r.over == 2 ? styles.lose : styles.teamnormal}>{r.team1}</Text>
-                        <Text style={{ fontSize: 24, fontWeight: "bold" }}>{"vs"}</Text><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text><TextInput style={styles.score} value={score[index]} onChangeText={(text) => { array_score[index] = text; setScore(array_score) }} /><Button color='blue' title="hahahaha" onPress={() => alert("yo")} /></View>)
+                        <Text style={{ fontSize: 24, fontWeight: "bold" }}>{"vs"}</Text><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text><TextInput style={styles.score} value={score[index]} onChangeText={(text) => { array_score[index] = text; setScore(array_score) }} /><Button color='blue' title="Submit" onPress={() => alert("wesh")} /></View>)
                 })}
             </View>
         );
@@ -470,7 +442,8 @@ const Matchpoule = (props) => {
 }
 const Trace = (props) => {
     const sport = props.sport;
-    const autho = props.autho
+    const autho = props.autho;
+    
     const [loading, setloading] = React.useState(true);
     const [matches, setmatches] = React.useState([]);
     const [levels, setlevels] = React.useState([]);
@@ -479,15 +452,11 @@ const Trace = (props) => {
     const [playoff, setPlayoff] = React.useState(0);
     const [groups, setGroups] = React.useState([]);
     const [groupmatches, setmatchesgroup] = React.useState([]);
-    // const width = Dimensions.get("window").width;
-    // const height = Dimensions.get("window").height;
-    // const widdth = window/equipe.length
     React.useEffect(() => {
-        fetch_matches("Beerpong", setmatches, setGroups, setlevels, setPlayoff, setmatchesgroup).then(r => {
-            setloading(false)
+        fetch_matches("Beerpong", setmatches, setGroups, setlevels, setPlayoff, setmatchesgroup, props.setWidth, props.setHeight).then(r => {
+            setloading(false);
         });
 
-        // setloading(false);
     }, []);
     // const array_level
 
@@ -496,22 +465,22 @@ const Trace = (props) => {
     }
     if (playoff) {
         return (
-            <View test={console.log(levels)} onLayout={(event) => {
+            <View onLayout={(event) => {
                 var { x, y, width, height } = event.nativeEvent.layout;
                 setWidth(width);
             }} style={{ flexDirection: 'column', alignItems: "center", justifyContent: "space-between"}}>
                 <Svg style={styles.svg}>
                     {levels.slice(1).reverse().map((r, index) => matches[r].map((m, index2) =>
-                        <Polyline style={{ position: "absolute" }}
+                        <Polyline style={{ position: "absolute" }} test={console.log(height)}
                             points={(index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height) + (height - 30)) + " " + (index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 1) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 3) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2))}
                             fill="none"
                             stroke="black"
-                            strokeWidth="3"
+                            strokeWidth="2"
                         />))}
                 </Svg>
                 {levels.slice(0).reverse().map(r =>
 
-                    <View test={console.log(r)} onLayout={(event) => {
+                    <View  onLayout={(event) => {
                         var { x, y, width, height } = event.nativeEvent.layout;
                         setHeight(height);
                     }} style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-evenly" }}><Matchcomp loading={loading} matches={matches[r]} level={r} sport={sport} autho={autho}></Matchcomp></View>)}
@@ -570,6 +539,7 @@ function App() {
                 <Stack.Navigator screenOptions={{
                     headerStyle: {
                         backgroundColor: '#000',
+                        height:100
                     },
                     // headerLeft:()=><Text style={{color:"white", textAlign:"center"}}>{username}</Text>,
                     headerTintColor: '#fff',
@@ -673,6 +643,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-around",
         marginBottom: 30,
+        marginRight:50,
+        marginLeft:50
     },
     column: {
         flex: 1,
