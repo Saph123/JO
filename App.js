@@ -466,10 +466,10 @@ const Trace = (props) => {
             <View onLayout={(event) => {
                 var { x, y, width, height } = event.nativeEvent.layout;
                 setWidth(width);
-            }} style={{ flexDirection: 'column', alignItems: "center", justifyContent: "space-between" }}>
+            }} >
                 <Svg style={styles.svg}>
                     {levels.slice(1).reverse().map((r, index) => matches[r].map((m, index2) =>
-                        <Polyline style={{ position: "absolute" }} test={console.log(height)}
+                        <Polyline style={styles.svg} test={console.log(width)}
                             points={(index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height) + (height - 30)) + " " + (index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 1) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 3) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2))}
                             fill="none"
                             stroke="black"
@@ -481,7 +481,7 @@ const Trace = (props) => {
                     <View onLayout={(event) => {
                         var { x, y, width, height } = event.nativeEvent.layout;
                         setHeight(height);
-                    }} style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-around" }}>
+                    }} style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-between" }}>
                         <Matchcomp loading={loading} matches={matches[r]} level={r} sport={sport} autho={autho}></Matchcomp>
                     </View>)}
 
@@ -595,7 +595,7 @@ const styles = StyleSheet.create({
     },
     match: {
         flexDirection: 'column',
-        justifyContent: "space-between",
+        justifyContent: "space-evenly",
         backgroundColor: "#A8DADC",
         borderWidth: 1,
         alignItems: "center",
@@ -642,14 +642,14 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-around",
         marginBottom: 30,
-        marginRight: 50,
-        marginLeft: 50
+        marginRight: 0,
+        marginLeft: 0
     },
     column: {
         flex: 1,
         flexDirection: "column",
         justifyContent: "space-around",
-        margin: 50
+        margin: 30
     },
     bottom: {
         flex: 0.3,
