@@ -9,11 +9,9 @@ import ventriglisse_matches_json from './assets/ventriglisse_match.json';
 import matches_status from './assets/beerpong_status.json';
 import matches_group from './assets/Beerpong_poules.json';
 import beerpong_autho from './assets/Beerpong_autho.json';
-import ReactNativeZoomableView from '@dudigital/react-native-zoomable-view/src/ReactNativeZoomableView';
 import PinchZoomView from 'react-native-pinch-zoom-view';
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
-import Orientation from 'react-native-orientation';
-import { add } from 'react-native-reanimated';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+// import Orientation from 'react-native-orientation';
 class Match {
     constructor(sport, team1, team2, uniqueId, score, over, level) {
         // this.numberOfPlayer = Number(numberOfPlayer)
@@ -147,8 +145,8 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setPlay
         }
         setgroups(array_groups);
         setmatchesgroup(array_matches_groups);
-        setWidth(200 * (array_groups.length+1));
-        setHeight(Math.max(200 * (array_groups.length+1), Dimensions.get("window").height + 100));
+        setWidth(200 * (array_groups.length + 1));
+        setHeight(Math.max(200 * (array_groups.length + 1), Dimensions.get("window").height + 100));
     }
     else {
         setPlayoff(1);
@@ -162,8 +160,8 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setPlay
             }
         }
         setlevel(level);
-        setWidth(400 * (level.length+1));
-        setHeight(Math.max(200 * (level.length+1), Dimensions.get("window").height + 100));
+        setWidth(400 * (level.length + 1));
+        setHeight(Math.max(200 * (level.length + 1), Dimensions.get("window").height + 100));
         setmatches(local_array_match);
     }
 }
@@ -234,7 +232,7 @@ function BeerpongDetailsScreen({ navigation }) {
         }
     }, []);
     return (
-        <PinchZoomView  style={{position:'absolute', backgroundColor:"lightgrey", top:0, left:0, width:window_width, height:window_height}} maxScale={1} minScale={0.5} >
+        <PinchZoomView style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, width: window_width, height: window_height }} maxScale={1} minScale={0.5} >
             <ArbitreContext.Consumer>
                 {value => {
                     return (
@@ -320,7 +318,8 @@ const Matchcomp = (props) => {
                 {match_array.map((r, index) => {
                     return (<View style={r.over == 0 ? styles.match : styles.matchover}>
                         <Text style={r.over == 2 ? styles.lose : styles.teamnormal}>{r.team1}</Text>
-                        <Text style={{ fontSize: 24, fontWeight: "bold" }}>{"vs"}</Text><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text><TextInput style={styles.score} value={score[index]} onChangeText={(text) => { array_score[index] = text; setScore(array_score) }} /><Button color='blue' title="Submit" onPress={() => alert("wesh")} /></View>)
+                        <Text style={{ fontSize: 24, fontWeight: "bold" }}>{"vs"}</Text><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text><TextInput style={styles.score} value={score[index]} onChangeText={(text) => { array_score[index] = text; setScore(array_score) }} /><Button color='blue' title="Submit" onPress={() => alert("wesh")} />
+                        </View>)
                 })}
             </View>
         );
@@ -443,7 +442,7 @@ const Matchpoule = (props) => {
 const Trace = (props) => {
     const sport = props.sport;
     const autho = props.autho;
-    
+
     const [loading, setloading] = React.useState(true);
     const [matches, setmatches] = React.useState([]);
     const [levels, setlevels] = React.useState([]);
@@ -458,7 +457,6 @@ const Trace = (props) => {
         });
 
     }, []);
-    // const array_level
 
     if (loading) {
         return (<ActivityIndicator />);
@@ -468,7 +466,7 @@ const Trace = (props) => {
             <View onLayout={(event) => {
                 var { x, y, width, height } = event.nativeEvent.layout;
                 setWidth(width);
-            }} style={{ flexDirection: 'column', alignItems: "center", justifyContent: "space-between"}}>
+            }} style={{ flexDirection: 'column', alignItems: "center", justifyContent: "space-between" }}>
                 <Svg style={styles.svg}>
                     {levels.slice(1).reverse().map((r, index) => matches[r].map((m, index2) =>
                         <Polyline style={{ position: "absolute" }} test={console.log(height)}
@@ -480,10 +478,12 @@ const Trace = (props) => {
                 </Svg>
                 {levels.slice(0).reverse().map(r =>
 
-                    <View  onLayout={(event) => {
+                    <View onLayout={(event) => {
                         var { x, y, width, height } = event.nativeEvent.layout;
                         setHeight(height);
-                    }} style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-evenly" }}><Matchcomp loading={loading} matches={matches[r]} level={r} sport={sport} autho={autho}></Matchcomp></View>)}
+                    }} style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-around" }}>
+                        <Matchcomp loading={loading} matches={matches[r]} level={r} sport={sport} autho={autho}></Matchcomp>
+                    </View>)}
 
             </View>
         );
@@ -539,9 +539,8 @@ function App() {
                 <Stack.Navigator screenOptions={{
                     headerStyle: {
                         backgroundColor: '#000',
-                        height:100
+                        height: 100
                     },
-                    // headerLeft:()=><Text style={{color:"white", textAlign:"center"}}>{username}</Text>,
                     headerTintColor: '#fff',
                     headerTitleStyle: {
                         fontWeight: 'bold',
@@ -643,8 +642,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-around",
         marginBottom: 30,
-        marginRight:50,
-        marginLeft:50
+        marginRight: 50,
+        marginLeft: 50
     },
     column: {
         flex: 1,

@@ -3,7 +3,6 @@
     "name": "JO2021",
     "slug": "JO2021",
     "version": "1.0.0",
-    // "orientation": "auto",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
@@ -19,6 +18,9 @@
     ],
     "ios": {
       "supportsTablet": true
+    },
+    "android": {
+      "package": "JO.apk"
     }
   }
 }
