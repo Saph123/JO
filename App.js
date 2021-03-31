@@ -11,6 +11,7 @@ import matches_group from './assets/Beerpong_poules.json';
 import beerpong_autho from './assets/Beerpong_autho.json';
 import PinchZoomView from 'react-native-pinch-zoom-view';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Audio } from 'expo-av';
 // import Orientation from 'react-native-orientation';
 class Match {
     constructor(sport, team1, team2, uniqueId, score, over, level) {
@@ -56,6 +57,7 @@ function HomeScreen({ route, navigation }) {
     return (
 
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
+
             <TouchableOpacity style={styles.homebuttons}
                 onPress={() => { navigation.navigate('BeerpongDetails') }}
             >
@@ -64,6 +66,7 @@ function HomeScreen({ route, navigation }) {
             <TouchableOpacity style={styles.homebuttons}
                 onPress={() => navigation.navigate('LancerdeTongDetails')}
             >
+                
                 <Text style={styles.texthomebutton}>LancerdeTong</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.homebuttons}
@@ -532,10 +535,20 @@ function TrailDetailsScreen({ navigation }) {
     );
 }
 
+async function playSound() {
+    console.log('Loading Sound');
+    const { sound } = await Audio.Sound.createAsync(
+       require('./assets/guylabedav.mp3')
+    );
+    // setSound(sound);
+    console.log('Playing Sound');
+    await sound.playAsync(); }
 
 const Stack = createStackNavigator();
 function App() {
     const [arbitre, setArbitre] = React.useState(false);
+    const [sound, setSound] = React.useState();
+
     return (
         <NavigationContainer>
             <ArbitreContext.Provider value={arbitre}>
@@ -549,9 +562,9 @@ function App() {
                         fontWeight: 'bold',
                     },
                 }} initialRouteName="Home">
-                    <Stack.Screen options={{ title: "Home", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text></View> }} name="Home" component={HomeScreen} />
+                    <Stack.Screen options={{ title: "Home", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><TouchableOpacity onPressIn={() => {playSound()}}><Image style={{ borderRadius: 40, width: 20, height: 20, margin:30 }} source={require('./assets/megaphone.png')}/></TouchableOpacity><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text></View> }} name="Home" component={HomeScreen} />
                     <Stack.Screen options={{ title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text></View> }} name="Login" component={Login} />
-                    <Stack.Screen options={{ title: "Beerpong", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text><TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View> }} name="BeerpongDetails" component={BeerpongDetailsScreen} />
+                    <Stack.Screen options={{ title: "Beerpong", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text><TouchableOpacity onPressIn={() => {setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View> }} name="BeerpongDetails" component={BeerpongDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="LancerdeTongDetails" component={LancerdeTongDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="centmetreRicardDetails" component={centmetreRicardDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="WaterpoloDetails" component={WaterpoloDetailsScreen} />
