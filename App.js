@@ -34,7 +34,7 @@ class Group {
         this.over = over
     }
 }
-let username = "didier";
+let username = "max";
 let offline = true;
 let displayed_state = "";
 let toggle = 0;
@@ -294,11 +294,9 @@ function BeerpongDetailsScreen({ navigation }) {
     const [local_toggle, setToggle] = React.useState(0);
     if(local_toggle != toggle)
     {
-        console.log("toggling though!");
     setToggle(toggle);
     }
     React.useEffect(() => {
-        console.log("useeffect bps");
         for (var authouser in beerpong_autho.autho) {
             if (beerpong_autho.autho[authouser] == username) {
                 setauthorized(true);
@@ -308,10 +306,10 @@ function BeerpongDetailsScreen({ navigation }) {
     }, []);
     if(loadingmain)
     {
-        return(<ActivityIndicator/>)
+        return(<ActivityIndicator size="large" color="#0000ff" />)
     }
     return (
-        <PinchZoomView test={console.log("pinch", toggle)} style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, width: window_width, height: window_height }} toggle={toggle} maxScale={1} minScale={0.5} >
+        <PinchZoomView style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, width: window_width, height: window_height }} toggle={toggle} maxScale={1} minScale={0.5} >
             <ArbitreContext.Consumer>
                 {value => {
                     return (
@@ -442,28 +440,52 @@ function manage_score_over(match, index, score, setScore) {
         </View>
     )
 }
-function determine_winner(match, index, setfun, score) {
+function determine_winner(match, index, setfun, score, setFetching) {
     // TODO : add push function to json through raspi
     let tmp_array = JSON.parse(JSON.stringify(match));
+    let topush = false;
+    const controller = new AbortController();
     if (tmp_array[index].over != 0) {
         tmp_array[index].over = 0;
         setfun(tmp_array);
+        // TODO: push to raspi
         return;
     }
     let scores = score[index].split(":");
     if (scores.length == 2) {
         if (parseInt(scores[0]) > parseInt(scores[1])) {
             tmp_array[index].over = 1;
+            topush = true;
         }
         else if (parseInt(scores[0]) < parseInt(scores[1])) {
             tmp_array[index].over = 2;
+            topush = true;
         }
         else {
             alert("Either a tie, or not parsable. Score should be x:x")
         }
     }
-    setfun(tmp_array);
-    // return match;
+    if(topush)
+    {
+        // 5 second timeout:
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        
+        // push to raspi
+        fetch("http://109.24.229.111:7070/pushmatch", { signal: controller.signal, method: "POST", body: JSON.stringify({ "username": username, tmp_array }) }).then(r => {
+            if (r.status == 200) {
+                username = userName; navigation.navigate('Home', { refresh: "refresh" });
+                setFetching(false);
+                setfun(tmp_array);
+                return;
+                            }
+                            else {
+                                alert("Wrong login or password!");
+                                setFetching(false);
+                                return;
+                            }
+                            
+                        }).catch(() => { alert("Issue with server!");setFetching(false); return })
+    }
 }
 const Matchpoule = (props) => {
     const matches = props.matches;
@@ -471,6 +493,7 @@ const Matchpoule = (props) => {
     const autho = props.autho;
     const sport = props.sport;
     const [local_load, setLoading] = React.useState(true)
+    const [local_fetch, setFetching] = React.useState(false)
     const [score, setScore] = React.useState([]);
     const [match, setMatch] = React.useState([])
     let match_array = [];
@@ -490,7 +513,11 @@ const Matchpoule = (props) => {
     if (local_load) {
         return (<View></View>);
     }
-    if (autho) {
+    if(local_fetch){
+        
+            return(<View><ActivityIndicator  size="large" color="#0000ff" test = {console.log(local_fetch)} style={styles.fetching}/></View>)
+    }
+    if (autho && !local_fetch) {
         return (
             <View style={styles.column}>
                 {match.map((r, index) => {
@@ -498,12 +525,14 @@ const Matchpoule = (props) => {
                         <Text style={r.over == 2 ? styles.lose : styles.teamnormal}>{r.team1}</Text>
                         <Text>{"vs"}</Text><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text>
                         <View style={{ flexDirection: "row" }}>{manage_score_over(match, index, score, setScore)}</View>
-                        <TouchableOpacity onPress={() => determine_winner(match, index, setMatch, score)}><Text>{over_text(match, index)}</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => {setFetching(true);console.log(local_fetch);determine_winner(match, index, setMatch, score, setFetching)}}><Text>{over_text(match, index)}</Text></TouchableOpacity>
                     </View>)
                 })}
             </View>
         );
     }
+
+    
     return (
         <View style={styles.column}>
             {match_array.map((r, index) => {
@@ -533,7 +562,6 @@ const Trace = (props) => {
     const [groupmatches, setmatchesgroup] = React.useState([]);
 
     React.useEffect(() => {
-        console.log("fetching_matches");
         fetch_matches("Beerpong", setmatches, setGroups, setlevels, setPlayoff, setmatchesgroup, props.setWidth, props.setHeight).then(r => {
             setloading(false);
         });
@@ -569,7 +597,7 @@ const Trace = (props) => {
     // }
 
     if (loading) {
-        return (<ActivityIndicator />);
+        return (<ActivityIndicator size="large" color="#0000ff" />);
     }
     if (displayed_state == "playoff") {
         return (
@@ -787,6 +815,15 @@ const styles = StyleSheet.create({
         textDecorationLine: "line-through",
         // fontSize: 16
     },
+    fetching: {
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        width: "100%",
+        height:"100%",
+        alignItems: 'center',
+        justifyContent: 'center'
+      },
 
     middle: {
         flex: 0.3,
