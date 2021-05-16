@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, View, Dimensions, ActivityIndicator, StyleSheet, TextInput, Text, Image, Modal } from 'react-native';
+import { Button, View, Dimensions, ActivityIndicator, StyleSheet, TextInput, Text, Image, Modal, Alert } from 'react-native';
 import { NavigationContainer, useTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Table, Row } from 'react-native-table-component';
@@ -36,6 +36,7 @@ class Group {
 }
 let username = "didier";
 let offline = true;
+let displayed_state = "";
 const ArbitreContext = React.createContext(false);
 function HomeScreen({ route, navigation }) {
     if (username == "") {
@@ -47,10 +48,11 @@ function HomeScreen({ route, navigation }) {
                 }}
                 />
                 <Text>Home Screen</Text>
-                <Button style={styles.homebuttons} color="green" width={200}
-                    title="Login!"
+                <TouchableOpacity style={styles.loginbutton}
                     onPress={() => { navigation.navigate('Login') }}
-                />
+                >
+                    <Text style={styles.texthomebutton}>Login</Text>
+                </TouchableOpacity>
             </View>
         )
     }
@@ -66,7 +68,7 @@ function HomeScreen({ route, navigation }) {
             <TouchableOpacity style={styles.homebuttons}
                 onPress={() => navigation.navigate('LancerdeTongDetails')}
             >
-                
+
                 <Text style={styles.texthomebutton}>LancerdeTong</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.homebuttons}
@@ -97,7 +99,7 @@ function HomeScreen({ route, navigation }) {
                 margin: 30,
             }}
             />
-            <TouchableOpacity style={styles.homebuttons}
+            <TouchableOpacity style={styles.loginbutton}
                 onPress={() => { navigation.navigate('Login') }}
             >
                 <Text style={styles.texthomebutton}>Login</Text>
@@ -124,7 +126,7 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setPlay
     }
     let level = [];
     let local_array_match = [[]];
-    if (matches_status["status"] == "poules") // group phasis:
+    if (displayed_state == "poules") // group phasis:
     {
         setPlayoff(0);
         let groups = matches_group;
@@ -150,7 +152,7 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setPlay
         setmatchesgroup(array_matches_groups);
         setWidth(200 * (array_groups.length + 1));
         console.log((array_matches_groups.length + 1))
-        setHeight(100 * (array_groups.length + 1)*4);
+        setHeight(100 * (array_groups.length + 1) * 4);
     }
     else {
         setPlayoff(1);
@@ -169,56 +171,120 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setPlay
         setmatches(local_array_match);
     }
 }
+function toggle_status(status, setStatus, navigation){
 
+    for (var i = 0; i < status.states.length; i++) {
+        if(status.states[i] == displayed_state)
+        {
+            if(i+1 < status.states.length)
+            {
+                displayed_state = status.states[i+1];
+            }
+            else
+            {
+                displayed_state = status.states[0];
+            }
+            status.status = displayed_state;
+            setStatus(status);
+            // console.log(navigation.dangerouslyGetState());
+            console.log(navigation.dangerouslyGetState().routes[navigation.dangerouslyGetState().index].name);
+            navigation.navigate(navigation.dangerouslyGetState().routes[navigation.dangerouslyGetState().index].name, { refresh: "fdp" });
+            break;
+        }
+    }
+}
+function GetState(sportname, status, setStatus, navigation) {
+    
+    const [loaded, setloaded] = React.useState(0);
 
+    React.useEffect(() => {
+        if (offline) {
+            if (sportname == "Beerpong") {
+                setStatus(matches_status);
+                displayed_state = matches_status['status'];
+            }
+        }
+        else {
+            let local_status = async () => { await fetch("http://109.24.229.111:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => { return data });};
+            setStatus(local_status);
+            displayed_state = local_status['status'];
+        }
+        setloaded(1);
+    }, []);
+    if(loaded == 0)
+    {
+        return <View><Text style={{ color: "white" }}>test</Text></View>;
+    }
+    else{
+        return <View><TouchableOpacity onPressIn={() => {toggle_status(status, setStatus, navigation)}}><Text style={{ marginTop:10, marginRight:30, color: "white" }}>{status["status"]}</Text></TouchableOpacity></View>;
+    }
+};
 
 function Login({ navigation }) {
     const width = Dimensions.get("window").width;
     const height = Dimensions.get("window").height / 2;
     const [userName, setuserName] = React.useState(null);
     const [password, setpassword] = React.useState(null);
+    const controller = new AbortController()
+
+    // 5 second timeout:
+    const timeoutId = setTimeout(() => controller.abort(), 5000)
     // console.log("0,0 0," + width / 2 + " 300," + width / 2)
     // let local_match = React.useState("");
+    if (username == "") {
+        return (
+            <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
+                <View style={{ flexDirection: "row", margin: 15 }}>
+                    <Text style={{ textAlign: "center", borderWidth: 1, borderRightWidth: 0, height: 20 }}> Username:</Text>
+                    <TextInput style={{ textAlign: "center", borderWidth: 1, height: 20, minWidth: 100 }} onChangeText={text => { setuserName(""); setuserName(text) }} value={userName}></TextInput>
+                </View>
+                <View style={{ flexDirection: "row", margin: 15 }}>
+                    <Text style={{ textAlign: "center", borderWidth: 1, borderRightWidth: 0, height: 20 }}> Password:</Text>
+                    <TextInput secureTextEntry={true} style={{ textAlign: "center", borderWidth: 1, height: 20, minWidth: 100 }} onChangeText={text => setpassword(text)} value={password}></TextInput>
+                </View>
+                <View style={{ margin: 30, flexDirection: "row" }}>
+                    <Button style={{ margin: 30 }} color='red' title="Log in" onPress={() =>
+
+                        fetch("http://109.24.229.111:7070/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "username": userName, "password": password }) }).then(r => {
+                            if (r.status == 200) {
+                                username = userName; navigation.navigate('Home', { refresh: "refresh" });
+                                return;
+                            }
+                            else {
+                                alert("Wrong login or password!");
+                                return;
+                            }
+                        }).catch(() => { alert("Issue with server!"); return })}>
+                    </Button>
+                    <Button style={{ margin: 30 }} color='grey' title="Register" onPress={() =>
+
+                        fetch("http://109.24.229.111:7070/register", { method: "POST", body: JSON.stringify({ "username": userName, "password": password }) }).then(r => {
+                            if (r.status == 200) {
+                                username = userName; navigation.navigate('Home', { refresh: "refresh" })
+                            }
+                            else if (r.status == 403) {
+                                alert("This login already exists! Please use the login button");
+                            }
+                            else {
+                                alert("Issue with yourlogin");
+                            }
+                        })}>
+                    </Button>
+                </View>
+            </View>
+        )
+    }
     return (
-        <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
-            <View style={{ flexDirection: "row", margin: 15 }}>
-                <Text style={{ textAlign: "center", borderWidth: 1, borderRightWidth: 0, height: 20 }}> Username:</Text>
-                <TextInput style={{ textAlign: "center", borderWidth: 1, height: 20, minWidth: 100 }} onChangeText={text => { setuserName(""); setuserName(text) }} value={userName}></TextInput>
-            </View>
-            <View style={{ flexDirection: "row", margin: 15 }}>
-                <Text style={{ textAlign: "center", borderWidth: 1, borderRightWidth: 0, height: 20 }}> Password:</Text>
-                <TextInput secureTextEntry={true} style={{ textAlign: "center", borderWidth: 1, height: 20, minWidth: 100 }} onChangeText={text => setpassword(text)} value={password}></TextInput>
-            </View>
-            <View style={{ margin: 30, flexDirection: "row" }}>
-                <Button style={{ margin: 30 }} color='red' title="Log in" onPress={() =>
-
-                    fetch("http://109.24.229.111:7070/login", { method: "POST", body: JSON.stringify({ "username": userName, "password": password }) }).then(r => {
-                        if (r.status == 200) {
-                            username = userName; navigation.navigate('Home', { refresh: "refresh" })
-                        }
-                        else {
-                            alert("Wrong login or password!")
-                        }
-                    })}>
-                </Button>
-                <Button style={{ margin: 30 }} color='grey' title="Register" onPress={() =>
-
-                    fetch("http://109.24.229.111:7070/register", { method: "POST", body: JSON.stringify({ "username": userName, "password": password }) }).then(r => {
-                        if (r.status == 200) {
-                            username = userName; navigation.navigate('Home', { refresh: "refresh" })
-                        }
-                        else if (r.status == 403) {
-                            alert("This login already exists! Please use the login button");
-                        }
-                        else {
-                            alert("Issue with yourlogin");
-                        }
-                    })}>
-                </Button>
-            </View>
-        </View>
+        <View>
+            <Text style={styles.texthomebutton}>Currently logged in as {username}</Text>
+            <TouchableOpacity style={styles.logoutbutton}
+                onPress={() => { { username = "" }; navigation.navigate('Login', { refresh: "refresh" }) }}
+            >
+                <Text style={styles.texthomebutton}>Log out!</Text>
+            </TouchableOpacity></View>
     )
 };
+
 function BeerpongDetailsScreen({ navigation }) {
     const width = Dimensions.get("window").width;
     const height = Dimensions.get("window").height;
@@ -323,7 +389,7 @@ const Matchcomp = (props) => {
                     return (<View style={r.over == 0 ? styles.match : styles.matchover}>
                         <Text style={r.over == 2 ? styles.lose : styles.teamnormal}>{r.team1}</Text>
                         <Text style={{ fontSize: 24, fontWeight: "bold" }}>{"vs"}</Text><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text><TextInput style={styles.score} value={score[index]} onChangeText={(text) => { array_score[index] = text; setScore(array_score) }} /><Button color='blue' title="Submit" onPress={() => alert("wesh")} />
-                        </View>)
+                    </View>)
                 })}
             </View>
         );
@@ -378,7 +444,7 @@ function determine_winner(match, index, setfun, score) {
     }
     let scores = score[index].split(":");
     if (scores.length == 2) {
-        console.log(scores[0], scores[1]);
+        // console.log(scores[0], scores[1]);
         if (parseInt(scores[0]) > parseInt(scores[1])) {
             tmp_array[index].over = 1;
         }
@@ -435,9 +501,9 @@ const Matchpoule = (props) => {
         <View style={styles.column}>
             {match_array.map((r, index) => {
                 return (
-                <View style={r.over == 0 ? styles.matchpoule : styles.matchpouleover}>
-                    <Text style={r.over == 2 ? styles.lose : styles.teamnormal}>{r.team1}</Text>
-                    <Text>{"vs"}</Text><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text><Text style={styles.score}>{score[index]}</Text>
+                    <View style={r.over == 0 ? styles.matchpoule : styles.matchpouleover}>
+                        <Text style={r.over == 2 ? styles.lose : styles.teamnormal}>{r.team1}</Text>
+                        <Text>{"vs"}</Text><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text><Text style={styles.score}>{score[index]}</Text>
                     </View>)
             })}
         </View>
@@ -457,17 +523,38 @@ const Trace = (props) => {
     const [playoff, setPlayoff] = React.useState(0);
     const [groups, setGroups] = React.useState([]);
     const [groupmatches, setmatchesgroup] = React.useState([]);
+
     React.useEffect(() => {
+        console.log("fetching_matches");
         fetch_matches("Beerpong", setmatches, setGroups, setlevels, setPlayoff, setmatchesgroup, props.setWidth, props.setHeight).then(r => {
             setloading(false);
         });
 
     }, []);
+    if(displayed_state == "playoff" && playoff == 0)
+    {
+        console.log(playoff);
+        setloading(true)
+        fetch_matches("Beerpong", setmatches, setGroups, setlevels, setPlayoff, setmatchesgroup, props.setWidth, props.setHeight).then(r => {
+            setloading(false);
+        });
+        setPlayoff(1);
+    }
+    else if(displayed_state == "poules" && playoff == 1)
+    {
+        console.log(playoff);
+        setloading(true)
+        fetch_matches("Beerpong", setmatches, setGroups, setlevels, setPlayoff, setmatchesgroup, props.setWidth, props.setHeight).then(r => {
+            setloading(false);
+        });
+        setPlayoff(0);
+    }
 
     if (loading) {
         return (<ActivityIndicator />);
     }
-    if (playoff) {
+    console.log(playoff)
+    if (displayed_state == "playoff") {
         return (
             <View onLayout={(event) => {
                 var { x, y, width, height } = event.nativeEvent.layout;
@@ -475,7 +562,7 @@ const Trace = (props) => {
             }} >
                 <Svg style={styles.svg}>
                     {levels.slice(1).reverse().map((r, index) => matches[r].map((m, index2) =>
-                        <Polyline style={styles.svg} test={console.log(width)}
+                        <Polyline style={styles.svg}
                             points={(index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height) + (height - 30)) + " " + (index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 1) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 3) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2))}
                             fill="none"
                             stroke="black"
@@ -497,7 +584,7 @@ const Trace = (props) => {
     return (
 
 
-        <View style={{ flexDirection: "row", flex: 1, position:"absolute", top:0, left:0 }}>
+        <View style={{ flexDirection: "row", flex: 1, position: "absolute", top: 0, left: 0 }}>
             {groups.map((r, index) =>
                 <View style={styles.tablecontainer}>
                     <Text style={{ textAlign: "center" }}>{r.name}</Text>
@@ -506,7 +593,7 @@ const Trace = (props) => {
                         {r.teams.map(q =>
                             <Row data={[q.name, q.played, q.wins, q.loses]} widthArr={[150, 30, 30, 30]} textStyle={{ margin: 6 }}></Row>)}
                     </Table>
-                    <View style={{ flexDirection: "column", justifyContent:"space-around" }}>
+                    <View style={{ flexDirection: "column", justifyContent: "space-around" }}>
                         <Matchpoule loading={loading} matches={groupmatches[index]} level={0} sport={sport} autho={autho}></Matchpoule>
                     </View>
                 </View>)}
@@ -535,20 +622,51 @@ function TrailDetailsScreen({ navigation }) {
     );
 }
 
-async function playSound() {
-    console.log('Loading Sound');
-    const { sound } = await Audio.Sound.createAsync(
-       require('./assets/guylabedav.mp3')
+function UsernameScreen({ navigation }) {
+    return (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
+            <Text style={{ flex: 6, color: 'red' }}>TrailDetailsScreen!</Text>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
+                <Button color='red' title="Home" onPress={() => navigation.navigate('Home')} />
+            </View>
+        </View>
     );
-    // setSound(sound);
-    console.log('Playing Sound');
-    await sound.playAsync(); }
+}
+
+async function playSound(sound_main, sound_status, set_sound, setstatus) {
+    if (sound_main == undefined) {
+
+        console.log('Loading Sound');
+        const { sound: playbackObject } = await Audio.Sound.createAsync(
+            require('./assets/guylabedav.mp3')
+        );
+        set_sound(playbackObject);
+        console.log("sound set!");
+    }
+    var playback = await sound_main;
+    if (sound_main != undefined) {
+
+        var test = await sound_main.getStatusAsync();
+        if (test.isPlaying == true) {
+            await sound_main.stopAsync();
+
+        }
+        else {
+            await sound_main.stopAsync();
+            await sound_main.playAsync();
+        }
+
+    }
+}
 
 const Stack = createStackNavigator();
 function App() {
     const [arbitre, setArbitre] = React.useState(false);
     const [sound, setSound] = React.useState();
+    const [status, setstatus] = React.useState();
 
+    const [soundStatus, setSoundStatus] = React.useState();
+    const [navigationhandler, setNavigation] = React.useState();
     return (
         <NavigationContainer>
             <ArbitreContext.Provider value={arbitre}>
@@ -562,13 +680,14 @@ function App() {
                         fontWeight: 'bold',
                     },
                 }} initialRouteName="Home">
-                    <Stack.Screen options={{ title: "Home", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><TouchableOpacity onPressIn={() => {playSound()}}><Image style={{ borderRadius: 40, width: 20, height: 20, margin:30 }} source={require('./assets/megaphone.png')}/></TouchableOpacity><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text></View> }} name="Home" component={HomeScreen} />
+                    <Stack.Screen options={({ navigation }) => ({ title: "Home", headerRight: () => (<View style={{ flexDirection: "row", margin: 10 }}><TouchableOpacity onPressIn={() => { playSound(sound, soundStatus, setSound, setSoundStatus) }}><Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} /></TouchableOpacity><TouchableOpacity style={{ alignContent: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}><Text style={{ color: "white", marginTop: 30, alignSelf: "center" }}>{username}</Text></TouchableOpacity></View>) })} name="Home" component={HomeScreen} />
                     <Stack.Screen options={{ title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text></View> }} name="Login" component={Login} />
-                    <Stack.Screen options={{ title: "Beerpong", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text><TouchableOpacity onPressIn={() => {setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View> }} name="BeerpongDetails" component={BeerpongDetailsScreen} />
+                    <Stack.Screen options={({ navigation }) => ({ title: "Beerpong", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>{GetState("Beerpong", status, setstatus, navigation)}<View><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text></View><TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View> })} name="BeerpongDetails" component={BeerpongDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="LancerdeTongDetails" component={LancerdeTongDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="centmetreRicardDetails" component={centmetreRicardDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="WaterpoloDetails" component={WaterpoloDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="TrailDetails" component={TrailDetailsScreen} />
+                    <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="UsernameScreen" component={UsernameScreen} />
                 </Stack.Navigator>
             </ArbitreContext.Provider>
         </NavigationContainer>
@@ -585,7 +704,7 @@ const styles = StyleSheet.create({
     },
     tablecontainer: {
         flex: 1,
-        alignSelf:"flex-start",
+        alignSelf: "flex-start",
         margin: 30,
         width: 242,
         backgroundColor: "#EFF8FF"
@@ -607,7 +726,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#D62628",
         borderWidth: 1,
         margin: 30,
-        flex:1,
+        flex: 1,
         // width: 100,
         // height: 100,
         borderRadius: 15
@@ -627,7 +746,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         backgroundColor: "#A8DADC",
         borderWidth: 1,
-        flex:1,
+        flex: 1,
         alignItems: "center",
         margin: 30,
         // width: 100,
@@ -742,18 +861,53 @@ const styles = StyleSheet.create({
         width: 100,
         textAlign: "center",
         fontSize: 16,
+        height: 50,
 
         borderWidth: 1,
         borderColor: 'black',
         borderRadius: 10,
         alignItems: 'stretch',
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
+        alignSelf: 'center',
         margin: 8,
-        color: "red"
+    },
+    loginbutton: {
+        // flex: 1,
+        backgroundColor: "lightgreen",
+        width: 100,
+        textAlign: "center",
+        fontSize: 16,
+        height: 50,
+
+        borderWidth: 1,
+        borderColor: 'black',
+        borderRadius: 10,
+        alignItems: 'stretch',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        margin: 8,
+    },
+    logoutbutton: {
+        // flex: 1,
+        backgroundColor: "lightcoral",
+        width: 100,
+        textAlign: "center",
+        fontSize: 16,
+        height: 50,
+
+        borderWidth: 1,
+        borderColor: 'black',
+        borderRadius: 10,
+        alignItems: 'stretch',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        margin: 8,
     },
     texthomebutton: {
         fontWeight: "bold",
         fontSize: 12,
+        justifyContent: "center",
+        alignSelf: "center"
     }
 });
 export default App;
