@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Button, View, Dimensions, ActivityIndicator, StyleSheet, TextInput, Text, Image, Modal, Alert } from 'react-native';
-import { NavigationContainer, useTheme } from '@react-navigation/native';
+import { NavigationContainer, useNavigation, useTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Table, Row } from 'react-native-table-component';
 import { Svg, Polyline } from 'react-native-svg';
@@ -37,6 +37,7 @@ class Group {
 let username = "didier";
 let offline = true;
 let displayed_state = "";
+let toggle = 0;
 const ArbitreContext = React.createContext(false);
 function HomeScreen({ route, navigation }) {
     if (username == "") {
@@ -151,7 +152,6 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setPlay
         setgroups(array_groups);
         setmatchesgroup(array_matches_groups);
         setWidth(200 * (array_groups.length + 1));
-        console.log((array_matches_groups.length + 1))
         setHeight(100 * (array_groups.length + 1) * 4);
     }
     else {
@@ -185,11 +185,10 @@ function toggle_status(status, setStatus, navigation){
                 displayed_state = status.states[0];
             }
             status.status = displayed_state;
+            toggle = 1;
             setStatus(status);
-            // console.log(navigation.dangerouslyGetState());
-            console.log(navigation.dangerouslyGetState().routes[navigation.dangerouslyGetState().index].name);
             navigation.navigate(navigation.dangerouslyGetState().routes[navigation.dangerouslyGetState().index].name, { refresh: "fdp" });
-            break;
+            break; 
         }
     }
 }
@@ -229,7 +228,6 @@ function Login({ navigation }) {
 
     // 5 second timeout:
     const timeoutId = setTimeout(() => controller.abort(), 5000)
-    // console.log("0,0 0," + width / 2 + " 300," + width / 2)
     // let local_match = React.useState("");
     if (username == "") {
         return (
@@ -288,21 +286,32 @@ function Login({ navigation }) {
 function BeerpongDetailsScreen({ navigation }) {
     const width = Dimensions.get("window").width;
     const height = Dimensions.get("window").height;
+    
     const [window_width, setWidth] = React.useState(width);
     const [window_height, setHeight] = React.useState(height);
     const [authorized, setauthorized] = React.useState(false);
-    // console.log("0,0 0," + width / 2 + " 300," + width / 2)
-    // let local_match = React.useState("");
+    const [loadingmain, setloading] = React.useState(true);
+    const [local_toggle, setToggle] = React.useState(0);
+    if(local_toggle != toggle)
+    {
+        console.log("toggling though!");
+    setToggle(toggle);
+    }
     React.useEffect(() => {
-
+        console.log("useeffect bps");
         for (var authouser in beerpong_autho.autho) {
             if (beerpong_autho.autho[authouser] == username) {
                 setauthorized(true);
             }
         }
+        setloading(false);
     }, []);
+    if(loadingmain)
+    {
+        return(<ActivityIndicator/>)
+    }
     return (
-        <PinchZoomView style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, width: window_width, height: window_height }} maxScale={1} minScale={0.5} >
+        <PinchZoomView test={console.log("pinch", toggle)} style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, width: window_width, height: window_height }} toggle={toggle} maxScale={1} minScale={0.5} >
             <ArbitreContext.Consumer>
                 {value => {
                     return (
@@ -327,7 +336,7 @@ function BeerpongDetailsScreen({ navigation }) {
                 }
             </ArbitreContext.Consumer>
 
-            <Trace sport={"Beerpong"} setWidth={(w) => setWidth(w)} setHeight={(h) => setHeight(h)} autho={authorized} />
+            <Trace local_toggle={local_toggle} sport={"Beerpong"} setWidth={(w) => setWidth(w)} setHeight={(h) => setHeight(h)} autho={authorized} />
         </PinchZoomView>
 
 
@@ -365,7 +374,6 @@ const Matchcomp = (props) => {
     const [score, setScore] = React.useState([]);
     const match_array = [];
     const array_score = [];
-    // console.log(matches)
     for (var i = 0; i < matches.length; i++) {
         if (matches[i]['level'] == level) {
 
@@ -444,7 +452,6 @@ function determine_winner(match, index, setfun, score) {
     }
     let scores = score[index].split(":");
     if (scores.length == 2) {
-        // console.log(scores[0], scores[1]);
         if (parseInt(scores[0]) > parseInt(scores[1])) {
             tmp_array[index].over = 1;
         }
@@ -514,7 +521,8 @@ const Matchpoule = (props) => {
 const Trace = (props) => {
     const sport = props.sport;
     const autho = props.autho;
-
+    const local_toggle = props.local_toggle;
+    const navigation = useNavigation();
     const [loading, setloading] = React.useState(true);
     const [matches, setmatches] = React.useState([]);
     const [levels, setlevels] = React.useState([]);
@@ -530,30 +538,39 @@ const Trace = (props) => {
             setloading(false);
         });
 
+
     }, []);
-    if(displayed_state == "playoff" && playoff == 0)
+    if(local_toggle && toggle == 1)
     {
-        console.log(playoff);
-        setloading(true)
+        toggle = 0;
+        console.log("toggling effectiverly");
+        setloading(true);
         fetch_matches("Beerpong", setmatches, setGroups, setlevels, setPlayoff, setmatchesgroup, props.setWidth, props.setHeight).then(r => {
-            setloading(false);
-        });
-        setPlayoff(1);
+                    setloading(false);
+                });
     }
-    else if(displayed_state == "poules" && playoff == 1)
-    {
-        console.log(playoff);
-        setloading(true)
-        fetch_matches("Beerpong", setmatches, setGroups, setlevels, setPlayoff, setmatchesgroup, props.setWidth, props.setHeight).then(r => {
-            setloading(false);
-        });
-        setPlayoff(0);
-    }
+    // console.log("tog", local_toggle);
+
+    // if(displayed_state == "playoff" && playoff == 0)
+    // {
+    //     setloading(true)
+    //     fetch_matches("Beerpong", setmatches, setGroups, setlevels, setPlayoff, setmatchesgroup, props.setWidth, props.setHeight).then(r => {
+    //         setloading(false);
+    //     });
+    //     setPlayoff(1);
+    // }
+    // else if(displayed_state == "poules" && playoff == 1)
+    // {
+    //     setloading(true)
+    //     fetch_matches("Beerpong", setmatches, setGroups, setlevels, setPlayoff, setmatchesgroup, props.setWidth, props.setHeight).then(r => {
+    //         setloading(false);
+    //     });
+    //     setPlayoff(0);
+    // }
 
     if (loading) {
         return (<ActivityIndicator />);
     }
-    console.log(playoff)
     if (displayed_state == "playoff") {
         return (
             <View onLayout={(event) => {
@@ -666,7 +683,6 @@ function App() {
     const [status, setstatus] = React.useState();
 
     const [soundStatus, setSoundStatus] = React.useState();
-    const [navigationhandler, setNavigation] = React.useState();
     return (
         <NavigationContainer>
             <ArbitreContext.Provider value={arbitre}>
@@ -680,9 +696,9 @@ function App() {
                         fontWeight: 'bold',
                     },
                 }} initialRouteName="Home">
-                    <Stack.Screen options={({ navigation }) => ({ title: "Home", headerRight: () => (<View style={{ flexDirection: "row", margin: 10 }}><TouchableOpacity onPressIn={() => { playSound(sound, soundStatus, setSound, setSoundStatus) }}><Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} /></TouchableOpacity><TouchableOpacity style={{ alignContent: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}><Text style={{ color: "white", marginTop: 30, alignSelf: "center" }}>{username}</Text></TouchableOpacity></View>) })} name="Home" component={HomeScreen} />
+                    <Stack.Screen options={({ navigation }) => ({ title: "Home", headerRight: () => (<View style={{ flexDirection: "row", margin: 10 }}><TouchableOpacity onPressIn={() => { playSound(sound, soundStatus, setSound, setSoundStatus) }}><Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} /></TouchableOpacity><TouchableOpacity style={{ alignContent: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}><Text style={{ color: "white", margin: 10, alignSelf: "center" }}>{username}</Text></TouchableOpacity></View>) })} name="Home" component={HomeScreen} />
                     <Stack.Screen options={{ title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text></View> }} name="Login" component={Login} />
-                    <Stack.Screen options={({ navigation }) => ({ title: "Beerpong", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>{GetState("Beerpong", status, setstatus, navigation)}<View><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text></View><TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View> })} name="BeerpongDetails" component={BeerpongDetailsScreen} />
+                    <Stack.Screen options={({ navigation }) => ({ title: "Beerpong", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>{GetState("Beerpong", status, setstatus, navigation)}<View><Text style={{ color: "white", margin: 10, alignSelf: "center" }}>{username}</Text></View><TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View> })} name="BeerpongDetails" component={BeerpongDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="LancerdeTongDetails" component={LancerdeTongDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="centmetreRicardDetails" component={centmetreRicardDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="WaterpoloDetails" component={WaterpoloDetailsScreen} />
