@@ -6,12 +6,13 @@ import { Table, Row } from 'react-native-table-component';
 import { Svg, Polyline } from 'react-native-svg';
 import beerpong_matches_json from './assets/Beerpong_matches.json';
 import ventriglisse_matches_json from './assets/ventriglisse_match.json';
-import matches_status from './assets/beerpong_status.json';
+import matches_status from './assets/Beerpong_status.json';
 import matches_group from './assets/Beerpong_poules.json';
 import beerpong_autho from './assets/Beerpong_autho.json';
 import PinchZoomView from 'react-native-pinch-zoom-view';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Audio } from 'expo-av';
+import CountDown from 'react-native-countdown-component';
 // import Orientation from 'react-native-orientation';
 class Match {
     constructor(sport, team1, team2, uniqueId, score, over, level) {
@@ -35,7 +36,7 @@ class Group {
     }
 }
 let username = "max";
-let offline = true;
+let offline = false;
 let displayed_state = "";
 let toggle = 0;
 const ArbitreContext = React.createContext(false);
@@ -60,7 +61,12 @@ function HomeScreen({ route, navigation }) {
     return (
 
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
-
+      <CountDown
+        until={10}
+        onFinish={() => alert('finished')}
+        onPress={() => alert('hello')}
+        size={20}
+      />
             <TouchableOpacity style={styles.homebuttons}
                 onPress={() => { navigation.navigate('BeerpongDetails') }}
             >
@@ -109,6 +115,24 @@ function HomeScreen({ route, navigation }) {
 
     );
 }
+async function fetch_status(sportname, setStatus){
+    
+    let fetch_status = {}
+    if (offline) {
+        if (sportname == "Beerpong") {
+            setStatus(matches_status);
+            displayed_state = matches_status['status'];
+        }
+    }
+    else {
+         fetch_status = await fetch("http://109.24.229.111:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
+            setStatus(data);
+            displayed_state = data['status'];
+            return data;
+            });
+            return fetch_status;
+    }
+}
 async function fetch_matches(sportname, setmatches, setgroups, setlevel, setPlayoff, setmatchesgroup, setWidth, setHeight) {
 
     let matches = {};
@@ -123,7 +147,7 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setPlay
 
     }
     else {
-        matches = await fetch("http://109.24.229.111:7070/teams/" + sportname + "_matches.json").then(response => response.json()).then(data => { return data });
+        matches = await fetch("http://109.24.229.111:7070/teams/" + sportname + "_matches.json").then(response => response.json()).then(data =>  {return data });
     }
     let level = [];
     let local_array_match = [[]];
@@ -196,6 +220,7 @@ function GetState(sportname, status, setStatus, navigation) {
     
     const [loaded, setloaded] = React.useState(0);
 
+
     React.useEffect(() => {
         if (offline) {
             if (sportname == "Beerpong") {
@@ -204,18 +229,21 @@ function GetState(sportname, status, setStatus, navigation) {
             }
         }
         else {
-            let local_status = async () => { await fetch("http://109.24.229.111:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => { return data });};
-            setStatus(local_status);
-            displayed_state = local_status['status'];
+        const fetch_status = async () => {await fetch("http://109.24.229.111:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
+            setStatus(data);
+            displayed_state = data['status'];
+            setloaded(1);
+            });}
+        fetch_status();
         }
-        setloaded(1);
     }, []);
+
     if(loaded == 0)
     {
-        return <View><Text style={{ color: "white" }}>test</Text></View>;
+        return <View><ActivityIndicator color="000000" /></View>;
     }
     else{
-        return <View><TouchableOpacity onPressIn={() => {toggle_status(status, setStatus, navigation)}}><Text style={{ marginTop:10, marginRight:30, color: "white" }}>{status["status"]}</Text></TouchableOpacity></View>;
+        return <View><TouchableOpacity onPressIn={() => {toggle_status(status, setStatus, navigation);}}><Text style={{ marginTop:10, marginRight:30, color: "white" }}>{status["status"]}</Text></TouchableOpacity></View>;
     }
 };
 
@@ -306,7 +334,7 @@ function BeerpongDetailsScreen({ navigation }) {
     }, []);
     if(loadingmain)
     {
-        return(<ActivityIndicator size="large" color="#0000ff" />)
+        return(<ActivityIndicator size="large" color="#000000" />)
     }
     return (
         <PinchZoomView style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, width: window_width, height: window_height }} toggle={toggle} maxScale={1} minScale={0.5} >
@@ -484,7 +512,7 @@ function determine_winner(match, index, setfun, score, setFetching) {
                                 return;
                             }
                             
-                        }).catch(() => { alert("Issue with server!");setFetching(false); return })
+                        }).catch((err) => { alert(err,"Issue with server!");setFetching(false); return })
     }
 }
 const Matchpoule = (props) => {
@@ -515,7 +543,7 @@ const Matchpoule = (props) => {
     }
     if(local_fetch){
         
-            return(<View><ActivityIndicator  size="large" color="#0000ff" test = {console.log(local_fetch)} style={styles.fetching}/></View>)
+            return(<View><ActivityIndicator  size="large" color="#000000" style={styles.fetching}/></View>)
     }
     if (autho && !local_fetch) {
         return (
@@ -563,41 +591,22 @@ const Trace = (props) => {
 
     React.useEffect(() => {
         fetch_matches("Beerpong", setmatches, setGroups, setlevels, setPlayoff, setmatchesgroup, props.setWidth, props.setHeight).then(r => {
-            setloading(false);
-        });
+            setloading(false)
+        }).catch(err => alert("Erreur pendant le chargement des matchs, reessayez."));
 
 
     }, []);
     if(local_toggle && toggle == 1)
     {
         toggle = 0;
-        console.log("toggling effectiverly");
         setloading(true);
         fetch_matches("Beerpong", setmatches, setGroups, setlevels, setPlayoff, setmatchesgroup, props.setWidth, props.setHeight).then(r => {
                     setloading(false);
-                });
+                }).catch(err => alert("Erreur pendant le chargement des matchs, reessayez."));
     }
-    // console.log("tog", local_toggle);
-
-    // if(displayed_state == "playoff" && playoff == 0)
-    // {
-    //     setloading(true)
-    //     fetch_matches("Beerpong", setmatches, setGroups, setlevels, setPlayoff, setmatchesgroup, props.setWidth, props.setHeight).then(r => {
-    //         setloading(false);
-    //     });
-    //     setPlayoff(1);
-    // }
-    // else if(displayed_state == "poules" && playoff == 1)
-    // {
-    //     setloading(true)
-    //     fetch_matches("Beerpong", setmatches, setGroups, setlevels, setPlayoff, setmatchesgroup, props.setWidth, props.setHeight).then(r => {
-    //         setloading(false);
-    //     });
-    //     setPlayoff(0);
-    // }
 
     if (loading) {
-        return (<ActivityIndicator size="large" color="#0000ff" />);
+        return (<ActivityIndicator size="large" color="#000000" />);
     }
     if (displayed_state == "playoff") {
         return (
@@ -681,12 +690,10 @@ function UsernameScreen({ navigation }) {
 async function playSound(sound_main, sound_status, set_sound, setstatus) {
     if (sound_main == undefined) {
 
-        console.log('Loading Sound');
         const { sound: playbackObject } = await Audio.Sound.createAsync(
             require('./assets/guylabedav.mp3')
         );
         set_sound(playbackObject);
-        console.log("sound set!");
     }
     var playback = await sound_main;
     if (sound_main != undefined) {
