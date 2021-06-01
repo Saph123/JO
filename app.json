@@ -17,7 +17,8 @@
       "./assets/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "JO.apk"
     },
     "android": {
       "package": "JO.apk"

@@ -41,6 +41,21 @@ let displayed_state = "";
 let toggle = 0;
 const ArbitreContext = React.createContext(false);
 function HomeScreen({ route, navigation }) {
+    const [sound, setSound] = React.useState();
+    const [loading, setLoading] = React.useState(1);
+    const [soundStatus, setSoundStatus] = React.useState();
+    const [secondsleft, setSecondsleft] = React.useState(1000);
+    React.useEffect(() => {
+        var dateJO = new Date('2021-08-26T20:00:00');
+        console.log(Math.trunc((dateJO - Date.now())/1000));
+        setSecondsleft(Math.trunc((dateJO - Date.now())/1000));
+        setLoading(0);
+    }, []);
+    if(loading)
+    {
+        return(<ActivityIndicator size="large" color="#000000" />)
+
+    }
     if (username == "") {
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
@@ -62,7 +77,7 @@ function HomeScreen({ route, navigation }) {
 
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
       <CountDown
-        until={10}
+        until={secondsleft}
         onFinish={() => alert('finished')}
         onPress={() => alert('hello')}
         size={20}
@@ -102,6 +117,9 @@ function HomeScreen({ route, navigation }) {
                 onPress={() => { navigation.navigate('BeerpongDetails') }}>
                 <Text style={styles.texthomebutton}>Ventriglisse</Text>
             </TouchableOpacity>
+            <TouchableOpacity onPressIn={() => { playSound(sound, soundStatus, setSound, setSoundStatus, "cluedo") }}>
+                <Image source={require('./assets/cluedo.png')} />
+                </TouchableOpacity>
             <View style={{
                 margin: 30,
             }}
@@ -374,7 +392,7 @@ function LancerdeTongDetailsScreen({ navigation }) {
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
             <Text style={{ flex: 6, color: 'red' }}>LancerdeTong!</Text>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
-                <Button color='red' title={hugeText} onPress={() => navigation.navigate('Home')} />
+                <Button color='red' title={"osef"} onPress={() => navigation.navigate('Home')} />
             </View>
         </View>
     );
@@ -687,13 +705,21 @@ function UsernameScreen({ navigation }) {
     );
 }
 
-async function playSound(sound_main, sound_status, set_sound, setstatus) {
+async function playSound(sound_main, sound_status, set_sound, setstatus, sound_name) {
     if (sound_main == undefined) {
-
-        const { sound: playbackObject } = await Audio.Sound.createAsync(
-            require('./assets/guylabedav.mp3')
-        );
-        set_sound(playbackObject);
+        if(sound_name == "megaphone"){
+            const { sound: playbackObject } = await Audio.Sound.createAsync(
+                require('./assets/guylabedav.mp3')
+            );
+                set_sound(playbackObject);
+            }
+            else if(sound_name == "cluedo")
+            {
+                const { sound: playbackObject } = await Audio.Sound.createAsync(
+                    require('./assets/cluedo.mp3')
+                    );
+                    set_sound(playbackObject);
+        }
     }
     var playback = await sound_main;
     if (sound_main != undefined) {
@@ -731,7 +757,7 @@ function App() {
                         fontWeight: 'bold',
                     },
                 }} initialRouteName="Home">
-                    <Stack.Screen options={({ navigation }) => ({ title: "Home", headerRight: () => (<View style={{ flexDirection: "row", margin: 10 }}><TouchableOpacity onPressIn={() => { playSound(sound, soundStatus, setSound, setSoundStatus) }}><Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} /></TouchableOpacity><TouchableOpacity style={{ alignContent: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}><Text style={{ color: "white", margin: 10, alignSelf: "center" }}>{username}</Text></TouchableOpacity></View>) })} name="Home" component={HomeScreen} />
+                    <Stack.Screen options={({ navigation }) => ({ title: "Home", headerRight: () => (<View style={{ flexDirection: "row", margin: 10 }}><TouchableOpacity onPressIn={() => { playSound(sound, soundStatus, setSound, setSoundStatus, "megaphone") }}><Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} /></TouchableOpacity><TouchableOpacity style={{ alignContent: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}><Text style={{ color: "white", margin: 10, alignSelf: "center" }}>{username}</Text></TouchableOpacity></View>) })} name="Home" component={HomeScreen} />
                     <Stack.Screen options={{ title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text></View> }} name="Login" component={Login} />
                     <Stack.Screen options={({ navigation }) => ({ title: "Beerpong", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>{GetState("Beerpong", status, setstatus, navigation)}<View><Text style={{ color: "white", margin: 10, alignSelf: "center" }}>{username}</Text></View><TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View> })} name="BeerpongDetails" component={BeerpongDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="LancerdeTongDetails" component={LancerdeTongDetailsScreen} />
