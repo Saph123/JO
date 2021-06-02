@@ -25,9 +25,14 @@ function HomeScreen({ route, navigation }) {
     const [loading, setLoading] = React.useState(1);
     const [soundStatus, setSoundStatus] = React.useState();
     const [secondsleft, setSecondsleft] = React.useState(1000);
+    const [nextEvent, setNextEvent] = React.useState("");
     React.useEffect(() => {
         var dateJO = new Date('2021-08-26T20:00:00');
-        setSecondsleft(Math.trunc((dateJO - Date.now())/1000));
+        var test = getNextEventseconds();
+        console.log(test);
+        // setSecondsleft(Math.trunc((dateJO - Date.now())/1000));
+        setSecondsleft(test.time);
+        setNextEvent(test.name);
         setLoading(0);
     }, []);
     if(loading)
@@ -56,6 +61,7 @@ function HomeScreen({ route, navigation }) {
 
         <ScrollView>
             <View>
+            <Text style={{alignSelf:"center"}}>{nextEvent + " dans :"}</Text>
             <CountDown
             style={{color:"black"}} 
             digitStyle={{backgroundColor:"#FF8484"}}
@@ -405,6 +411,8 @@ async function playSound(sound_main, sound_status, set_sound, setstatus, sound_n
 
 const Stack = createStackNavigator();
 function App() {
+    // var test = new Planning();
+
     const [arbitre, setArbitre] = React.useState(false);
     const [sound, setSound] = React.useState();
     const [status, setstatus] = React.useState();
