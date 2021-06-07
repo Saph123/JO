@@ -67,7 +67,7 @@ function HomeScreen({ route, navigation }) {
             digitStyle={{backgroundColor:"#FF8484"}}
         until={secondsleft}
         onFinish={() => alert('finished')}
-        onPress={() => alert('hello')}
+        onPress={() =>  navigation.navigate('Planning')}
         size={20}
       />
             </View>
@@ -201,7 +201,14 @@ function HomeScreen({ route, navigation }) {
     );
 }
 
+function PlanningScreen({navigation}){
 
+    return(
+        <View>
+            <Text>Planning</Text>
+        </View>
+    )
+};
 function Login({ navigation }) {
     const width = Dimensions.get("window").width;
     const height = Dimensions.get("window").height / 2;
@@ -433,6 +440,7 @@ function App() {
                 }} initialRouteName="Home">
                     <Stack.Screen options={({ navigation }) => ({ title: "Home", headerRight: () => (<View style={{ flexDirection: "row", margin: 10 }}><TouchableOpacity onPressIn={() => { playSound(sound, soundStatus, setSound, setSoundStatus, "megaphone") }}><Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} /></TouchableOpacity><TouchableOpacity style={{ alignContent: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}><Text style={{ color: "white", margin: 10, alignSelf: "center" }}>{username}</Text></TouchableOpacity></View>) })} name="Home" component={HomeScreen} />
                     <Stack.Screen options={{ title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text></View> }} name="Login" component={Login} />
+                    <Stack.Screen options={{ title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text></View> }} name="Planning" component={PlanningScreen} />
                     <Stack.Screen options={({ navigation }) => ({ title: "Beerpong", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>{GetState("Beerpong", status, setstatus, navigation)}<View><Text style={{ color: "white", margin: 10, alignSelf: "center" }}>{username}</Text></View><TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View> })} name="BeerpongDetails" component={BeerpongDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="LancerdeTongDetails" component={LancerdeTongDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="centmetreRicardDetails" component={centmetreRicardDetailsScreen} />
