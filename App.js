@@ -233,7 +233,7 @@ function Login({ navigation }) {
                 <View style={{ margin: 30, flexDirection: "row" }}>
                     <Button style={{ margin: 30 }} color='red' title="Log in" onPress={() =>
 
-                        fetch("http://109.24.229.111:7070/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "username": userName, "password": password }) }).then(r => {
+                        fetch("http://91.121.143.104:7070/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "username": userName, "password": password }) }).then(r => {
                             if (r.status == 200) {
                                 username = userName; navigation.navigate('Home', { refresh: "refresh" });
                                 return;
@@ -246,7 +246,7 @@ function Login({ navigation }) {
                     </Button>
                     <Button style={{ margin: 30 }} color='grey' title="Register" onPress={() =>
 
-                        fetch("http://109.24.229.111:7070/register", { method: "POST", body: JSON.stringify({ "username": userName, "password": password }) }).then(r => {
+                        fetch("http://91.121.143.104:7070/register", { method: "POST", body: JSON.stringify({ "username": userName, "password": password }) }).then(r => {
                             if (r.status == 200) {
                                 username = userName; navigation.navigate('Home', { refresh: "refresh" })
                             }
