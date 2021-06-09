@@ -16,7 +16,7 @@ import {Trace, GetState, fetch_status} from "./trace.js";
 // import Orientation from 'react-native-orientation';
 
 let username = "max";
-let offline = true;
+let offline = false;
 const styles = require("./style.js");
 let toggle = 0;
 const ArbitreContext = React.createContext(false);

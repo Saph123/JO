@@ -106,7 +106,7 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setPlay
 
     }
     else {
-        matches = await fetch("http://109.24.229.111:7070/teams/" + sportname + "_matches.json").then(response => response.json()).then(data =>  {return data });
+        matches = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_matches.json").then(response => response.json()).then(data =>  {return data });
     }
     let level = [];
     let local_array_match = [[]];
@@ -188,7 +188,7 @@ export async function fetch_status(sportname, setStatus){
         }
     }
     else {
-         fetch_status = await fetch("http://109.24.229.111:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
+         fetch_status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
             setStatus(data);
             displayed_state = data['status'];
             return data;
@@ -209,7 +209,7 @@ export function GetState(sportname, status, setStatus, navigation) {
             }
         }
         else {
-        const fetch_status = async () => {await fetch("http://109.24.229.111:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
+        const fetch_status = async () => {await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
             setStatus(data);
             displayed_state = data['status'];
             setloaded(1);
@@ -310,7 +310,7 @@ function determine_winner(match, index, setfun, score, setFetching) {
         const timeoutId = setTimeout(() => controller.abort(), 5000);
         
         // push to raspi
-        fetch("http://109.24.229.111:7070/pushmatch", { signal: controller.signal, method: "POST", body: JSON.stringify({ "username": username, tmp_array }) }).then(r => {
+        fetch("http://91.121.143.104:7070/pushmatch", { signal: controller.signal, method: "POST", body: JSON.stringify({ "username": username, tmp_array }) }).then(r => {
             if (r.status == 200) {
                 username = userName; navigation.navigate('Home', { refresh: "refresh" });
                 setFetching(false);
