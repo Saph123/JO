@@ -2,45 +2,35 @@
 import { useNavigation } from '@react-navigation/native';
 import { Button, View, Dimensions, ActivityIndicator, TextInput, Text, Image} from 'react-native';
 import * as React from 'react';
-import matches_group from './assets/Beerpong_poules.json';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import beerpong_matches_json from './assets/Beerpong_matches.json';
 import matches_status from './assets/Beerpong_status.json';
 import { Svg, Polyline } from 'react-native-svg';
-
+import { Table, Row } from 'react-native-table-component';
+import {username} from './App.js'
 const styles = require("./style.js");
-let offline = true;
+let offline = false;
 let displayed_state = "";
 export const Trace = (props) => {
+    const [displayed_state, setDisplayedState] = React.useState("playoff")
     const sport = props.sport;
     const autho = props.autho;
-    const local_toggle = props.local_toggle;
-    const toggle = props.toggle;
-    const setToggle = props.setToggle;
+    const username = props.username;
     const navigation = useNavigation();
     const [loading, setloading] = React.useState(true);
     const [matches, setmatches] = React.useState([]);
     const [levels, setlevels] = React.useState([]);
     const [width, setWidth] = React.useState(0);
     const [height, setHeight] = React.useState(0);
-    const [playoff, setPlayoff] = React.useState(0);
     const [groups, setGroups] = React.useState([]);
     const [groupmatches, setmatchesgroup] = React.useState([]);
-
     React.useEffect(() => {
-        fetch_matches(sport, setmatches, setGroups, setlevels, setPlayoff, setmatchesgroup, props.setWidth, props.setHeight).then(r => {
+        fetch_matches(sport, setmatches, setGroups, setlevels, setDisplayedState, setmatchesgroup, props.setWidth, props.setHeight).then(r => {
             setloading(false)
         }).catch(err => alert(err));
 
 
     }, []);
-    if(local_toggle && toggle == 1)
-    {
-        setToggle(0);
-        setloading(true);
-        fetch_matches(sport, setmatches, setGroups, setlevels, setPlayoff, setmatchesgroup, props.setWidth, props.setHeight).then(r => {
-                    setloading(false);
-                }).catch(err => alert(err));
-    }
 
     if (loading) {
         return (<ActivityIndicator size="large" color="#000000" />);
@@ -66,7 +56,7 @@ export const Trace = (props) => {
                         var { x, y, width, height } = event.nativeEvent.layout;
                         setHeight(height);
                     }} style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-between" }}>
-                        <Matchcomp loading={loading} matches={matches[r]} level={r} sport={sport} autho={autho}></Matchcomp>
+                        <Matchcomp username={username} loading={loading} matches={matches} level={r} sport={sport} autho={autho}></Matchcomp>
                     </View>)}
 
             </View>
@@ -76,25 +66,28 @@ export const Trace = (props) => {
 
 
         <View style={{ flexDirection: "row", flex: 1, position: "absolute", top: 0, left: 0 }}>
-            {groups.map((r, index) =>
+            {groups.map((r, index) => 
                 <View style={styles.tablecontainer}>
                     <Text style={{ textAlign: "center" }}>{r.name}</Text>
                     <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
-                        <Row data={["Team", "P", "W", "L"]} widthArr={[150, 30, 30, 30]} style={{ width: "100%", height: 40, backgroundColor: '#f1f8ff' }} textStyle={{ margin: 6 }}></Row>
-                        {r.teams.map(q =>
-                            <Row data={[q.name, q.played, q.wins, q.loses]} widthArr={[150, 30, 30, 30]} textStyle={{ margin: 6 }}></Row>)}
+                        <Row data={["Team", "P", "W", "L", "Points", "Diff"]} widthArr={[150, 30, 30, 30, 60, 50]} style={{ width: "100%", height: 40, backgroundColor: '#f1f8ff' }} textStyle={{ margin: 6 }}></Row>
+                        {r.teams.sort((a,b) => a.points>b.points ? 1:(a.points==b.points?(a.diff>b.diff?1:-1):-1)).reverse().map(q =>
+                            <Row data={[q.name, q.played, q.wins, q.loses, q.points, q.diff]} widthArr={[150, 30, 30, 30, 60, 50]} textStyle={{ margin: 6 }}></Row>)}
                     </Table>
                     <View style={{ flexDirection: "column", justifyContent: "space-around" }}>
-                        <Matchpoule loading={loading} matches={groupmatches[index]} level={0} sport={sport} autho={autho}></Matchpoule>
+                        <Matchpoule username={username} loading={loading}  poule={r.name} matches={groupmatches[index]} level={0} sport={sport} autho={autho}></Matchpoule>
                     </View>
                 </View>)}
         </View>
     )
 
 }
-async function fetch_matches(sportname, setmatches, setgroups, setlevel, setPlayoff, setmatchesgroup, setWidth, setHeight) {
+
+async function fetch_matches(sportname, setmatches, setgroups, setlevel, setDisplayedState, setmatchesgroup, setWidth, setHeight) {
 
     let matches = {};
+    let status = {};
+    let matches_group = {};
     if (offline) {
         if (sportname == "Beerpong") {
             matches = beerpong_matches_json;
@@ -106,14 +99,24 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setPlay
 
     }
     else {
-        matches = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_matches.json").then(response => response.json()).then(data =>  {return data });
+        if(displayed_state == "poules"){
+
+            matches_group = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_poules.json").then(response => response.json()).then(data =>  {return data });
+        }
+        else{
+            matches = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_matches.json").then(response => response.json()).then(data =>  {return data });
+
+        }
+        status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
+            displayed_state = data['status'];
+            return data;
+            });
     }
     let level = [];
     let local_array_match = [[]];
     if (displayed_state == "poules") // group phasis:
     {
-        setPlayoff(0);
-        let groups = matches_group;
+        setDisplayedState("poules");
         var i = 0;
         let array_groups = [];
         let array_matches_groups = [];
@@ -127,7 +130,7 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setPlay
             let local_group = matches_group["groups"][groupname];
             for (var match in local_group.matches) {
                 let local_match = local_group.matches[match];
-                local_array_groupmatch.push(new Match(sportname, local_match.team1, local_match.team2, local_match.match, local_match.score, local_match.over, local_match.level));
+                local_array_groupmatch.push(new Match(sportname, local_match.team1, local_match.team2, local_match.uniqueId, local_match.score, local_match.over, local_match.level, local_group.name));
                 i++;
             }
             array_matches_groups.push(local_array_groupmatch);
@@ -138,7 +141,7 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setPlay
         setHeight(100 * (array_groups.length + 1) * 4);
     }
     else {
-        setPlayoff(1);
+        setDisplayedState("playoff");
         for (let j = 0; j < await matches['levels']; j++) {
             level.push(j);
             local_array_match.push([]); // need to be initiliazed or doesnt work ffs...
@@ -170,9 +173,9 @@ export function toggle_status(status, setStatus, navigation){
                 displayed_state = status.states[0];
             }
             status.status = displayed_state;
-            toggle = 1;
+            // toggle = 1;
             setStatus(status);
-            navigation.navigate(navigation.dangerouslyGetState().routes[navigation.dangerouslyGetState().index].name, { refresh: "fdp" });
+            navigation.navigate(navigation.dangerouslyGetState().routes[navigation.dangerouslyGetState().index].name);
             break; 
         }
     }
@@ -196,10 +199,10 @@ export async function fetch_status(sportname, setStatus){
             return fetch_status;
     }
 }
-export function GetState(sportname, status, setStatus, navigation) {
+export function GetState(sportname, status, setStatus, navigation, state) {
     
     const [loaded, setloaded] = React.useState(0);
-
+    
 
     React.useEffect(() => {
         if (offline) {
@@ -222,8 +225,9 @@ export function GetState(sportname, status, setStatus, navigation) {
     {
         return <View><ActivityIndicator color="000000" /></View>;
     }
+    //toggle_status(status, setStatus, navigation);
     else{
-        return <View><TouchableOpacity onPressIn={() => {toggle_status(status, setStatus, navigation);}}><Text style={{ marginTop:10, marginRight:30, color: "white" }}>{status["status"]}</Text></TouchableOpacity></View>;
+        return <View><TouchableOpacity onPressIn={() => navigation.setOptions({title:"fdp"})}><Text style={{ marginTop:10, marginRight:30, color: "white" }}>{status["status"]}</Text></TouchableOpacity></View>;
     }
 }
 
@@ -233,6 +237,7 @@ const Matchcomp = (props) => {
     const level = props.level;
     const autho = props.autho;
     const sport = props.sport;
+    const username = props.username;
     const [local_load, setLoading] = React.useState(true)
     const [score, setScore] = React.useState([]);
     const match_array = [];
@@ -277,19 +282,43 @@ const Matchcomp = (props) => {
 
 
 }
+function pushmatch(username, sport, match){
 
+    // 5 second timeout:
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    console.log("pushing!")
+    // push to server
+    fetch("http://91.121.143.104:7070/pushmatch", { signal: controller.signal, method: "POST", body: JSON.stringify({ "sport":sport, "username": username, "type":"poules", "match":match }) }).then(r => {
+        if (r.status == 200) {
+            username = userName; navigation.navigate('Home', { refresh: "refresh" });
 
-function determine_winner(match, index, setfun, score, setFetching) {
+            return;
+                        }
+                        else {
+                            alert("Wrong login or password!");
+                            return;
+                        }
+                        
+                    }).catch((err) => { alert(err,"Issue with server!"); return })
+}
+
+function determine_winner(match, index, setfun, score, setFetching, username, sport) {
     // TODO : add push function to json through raspi
     let tmp_array = JSON.parse(JSON.stringify(match));
     let topush = false;
-    const controller = new AbortController();
+    
     if (tmp_array[index].over != 0) {
         tmp_array[index].over = 0;
         setfun(tmp_array);
-        // TODO: push to raspi
+        tmp_array[index].score = score[index];
+        setFetching(true);
+        pushmatch(username, sport, tmp_array[index])
+        setfun(tmp_array);
+        setFetching(false);
         return;
     }
+    tmp_array[index].score = score[index];
     let scores = score[index].split(":");
     if (scores.length == 2) {
         if (parseInt(scores[0]) > parseInt(scores[1])) {
@@ -306,31 +335,19 @@ function determine_winner(match, index, setfun, score, setFetching) {
     }
     if(topush)
     {
-        // 5 second timeout:
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
-        
-        // push to raspi
-        fetch("http://91.121.143.104:7070/pushmatch", { signal: controller.signal, method: "POST", body: JSON.stringify({ "username": username, tmp_array }) }).then(r => {
-            if (r.status == 200) {
-                username = userName; navigation.navigate('Home', { refresh: "refresh" });
-                setFetching(false);
-                setfun(tmp_array);
-                return;
-                            }
-                            else {
-                                alert("Wrong login or password!");
-                                setFetching(false);
-                                return;
-                            }
-                            
-                        }).catch((err) => { alert(err,"Issue with server!");setFetching(false); return })
+        setFetching(true);
+        pushmatch(username, sport, tmp_array[index])
+        setfun(tmp_array);
+        setFetching(false);
     }
 }
 const Matchpoule = (props) => {
     const matches = props.matches;
     const level = props.level;
     const autho = props.autho;
+    const username = props.username;
     const sport = props.sport;
+    const poulename = props.poule;
     const [local_load, setLoading] = React.useState(true)
     const [local_fetch, setFetching] = React.useState(false)
     const [score, setScore] = React.useState([]);
@@ -338,7 +355,7 @@ const Matchpoule = (props) => {
     let match_array = [];
     let array_score = [];
     for (var i = 0; i < matches.length; i++) {
-        if (matches[i]['level'] == level) {
+        if (matches[i]['level'] == level && matches[i]['poulename'] == poulename) {
 
             match_array.push(matches[i]);
             array_score.push(matches[i].score);
@@ -363,8 +380,8 @@ const Matchpoule = (props) => {
                     return (<View style={r.over == 0 ? styles.matchpoule : styles.matchpouleover}>
                         <Text style={r.over == 2 ? styles.lose : styles.teamnormal}>{r.team1}</Text>
                         <Text>{"vs"}</Text><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text>
-                        <View style={{ flexDirection: "row" }}>{manage_score_over(match, index, score, setScore)}</View>
-                        <TouchableOpacity onPress={() => {setFetching(true);determine_winner(match, index, setMatch, score, setFetching)}}><Text>{over_text(match, index)}</Text></TouchableOpacity>
+                        <View style={{ flexDirection: "row" }}>{manage_score_over(match, index, score, setScore, username, sport)}</View>
+                        <TouchableOpacity onPress={() => {setFetching(true);determine_winner(match, index, setMatch, score, setFetching, username, sport)}}><Text>{over_text(match, index)}</Text></TouchableOpacity>
                     </View>)
                 })}
             </View>
@@ -388,11 +405,6 @@ const Matchpoule = (props) => {
 }
 
 
-function pushscore(score) {
-    alert(score);
-}
-
-
 function over_text(match, index) {
     if (match[index].over != 0) {
         return (
@@ -405,12 +417,12 @@ function over_text(match, index) {
     )
 
 }
-function manage_score_over(match, index, score, setScore) {
+function manage_score_over(match, index, score, setScore, username, sport) {
     if (match[index].over == 0) {
         return (
             <View style={{ flexDirection: "row" }}>
                 <TextInput style={styles.score} value={score[index]} onChangeText={(text) => { let tmp_array_score = JSON.parse(JSON.stringify(score)); tmp_array_score[index] = text; setScore(tmp_array_score) }} />
-                <TouchableOpacity onPress={() => { pushscore(score[index]) }} ><Image style={{ borderRadius: 5, borderWidth: 2, borderColor: "black", width: 20, height: 20, alignSelf: "center" }} source={require('./assets/validatelogo.png')} /></TouchableOpacity>
+                <TouchableOpacity onPress={() => { match[index].score = score[index];pushmatch(username, sport, match[index]) }} ><Image style={{ borderRadius: 5, borderWidth: 2, borderColor: "black", width: 20, height: 20, alignSelf: "center" }} source={require('./assets/validatelogo.png')} /></TouchableOpacity>
             </View>
         )
     }
@@ -423,7 +435,7 @@ function manage_score_over(match, index, score, setScore) {
 }
 
 class Match {
-    constructor(sport, team1, team2, uniqueId, score, over, level) {
+    constructor(sport, team1, team2, uniqueId, score, over, level, poulename) {
         // this.numberOfPlayer = Number(numberOfPlayer)
         this.team1 = team1
         this.team2 = team2
@@ -432,14 +444,16 @@ class Match {
         this.score = score
         this.over = over
         this.level = level
+        this.poulename = poulename
     }
 }
 class Group {
-    constructor(sport, name, teams, uniqueId, over) {
+    constructor(sport, name, teams, uniqueId, over, matches) {
         this.name = name;
         this.teams = teams;
         this.sport = sport;
         this.uniqueId = uniqueId;
-        this.over = over
+        this.over = over;
+        this.matches =  matches;
     }
 }

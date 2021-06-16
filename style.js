@@ -10,10 +10,10 @@ module.exports = StyleSheet.create({
         margin: 10,
     },
     tablecontainer: {
-        flex: 1,
+        // flex: 1,
         alignSelf: "flex-start",
         margin: 30,
-        width: 242,
+        width: 400,
         backgroundColor: "#EFF8FF"
     },
     matchover: {
@@ -22,19 +22,21 @@ module.exports = StyleSheet.create({
         justifyContent: "space-between",
         backgroundColor: "#D62628",
         borderWidth: 1,
+        alignSelf:"center",
         marginLeft: 30,
         marginRight: 30,
-        width: 100,
+        width: 150,
     },
     matchpouleover: {
         flexDirection: 'column',
         alignItems: "center",
+        alignSelf:"center",
         justifyContent: "space-between",
         backgroundColor: "#D62628",
         borderWidth: 1,
         margin: 30,
-        flex: 1,
-        // width: 100,
+        // flex: 1,
+        width: 150,
         // height: 100,
         borderRadius: 15
     },

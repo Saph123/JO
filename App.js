@@ -3,7 +3,6 @@ import * as React from 'react';
 import { Button, View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Alert } from 'react-native';
 import { NavigationContainer, useNavigation, useTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Table, Row } from 'react-native-table-component';
 import ventriglisse_matches_json from './assets/ventriglisse_match.json';
 import matches_status from './assets/Beerpong_status.json';
 import beerpong_autho from './assets/Beerpong_autho.json';
@@ -13,12 +12,12 @@ import { Audio } from 'expo-av';
 import CountDown from 'react-native-countdown-component';
 import {Planning, getNextEventseconds} from "./planning.js";
 import {Trace, GetState, fetch_status} from "./trace.js";
+import {fetch_all} from "./fetcher.js"
 // import Orientation from 'react-native-orientation';
 
 let username = "max";
 let offline = false;
 const styles = require("./style.js");
-let toggle = 0;
 const ArbitreContext = React.createContext(false);
 function HomeScreen({ route, navigation }) {
     const [sound, setSound] = React.useState();
@@ -273,25 +272,25 @@ function Login({ navigation }) {
     )
 };
 
-function BeerpongDetailsScreen({ navigation }) {
+function BeerpongDetailsScreen({ navigation, status }) {
     const width = Dimensions.get("window").width;
     const height = Dimensions.get("window").height;
-    
     const [window_width, setWidth] = React.useState(width);
     const [window_height, setHeight] = React.useState(height);
     const [authorized, setauthorized] = React.useState(false);
     const [loadingmain, setloading] = React.useState(true);
     const [local_toggle, setToggle] = React.useState(0);
-    if(local_toggle != toggle)
-    {
-    setToggle(toggle);
-    }
+    // if(local_toggle != toggle)
+    // {
+    // setToggle(toggle);
+    // }
     React.useEffect(() => {
         for (var authouser in beerpong_autho.autho) {
             if (beerpong_autho.autho[authouser] == username) {
                 setauthorized(true);
             }
         }
+        // console.log(status);
         setloading(false);
     }, []);
     if(loadingmain)
@@ -299,8 +298,7 @@ function BeerpongDetailsScreen({ navigation }) {
         return(<ActivityIndicator size="large" color="#000000" />)
     }
     return (
-        <View>
-        <PinchZoomView style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, width: window_width, height: window_height}} toggle={toggle} maxScale={1} minScale={0.5} >
+        <PinchZoomView style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, width: window_width * 2, height: window_height}} maxScale={1} minScale={0.5} >
             <ArbitreContext.Consumer>
                 {value => {
                     return (
@@ -325,10 +323,8 @@ function BeerpongDetailsScreen({ navigation }) {
                 }
             </ArbitreContext.Consumer>
 
-            <Trace local_toggle={local_toggle} toggle={toggle} setToggle={setToggle} sport={"Beerpong"} setWidth={(w) => setWidth(w)} setHeight={(h) => setHeight(h)} autho={authorized} />
+            <Trace username={username} sport={"Beerpong"} setWidth={(w) => setWidth(w)} setHeight={(h) => setHeight(h)} autho={authorized} />
         </PinchZoomView>
-        </View>
-
 
     )
 };
@@ -386,6 +382,10 @@ function UsernameScreen({ navigation }) {
 
 async function playSound(sound_main, sound_status, set_sound, setstatus, sound_name) {
     if (sound_main == undefined) {
+        await Audio.setAudioModeAsync({
+            allowsRecordingIOS: true,
+            playsInSilentModeIOS: true,
+          }); 
         if(sound_name == "megaphone"){
             const { sound: playbackObject } = await Audio.Sound.createAsync(
                 require('./assets/guylabedav.mp3')
@@ -419,12 +419,18 @@ async function playSound(sound_main, sound_status, set_sound, setstatus, sound_n
 const Stack = createStackNavigator();
 function App() {
     // var test = new Planning();
-
+    var firsttime = 1;
     const [arbitre, setArbitre] = React.useState(false);
     const [sound, setSound] = React.useState();
     const [status, setstatus] = React.useState();
-
     const [soundStatus, setSoundStatus] = React.useState();
+    // fork for offline here
+    // if(firsttime)
+    // {
+    //     firsttime = 0;
+    //     console.log(firsttime);
+    //     fetch_all();
+    // }
     return (
         <NavigationContainer>
             <ArbitreContext.Provider value={arbitre}>
@@ -441,7 +447,7 @@ function App() {
                     <Stack.Screen options={({ navigation }) => ({ title: "Home", headerRight: () => (<View style={{ flexDirection: "row", margin: 10 }}><TouchableOpacity onPressIn={() => { playSound(sound, soundStatus, setSound, setSoundStatus, "megaphone") }}><Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} /></TouchableOpacity><TouchableOpacity style={{ alignContent: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}><Text style={{ color: "white", margin: 10, alignSelf: "center" }}>{username}</Text></TouchableOpacity></View>) })} name="Home" component={HomeScreen} />
                     <Stack.Screen options={{ title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text></View> }} name="Login" component={Login} />
                     <Stack.Screen options={{ title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text></View> }} name="Planning" component={PlanningScreen} />
-                    <Stack.Screen options={({ navigation }) => ({ title: "Beerpong", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>{GetState("Beerpong", status, setstatus, navigation)}<View><Text style={{ color: "white", margin: 10, alignSelf: "center" }}>{username}</Text></View><TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View> })} name="BeerpongDetails" component={BeerpongDetailsScreen} />
+                    <Stack.Screen options={({ navigation }) => ({ title: "Beerpong", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>{GetState("Beerpong", status, setstatus, navigation)}<View><Text style={{ color: "white", margin: 10, alignSelf: "center" }}>{username}</Text></View><TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View> })} status={status} name="BeerpongDetails" component={BeerpongDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="LancerdeTongDetails" component={LancerdeTongDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="centmetreRicardDetails" component={centmetreRicardDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="WaterpoloDetails" component={WaterpoloDetailsScreen} />
