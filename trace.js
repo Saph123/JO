@@ -16,7 +16,6 @@ export const Trace = (props) => {
     const sport = props.sport;
     const autho = props.autho;
     const username = props.username;
-    const navigation = useNavigation();
     const [loading, setloading] = React.useState(true);
     const [matches, setmatches] = React.useState([]);
     const [levels, setlevels] = React.useState([]);
@@ -27,7 +26,7 @@ export const Trace = (props) => {
     React.useEffect(() => {
         fetch_matches(sport, setmatches, setGroups, setlevels, setDisplayedState, setmatchesgroup, props.setWidth, props.setHeight).then(r => {
             setloading(false)
-        }).catch(err => alert(err));
+        }).catch(err => console.log(err));
 
 
     }, []);
@@ -75,14 +74,13 @@ export const Trace = (props) => {
                             <Row data={[q.name, q.played, q.wins, q.loses, q.points, q.diff]} widthArr={[150, 30, 30, 30, 60, 50]} textStyle={{ margin: 6 }}></Row>)}
                     </Table>
                     <View style={{ flexDirection: "column", justifyContent: "space-around" }}>
-                        <Matchpoule username={username} loading={loading}  poule={r.name} matches={groupmatches[index]} level={0} sport={sport} autho={autho}></Matchpoule>
+                        <Matchpoule sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setDisplayedState={setDisplayedState} setmatchesgroup={setmatchesgroup} setWidth={setWidth} setHeight={setHeight} username={username} setloading={setloading} loading={loading}  poule={r.name} matches={groupmatches[index]} level={0} sport={sport} autho={autho}></Matchpoule>
                     </View>
                 </View>)}
         </View>
     )
 
 }
-
 async function fetch_matches(sportname, setmatches, setgroups, setlevel, setDisplayedState, setmatchesgroup, setWidth, setHeight) {
 
     let matches = {};
@@ -288,19 +286,16 @@ function pushmatch(username, sport, match){
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 5000);
     console.log("pushing!")
-    // push to server
+    // // push to server
     fetch("http://91.121.143.104:7070/pushmatch", { signal: controller.signal, method: "POST", body: JSON.stringify({ "sport":sport, "username": username, "type":"poules", "match":match }) }).then(r => {
         if (r.status == 200) {
-            username = userName; navigation.navigate('Home', { refresh: "refresh" });
 
-            return;
                         }
                         else {
                             alert("Wrong login or password!");
-                            return;
                         }
                         
-                    }).catch((err) => { alert(err,"Issue with server!"); return })
+                    }).catch((err) => { console.log(err,"Issue with server!") });
 }
 
 function determine_winner(match, index, setfun, score, setFetching, username, sport) {
@@ -348,10 +343,10 @@ const Matchpoule = (props) => {
     const username = props.username;
     const sport = props.sport;
     const poulename = props.poule;
-    const [local_load, setLoading] = React.useState(true)
-    const [local_fetch, setFetching] = React.useState(false)
+    const [local_fetch, setFetching] = React.useState(true)
     const [score, setScore] = React.useState([]);
     const [match, setMatch] = React.useState([])
+    const navigation = useNavigation()
     let match_array = [];
     let array_score = [];
     for (var i = 0; i < matches.length; i++) {
@@ -362,13 +357,10 @@ const Matchpoule = (props) => {
         }
     }
     React.useEffect(() => {
-        setLoading(false);
+        setFetching(false);
         setScore(array_score);
         setMatch(match_array);
     }, []);
-    if (local_load) {
-        return (<View></View>);
-    }
     if(local_fetch){
         
             return(<View><ActivityIndicator  size="large" color="#000000" style={styles.fetching}/></View>)
@@ -381,7 +373,8 @@ const Matchpoule = (props) => {
                         <Text style={r.over == 2 ? styles.lose : styles.teamnormal}>{r.team1}</Text>
                         <Text>{"vs"}</Text><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text>
                         <View style={{ flexDirection: "row" }}>{manage_score_over(match, index, score, setScore, username, sport)}</View>
-                        <TouchableOpacity onPress={() => {setFetching(true);determine_winner(match, index, setMatch, score, setFetching, username, sport)}}><Text>{over_text(match, index)}</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => {props.setloading(true);setFetching(true);determine_winner(match, index, setMatch, score, setFetching, username, sport); fetch_matches(props.sport, props.setmatches, props.setGroups, props.setlevels, props.setDisplayedState, props.setmatchesgroup, props.setWidth, props.setHeight).then(r => {
+            props.setloading(false)})}}><Text>{over_text(match, index)}</Text></TouchableOpacity>
                     </View>)
                 })}
             </View>
