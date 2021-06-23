@@ -12,7 +12,6 @@ export class Planning{
 export function getNextEventseconds(){
     var now = Date.now();
     var min = new Date(planning['start']) - Date.now();
-    console.log(min);
     if(min > 0)
     {
         min = Math.trunc(min/1000.0);

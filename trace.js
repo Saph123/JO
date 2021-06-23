@@ -7,10 +7,8 @@ import { Svg, Polyline } from 'react-native-svg';
 import { Table, Row } from 'react-native-table-component';
 import { username } from './App.js'
 const styles = require("./style.js");
-let offline = false;
 let displayed_state = "";
 export const Trace = (props) => {
-    const [displayed_state, setDisplayedState] = React.useState("playoff")
     const sport = props.sport;
     const autho = props.autho;
     const username = props.username;
@@ -22,7 +20,7 @@ export const Trace = (props) => {
     const [groups, setGroups] = React.useState([]);
     const [groupmatches, setmatchesgroup] = React.useState([]);
     React.useEffect(() => {
-        fetch_matches(sport, setmatches, setGroups, setlevels, setDisplayedState, setmatchesgroup, props.setWidth, props.setHeight).then(r => {
+        fetch_matches(sport, setmatches, setGroups, setlevels, setmatchesgroup, props.setWidth, props.setHeight).then(r => {
             setloading(false)
         }).catch(err => console.log(err));
 
@@ -72,86 +70,71 @@ export const Trace = (props) => {
                             <Row data={[q.name, q.played, q.wins, q.loses, q.points, q.diff]} widthArr={[150, 30, 30, 30, 60, 50]} textStyle={{ margin: 6 }}></Row>)}
                     </Table>
                     <View style={{ flexDirection: "column", justifyContent: "space-around" }}>
-                        <Matchpoule sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setDisplayedState={setDisplayedState} setmatchesgroup={setmatchesgroup} setWidth={setWidth} setHeight={setHeight} username={username} setloading={setloading} loading={loading} poule={r.name} matches={groupmatches[index]} level={0} sport={sport} autho={autho}></Matchpoule>
+                        <Matchpoule sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels}  setmatchesgroup={setmatchesgroup} setWidth={setWidth} setHeight={setHeight} username={username} setloading={setloading} loading={loading} poule={r.name} matches={groupmatches[index]} level={0} sport={sport} autho={autho}></Matchpoule>
                     </View>
                 </View>)}
         </View>
     )
 
 }
-async function fetch_matches(sportname, setmatches, setgroups, setlevel, setDisplayedState, setmatchesgroup, setWidth, setHeight) {
+async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatchesgroup, setWidth, setHeight) {
 
     let matches = {};
     let status = {};
     let matches_group = {};
-    if (offline) {
-        if (sportname == "Beerpong") {
-            matches = beerpong_matches_json;
-        }
-        else {
-            matches = ventriglisse_matches_json;
 
-        }
 
-    }
-    else {
-        if (displayed_state == "poules") {
-
-            matches_group = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_poules.json").then(response => response.json()).then(data => { return data });
-        }
-        else {
-            matches = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_matches.json").then(response => response.json()).then(data => { return data });
-
-        }
-        status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
+    matches_group = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_poules.json").then(response => response.json()).then(data => { return data });
+    matches = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_matches.json").then(response => response.json()).then(data => { return data });
+    status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
+        if (displayed_state == "")
+        {
+            console.log(data)
+            console.log("firsttime",data['status'])
+            // first time we use the one in the server
             displayed_state = data['status'];
-            return data;
-        });
-    }
+        }
+        return data;
+    });
+
     let level = [];
     let local_array_match = [[]];
-    if (displayed_state == "poules") // group phasis:
-    {
-        setDisplayedState("poules");
-        var i = 0;
-        let array_groups = [];
-        let array_matches_groups = [];
-        let local_array_groupmatch = [];
-        for (var groupname in matches_group["groups"]) {
-            let local_group = matches_group["groups"][groupname];
-            array_groups.push(new Group(sportname, local_group.name, local_group.teams, i, false));
+    var i = 0;
+    let array_groups = [];
+    let array_matches_groups = [];
+    let local_array_groupmatch = [];
+    for (var groupname in matches_group["groups"]) {
+        let local_group = matches_group["groups"][groupname];
+        array_groups.push(new Group(sportname, local_group.name, local_group.teams, i, false));
+        i++;
+    }
+    for (var groupname in matches_group["groups"]) {
+        let local_group = matches_group["groups"][groupname];
+        for (var match in local_group.matches) {
+            let local_match = local_group.matches[match];
+            local_array_groupmatch.push(new Match(sportname, local_match.team1, local_match.team2, local_match.uniqueId, local_match.score, local_match.over, local_match.level, local_group.name));
             i++;
         }
-        for (var groupname in matches_group["groups"]) {
-            let local_group = matches_group["groups"][groupname];
-            for (var match in local_group.matches) {
-                let local_match = local_group.matches[match];
-                local_array_groupmatch.push(new Match(sportname, local_match.team1, local_match.team2, local_match.uniqueId, local_match.score, local_match.over, local_match.level, local_group.name));
-                i++;
-            }
-            array_matches_groups.push(local_array_groupmatch);
-        }
-        setgroups(array_groups);
-        setmatchesgroup(array_matches_groups);
-        setWidth(200 * (array_groups.length + 1));
-        setHeight(100 * (array_groups.length + 1) * 4);
+        array_matches_groups.push(local_array_groupmatch);
     }
-    else {
-        setDisplayedState("playoff");
-        for (let j = 0; j < await matches['levels']; j++) {
-            level.push(j);
-            local_array_match.push([]); // need to be initiliazed or doesnt work ffs...
-        }
-        for (const prop in await matches) {
-            for (const match_iter in await matches[prop]) {
-                local_array_match[matches[prop][match_iter]["level"]].push(new Match(sportname, matches[prop][match_iter]["team1"], matches[prop][match_iter]["team2"], matches[prop][match_iter]["match"], matches[prop][match_iter]["score"], matches[prop][match_iter]["over"], matches[prop][match_iter]["level"]));
-            }
-        }
-        setlevel(level);
-        setWidth(400 * (level.length + 1));
-        setHeight(Math.max(200 * (level.length + 1), Dimensions.get("window").height + 100));
-        setmatches(local_array_match);
+    setgroups(array_groups);
+    setmatchesgroup(array_matches_groups);
+    setWidth(200 * (array_groups.length + 1));
+    setHeight(100 * (array_groups.length + 1) * 4);
+
+    for (let j = 0; j < await matches['levels']; j++) {
+        level.push(j);
+        local_array_match.push([]); // need to be initiliazed or doesnt work ffs...
     }
+    for (const prop in await matches) {
+        for (const match_iter in await matches[prop]) {
+            local_array_match[matches[prop][match_iter]["level"]].push(new Match(sportname, matches[prop][match_iter]["team1"], matches[prop][match_iter]["team2"], matches[prop][match_iter]["match"], matches[prop][match_iter]["score"], matches[prop][match_iter]["over"], matches[prop][match_iter]["level"]));
+        }
+    }
+    setlevel(level);
+    setWidth(400 * (level.length + 1));
+    setHeight(Math.max(200 * (level.length + 1), Dimensions.get("window").height + 100));
+    setmatches(local_array_match);
 }
 
 
@@ -165,10 +148,9 @@ export function toggle_status(status, setStatus, navigation) {
             else {
                 displayed_state = status.states[0];
             }
-            status.status = displayed_state;
             // toggle = 1;
             setStatus(status);
-            navigation.navigate(navigation.dangerouslyGetState().routes[navigation.dangerouslyGetState().index].name);
+            navigation.navigate(navigation.dangerouslyGetState().routes[navigation.dangerouslyGetState().index].name, { refresh: "refresh" });
             break;
         }
     }
@@ -180,33 +162,29 @@ export async function fetch_status(sportname, setStatus) {
 
     fetch_status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
         setStatus(data);
-        console.log("setstatus tho")
-        displayed_state = data['status'];
+        if (displayed_state == "")
+        {
+            displayed_state = data['status'];
+        }
         return data;
     }).catch(err => console.log(err));
     return fetch_status;
 }
 
-export function GetState(sportname, status, setStatus, navigation, state) {
+export function GetState(sportname, status, setStatus, navigation) {
 
     const [loaded, setloaded] = React.useState(0);
 
 
     React.useEffect(() => {
-        // const fetch_status = async () => {await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
-        //     setStatus(data);
-        //     displayed_state = data['status'];
-        //     setloaded(1);
-        //     });}
         fetch_status(sportname, setStatus).then(r => setloaded(1));
     }, []);
 
     if (loaded == 0) {
         return <View><ActivityIndicator color="000000" /></View>;
     }
-    //toggle_status(status, setStatus, navigation);
     else {
-        return <View><TouchableOpacity onPressIn={() => navigation.setOptions({ title: "fdp" })}><Text style={{ marginTop: 10, marginRight: 30, color: "white" }}>{status["status"]}</Text></TouchableOpacity></View>;
+        return <View><TouchableOpacity onPressIn={() => toggle_status(status, setStatus, navigation)}><Text style={{ marginTop: 10, marginRight: 30, color: "white" }}>{displayed_state}</Text></TouchableOpacity></View>;
     }
 }
 
@@ -222,10 +200,13 @@ const Matchcomp = (props) => {
     const match_array = [];
     const array_score = [];
     for (var i = 0; i < matches.length; i++) {
-        if (matches[i]['level'] == level) {
-
-            match_array.push(matches[i]);
-            array_score.push(matches[i].score);
+        for (var match in matches[i])
+        {
+            if (matches[i][match]['level'] == level) {
+                
+                match_array.push(matches[i]);
+                array_score.push(matches[i].score);
+            }
         }
     }
 
@@ -242,7 +223,7 @@ const Matchcomp = (props) => {
             <View style={styles.line}>
                 {match_array.map((r, index) => {
                     return (<View style={r.over == 0 ? styles.match : styles.matchover}>
-                        <Text style={r.over == 2 ? styles.lose : styles.teamnormal}>{r.team1}</Text>
+                        <Text test={r.team1} style={r.over == 2 ? styles.lose : styles.teamnormal}>{r.team1}</Text>
                         <Text style={{ fontSize: 24, fontWeight: "bold" }}>{"vs"}</Text><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text><TextInput style={styles.score} value={score[index]} onChangeText={(text) => { array_score[index] = text; setScore(array_score) }} /><Button color='blue' title="Submit" onPress={() => alert("wesh")} />
                     </View>)
                 })}
@@ -270,8 +251,8 @@ function pushmatch(username, sport, match) {
     console.log("pushing!")
     // // push to server
     fetch("http://91.121.143.104:7070/pushmatch", { signal: controller.signal, method: "POST", body: JSON.stringify({ "sport": sport, "username": username, "type": "poules", "match": match }) }).then(r => {
-    console.log(r)    ;
-    if (r.status == 200) {
+        console.log(r);
+        if (r.status == 200) {
             console.log("kekw");
         }
         else {
@@ -356,7 +337,7 @@ const Matchpoule = (props) => {
                         <Text>{"vs"}</Text><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text>
                         <View style={{ flexDirection: "row" }}>{manage_score_over(match, index, score, setScore, username, sport)}</View>
                         <TouchableOpacity onPress={() => {
-                            props.setloading(true); setFetching(true); determine_winner(match, index, setMatch, score, setFetching, username, sport); fetch_matches(props.sport, props.setmatches, props.setGroups, props.setlevels, props.setDisplayedState, props.setmatchesgroup, props.setWidth, props.setHeight).then(r => {
+                            props.setloading(true); setFetching(true); determine_winner(match, index, setMatch, score, setFetching, username, sport); fetch_matches(props.sport, props.setmatches, props.setGroups, props.setlevels, props.setmatchesgroup, props.setWidth, props.setHeight, "poules").then(r => {
                                 props.setloading(false)
                             })
                         }}><Text>{over_text(match, index)}</Text></TouchableOpacity>

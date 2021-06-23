@@ -267,7 +267,7 @@ function Login({ navigation }) {
     )
 };
 
-function BeerpongDetailsScreen({ navigation }) {
+function BeerpongDetailsScreen({ route, navigation  }) {
     const width = Dimensions.get("window").width;
     const height = Dimensions.get("window").height;
     const [window_width, setWidth] = React.useState(width);
@@ -275,18 +275,10 @@ function BeerpongDetailsScreen({ navigation }) {
     const [authorized, setauthorized] = React.useState(false);
     const [loadingmain, setloading] = React.useState(true);
     const [status, setlocalStatus] = React.useState();
-    const [local_toggle, setToggle] = React.useState(0);
-    // if(local_toggle != toggle)
-    // {
-    // setToggle(toggle);
-    // }
     React.useEffect(() => {
         fetch_status("Beerpong", setlocalStatus).then(r => {
             setlocalStatus(r);
-            console.log("r",r);
-            console.log("autho", status);
             for (var authouser in r['arbitre']) {
-                console.log(authouser);
                 if (r['arbitre'][authouser] == username) {
                     setauthorized(true);
                 }
@@ -300,6 +292,18 @@ function BeerpongDetailsScreen({ navigation }) {
         );
 
     }, []);
+
+    // if (typeof route.params.headerstatus == 'object' && typeof status == 'object')
+    // {
+    //     console.log("blyat");
+    //     console.log(route.params.headerstatus['status']);
+    //     console.log(status['status']);
+    //     if(route.params.headerstatus['status'] != status['status'])
+    //     {
+
+    //         console.log("diff");
+    //     }
+    // }
     if (loadingmain) {
         return (<ActivityIndicator size="large" color="#000000" />)
     }
@@ -427,7 +431,7 @@ function App() {
     var firsttime = 1;
     const [arbitre, setArbitre] = React.useState(false);
     const [sound, setSound] = React.useState();
-    const [status, setstatus] = React.useState();
+    const [headerstatus, setstatus] = React.useState();
     const [soundStatus, setSoundStatus] = React.useState();
     // fork for offline here
     // if(firsttime)
@@ -451,7 +455,7 @@ function App() {
                     <Stack.Screen options={({ navigation }) => ({ title: "Home", headerRight: () => (<View style={{ flexDirection: "row", margin: 10 }}><TouchableOpacity onPressIn={() => { playSound(sound, soundStatus, setSound, setSoundStatus, "megaphone") }}><Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} /></TouchableOpacity><TouchableOpacity style={{ alignContent: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}><Text style={{ color: "white", margin: 10, alignSelf: "center" }}>{username}</Text></TouchableOpacity></View>) })} name="Home" component={HomeScreen} />
                     <Stack.Screen options={{ title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text></View> }} name="Login" component={Login} />
                     <Stack.Screen options={{ title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text></View> }} name="Planning" component={PlanningScreen} />
-                    <Stack.Screen options={({ navigation }) => ({ title: "Beerpong", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>{GetState("Beerpong", status, setstatus, navigation)}<View><Text style={{ color: "white", margin: 10, alignSelf: "center" }}>{username}</Text></View><TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View> })} name="BeerpongDetails" component={BeerpongDetailsScreen} />
+                    <Stack.Screen options={({navigation}) => ({ title: "Beerpong", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>{GetState("Beerpong", headerstatus, setstatus, navigation)}<View><Text style={{ color: "white", margin: 10, alignSelf: "center" }}>{username}</Text></View><TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View> })} initialParams={{headerstatus:headerstatus}} name="BeerpongDetails" component={BeerpongDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="LancerdeTongDetails" component={LancerdeTongDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="centmetreRicardDetails" component={centmetreRicardDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="WaterpoloDetails" component={WaterpoloDetailsScreen} />
