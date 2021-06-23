@@ -7,9 +7,9 @@ import PinchZoomView from 'react-native-pinch-zoom-view';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { Audio } from 'expo-av';
 import CountDown from 'react-native-countdown-component';
-import {Planning, getNextEventseconds} from "./planning.js";
-import {Trace, GetState, fetch_status} from "./trace.js";
-import {fetch_all} from "./fetcher.js"
+import { Planning, getNextEventseconds } from "./planning.js";
+import { Trace, GetState, fetch_status } from "./trace.js";
+import { fetch_all } from "./fetcher.js"
 // import Orientation from 'react-native-orientation';
 
 let username = "max";
@@ -25,15 +25,13 @@ function HomeScreen({ route, navigation }) {
     React.useEffect(() => {
         var dateJO = new Date('2021-08-26T20:00:00');
         var test = getNextEventseconds();
-        console.log(test);
         // setSecondsleft(Math.trunc((dateJO - Date.now())/1000));
         setSecondsleft(test.time);
         setNextEvent(test.name);
         setLoading(0);
     }, []);
-    if(loading)
-    {
-        return(<ActivityIndicator size="large" color="#000000" />)
+    if (loading) {
+        return (<ActivityIndicator size="large" color="#000000" />)
 
     }
     if (username == "") {
@@ -57,149 +55,149 @@ function HomeScreen({ route, navigation }) {
 
         <ScrollView>
             <View>
-            <Text style={{alignSelf:"center"}}>{nextEvent + " dans :"}</Text>
-            <CountDown
-            style={{color:"black"}} 
-            digitStyle={{backgroundColor:"#FF8484"}}
-        until={secondsleft}
-        onFinish={() => alert('finished')}
-        onPress={() =>  navigation.navigate('Planning')}
-        size={20}
-      />
+                <Text style={{ alignSelf: "center" }}>{nextEvent + " dans :"}</Text>
+                <CountDown
+                    style={{ color: "black" }}
+                    digitStyle={{ backgroundColor: "#FF8484" }}
+                    until={secondsleft}
+                    onFinish={() => alert('finished')}
+                    onPress={() => navigation.navigate('Planning')}
+                    size={20}
+                />
             </View>
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection:"row" }}>
-        <View style={{ flex: 1}}>
-        <TouchableOpacity style={styles.homebuttons}
-                onPress={() => { navigation.navigate('BeerpongDetails') }}
-            >
-                <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/run.png')} />
-            </TouchableOpacity>
-        <TouchableOpacity style={styles.homebuttons}
-                onPress={() => { navigation.navigate('BeerpongDetails') }}
-            >
-                <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/dodgeball.png')} />
-            </TouchableOpacity>
-        <TouchableOpacity style={styles.homebuttons}
-                onPress={() => { navigation.navigate('BeerpongDetails') }}
-            >
-                <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/pizza.png')} />
-            </TouchableOpacity>
-        <TouchableOpacity style={styles.homebuttons}
-                onPress={() => { navigation.navigate('BeerpongDetails') }}
-            >
-                <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/tong.png')} />
-            </TouchableOpacity>
-        <TouchableOpacity style={styles.homebuttons}
-                onPress={() => { navigation.navigate('BeerpongDetails') }}
-            >
-                <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/babyfoot.png')} />
-            </TouchableOpacity>
-        <TouchableOpacity style={styles.homebuttons}
-                onPress={() => { navigation.navigate('BeerpongDetails') }}
-            >
-                <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/flechette.png')} />
-            </TouchableOpacity>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
+                <View style={{ flex: 1 }}>
+                    <TouchableOpacity style={styles.homebuttons}
+                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                    >
+                        <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/run.png')} />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.homebuttons}
+                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                    >
+                        <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/dodgeball.png')} />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.homebuttons}
+                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                    >
+                        <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/pizza.png')} />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.homebuttons}
+                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                    >
+                        <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/tong.png')} />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.homebuttons}
+                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                    >
+                        <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/babyfoot.png')} />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.homebuttons}
+                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                    >
+                        <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/flechette.png')} />
+                    </TouchableOpacity>
 
-        </View>
-        <View style={{ flex: 1 }}>
+                </View>
+                <View style={{ flex: 1 }}>
 
-            <TouchableOpacity style={styles.homebuttons}
-                onPress={() => { navigation.navigate('BeerpongDetails') }}
-            >
-                <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/pingpong.png')} />
-            </TouchableOpacity>
+                    <TouchableOpacity style={styles.homebuttons}
+                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                    >
+                        <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/pingpong.png')} />
+                    </TouchableOpacity>
 
-            <TouchableOpacity style={styles.homebuttons}
-                onPress={() => { navigation.navigate('BeerpongDetails') }}
-            >
-                <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/orientation.png')} />
-            </TouchableOpacity>
+                    <TouchableOpacity style={styles.homebuttons}
+                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                    >
+                        <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/orientation.png')} />
+                    </TouchableOpacity>
 
-            <TouchableOpacity style={styles.homebuttons}
-                onPress={() => { navigation.navigate('BeerpongDetails') }}
-            >
-                <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/beerpong.png')} />
-            </TouchableOpacity>
+                    <TouchableOpacity style={styles.homebuttons}
+                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                    >
+                        <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/beerpong.png')} />
+                    </TouchableOpacity>
 
-            <TouchableOpacity style={styles.homebuttons}
-                onPress={() => { navigation.navigate('BeerpongDetails') }}
-            >
-                <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/volley.png')} />
-            </TouchableOpacity>
+                    <TouchableOpacity style={styles.homebuttons}
+                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                    >
+                        <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/volley.png')} />
+                    </TouchableOpacity>
 
-            <TouchableOpacity style={styles.homebuttons}
-                onPress={() => { navigation.navigate('BeerpongDetails') }}
-            >
-                <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/waterpolo.png')} />
-            </TouchableOpacity>
+                    <TouchableOpacity style={styles.homebuttons}
+                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                    >
+                        <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/waterpolo.png')} />
+                    </TouchableOpacity>
 
-            <TouchableOpacity style={styles.homebuttons}
-                onPress={() => { navigation.navigate('BeerpongDetails') }}
-            >
-                <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/polishhorseshoe.png')} />
-            </TouchableOpacity>
+                    <TouchableOpacity style={styles.homebuttons}
+                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                    >
+                        <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/polishhorseshoe.png')} />
+                    </TouchableOpacity>
 
-        </View>
-        <View style={{ flex: 1 }}>
+                </View>
+                <View style={{ flex: 1 }}>
 
-            <TouchableOpacity style={styles.homebuttons}
-                onPress={() => { navigation.navigate('BeerpongDetails') }}
-            >
-                <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/natationsynchro.png')} />
-            </TouchableOpacity>
+                    <TouchableOpacity style={styles.homebuttons}
+                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                    >
+                        <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/natationsynchro.png')} />
+                    </TouchableOpacity>
 
-            <TouchableOpacity style={styles.homebuttons}
-                onPress={() => { navigation.navigate('BeerpongDetails') }}
-            >
-                <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/spikeball.png')} />
-            </TouchableOpacity>
+                    <TouchableOpacity style={styles.homebuttons}
+                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                    >
+                        <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/spikeball.png')} />
+                    </TouchableOpacity>
 
-            <TouchableOpacity style={styles.homebuttons}
-                onPress={() => { navigation.navigate('BeerpongDetails') }}
-            >
-                <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/100mricard.png')} />
-            </TouchableOpacity>
+                    <TouchableOpacity style={styles.homebuttons}
+                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                    >
+                        <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/100mricard.png')} />
+                    </TouchableOpacity>
 
-            <TouchableOpacity style={styles.homebuttons}
-                onPress={() => { navigation.navigate('BeerpongDetails') }}
-            >
-                <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/100mricard.png')} />
-            </TouchableOpacity>
+                    <TouchableOpacity style={styles.homebuttons}
+                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                    >
+                        <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/100mricard.png')} />
+                    </TouchableOpacity>
 
-            <TouchableOpacity style={styles.homebuttons}
-                onPress={() => { navigation.navigate('BeerpongDetails') }}
-            >
-                <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/petanque.png')} />
-            </TouchableOpacity>
+                    <TouchableOpacity style={styles.homebuttons}
+                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                    >
+                        <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/petanque.png')} />
+                    </TouchableOpacity>
 
-            <TouchableOpacity style={styles.homebuttons}
-                onPress={() => { navigation.navigate('BeerpongDetails') }}
-            >
-                <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/petanque.png')} />
-            </TouchableOpacity>
+                    <TouchableOpacity style={styles.homebuttons}
+                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                    >
+                        <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/petanque.png')} />
+                    </TouchableOpacity>
 
-        </View>
+                </View>
 
-        </View>
+            </View>
 
-        <View>
-        <TouchableOpacity style={{ alignSelf:"center"}}onPressIn={() => { playSound(sound, soundStatus, setSound, setSoundStatus, "cluedo") }}>
-                <Image style={{borderRadius:10, borderWidth:1, borderColor:"black"}} source={require('./assets/cluedo.png')} />
+            <View>
+                <TouchableOpacity style={{ alignSelf: "center" }} onPressIn={() => { playSound(sound, soundStatus, setSound, setSoundStatus, "cluedo") }}>
+                    <Image style={{ borderRadius: 10, borderWidth: 1, borderColor: "black" }} source={require('./assets/cluedo.png')} />
                 </TouchableOpacity>
-            <TouchableOpacity style={styles.loginbutton}
-                onPress={() => { navigation.navigate('Login') }}
-            >
-                <Text style={styles.texthomebutton}>Login</Text>
-            </TouchableOpacity>
-        </View>
+                <TouchableOpacity style={styles.loginbutton}
+                    onPress={() => { navigation.navigate('Login') }}
+                >
+                    <Text style={styles.texthomebutton}>Login</Text>
+                </TouchableOpacity>
+            </View>
         </ScrollView>
 
     );
 }
 
-function PlanningScreen({navigation}){
+function PlanningScreen({ navigation }) {
 
-    return(
+    return (
         <View>
             <Text>Planning</Text>
         </View>
@@ -269,33 +267,44 @@ function Login({ navigation }) {
     )
 };
 
-function BeerpongDetailsScreen({ navigation, status }) {
+function BeerpongDetailsScreen({ navigation }) {
     const width = Dimensions.get("window").width;
     const height = Dimensions.get("window").height;
     const [window_width, setWidth] = React.useState(width);
     const [window_height, setHeight] = React.useState(height);
     const [authorized, setauthorized] = React.useState(false);
     const [loadingmain, setloading] = React.useState(true);
+    const [status, setlocalStatus] = React.useState();
     const [local_toggle, setToggle] = React.useState(0);
     // if(local_toggle != toggle)
     // {
     // setToggle(toggle);
     // }
     React.useEffect(() => {
-        for (var authouser in beerpong_autho.autho) {
-            if (beerpong_autho.autho[authouser] == username) {
-                setauthorized(true);
+        fetch_status("Beerpong", setlocalStatus).then(r => {
+            setlocalStatus(r);
+            console.log("r",r);
+            console.log("autho", status);
+            for (var authouser in r['arbitre']) {
+                console.log(authouser);
+                if (r['arbitre'][authouser] == username) {
+                    setauthorized(true);
+                }
+                else if("max" == username){
+                    setauthorized(true);
+                }
             }
+            setloading(false);
+
         }
-        // console.log(status);
-        setloading(false);
+        );
+
     }, []);
-    if(loadingmain)
-    {
-        return(<ActivityIndicator size="large" color="#000000" />)
+    if (loadingmain) {
+        return (<ActivityIndicator size="large" color="#000000" />)
     }
     return (
-        <PinchZoomView style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, width: window_width * 2, height: window_height}} maxScale={1} minScale={0.5} >
+        <PinchZoomView style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, width: window_width * 2, height: window_height }} maxScale={1} minScale={0.5} >
             <ArbitreContext.Consumer>
                 {value => {
                     return (
@@ -309,7 +318,7 @@ function BeerpongDetailsScreen({ navigation, status }) {
                                 <View style={styles.modalView}>
                                     <View style={styles.centeredView}>
                                         <Text style={styles.modalText}>Arbitres:</Text>
-                                        {matches_status.arbitre.map(r => <Text style={styles.modalText} >{r}</Text>)}
+                                        {status['arbitre'].map(r => <Text style={styles.modalText} >{r}</Text>)}
                                     </View>
 
                                 </View>
@@ -382,19 +391,18 @@ async function playSound(sound_main, sound_status, set_sound, setstatus, sound_n
         await Audio.setAudioModeAsync({
             allowsRecordingIOS: true,
             playsInSilentModeIOS: true,
-          }); 
-        if(sound_name == "megaphone"){
+        });
+        if (sound_name == "megaphone") {
             const { sound: playbackObject } = await Audio.Sound.createAsync(
                 require('./assets/guylabedav.mp3')
             );
-                set_sound(playbackObject);
-            }
-            else if(sound_name == "cluedo")
-            {
-                const { sound: playbackObject } = await Audio.Sound.createAsync(
-                    require('./assets/cluedo.mp3')
-                    );
-                    set_sound(playbackObject);
+            set_sound(playbackObject);
+        }
+        else if (sound_name == "cluedo") {
+            const { sound: playbackObject } = await Audio.Sound.createAsync(
+                require('./assets/cluedo.mp3')
+            );
+            set_sound(playbackObject);
         }
     }
     var playback = await sound_main;
@@ -425,7 +433,6 @@ function App() {
     // if(firsttime)
     // {
     //     firsttime = 0;
-    //     console.log(firsttime);
     //     fetch_all();
     // }
     return (
@@ -444,7 +451,7 @@ function App() {
                     <Stack.Screen options={({ navigation }) => ({ title: "Home", headerRight: () => (<View style={{ flexDirection: "row", margin: 10 }}><TouchableOpacity onPressIn={() => { playSound(sound, soundStatus, setSound, setSoundStatus, "megaphone") }}><Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} /></TouchableOpacity><TouchableOpacity style={{ alignContent: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}><Text style={{ color: "white", margin: 10, alignSelf: "center" }}>{username}</Text></TouchableOpacity></View>) })} name="Home" component={HomeScreen} />
                     <Stack.Screen options={{ title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text></View> }} name="Login" component={Login} />
                     <Stack.Screen options={{ title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text></View> }} name="Planning" component={PlanningScreen} />
-                    <Stack.Screen options={({ navigation }) => ({ title: "Beerpong", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>{GetState("Beerpong", status, setstatus, navigation)}<View><Text style={{ color: "white", margin: 10, alignSelf: "center" }}>{username}</Text></View><TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View> })} status={status} name="BeerpongDetails" component={BeerpongDetailsScreen} />
+                    <Stack.Screen options={({ navigation }) => ({ title: "Beerpong", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>{GetState("Beerpong", status, setstatus, navigation)}<View><Text style={{ color: "white", margin: 10, alignSelf: "center" }}>{username}</Text></View><TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View> })} name="BeerpongDetails" component={BeerpongDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="LancerdeTongDetails" component={LancerdeTongDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="centmetreRicardDetails" component={centmetreRicardDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="WaterpoloDetails" component={WaterpoloDetailsScreen} />

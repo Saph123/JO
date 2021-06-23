@@ -1,13 +1,11 @@
 // import styles from "./style";
 import { useNavigation } from '@react-navigation/native';
-import { Button, View, Dimensions, ActivityIndicator, TextInput, Text, Image} from 'react-native';
+import { Button, View, Dimensions, ActivityIndicator, TextInput, Text, Image } from 'react-native';
 import * as React from 'react';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
-import beerpong_matches_json from './assets/Beerpong_matches.json';
-import matches_status from './assets/Beerpong_status.json';
 import { Svg, Polyline } from 'react-native-svg';
 import { Table, Row } from 'react-native-table-component';
-import {username} from './App.js'
+import { username } from './App.js'
 const styles = require("./style.js");
 let offline = false;
 let displayed_state = "";
@@ -65,16 +63,16 @@ export const Trace = (props) => {
 
 
         <View style={{ flexDirection: "row", flex: 1, position: "absolute", top: 0, left: 0 }}>
-            {groups.map((r, index) => 
+            {groups.map((r, index) =>
                 <View style={styles.tablecontainer}>
                     <Text style={{ textAlign: "center" }}>{r.name}</Text>
                     <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
                         <Row data={["Team", "P", "W", "L", "Points", "Diff"]} widthArr={[150, 30, 30, 30, 60, 50]} style={{ width: "100%", height: 40, backgroundColor: '#f1f8ff' }} textStyle={{ margin: 6 }}></Row>
-                        {r.teams.sort((a,b) => a.points>b.points ? 1:(a.points==b.points?(a.diff>b.diff?1:-1):-1)).reverse().map(q =>
+                        {r.teams.sort((a, b) => a.points > b.points ? 1 : (a.points == b.points ? (a.diff > b.diff ? 1 : -1) : -1)).reverse().map(q =>
                             <Row data={[q.name, q.played, q.wins, q.loses, q.points, q.diff]} widthArr={[150, 30, 30, 30, 60, 50]} textStyle={{ margin: 6 }}></Row>)}
                     </Table>
                     <View style={{ flexDirection: "column", justifyContent: "space-around" }}>
-                        <Matchpoule sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setDisplayedState={setDisplayedState} setmatchesgroup={setmatchesgroup} setWidth={setWidth} setHeight={setHeight} username={username} setloading={setloading} loading={loading}  poule={r.name} matches={groupmatches[index]} level={0} sport={sport} autho={autho}></Matchpoule>
+                        <Matchpoule sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setDisplayedState={setDisplayedState} setmatchesgroup={setmatchesgroup} setWidth={setWidth} setHeight={setHeight} username={username} setloading={setloading} loading={loading} poule={r.name} matches={groupmatches[index]} level={0} sport={sport} autho={autho}></Matchpoule>
                     </View>
                 </View>)}
         </View>
@@ -97,18 +95,18 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setDisp
 
     }
     else {
-        if(displayed_state == "poules"){
+        if (displayed_state == "poules") {
 
-            matches_group = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_poules.json").then(response => response.json()).then(data =>  {return data });
+            matches_group = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_poules.json").then(response => response.json()).then(data => { return data });
         }
-        else{
-            matches = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_matches.json").then(response => response.json()).then(data =>  {return data });
+        else {
+            matches = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_matches.json").then(response => response.json()).then(data => { return data });
 
         }
         status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
             displayed_state = data['status'];
             return data;
-            });
+        });
     }
     let level = [];
     let local_array_match = [[]];
@@ -157,75 +155,58 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setDisp
 }
 
 
-export function toggle_status(status, setStatus, navigation){
+export function toggle_status(status, setStatus, navigation) {
 
     for (var i = 0; i < status.states.length; i++) {
-        if(status.states[i] == displayed_state)
-        {
-            if(i+1 < status.states.length)
-            {
-                displayed_state = status.states[i+1];
+        if (status.states[i] == displayed_state) {
+            if (i + 1 < status.states.length) {
+                displayed_state = status.states[i + 1];
             }
-            else
-            {
+            else {
                 displayed_state = status.states[0];
             }
             status.status = displayed_state;
             // toggle = 1;
             setStatus(status);
             navigation.navigate(navigation.dangerouslyGetState().routes[navigation.dangerouslyGetState().index].name);
-            break; 
+            break;
         }
     }
 }
 
-export async function fetch_status(sportname, setStatus){
-    
+export async function fetch_status(sportname, setStatus) {
     let fetch_status = {}
-    if (offline) {
-        if (sportname == "Beerpong") {
-            setStatus(matches_status);
-            displayed_state = matches_status['status'];
-        }
-    }
-    else {
-         fetch_status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
-            setStatus(data);
-            displayed_state = data['status'];
-            return data;
-            });
-            return fetch_status;
-    }
+
+
+    fetch_status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
+        setStatus(data);
+        console.log("setstatus tho")
+        displayed_state = data['status'];
+        return data;
+    }).catch(err => console.log(err));
+    return fetch_status;
 }
+
 export function GetState(sportname, status, setStatus, navigation, state) {
-    
+
     const [loaded, setloaded] = React.useState(0);
-    
+
 
     React.useEffect(() => {
-        if (offline) {
-            if (sportname == "Beerpong") {
-                setStatus(matches_status);
-                displayed_state = matches_status['status'];
-            }
-        }
-        else {
-        const fetch_status = async () => {await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
-            setStatus(data);
-            displayed_state = data['status'];
-            setloaded(1);
-            });}
-        fetch_status();
-        }
+        // const fetch_status = async () => {await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
+        //     setStatus(data);
+        //     displayed_state = data['status'];
+        //     setloaded(1);
+        //     });}
+        fetch_status(sportname, setStatus).then(r => setloaded(1));
     }, []);
 
-    if(loaded == 0)
-    {
+    if (loaded == 0) {
         return <View><ActivityIndicator color="000000" /></View>;
     }
     //toggle_status(status, setStatus, navigation);
-    else{
-        return <View><TouchableOpacity onPressIn={() => navigation.setOptions({title:"fdp"})}><Text style={{ marginTop:10, marginRight:30, color: "white" }}>{status["status"]}</Text></TouchableOpacity></View>;
+    else {
+        return <View><TouchableOpacity onPressIn={() => navigation.setOptions({ title: "fdp" })}><Text style={{ marginTop: 10, marginRight: 30, color: "white" }}>{status["status"]}</Text></TouchableOpacity></View>;
     }
 }
 
@@ -280,29 +261,31 @@ const Matchcomp = (props) => {
 
 
 }
-function pushmatch(username, sport, match){
+function pushmatch(username, sport, match) {
 
     // 5 second timeout:
+    console.log(username, sport, match)
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
     console.log("pushing!")
     // // push to server
-    fetch("http://91.121.143.104:7070/pushmatch", { signal: controller.signal, method: "POST", body: JSON.stringify({ "sport":sport, "username": username, "type":"poules", "match":match }) }).then(r => {
-        if (r.status == 200) {
+    fetch("http://91.121.143.104:7070/pushmatch", { signal: controller.signal, method: "POST", body: JSON.stringify({ "sport": sport, "username": username, "type": "poules", "match": match }) }).then(r => {
+    console.log(r)    ;
+    if (r.status == 200) {
+            console.log("kekw");
+        }
+        else {
+            alert("Wrong login or password!");
+        }
 
-                        }
-                        else {
-                            alert("Wrong login or password!");
-                        }
-                        
-                    }).catch((err) => { console.log(err,"Issue with server!") });
+    }).catch((err) => { console.log(err, "Issue with server!") });
 }
 
 function determine_winner(match, index, setfun, score, setFetching, username, sport) {
     // TODO : add push function to json through raspi
     let tmp_array = JSON.parse(JSON.stringify(match));
     let topush = false;
-    
+
     if (tmp_array[index].over != 0) {
         tmp_array[index].over = 0;
         setfun(tmp_array);
@@ -328,8 +311,7 @@ function determine_winner(match, index, setfun, score, setFetching, username, sp
             alert("Either a tie, or not parsable. Score should be x:x")
         }
     }
-    if(topush)
-    {
+    if (topush) {
         setFetching(true);
         pushmatch(username, sport, tmp_array[index])
         setfun(tmp_array);
@@ -361,9 +343,9 @@ const Matchpoule = (props) => {
         setScore(array_score);
         setMatch(match_array);
     }, []);
-    if(local_fetch){
-        
-            return(<View><ActivityIndicator  size="large" color="#000000" style={styles.fetching}/></View>)
+    if (local_fetch) {
+
+        return (<View><ActivityIndicator size="large" color="#000000" style={styles.fetching} /></View>)
     }
     if (autho && !local_fetch) {
         return (
@@ -373,15 +355,18 @@ const Matchpoule = (props) => {
                         <Text style={r.over == 2 ? styles.lose : styles.teamnormal}>{r.team1}</Text>
                         <Text>{"vs"}</Text><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text>
                         <View style={{ flexDirection: "row" }}>{manage_score_over(match, index, score, setScore, username, sport)}</View>
-                        <TouchableOpacity onPress={() => {props.setloading(true);setFetching(true);determine_winner(match, index, setMatch, score, setFetching, username, sport); fetch_matches(props.sport, props.setmatches, props.setGroups, props.setlevels, props.setDisplayedState, props.setmatchesgroup, props.setWidth, props.setHeight).then(r => {
-            props.setloading(false)})}}><Text>{over_text(match, index)}</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => {
+                            props.setloading(true); setFetching(true); determine_winner(match, index, setMatch, score, setFetching, username, sport); fetch_matches(props.sport, props.setmatches, props.setGroups, props.setlevels, props.setDisplayedState, props.setmatchesgroup, props.setWidth, props.setHeight).then(r => {
+                                props.setloading(false)
+                            })
+                        }}><Text>{over_text(match, index)}</Text></TouchableOpacity>
                     </View>)
                 })}
             </View>
         );
     }
 
-    
+
     return (
         <View style={styles.column}>
             {match_array.map((r, index) => {
@@ -415,7 +400,7 @@ function manage_score_over(match, index, score, setScore, username, sport) {
         return (
             <View style={{ flexDirection: "row" }}>
                 <TextInput style={styles.score} value={score[index]} onChangeText={(text) => { let tmp_array_score = JSON.parse(JSON.stringify(score)); tmp_array_score[index] = text; setScore(tmp_array_score) }} />
-                <TouchableOpacity onPress={() => { match[index].score = score[index];pushmatch(username, sport, match[index]) }} ><Image style={{ borderRadius: 5, borderWidth: 2, borderColor: "black", width: 20, height: 20, alignSelf: "center" }} source={require('./assets/validatelogo.png')} /></TouchableOpacity>
+                <TouchableOpacity onPress={() => { match[index].score = score[index]; pushmatch(username, sport, match[index]) }} ><Image style={{ borderRadius: 5, borderWidth: 2, borderColor: "black", width: 20, height: 20, alignSelf: "center" }} source={require('./assets/validatelogo.png')} /></TouchableOpacity>
             </View>
         )
     }
@@ -447,6 +432,6 @@ class Group {
         this.sport = sport;
         this.uniqueId = uniqueId;
         this.over = over;
-        this.matches =  matches;
+        this.matches = matches;
     }
 }
