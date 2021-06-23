@@ -128,7 +128,7 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
     }
     for (const prop in await matches) {
         for (const match_iter in await matches[prop]) {
-            local_array_match[matches[prop][match_iter]["level"]].push(new Match(sportname, matches[prop][match_iter]["team1"], matches[prop][match_iter]["team2"], matches[prop][match_iter]["match"], matches[prop][match_iter]["score"], matches[prop][match_iter]["over"], matches[prop][match_iter]["level"]));
+            local_array_match[matches[prop][match_iter]["level"]].push(new Match(sportname, matches[prop][match_iter]["team1"], matches[prop][match_iter]["team2"], matches[prop][match_iter]["uniqueId"], matches[prop][match_iter]["score"], matches[prop][match_iter]["over"], matches[prop][match_iter]["level"]));
         }
     }
     setlevel(level);
@@ -203,12 +203,12 @@ const Matchcomp = (props) => {
         for (var match in matches[i])
         {
             if (matches[i][match]['level'] == level) {
-                
-                match_array.push(matches[i]);
-                array_score.push(matches[i].score);
+                match_array.push(matches[i][match]);
+                array_score.push(matches[i][match].score);
             }
         }
     }
+    console.log(match_array.length)
 
     React.useEffect(() => {
         setLoading(false);
