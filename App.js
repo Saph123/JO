@@ -293,22 +293,11 @@ function BeerpongDetailsScreen({ route, navigation  }) {
 
     }, []);
 
-    // if (typeof route.params.headerstatus == 'object' && typeof status == 'object')
-    // {
-    //     console.log("blyat");
-    //     console.log(route.params.headerstatus['status']);
-    //     console.log(status['status']);
-    //     if(route.params.headerstatus['status'] != status['status'])
-    //     {
-
-    //         console.log("diff");
-    //     }
-    // }
     if (loadingmain) {
         return (<ActivityIndicator size="large" color="#000000" />)
     }
     return (
-        <PinchZoomView style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, width: window_width * 2, height: window_height }} maxScale={1} minScale={0.5} >
+        <PinchZoomView test={console.log(window_width)} style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, width: window_width, height: window_height }} maxScale={1} minScale={0.5} >
             <ArbitreContext.Consumer>
                 {value => {
                     return (
@@ -333,7 +322,7 @@ function BeerpongDetailsScreen({ route, navigation  }) {
                 }
             </ArbitreContext.Consumer>
 
-            <Trace username={username} sport={"Beerpong"} setWidth={(w) => setWidth(w)} setHeight={(h) => setHeight(h)} autho={authorized} />
+            <Trace username={username} sport={"Beerpong"} setWidth={setWidth} setHeight={setHeight} autho={authorized} />
         </PinchZoomView>
 
     )

@@ -25,19 +25,17 @@ module.exports = StyleSheet.create({
         alignSelf:"center",
         marginLeft: 30,
         marginRight: 30,
-        width: 150,
+        width: 100,
     },
     matchpouleover: {
+        backgroundColor: "#D62628",
         flexDirection: 'column',
         alignItems: "center",
         alignSelf:"center",
         justifyContent: "space-between",
-        backgroundColor: "#D62628",
         borderWidth: 1,
         margin: 30,
-        // flex: 1,
-        width: 150,
-        // height: 100,
+        width: 100,
         borderRadius: 15
     },
     match: {
@@ -51,15 +49,14 @@ module.exports = StyleSheet.create({
         width: 100,
     },
     matchpoule: {
-        flexDirection: 'column',
-        justifyContent: "space-between",
         backgroundColor: "#A8DADC",
-        borderWidth: 1,
-        flex: 1,
+        flexDirection: 'column',
         alignItems: "center",
+        alignSelf:"center",
+        justifyContent: "space-between",
+        borderWidth: 1,
         margin: 30,
-        // width: 100,
-        // height:100,
+        width: 100,
         borderRadius: 15
     },
     textmatch: {
