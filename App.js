@@ -13,7 +13,7 @@ import { fetch_all } from "./fetcher.js"
 // import Orientation from 'react-native-orientation';
 
 let username = "max";
-let offline = false;
+let current_sport = "Sportname";
 const styles = require("./style.js");
 const ArbitreContext = React.createContext(false);
 function HomeScreen({ route, navigation }) {
@@ -68,32 +68,32 @@ function HomeScreen({ route, navigation }) {
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                 <View style={{ flex: 1 }}>
                     <TouchableOpacity style={styles.homebuttons}
-                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                        onPress={() => { current_sport = "Trail", navigation.navigate('SportDetails', {sportname:"Trail"})}}
                     >
                         <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/run.png')} />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.homebuttons}
-                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                        onPress={() => { current_sport = "Dodgeball", navigation.navigate('SportDetails', {sportname:"Dodgeball"})}}
                     >
                         <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/dodgeball.png')} />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.homebuttons}
-                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                        onPress={() => { current_sport = "Pizza", navigation.navigate('SportDetails', {sportname:"Pizza"})}}
                     >
                         <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/pizza.png')} />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.homebuttons}
-                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                        onPress={() => { current_sport = "Tong", navigation.navigate('SportDetails', {sportname:"Tong"})}}
                     >
                         <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/tong.png')} />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.homebuttons}
-                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                        onPress={() => { current_sport = "Babyfoot", navigation.navigate('SportDetails', {sportname:"Babyfoot"})}}
                     >
                         <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/babyfoot.png')} />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.homebuttons}
-                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                        onPress={() => { current_sport = "Flechette", navigation.navigate('SportDetails', {sportname:"Flechette"})}}
                     >
                         <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/flechette.png')} />
                     </TouchableOpacity>
@@ -102,37 +102,37 @@ function HomeScreen({ route, navigation }) {
                 <View style={{ flex: 1 }}>
 
                     <TouchableOpacity style={styles.homebuttons}
-                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                        onPress={() => { current_sport = "PingPong", navigation.navigate('SportDetails', {sportname:"PingPong"})}}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/pingpong.png')} />
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.homebuttons}
-                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                        onPress={() => { current_sport = "Orientation", navigation.navigate('SportDetails', {sportname:"Beerpong"})}}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/orientation.png')} />
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.homebuttons}
-                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                        onPress={() => { current_sport = "Beerpong", navigation.navigate('SportDetails', {sportname:"Beerpong"})}}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/beerpong.png')} />
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.homebuttons}
-                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                        onPress={() => { current_sport = "Volley", navigation.navigate('SportDetails', {sportname:"Volley"})}}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/volley.png')} />
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.homebuttons}
-                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                        onPress={() => { current_sport = "Waterpolo", navigation.navigate('SportDetails', {sportname:"Waterpolo"})}}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/waterpolo.png')} />
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.homebuttons}
-                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                        onPress={() => { current_sport = "Larmina", navigation.navigate('SportDetails', {sportname:"Larmina"})}}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/polishhorseshoe.png')} />
                     </TouchableOpacity>
@@ -141,37 +141,37 @@ function HomeScreen({ route, navigation }) {
                 <View style={{ flex: 1 }}>
 
                     <TouchableOpacity style={styles.homebuttons}
-                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                        onPress={() => { current_sport = "Natation", navigation.navigate('SportDetails', {sportname:"Natation"})}}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/natationsynchro.png')} />
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.homebuttons}
-                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                        onPress={() => { current_sport = "SpikeBall", navigation.navigate('SportDetails', {sportname:"SpikeBall"})}}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/spikeball.png')} />
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.homebuttons}
-                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                        onPress={() => { current_sport = "100mRicard", navigation.navigate('SportDetails', {sportname:"100mRicard"})}}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/100mricard.png')} />
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.homebuttons}
-                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                        onPress={() => { current_sport = "Beerpong", navigation.navigate('SportDetails', {sportname:"Beerpong"})}}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/100mricard.png')} />
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.homebuttons}
-                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                        onPress={() => { current_sport = "Beerpong", navigation.navigate('SportDetails', {sportname:"Beerpong"})}}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/petanque.png')} />
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.homebuttons}
-                        onPress={() => { navigation.navigate('BeerpongDetails') }}
+                        onPress={() => { current_sport = "Beerpong", navigation.navigate('SportDetails', {sportname:"Beerpong"})}}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/petanque.png')} />
                     </TouchableOpacity>
@@ -267,7 +267,7 @@ function Login({ navigation }) {
     )
 };
 
-function BeerpongDetailsScreen({ route, navigation  }) {
+function SportDetailsScreen({ route, navigation }) {
 
     const [window_width, setWidth] = React.useState(Dimensions.get("window").width);
     const [window_height, setHeight] = React.useState(Dimensions.get("window").height);
@@ -275,7 +275,7 @@ function BeerpongDetailsScreen({ route, navigation  }) {
     const [loadingmain, setloading] = React.useState(true);
     const [status, setlocalStatus] = React.useState();
     React.useEffect(() => {
-        fetch_status("Beerpong", setlocalStatus).then(r => {
+        fetch_status(route.params.sportname, setlocalStatus).then(r => {
             setlocalStatus(r);
             for (var authouser in r['arbitre']) {
                 if (r['arbitre'][authouser] == username) {
@@ -321,7 +321,7 @@ function BeerpongDetailsScreen({ route, navigation  }) {
                 }
             </ArbitreContext.Consumer>
 
-            <Trace test={console.log("rendered")} username={username} sport={"Beerpong"} width={window_width} height={window_height} setHeight={setHeight} setWidth={setWidth} autho={authorized} />
+            <Trace username={username} sport={route.params.sportname} width={window_width} height={window_height} setHeight={setHeight} setWidth={setWidth} autho={authorized} />
         </PinchZoomView>
 
     )
@@ -443,11 +443,11 @@ function App() {
                     <Stack.Screen options={({ navigation }) => ({ title: "Home", headerRight: () => (<View style={{ flexDirection: "row", margin: 10 }}><TouchableOpacity onPressIn={() => { playSound(sound, soundStatus, setSound, setSoundStatus, "megaphone") }}><Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} /></TouchableOpacity><TouchableOpacity style={{ alignContent: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}><Text style={{ color: "white", margin: 10, alignSelf: "center" }}>{username}</Text></TouchableOpacity></View>) })} name="Home" component={HomeScreen} />
                     <Stack.Screen options={{ title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text></View> }} name="Login" component={Login} />
                     <Stack.Screen options={{ title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text></View> }} name="Planning" component={PlanningScreen} />
-                    <Stack.Screen options={({navigation}) => ({ title: "Beerpong", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>{GetState("Beerpong", headerstatus, setstatus, navigation)}<View><Text style={{ color: "white", margin: 10, alignSelf: "center" }}>{username}</Text></View><TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View> })} initialParams={{headerstatus:headerstatus}} name="BeerpongDetails" component={BeerpongDetailsScreen} />
-                    <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="LancerdeTongDetails" component={LancerdeTongDetailsScreen} />
+                    <Stack.Screen options={({navigation}) => ({ title: current_sport, headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>{GetState(current_sport, headerstatus, setstatus, navigation)}<View><Text style={{ color: "white", margin: 10, alignSelf: "center" }}>{username}</Text></View><TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View> })} initialParams={{sportname:current_sport}} name="SportDetails" component={SportDetailsScreen} />
+                    {/* <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="LancerdeTongDetails" component={LancerdeTongDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="centmetreRicardDetails" component={centmetreRicardDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="WaterpoloDetails" component={WaterpoloDetailsScreen} />
-                    <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="TrailDetails" component={TrailDetailsScreen} />
+                    <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="TrailDetails" component={TrailDetailsScreen} /> */}
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="UsernameScreen" component={UsernameScreen} />
                 </Stack.Navigator>
             </ArbitreContext.Provider>
