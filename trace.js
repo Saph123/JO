@@ -13,11 +13,11 @@ export const Trace = (props) => {
     const sport = props.sport;
     const autho = props.autho;
     const username = props.username;
+    const width = props.width;
+    const height = 170;
     const [loading, setloading] = React.useState(true);
     const [matches, setmatches] = React.useState([]);
     const [levels, setlevels] = React.useState([]);
-    const [width, setWidth] = React.useState(0);
-    const [height, setHeight] = React.useState(0);
     const [groups, setGroups] = React.useState([]);
     const [groupmatches, setmatchesgroup] = React.useState([]);
     React.useEffect(() => {
@@ -33,28 +33,22 @@ export const Trace = (props) => {
     }
     if (displayed_state == "playoff") {
         return (
-            <View onLayout={(event) => {
-                var { x, y, width, height } = event.nativeEvent.layout;
-                setWidth(width);
-            }} >
+            <View>
                 <Svg style={styles.svg}>
                     {levels.slice(1).reverse().map((r, index) => matches[r].map((m, index2) =>
-                        <Polyline style={styles.svg}
-                            points={(index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height) + (height - 30)) + " " + (index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 1) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 3) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2))}
+                        <Polyline style={styles.svg} test={console.log((index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height) + (height - 30)) + " " + (index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 1) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 3) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2)))}
+                            // points={(index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height) + (height - 30)) + " " + (index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 1) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 3) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2))}
+                            points={(index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height)) + " " + (index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 1) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 3) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2))}
                             fill="none"
                             stroke="black"
                             strokeWidth="2"
                         />))}
                 </Svg>
                 {levels.slice(0).reverse().map(r =>
-
-                    <View onLayout={(event) => {
-                        var { x, y, width, height } = event.nativeEvent.layout;
-                        setHeight(height);
-                    }} style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-between" }}>
-                        <Matchcomp sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={setWidth} setHeight={setHeight} setloading={setloading} username={username} loading={loading} matches={matches} level={r} sport={sport} autho={autho}></Matchcomp>
+                    <View 
+                    style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-between" }}>
+                        <Matchcomp sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={props.setWidth} setHeight={props.setHeight} setloading={setloading} username={username} loading={loading} matches={matches} level={r} sport={sport} autho={autho}></Matchcomp>
                     </View>)}
-
             </View>
         );
     }
@@ -85,8 +79,6 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
     let matches_group = {};
 
 
-    matches_group = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_poules.json").then(response => response.json()).then(data => { return data });
-    matches = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => { return data });
     status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
         if (displayed_state == "") {
             console.log("firsttime", data['status'])
@@ -95,51 +87,58 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
         }
         return data;
     });
-
-    let level = [];
-    let local_array_match = [[]];
-    var i = 0;
-    let array_groups = [];
-    let array_matches_groups = [];
-    let local_array_groupmatch = [];
-    for (var groupname in matches_group["groups"]) {
-        let local_group = matches_group["groups"][groupname];
-        array_groups.push(new Group(sportname, local_group.name, local_group.teams, i, false));
-        i++;
-    }
-    for (var groupname in matches_group["groups"]) {
-        let local_group = matches_group["groups"][groupname];
-        for (var match in local_group.matches) {
-            let local_match = local_group.matches[match];
-            local_array_groupmatch.push(new Match(sportname, local_match.team1, local_match.team2, local_match.uniqueId, local_match.score, local_match.over, local_match.level, local_group.name, ""));
+    if (displayed_state == "poules") {
+        matches_group = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_poules.json").then(response => response.json()).then(data => { return data });
+        var i = 0;
+        let array_groups = [];
+        let array_matches_groups = [];
+        let local_array_groupmatch = [];
+        for (var groupname in matches_group["groups"]) {
+            let local_group = matches_group["groups"][groupname];
+            array_groups.push(new Group(sportname, local_group.name, local_group.teams, i, false));
             i++;
         }
-        array_matches_groups.push(local_array_groupmatch);
-    }
-    setgroups(array_groups);
-    setmatchesgroup(array_matches_groups);
-
-    for (let j = 0; j < await matches['levels']; j++) {
-        level.push(j);
-        local_array_match.push([]); // need to be initiliazed or doesnt work ffs...
-
-    }
-    for (const prop in await matches) {
-        for (const match_iter in await matches[prop]) {
-            local_array_match[matches[prop][match_iter]["level"]].push(new Match(sportname, matches[prop][match_iter]["team1"], matches[prop][match_iter]["team2"], matches[prop][match_iter]["uniqueId"], matches[prop][match_iter]["score"], matches[prop][match_iter]["over"], matches[prop][match_iter]["level"], "", matches[prop][match_iter]["nextmatch"]));
+        for (var groupname in matches_group["groups"]) {
+            let local_group = matches_group["groups"][groupname];
+            for (var match in local_group.matches) {
+                let local_match = local_group.matches[match];
+                local_array_groupmatch.push(new Match(sportname, local_match.team1, local_match.team2, local_match.uniqueId, local_match.score, local_match.over, local_match.level, local_group.name, ""));
+                i++;
+            }
+            array_matches_groups.push(local_array_groupmatch);
         }
-    }
-    setlevel(level);
-    if (displayed_state == "playoff") {
-
-        setWidth(200 * (level.length + 1));
-        setHeight(Math.max(200 * (level.length + 1), Dimensions.get("window").height + 100));
-    }
-    else {
+        setgroups(array_groups);
+        setmatchesgroup(array_matches_groups);
+        // gestion taille fenetre
         setWidth(400 * (array_groups.length + 1));
         setHeight(100 * (array_groups.length + 1) * 4);
+
     }
-    setmatches(local_array_match);
+    else if (displayed_state == "playoff") {
+
+        matches = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => { return data });
+
+        let level = [];
+        let local_array_match = [[]];
+        for (let j = 0; j < await matches['levels']; j++) {
+            level.push(j);
+            
+            local_array_match.push([]); // need to be initiliazed or doesnt work ffs...
+            
+        }
+        for (const prop in await matches) {
+            for (const match_iter in await matches[prop]) {
+                local_array_match[matches[prop][match_iter]["level"]].push(new Match(sportname, matches[prop][match_iter]["team1"], matches[prop][match_iter]["team2"], matches[prop][match_iter]["uniqueId"], matches[prop][match_iter]["score"], matches[prop][match_iter]["over"], matches[prop][match_iter]["level"], "", matches[prop][match_iter]["nextmatch"]));
+            }
+        }
+        setlevel(level);
+        // gestion taille fenetre: affichage un peu plus large :)
+        console.log(200 * ((level.length - 1) * (level.length - 1)));
+        setWidth(200 * ((level.length - 1) * (level.length - 1)));
+        setHeight(Math.max(200 * (level.length + 1), Dimensions.get("window").height + 100));
+        setmatches(local_array_match);
+    }
+
 }
 
 

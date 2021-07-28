@@ -268,10 +268,9 @@ function Login({ navigation }) {
 };
 
 function BeerpongDetailsScreen({ route, navigation  }) {
-    const width = Dimensions.get("window").width;
-    const height = Dimensions.get("window").height;
-    const [window_width, setWidth] = React.useState(width);
-    const [window_height, setHeight] = React.useState(height);
+
+    const [window_width, setWidth] = React.useState(Dimensions.get("window").width);
+    const [window_height, setHeight] = React.useState(Dimensions.get("window").height);
     const [authorized, setauthorized] = React.useState(false);
     const [loadingmain, setloading] = React.useState(true);
     const [status, setlocalStatus] = React.useState();
@@ -297,7 +296,7 @@ function BeerpongDetailsScreen({ route, navigation  }) {
         return (<ActivityIndicator size="large" color="#000000" />)
     }
     return (
-        <PinchZoomView test={console.log(window_width)} style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, width: window_width, height: window_height }} maxScale={1} minScale={0.5} >
+        <PinchZoomView  style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, width: window_width, height: window_height }} maxScale={1} minScale={0.5} >
             <ArbitreContext.Consumer>
                 {value => {
                     return (
@@ -322,7 +321,7 @@ function BeerpongDetailsScreen({ route, navigation  }) {
                 }
             </ArbitreContext.Consumer>
 
-            <Trace username={username} sport={"Beerpong"} setWidth={setWidth} setHeight={setHeight} autho={authorized} />
+            <Trace test={console.log("rendered")} username={username} sport={"Beerpong"} width={window_width} height={window_height} setHeight={setHeight} setWidth={setWidth} autho={authorized} />
         </PinchZoomView>
 
     )
