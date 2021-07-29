@@ -16,6 +16,13 @@ module.exports = StyleSheet.create({
         width: 400,
         backgroundColor: "#EFF8FF"
     },
+    listcontainer: {
+        // flex: 1,
+        alignSelf: "flex-start",
+        margin: 30,
+        width: 400,
+        backgroundColor: "#EFF8FF"
+    },
     matchover: {
         flexDirection: 'column',
         alignItems: "center",

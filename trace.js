@@ -75,19 +75,20 @@ export const Trace = (props) => {
     }
     else { // Other (list like trail etc.)
         return (
-            <View style={{ flexDirection: "column", flex: 1 }}>
+            // <View style={{ flexDirection: "column", flex: 1 }}>
 
-                <View style={styles.tablecontainer}>
+                <View style={styles.listcontainer}>
                     <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
                         <Row data={["Athlete", "Score / temps"]} widthArr={[150, 150]} style={{ width: "100%", height: 40, backgroundColor: '#f1f8ff' }} textStyle={{ margin: 6 }}></Row>
                         {liste.map(r => 
-                        <Row data={[r.username, r.score]} widthArr={[150, 150]}></Row>
+                        <Row data={[r.username, r.score]} widthArr={[150, 150]} heightArr={[200, 200]}></Row>
                         )
                         }
                         </Table>
                 </View>
 
-                </View>)
+                // </View>
+                )
     }
 
 
@@ -182,6 +183,9 @@ export const Trace = (props) => {
             }
         }
                 setListe(local_liste);
+                setWidth(600);
+                setHeight(iter * 50);
+                console.log("liste length", iter);
     }
 
 }
@@ -279,7 +283,7 @@ const Matchcomp = (props) => {
                                 props.setloading(true);
                                 setFetching(true);
                                 determine_winner(match_array, index, set_match_array, score, username, sport, "playoff", setFetching, level);
-                                fetch_matches(props.sport, props.setmatches, props.setGroups, props.setlevel, props.setmatchesgroup, setListe, props.setWidth, props.setHeight).then(r => {
+                                fetch_matches(props.sport, props.setmatches, props.setGroups, props.setlevel, props.setmatchesgroup, null, props.setWidth, props.setHeight).then(r => {
                                     props.setloading(false);
                                 })
                             }}><Text>{over_text(match_array, index)}</Text>
@@ -440,7 +444,7 @@ const Matchpoule = (props) => {
                                 props.setloading(true);
                                 setFetching(true);
                                 determine_winner(match, index, setMatch, score, username, sport, "poules", setFetching, 0);
-                                fetch_matches(props.sport, props.setmatches, props.setGroups, props.setlevel, props.setmatchesgroup, setListe, props.setWidth, props.setHeight).then(r => {
+                                fetch_matches(props.sport, props.setmatches, props.setGroups, props.setlevel, props.setmatchesgroup, null, props.setWidth, props.setHeight).then(r => {
                                     props.setloading(false);
                                 })
                             }}>
