@@ -144,7 +144,7 @@ export const Trace = (props) => {
                 setmatchesgroup(array_matches_groups);
                 // gestion taille fenetre
                 setWidth(400 * (array_groups.length + 1));
-                setHeight(200 * (array_groups.length + 1) * 4);
+                setHeight(400 * (array_groups.length + 1) * 4);
 
     }
                 else if (displayed_state == "playoff") {
