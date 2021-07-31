@@ -17,10 +17,8 @@ module.exports = StyleSheet.create({
         backgroundColor: "#EFF8FF"
     },
     listcontainer: {
-        // flex: 1,
+        flex: 1,
         alignSelf: "flex-start",
-        margin: 30,
-        width: 400,
         backgroundColor: "#EFF8FF"
     },
     matchover: {
