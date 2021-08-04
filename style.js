@@ -1,5 +1,5 @@
 'use strict'
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
 module.exports = StyleSheet.create({
     container: {
@@ -27,7 +27,7 @@ module.exports = StyleSheet.create({
         justifyContent: "space-between",
         backgroundColor: "#D62628",
         borderWidth: 1,
-        alignSelf:"center",
+        alignSelf: "center",
         marginLeft: 30,
         marginRight: 30,
         width: 100,
@@ -36,7 +36,7 @@ module.exports = StyleSheet.create({
         backgroundColor: "#D62628",
         flexDirection: 'column',
         alignItems: "center",
-        alignSelf:"center",
+        alignSelf: "center",
         justifyContent: "space-between",
         borderWidth: 1,
         margin: 30,
@@ -57,7 +57,7 @@ module.exports = StyleSheet.create({
         backgroundColor: "#A8DADC",
         flexDirection: 'column',
         alignItems: "center",
-        alignSelf:"center",
+        alignSelf: "center",
         justifyContent: "space-between",
         borderWidth: 1,
         margin: 30,
@@ -87,10 +87,10 @@ module.exports = StyleSheet.create({
         left: 0,
         top: 0,
         width: "100%",
-        height:"100%",
+        height: "100%",
         alignItems: 'center',
         justifyContent: 'center'
-      },
+    },
 
     middle: {
         flex: 0.3,
@@ -121,6 +121,13 @@ module.exports = StyleSheet.create({
     bottom: {
         fontFamily: "cochin",
         // textAlign: "justify"
+    },
+    inputScore: {
+        borderWidth: 1,
+        width: 150,
+        height: 30,
+        textAlign: "center",
+        textAlignVertical: "center"
     },
     score: {
         textAlign: "center",
@@ -227,8 +234,22 @@ module.exports = StyleSheet.create({
         justifyContent: "center",
         alignSelf: "center"
     },
-    sportimage:{
-        width:68,
-        height:68,
+    sportimage: {
+        width: 68,
+        height: 68,
+    },
+    medailletransparent: {
+        width: 20,
+        height: 30,
+        flexDirection: "row",
+        backgroundColor: "lightgrey",
+        opacity:0.2
+    },
+    medailleopaque: {
+        width: 20,
+        height: 30,
+        flexDirection: "row",
+        backgroundColor: "lightgrey",
+        opacity:1
     }
-    })
+})

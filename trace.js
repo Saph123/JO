@@ -75,9 +75,8 @@ export const Trace = (props) => {
     else { // Other (list like trail etc.)
         if (!autho) {
             return (
-                // <View style={{ flexDirection: "column", flex: 1 }}>
 
-                <View style={styles.listcontainer}>
+                <View test={console.log("kekw1")} style={styles.listcontainer}>
                     <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
                         <Row data={["Athlete", "Score / temps"]} widthArr={[150, 150]} style={{ width: "100%", height: 40, backgroundColor: '#f1f8ff' }} textStyle={{ margin: 6 }}></Row>
                         {liste.map(r =>
@@ -87,26 +86,86 @@ export const Trace = (props) => {
                     </Table>
                 </View>
 
-                // </View>
             )
         }
         else {
             return (
-                <View styles={{flexDirection:"row"}}>
+                <View style={{ flexDirection: "row", borderColor: "black", borderWidth: 1, position: "absolute", top: 0, left: 0, flex: 1 }}>
                     <View>
+                        <Text style={styles.inputScore}>Athlete</Text>
                         {liste.map(r =>
-                            <Text>{r.username}</Text>
+                            <Text style={styles.inputScore}>{r.username}</Text>
                         )
                         }
                     </View>
-
                     <View>
+                        <Text style={styles.inputScore}>Score/Temps</Text>
                         {liste.map(r =>
-                            <TextInput>{r.score}</TextInput>
+                            <TextInput style={styles.inputScore}>{r.score}</TextInput>
                         )
                         }
                     </View>
-
+                    <View>
+                        <View style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
+                        {liste.map((r, index) =>
+                            <View style={{ flexDirection: "row" }} >
+                                <View style={r.rank == 3 ? styles.medailleopaque : styles.medailletransparent}>
+                                    <TouchableOpacity
+                                        onPressIn={() => {
+                                            setloading(true);
+                                            if (r.rank == 3) {
+                                                r.rank = 0
+                                            }
+                                            else {
+                                                r.rank = 3;
+                                            }
+                                            liste.map((q, index2) => { if (r != q && q.rank==3) { q.rank = 0 } });
+                                            setListe([...liste]);
+                                            setloading(false)
+                                        }}
+                                    >
+                                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={r.rank == 2 ? styles.medailleopaque : styles.medailletransparent}>
+                                    <TouchableOpacity
+                                        onPressIn={() => {
+                                            setloading(true);
+                                            if (r.rank == 2) {
+                                                r.rank = 0
+                                            }
+                                            else {
+                                                r.rank = 2;
+                                            }
+                                            liste.map((q, index2) => { if (r != q && q.rank==2) { q.rank = 0 } });
+                                            setListe([...liste]);
+                                            setloading(false)
+                                        }}
+                                    >
+                                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={r.rank == 1 ? styles.medailleopaque : styles.medailletransparent}>
+                                    <TouchableOpacity
+                                        onPressIn={() => {
+                                            setloading(true);
+                                            if (r.rank == 1) {
+                                                r.rank = 0
+                                            }
+                                            else {
+                                                r.rank = 1;
+                                            }
+                                            liste.map((q, index2) => { if (r != q && q.rank==1) { q.rank = 0 } });
+                                            setListe([...liste]);
+                                            setloading(false)
+                                        }}
+                                    >
+                                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        )}
+                    </View>
                 </View>
             )
 
@@ -198,6 +257,7 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
         let liste = {};
         liste = await fetch("http://91.121.143.104:7070/teams/" + sportname + ".json").then(response => response.json()).then(data => { return data });
         let local_liste = [];
+        console.log("Creating new liste")
         for (var i in liste) {
             for (var iter in liste[i]) {
                 local_liste.push(new Liste(liste[i][iter]["Players"], liste[i][iter]["uniqueid"], "", ""));
@@ -538,11 +598,12 @@ class Match {
     }
 }
 class Liste {
-    constructor(username, uniqueId, score, time) {
+    constructor(username, uniqueId, score, time, rank = 0) {
         this.username = username;
         this.score = score;
         this.time = time;
         this.uniqueId = uniqueId;
+        this.rank = rank
     }
 }
 class Group {
