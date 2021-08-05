@@ -90,7 +90,7 @@ export const Trace = (props) => {
         }
         else {
             return (
-                <View style={{ flexDirection: "row", borderColor: "black", borderWidth: 1, position: "absolute", top: 0, left: 0, flex: 1 }}>
+                <View style={{ flexDirection: "row", borderColor: "black", borderWidth: 1, flex: 10 }}>
                     <View>
                         <Text style={styles.inputScore}>Athlete</Text>
                         {liste.map(r =>
@@ -119,7 +119,7 @@ export const Trace = (props) => {
                                             else {
                                                 r.rank = 3;
                                             }
-                                            liste.map((q, index2) => { if (r != q && q.rank==3) { q.rank = 0 } });
+                                            liste.map((q, index2) => { if (r != q && q.rank == 3) { q.rank = 0 } });
                                             setListe([...liste]);
                                             setloading(false)
                                         }}
@@ -137,7 +137,7 @@ export const Trace = (props) => {
                                             else {
                                                 r.rank = 2;
                                             }
-                                            liste.map((q, index2) => { if (r != q && q.rank==2) { q.rank = 0 } });
+                                            liste.map((q, index2) => { if (r != q && q.rank == 2) { q.rank = 0 } });
                                             setListe([...liste]);
                                             setloading(false)
                                         }}
@@ -155,7 +155,7 @@ export const Trace = (props) => {
                                             else {
                                                 r.rank = 1;
                                             }
-                                            liste.map((q, index2) => { if (r != q && q.rank==1) { q.rank = 0 } });
+                                            liste.map((q, index2) => { if (r != q && q.rank == 1) { q.rank = 0 } });
                                             setListe([...liste]);
                                             setloading(false)
                                         }}
@@ -166,8 +166,15 @@ export const Trace = (props) => {
                             </View>
                         )}
                     </View>
+                    <View style={{ flexDirection: "row", flex: 1 }}>
+                        <Button style={{ margin: 30 }} color='grey' title="Save" onPress={() => { pushmatch(username, sport, liste, "liste", 0); }
+                        }>
+                        </Button>
+
+                    </View>
                 </View>
-            )
+                    )
+                    
 
         }
 
