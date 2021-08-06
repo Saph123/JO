@@ -267,7 +267,7 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
         console.log("Creating new liste")
         for (var i in liste) {
             for (var iter in liste[i]) {
-                local_liste.push(new Liste(liste[i][iter]["Players"], liste[i][iter]["uniqueid"], "", ""));
+                local_liste.push(new Liste(liste[i][iter]["Players"], liste[i][iter]["uniqueid"], Liste(liste[i][iter]["score"], ""));
                 console.log(liste[i][iter]["Players"]);
             }
         }
@@ -605,10 +605,9 @@ class Match {
     }
 }
 class Liste {
-    constructor(username, uniqueId, score, time, rank = 0) {
+    constructor(username, uniqueId, score, rank = 0) {
         this.username = username;
         this.score = score;
-        this.time = time;
         this.uniqueId = uniqueId;
         this.rank = rank
     }
