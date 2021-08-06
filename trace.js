@@ -101,7 +101,7 @@ export const Trace = (props) => {
                     <View>
                         <Text style={styles.inputScore}>Score/Temps</Text>
                         {liste.map(r =>
-                            <TextInput style={styles.inputScore}>{r.score}</TextInput>
+                            <TextInput onChangeText={(text) => {r.score = text;}} style={styles.inputScore}>{r.score}</TextInput>
                         )
                         }
                     </View>
@@ -167,7 +167,7 @@ export const Trace = (props) => {
                         )}
                     </View>
                     <View style={{ flexDirection: "row", flex: 1 }}>
-                        <Button style={{ margin: 30 }} color='grey' title="Save" onPress={() => { pushmatch(username, sport, liste, "liste", 0); }
+                        <Button style={{ margin: 30 }} color='grey' title="Save" onPress={() => { setListe([...liste]);pushmatch(username, sport, liste, "liste", 0); }
                         }>
                         </Button>
 
@@ -264,17 +264,16 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
         let liste = {};
         liste = await fetch("http://91.121.143.104:7070/teams/" + sportname + ".json").then(response => response.json()).then(data => { return data });
         let local_liste = [];
+        console.log(liste)
         console.log("Creating new liste")
         for (var i in liste) {
             for (var iter in liste[i]) {
-                local_liste.push(new Liste(liste[i][iter]["Players"], liste[i][iter]["uniqueid"], liste[i][iter]["score"]));
-                console.log(liste[i][iter]["Players"]);
+                local_liste.push(new Liste(liste[i][iter]["Players"], liste[i][iter]["uniqueid"], liste[i][iter]["score"],liste[i][iter]["rank"]));
             }
         }
         setListe(local_liste);
         setWidth(600);
         setHeight(iter * 50);
-        console.log("liste length", iter);
     }
 
 }
