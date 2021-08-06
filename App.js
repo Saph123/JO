@@ -108,7 +108,7 @@ function HomeScreen({ route, navigation }) {
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.homebuttons}
-                        onPress={() => { current_sport = "Orientation", navigation.navigate('SportDetails', {sportname:"Beerpong"})}}
+                        onPress={() => { current_sport = "Orientation", navigation.navigate('SportDetails', {sportname:"Orientation"})}}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/orientation.png')} />
                     </TouchableOpacity>
