@@ -159,19 +159,19 @@ function HomeScreen({ route, navigation }) {
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.homebuttons}
-                        onPress={() => { current_sport = "Beerpong", navigation.navigate('SportDetails', {sportname:"Beerpong"})}}
+                        onPress={() => { current_sport = "Ventriglisse", navigation.navigate('SportDetails', {sportname:"Ventriglisse"})}}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/100mricard.png')} />
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.homebuttons}
-                        onPress={() => { current_sport = "Beerpong", navigation.navigate('SportDetails', {sportname:"Beerpong"})}}
+                        onPress={() => { current_sport = "Petanque", navigation.navigate('SportDetails', {sportname:"Petanque"})}}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/petanque.png')} />
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.homebuttons}
-                        onPress={() => { current_sport = "Beerpong", navigation.navigate('SportDetails', {sportname:"Beerpong"})}}
+                        onPress={() => { current_sport = "Molky", navigation.navigate('SportDetails', {sportname:"Molky"})}}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/petanque.png')} />
                     </TouchableOpacity>
