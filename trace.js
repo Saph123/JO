@@ -119,7 +119,8 @@ export const Trace = (props) => {
                                             else {
                                                 r.rank = 3;
                                             }
-                                            liste.map((q, index2) => { if (r != q && q.rank == 3) { q.rank = 0 } });
+                                            // uncomment if you want only one medal
+                                            // liste.map((q, index2) => { if (r != q && q.rank == 3) { q.rank = 0 } }); 
                                             setListe([...liste]);
                                             setloading(false)
                                         }}
@@ -137,7 +138,8 @@ export const Trace = (props) => {
                                             else {
                                                 r.rank = 2;
                                             }
-                                            liste.map((q, index2) => { if (r != q && q.rank == 2) { q.rank = 0 } });
+                                            // uncomment if you want only one medal
+                                            // liste.map((q, index2) => { if (r != q && q.rank == 2) { q.rank = 0 } });
                                             setListe([...liste]);
                                             setloading(false)
                                         }}
@@ -155,7 +157,8 @@ export const Trace = (props) => {
                                             else {
                                                 r.rank = 1;
                                             }
-                                            liste.map((q, index2) => { if (r != q && q.rank == 1) { q.rank = 0 } });
+                                            // uncomment if you want only one medal
+                                            // liste.map((q, index2) => { if (r != q && q.rank == 1) { q.rank = 0 } });
                                             setListe([...liste]);
                                             setloading(false)
                                         }}
