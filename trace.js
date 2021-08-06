@@ -190,23 +190,23 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
 
 
     await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
-        if (displayed_state == "") {
-            console.log("firsttime", data['status'])
+        // if (displayed_state == "") {
+            // console.log("firsttime", data['status'])
             // first time we use the one in the server
             displayed_state = data['status'];
-        }
-        else { // seen an issue when going from a sport that have more states than another
-            var possibleState = false;
-            for (var i in data['states']) {
-                if (displayed_state == data['states'][i]) {
-                    possibleState = true;
-                    break;
-                }
-            }
-            if (!possibleState) {
-                displayed_state = data['status'];
-            }
-        }
+        // }
+        // else { // seen an issue when going from a sport that have more states than another
+        //     var possibleState = false;
+        //     for (var i in data['states']) {
+        //         if (displayed_state == data['states'][i]) {
+        //             possibleState = true;
+        //             break;
+        //         }
+        //     }
+        //     if (!possibleState) {
+        //         displayed_state = data['status'];
+        //     }
+        // }
         return data;
     });
     if (displayed_state == "poules") {
@@ -279,7 +279,7 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
 }
 
 
-export function toggle_status(status, setStatus, navigation) {
+export function toggle_status(status, setStatus, navigation, sportname) {
 
     for (var i = 0; i < status.states.length; i++) {
         if (status.states[i] == displayed_state) {
@@ -291,7 +291,7 @@ export function toggle_status(status, setStatus, navigation) {
             }
             // toggle = 1;
             setStatus(status);
-            navigation.navigate(navigation.dangerouslyGetState().routes[navigation.dangerouslyGetState().index].name, { refresh: "refresh" });
+            navigation.navigate(navigation.dangerouslyGetState().routes[navigation.dangerouslyGetState().index].name, { sportname:{sportname}, refresh: "refresh" });
             break;
         }
     }
@@ -303,9 +303,7 @@ export async function fetch_status(sportname, setStatus) {
 
     fetch_status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
         setStatus(data);
-        if (displayed_state == "") {
-            displayed_state = data['status'];
-        }
+        displayed_state = data['status'];
         return data;
     }).catch(err => console.log(err));
     return fetch_status;
@@ -314,17 +312,17 @@ export async function fetch_status(sportname, setStatus) {
 export function GetState(sportname, status, setStatus, navigation) {
 
     const [loaded, setloaded] = React.useState(0);
-
+    const [local_status, setLocalStatus] = React.useState("");
 
     React.useEffect(() => {
-        fetch_status(sportname, setStatus).then(r => setloaded(1));
+        fetch_status(sportname, setStatus).then(r => { setLocalStatus(r['status']);setloaded(1)});
     }, []);
 
     if (loaded == 0) {
         return <View><ActivityIndicator color="000000" /></View>;
     }
     else {
-        return <View><TouchableOpacity onPressIn={() => toggle_status(status, setStatus, navigation)}><Text style={{ marginTop: 10, marginRight: 30, color: "white" }}>{displayed_state}</Text></TouchableOpacity></View>;
+        return <View><TouchableOpacity onPressIn={() => toggle_status(status, setStatus, navigation, sportname)}><Text style={{ marginTop: 10, marginRight: 30, color: "white" }}>{local_status}</Text></TouchableOpacity></View>;
     }
 }
 
