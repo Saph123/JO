@@ -306,9 +306,17 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
         }
         setlevel(level);
         // gestion taille fenetre: affichage un peu plus large :)
+        if(level.length > 1){
+
+            setWidth(200 * ((level.length - 1) * (level.length - 1)));
+            setHeight(Math.max(200 * (level.length + 1), Dimensions.get("window").height + 100));
+        }
+        else{
+            setWidth(1000);
+            setHeight(1000);
+
+        }
         console.log(200 * ((level.length - 1) * (level.length - 1)));
-        setWidth(200 * ((level.length - 1) * (level.length - 1)));
-        setHeight(Math.max(200 * (level.length + 1), Dimensions.get("window").height + 100));
         setmatches(local_array_match);
     }
     else { // gestion listes (trail/tong)
