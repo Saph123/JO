@@ -31,6 +31,7 @@ module.exports = StyleSheet.create({
         marginLeft: 30,
         marginRight: 30,
         width: 100,
+        minHeight:120
     },
     matchpouleover: {
         backgroundColor: "#D62628",
@@ -40,7 +41,7 @@ module.exports = StyleSheet.create({
         justifyContent: "space-between",
         borderWidth: 1,
         margin: 30,
-        width: 100,
+        width: 200,
         borderRadius: 15
     },
     match: {
@@ -52,6 +53,7 @@ module.exports = StyleSheet.create({
         marginLeft: 30,
         marginRight: 30,
         width: 100,
+        minHeight:120
     },
     matchpoule: {
         backgroundColor: "#A8DADC",
@@ -61,7 +63,7 @@ module.exports = StyleSheet.create({
         justifyContent: "space-between",
         borderWidth: 1,
         margin: 30,
-        width: 100,
+        width: 200,
         borderRadius: 15
     },
     textmatch: {
@@ -124,7 +126,7 @@ module.exports = StyleSheet.create({
     },
     inputScore: {
         borderWidth: 1,
-        width: 150,
+        width: 250,
         height: 30,
         textAlign: "center",
         textAlignVertical: "center"
@@ -242,14 +244,24 @@ module.exports = StyleSheet.create({
         width: 20,
         height: 30,
         flexDirection: "row",
-        backgroundColor: "lightgrey",
+        // backgroundColor: "lightgrey",
+        tintColor:"lightgrey",
         opacity:0.2
+    },
+    medailleabsent: {
+        width: 20,
+        height: 30,
+        flexDirection: "row",
+        // backgroundColor: "lightgrey",
+        tintColor:"lightgrey",
+        opacity:0
     },
     medailleopaque: {
         width: 20,
         height: 30,
         flexDirection: "row",
-        backgroundColor: "lightgrey",
+        // backgroundColor: "lightgrey",
+        tintColor:"lightgrey",
         opacity:1
     }
 })

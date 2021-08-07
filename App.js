@@ -9,10 +9,9 @@ import { Audio } from 'expo-av';
 import CountDown from 'react-native-countdown-component';
 import { Planning, getNextEventseconds } from "./planning.js";
 import { Trace, GetState, fetch_status } from "./trace.js";
-import { fetch_all } from "./fetcher.js"
 // import Orientation from 'react-native-orientation';
 
-let username = "max";
+let username = "kekw";
 let current_sport = "Sportname";
 const styles = require("./style.js");
 const ArbitreContext = React.createContext(false);
@@ -197,6 +196,7 @@ function HomeScreen({ route, navigation }) {
 
 function PlanningScreen({ navigation }) {
 
+    alert(new Planning());
     return (
         <View>
             <Text>Planning</Text>
@@ -327,46 +327,6 @@ function SportDetailsScreen({ route, navigation }) {
     )
 };
 
-function LancerdeTongDetailsScreen({ navigation }) {
-    return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
-            <Text style={{ flex: 6, color: 'red' }}>LancerdeTong!</Text>
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
-                <Button color='red' title={"osef"} onPress={() => navigation.navigate('Home')} />
-            </View>
-        </View>
-    );
-}
-function centmetreRicardDetailsScreen({ navigation }) {
-    return (
-
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
-        </View>
-    );
-}
-
-
-function WaterpoloDetailsScreen({ navigation }) {
-    return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
-            <Text style={{ flex: 6, color: 'red' }}>WaterpoloDetailsScreen!</Text>
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
-                <Button color='red' title="Home" onPress={() => navigation.navigate('Home')} />
-            </View>
-        </View>
-    );
-}
-function TrailDetailsScreen({ navigation }) {
-    return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
-            <Text style={{ flex: 6, color: 'red' }}>TrailDetailsScreen!</Text>
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
-                <Button color='red' title="Home" onPress={() => navigation.navigate('Home')} />
-            </View>
-        </View>
-    );
-}
-
 function UsernameScreen({ navigation }) {
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
@@ -377,7 +337,7 @@ function UsernameScreen({ navigation }) {
         </View>
     );
 }
-
+var firsttimesound = true;
 async function playSound(sound_main, sound_status, set_sound, setstatus, sound_name) {
     if (sound_main == undefined) {
         await Audio.setAudioModeAsync({
@@ -397,8 +357,8 @@ async function playSound(sound_main, sound_status, set_sound, setstatus, sound_n
             set_sound(playbackObject);
         }
     }
-    var playback = await sound_main;
-    if (sound_main != undefined) {
+    if (await sound_main != undefined) {
+        console.log("kekw");
 
         var test = await sound_main.getStatusAsync();
         if (test.isPlaying == true) {
@@ -421,12 +381,7 @@ function App() {
     const [sound, setSound] = React.useState();
     const [headerstatus, setstatus] = React.useState();
     const [soundStatus, setSoundStatus] = React.useState();
-    // fork for offline here
-    // if(firsttime)
-    // {
-    //     firsttime = 0;
-    //     fetch_all();
-    // }
+
     return (
         <NavigationContainer>
             <ArbitreContext.Provider value={arbitre}>
@@ -440,10 +395,10 @@ function App() {
                         fontWeight: 'bold',
                     },
                 }} initialRouteName="Home">
-                    <Stack.Screen options={({ navigation }) => ({ title: "Home", headerRight: () => (<View style={{ flexDirection: "row", margin: 10 }}><TouchableOpacity onPressIn={() => { playSound(sound, soundStatus, setSound, setSoundStatus, "megaphone") }}><Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} /></TouchableOpacity><TouchableOpacity style={{ alignContent: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}><Text style={{ color: "white", margin: 10, alignSelf: "center" }}>{username}</Text></TouchableOpacity></View>) })} name="Home" component={HomeScreen} />
+                    <Stack.Screen options={({ navigation }) => ({ title: "Home", headerRight: () => (<View style={{ flexDirection: "row", margin: 10 }}><TouchableOpacity onPressIn={() => { playSound(sound, soundStatus, setSound, setSoundStatus, "megaphone") }}><Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} /></TouchableOpacity><TouchableOpacity style={{ alignContent: "center",textAlignVertical:"center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}><Text style={{ color: "white", margin: 30, alignSelf: "center" }}>{username}</Text></TouchableOpacity></View>) })} name="Home" component={HomeScreen} />
                     <Stack.Screen options={{ title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text></View> }} name="Login" component={Login} />
                     <Stack.Screen options={{ title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text></View> }} name="Planning" component={PlanningScreen} />
-                    <Stack.Screen options={({navigation}) => ({ title: current_sport, headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>{GetState(current_sport, headerstatus, setstatus, navigation)}<View><Text style={{ color: "white", margin: 10, alignSelf: "center" }}>{username}</Text></View><TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View> })} initialParams={{sportname:current_sport}} name="SportDetails" component={SportDetailsScreen} />
+                    <Stack.Screen options={({navigation}) => ({ title: current_sport, headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>{GetState(current_sport, headerstatus, setstatus, navigation)}<View><Text style={{ color: "white", margin: 10, alignSelf: "center",textAlignVertical:"center" }}>{username}</Text></View><TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View> })} initialParams={{sportname:current_sport}} name="SportDetails" component={SportDetailsScreen} />
                     {/* <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="LancerdeTongDetails" component={LancerdeTongDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="centmetreRicardDetails" component={centmetreRicardDetailsScreen} />
                     <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="WaterpoloDetails" component={WaterpoloDetailsScreen} />

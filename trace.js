@@ -73,24 +73,10 @@ export const Trace = (props) => {
 
     }
     else { // Other (list like trail etc.)
+        console.log(autho)
         if (!autho) {
             return (
-
-                <View test={console.log("kekw1")} style={styles.listcontainer}>
-                    <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
-                        <Row data={["Athlete", "Score / temps"]} widthArr={[150, 150]} style={{ width: "100%", height: 40, backgroundColor: '#f1f8ff' }} textStyle={{ margin: 6 }}></Row>
-                        {liste.map(r =>
-                            <Row data={[r.username, r.score]} widthArr={[150, 150]} heightArr={[200, 200]}></Row>
-                        )
-                        }
-                    </Table>
-                </View>
-
-            )
-        }
-        else {
-            return (
-                <View style={{ flexDirection: "row", borderColor: "black", borderWidth: 1, flex: 10 }}>
+                <View style={{ flexDirection: "row" }}>
                     <View>
                         <Text style={styles.inputScore}>Athlete</Text>
                         {liste.map(r =>
@@ -101,83 +87,145 @@ export const Trace = (props) => {
                     <View>
                         <Text style={styles.inputScore}>Score/Temps</Text>
                         {liste.map(r =>
-                            <TextInput onChangeText={(text) => {r.score = text;}} style={styles.inputScore}>{r.score}</TextInput>
+                            <Text style={styles.inputScore}>{r.score}</Text>
                         )
                         }
                     </View>
                     <View>
                         <View style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
-                        {liste.map((r, index) =>
-                            <View style={{ flexDirection: "row" }} >
-                                <View style={r.rank == 3 ? styles.medailleopaque : styles.medailletransparent}>
-                                    <TouchableOpacity
-                                        onPressIn={() => {
-                                            setloading(true);
-                                            if (r.rank == 3) {
-                                                r.rank = 0
-                                            }
-                                            else {
-                                                r.rank = 3;
-                                            }
-                                            // uncomment if you want only one medal
-                                            // liste.map((q, index2) => { if (r != q && q.rank == 3) { q.rank = 0 } }); 
-                                            setListe([...liste]);
-                                            setloading(false)
-                                        }}
-                                    >
-                                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={r.rank == 2 ? styles.medailleopaque : styles.medailletransparent}>
-                                    <TouchableOpacity
-                                        onPressIn={() => {
-                                            setloading(true);
-                                            if (r.rank == 2) {
-                                                r.rank = 0
-                                            }
-                                            else {
-                                                r.rank = 2;
-                                            }
-                                            // uncomment if you want only one medal
-                                            // liste.map((q, index2) => { if (r != q && q.rank == 2) { q.rank = 0 } });
-                                            setListe([...liste]);
-                                            setloading(false)
-                                        }}
-                                    >
+                        {liste.map((r, index) => {
+                            if (r.rank == 1) {
+                                console.log("kekw");
+                                return (
+                                    <View style={{ flexDirection: "row" }} >
+                                        <View style={styles.medailleopaque}>
+                                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
+                                            {/* <Text>KEKW</Text> */}
+                                        </View>
+                                    </View>)
+
+                            }
+                            else if (r.rank == 2) {
+                                return (
+                                    <View style={styles.medailleopaque}>
                                         <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={r.rank == 1 ? styles.medailleopaque : styles.medailletransparent}>
-                                    <TouchableOpacity
-                                        onPressIn={() => {
-                                            setloading(true);
-                                            if (r.rank == 1) {
-                                                r.rank = 0
-                                            }
-                                            else {
-                                                r.rank = 1;
-                                            }
-                                            // uncomment if you want only one medal
-                                            // liste.map((q, index2) => { if (r != q && q.rank == 1) { q.rank = 0 } });
-                                            setListe([...liste]);
-                                            setloading(false)
-                                        }}
-                                    >
-                                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
+                                    </View>)
+                            }
+                            else if (r.rank == 3) {
+                                return (
+                                    <View style={styles.medailleopaque}>
+                                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
+                                    </View>
+                                )
+                            }
+                            else {
+                                console.log("wtf");
+                                return (
+                                    <View style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
+                                )
+                            }
+                        }
                         )}
                     </View>
-                    <View style={{ flexDirection: "row", flex: 1 }}>
-                        <Button style={{ margin: 30 }} color='grey' title="Save" onPress={() => { setListe([...liste]);pushmatch(username, sport, liste, "liste", 0); }
+
+                </View>
+
+
+            )
+        }
+        else {
+            return (
+                <View>
+                    <View style={{ flexDirection: "row" }}>
+                        <View>
+                            <Text style={styles.inputScore}>Athlete</Text>
+                            {liste.map(r =>
+                                <Text style={styles.inputScore}>{r.username}</Text>
+                            )
+                            }
+                        </View>
+                        <View>
+                            <Text style={styles.inputScore}>Score/Temps</Text>
+                            {liste.map(r =>
+                                <TextInput onChangeText={(text) => { r.score = text; }} style={styles.inputScore}>{r.score}</TextInput>
+                            )
+                            }
+                        </View>
+                        <View>
+                            <View style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
+                            {liste.map((r, index) =>
+                                <View style={{ flexDirection: "row" }} >
+                                    <View style={r.rank == 3 ? styles.medailleopaque : styles.medailletransparent}>
+                                        <TouchableOpacity
+                                            onPressIn={() => {
+                                                setloading(true);
+                                                if (r.rank == 3) {
+                                                    r.rank = 0
+                                                }
+                                                else {
+                                                    r.rank = 3;
+                                                }
+                                                // uncomment if you want only one medal
+                                                // liste.map((q, index2) => { if (r != q && q.rank == 3) { q.rank = 0 } }); 
+                                                setListe([...liste]);
+                                                setloading(false)
+                                            }}
+                                        >
+                                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={r.rank == 2 ? styles.medailleopaque : styles.medailletransparent}>
+                                        <TouchableOpacity
+                                            onPressIn={() => {
+                                                setloading(true);
+                                                if (r.rank == 2) {
+                                                    r.rank = 0
+                                                }
+                                                else {
+                                                    r.rank = 2;
+                                                }
+                                                // uncomment if you want only one medal
+                                                // liste.map((q, index2) => { if (r != q && q.rank == 2) { q.rank = 0 } });
+                                                setListe([...liste]);
+                                                setloading(false)
+                                            }}
+                                        >
+                                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={r.rank == 1 ? styles.medailleopaque : styles.medailletransparent}>
+                                        <TouchableOpacity
+                                            onPressIn={() => {
+                                                setloading(true);
+                                                if (r.rank == 1) {
+                                                    r.rank = 0
+                                                }
+                                                else {
+                                                    r.rank = 1;
+                                                }
+                                                // uncomment if you want only one medal
+                                                // liste.map((q, index2) => { if (r != q && q.rank == 1) { q.rank = 0 } });
+                                                setListe([...liste]);
+                                                setloading(false)
+                                            }}
+                                        >
+                                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            )}
+                        </View>
+
+                    </View>
+                    <View style={{ flexDirection: "row", marginTop: 20, marginLeft: 250 }}>
+                        <Button style={styles.openButton} title="Save" onPress={() => { setListe([...liste]); pushmatch(username, sport, liste, "liste", 0); }
                         }>
                         </Button>
 
                     </View>
                 </View>
-                    )
-                    
+            )
+
 
         }
 
@@ -194,9 +242,9 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
 
     await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
         // if (displayed_state == "") {
-            // console.log("firsttime", data['status'])
-            // first time we use the one in the server
-            displayed_state = data['status'];
+        // console.log("firsttime", data['status'])
+        // first time we use the one in the server
+        displayed_state = data['status'];
         // }
         // else { // seen an issue when going from a sport that have more states than another
         //     var possibleState = false;
@@ -271,7 +319,7 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
         console.log("Creating new liste")
         for (var i in liste) {
             for (var iter in liste[i]) {
-                local_liste.push(new Liste(liste[i][iter]["Players"], liste[i][iter]["uniqueid"], liste[i][iter]["score"],liste[i][iter]["rank"]));
+                local_liste.push(new Liste(liste[i][iter]["Players"], liste[i][iter]["uniqueid"], liste[i][iter]["score"], liste[i][iter]["rank"]));
             }
         }
         setListe(local_liste);
@@ -294,7 +342,7 @@ export function toggle_status(status, setStatus, navigation, sportname) {
             }
             // toggle = 1;
             setStatus(status);
-            navigation.navigate(navigation.dangerouslyGetState().routes[navigation.dangerouslyGetState().index].name, { sportname:{sportname}, refresh: "refresh" });
+            navigation.navigate(navigation.dangerouslyGetState().routes[navigation.dangerouslyGetState().index].name, { sportname: { sportname }, refresh: "refresh" });
             break;
         }
     }
@@ -318,7 +366,7 @@ export function GetState(sportname, status, setStatus, navigation) {
     const [local_status, setLocalStatus] = React.useState("");
 
     React.useEffect(() => {
-        fetch_status(sportname, setStatus).then(r => { setLocalStatus(r['status']);setloaded(1)});
+        fetch_status(sportname, setStatus).then(r => { setLocalStatus(r['status']); setloaded(1) });
     }, []);
 
     if (loaded == 0) {

@@ -1,17 +1,18 @@
 {
-    "start":"2021-08-27T20:00:00", //2021-08-26T
-    "run":"2021-08-28T09:30:00",
-    "dodgeball":"2021-08-28T11:00:00",
-    "pizza":"2021-08-28T13:00:00",
-    "tong/babyfoot/flechette/pingpong":"2021-08-28T15:00:00",
-    "orientation":"2021-08-28T18:00:00",
-    "beerpong":"2021-08-28T19:00:00",
-    "volley":"2021-08-29T11:00:00",
-    "waterpolo/polishhorseshoe":"2021-08-29T14:00:00",
-    "natationsynchro/spikeball":"2021-08-29T15:00:00",
-    "ventriglisse":"2021-08-29T17:30:00",
-    "100mricard":"2021-08-29T19:00:00",
-    "petanque/molky":"2021-08-30T11:00:00",
-    "remiseprix":"2021-08-30T14:30:00",
-    "rangement":"2021-08-30T15:00:00"
+    "Start":"2021-08-26T20:00:00",
+    "Run":"2021-08-27T09:30:00",
+    "Dodgeball":"2021-08-27T11:00:00",
+    "Pizza":"2021-08-27T13:00:00",
+    "Tong/babyfoot/flechette/pingpong":"2021-08-27T15:00:00",
+    "Orientation":"2021-08-27T18:00:00",
+    "Beerpong":"2021-08-27T19:00:00",
+    "Volley":"2021-08-28T11:00:00",
+    "Waterpolo/polishhorseshoe":"2021-08-28T14:00:00",
+    "Natationsynchro/spikeball":"2021-08-28T15:00:00",
+    "Ventriglisse":"2021-08-28T17:30:00",
+    "100mricard":"2021-08-28T19:00:00",
+    "Petanque":"2021-08-29T11:00:00",
+    "Molky":"2021-08-29T11:00:00",
+    "Remiseprix":"2021-08-29T14:30:00",
+    "Rangement":"2021-08-29T15:00:00"
 }
