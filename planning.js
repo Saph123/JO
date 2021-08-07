@@ -3,23 +3,21 @@ import planning from './assets/planning.json';
 export class Planning{
     constructor(){
         this.listeevent = []
+
         for (var event in planning)
         {
-            this.listeevent.push(event);
+            this.listeevent.push({eventname:event, time:new Date(planning[event])});
         }
     }
     
 }
 export function getNextEventseconds(){
     var now = Date.now();
-    var min = new Date(planning['Start']) - Date.now();
+    var min = new Date(planning['Soirée d\'ouverture!']) - Date.now();
     if(min > 0)
     {
         min = Math.trunc(min/1000.0);
         return {time:min, name:"Soirée d'ouverture"};
-    }
-    else{
-        return {time:new Date(planning['Start']),name:"Soirée d'ouverture!"}
     }
     for (var event in planning)
     {

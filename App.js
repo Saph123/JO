@@ -196,12 +196,75 @@ function HomeScreen({ route, navigation }) {
 
 function PlanningScreen({ navigation }) {
 
-    alert(new Planning());
+    var planning = new Planning();
+    var jeudi = new Date('2021-08-27T00:00:00');
+    var vendredi = new Date('2021-08-28T00:00:00');
+    var samedi = new Date('2021-08-29T00:00:00');
+    var dimanche = new Date('2021-08-30T00:00:00');
+    
     return (
-        <View>
-            <Text>Planning</Text>
-        </View>
-    )
+            <PinchZoomView  style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, flexDirection:"row", width: 1000, height: 1000 }} maxScale={1} minScale={0.5} >
+            <View style={styles.calendar}>
+                <View><Text style={styles.textday}>Jeudi</Text></View>
+                {
+planning["listeevent"].map(r => { 
+    if(r.time < jeudi){
+        return (
+            <View>
+                <View><Text style={styles.texttime}>{r.time.getHours() + ":00"}</Text></View>
+                <View><Text style={styles.textevent}>{r.eventname}</Text></View>
+            </View>)
+    }
+})
+                }
+            </View>
+            
+            <View style={styles.calendar}>
+                <View><Text style={styles.textday}>Vendredi</Text></View>
+            {
+planning["listeevent"].map(r => {
+    if(r.time < vendredi && r.time > jeudi){
+        return (
+            <View>
+                <View><Text style={styles.texttime}>{r.time.getHours() + ":00"}</Text></View>
+                <View><TouchableOpacity onPressIn={() =>  {current_sport = r.eventname;navigation.navigate('SportDetails', {sportname:r.eventname})}}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
+            </View>)
+    }
+})
+                }
+            </View>
+            
+            <View style={styles.calendar}>
+                <View><Text style={styles.textday}>Samedi</Text></View>
+            {
+planning["listeevent"].map(r => {
+    if(r.time < samedi && r.time > vendredi){
+        return (
+            <View>
+                <View><Text style={styles.texttime}>{r.time.getHours() + ":00"}</Text></View>
+                <View><TouchableOpacity onPressIn={() =>  {current_sport = r.eventname;navigation.navigate('SportDetails', {sportname:r.eventname})}}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
+            </View>)
+    }
+})
+                }
+            </View>
+            
+            <View style={styles.calendar}>
+                <View><Text style={styles.textday}>Dimanche</Text></View>
+            {
+planning["listeevent"].map(r => {
+    if(r.time < dimanche  && r.time > samedi){
+        return (
+            <View>
+                <View><Text style={styles.texttime}>{r.time.getHours() + ":00"}</Text></View>
+                <View><TouchableOpacity onPressIn={() =>  {if (r.time.getHours() < 12){current_sport = r.eventname;navigation.navigate('SportDetails', {sportname:r.eventname})}}}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
+            </View>)
+    }
+})
+                }
+            </View>
+        </PinchZoomView>)
+
 };
 function Login({ navigation }) {
     const width = Dimensions.get("window").width;

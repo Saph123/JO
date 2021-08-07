@@ -263,5 +263,29 @@ module.exports = StyleSheet.create({
         // backgroundColor: "lightgrey",
         tintColor:"lightgrey",
         opacity:1
+    },
+    textday: {
+        fontSize:16,
+        fontWeight:"bold",
+        textAlign:"center",
+    },
+    texttime: {
+        fontSize:12,
+        fontStyle:"italic",
+        fontWeight:"bold",
+        textAlign:"center",
+        marginTop:20
+    },
+    textevent: {
+        fontSize:16,
+        fontStyle:"italic",
+        textAlign:"center",
+    },
+    calendar: {
+        margin:10,
+        width:200,
+        backgroundColor: "#FED8B1",
+        borderRadius:15,
+        height: 600
     }
 })
