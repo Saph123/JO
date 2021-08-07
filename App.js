@@ -415,7 +415,7 @@ async function playSound(sound_main, sound_status, set_sound, setstatus, sound_n
         }
         else if (sound_name == "cluedo") {
             const { sound: playbackObject } = await Audio.Sound.createAsync(
-                require('./assets/cluedo.mp3')
+                require('./assets/cluedo.wav')
             );
             set_sound(playbackObject);
         }
