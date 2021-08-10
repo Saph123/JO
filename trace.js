@@ -331,8 +331,8 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
             }
         }
         setListe(local_liste);
-        setWidth(600);
-        setHeight(iter * 50);
+        setWidth(1000);
+        setHeight(iter * 100);
     }
 
 }
