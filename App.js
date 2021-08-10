@@ -11,7 +11,7 @@ import { Planning, getNextEventseconds } from "./planning.js";
 import { Trace, GetState, fetch_status } from "./trace.js";
 // import Orientation from 'react-native-orientation';
 
-let username = "kekw";
+let username = "Max";
 let current_sport = "Sportname";
 const styles = require("./style.js");
 const ArbitreContext = React.createContext(false);
@@ -344,7 +344,7 @@ function SportDetailsScreen({ route, navigation }) {
                 if (r['arbitre'][authouser] == username) {
                     setauthorized(true);
                 }
-                else if("max" == username){
+                else if("Max" == username || "Antoine" == username || "Ugo" == username){
                     setauthorized(true);
                 }
             }
