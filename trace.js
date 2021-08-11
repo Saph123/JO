@@ -387,8 +387,6 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
 
 export function toggle_status(status, setStatus, navigation, sportname) {
 
-    console.log( status.states)
-    console.log(displayed_state)
     for (var i = 0; i < status.states.length; i++) {
         if (status.states[i] == displayed_state) {
             if (i + 1 < status.states.length) {
@@ -397,8 +395,6 @@ export function toggle_status(status, setStatus, navigation, sportname) {
             else {
                 displayed_state = status.states[0];
             }
-            console.log(displayed_state)
-            // toggle = 1;
             setStatus(status);
             console.log(status," at the end")
             navigation.navigate(navigation.dangerouslyGetState().routes[navigation.dangerouslyGetState().index].name, { sportname: { sportname }, refresh: "refresh" });

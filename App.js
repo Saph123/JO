@@ -30,25 +30,28 @@ function HomeScreen({ route, navigation }) {
     const [nextEvent, setNextEvent] = React.useState("");
     const [soundstatus, setSound] = React.useState();
     async function playcluedo() {
-        if(soundstatus == undefined){
+        if (soundstatus == undefined) {
 
             console.log('Loading Sound');
             const { sound } = await Audio.Sound.createAsync(
                 require('./assets/cluedo.wav')
-                );
-                setSound(sound);
+            );
+            setSound(sound);
             await sound.playAsync()
-            }
-        var test = await soundstatus.getStatusAsync();
-        if (test.isPlaying == true) {
-            await soundstatus.stopAsync();
+        }
+        if (soundstatus != undefined) {
 
+            var test = await soundstatus.getStatusAsync();
+            if (test.isPlaying == true) {
+                await soundstatus.stopAsync();
+
+            }
+            else {
+                await soundstatus.stopAsync();
+                await soundstatus.playAsync();
+            }
         }
-        else {
-            await soundstatus.stopAsync();
-            await soundstatus.playAsync();
-        }
-    
+
     }
     React.useEffect(() => {
         var dateJO = new Date('2021-08-26T20:00:00');
@@ -440,27 +443,31 @@ function App() {
     const [headerstatus, setstatus] = React.useState();
     const [soundstatus, setSound] = React.useState();
     async function playmegaphone() {
-        if(soundstatus == undefined){
+        if (soundstatus == undefined) {
 
             console.log('Loading Sound');
+            Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
+
             const { sound } = await Audio.Sound.createAsync(
                 require('./assets/guylabedav.mp3')
-                );
-                setSound(sound);
-                await sound.playAsync();
-                
-            }
-        var test = await soundstatus.getStatusAsync();
-        console.log(test.isPlaying)
-        if (test.isPlaying == true) {
-            await soundstatus.stopAsync();
+            );
+            setSound(sound);
+            await sound.playAsync();
 
         }
-        else {
-            await soundstatus.stopAsync();
-            await soundstatus.playAsync();
+        if (soundstatus != undefined) {
+            var test = await soundstatus.getStatusAsync();
+            console.log(test.isPlaying)
+            if (test.isPlaying == true) {
+                await soundstatus.stopAsync();
+
+            }
+            else {
+                await soundstatus.stopAsync();
+                await soundstatus.playAsync();
+            }
         }
-    
+
     }
     return (
         <NavigationContainer>
