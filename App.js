@@ -34,7 +34,7 @@ function HomeScreen({ route, navigation }) {
 
             console.log('Loading Sound');
             const { sound } = await Audio.Sound.createAsync(
-                require('./assets/cluedo.mp3')
+                require('./assets/cluedo.wav')
                 );
                 setSound(sound);
             await sound.playAsync()
@@ -422,7 +422,7 @@ function SportDetailsScreen({ route, navigation }) {
 function UsernameScreen({ navigation }) {
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
-            <Text style={{ flex: 6, color: 'red' }}>TrailDetailsScreen!</Text>
+            <Text style={{ flex: 6, color: 'red' }}>Username screen!</Text>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
                 <Button color='red' title="Home" onPress={() => navigation.navigate('Home')} />
             </View>
