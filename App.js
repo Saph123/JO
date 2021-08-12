@@ -240,10 +240,14 @@ function PlanningScreen({ navigation }) {
                 <View><Text style={styles.textday}>Jeudi</Text></View>
                 {
                     planning["listeevent"].map(r => {
+                        var minutes = r.time.getMinutes();
+                        if (minutes == 0) {
+                            minutes = "00"
+                        }
                         if (r.time < jeudi) {
                             return (
                                 <View>
-                                    <View><Text style={styles.texttime}>{r.time.getHours() + ":00"}</Text></View>
+                                    <View><Text style={styles.texttime}>{r.time.getHours() + ":" + minutes}</Text></View>
                                     <View><Text style={styles.textevent}>{r.eventname}</Text></View>
                                 </View>)
                         }
@@ -255,10 +259,14 @@ function PlanningScreen({ navigation }) {
                 <View><Text style={styles.textday}>Vendredi</Text></View>
                 {
                     planning["listeevent"].map(r => {
+                        var minutes = r.time.getMinutes();
+                        if (minutes == 0) {
+                            minutes = "00"
+                        }
                         if (r.time < vendredi && r.time > jeudi) {
                             return (
                                 <View>
-                                    <View><Text style={styles.texttime}>{r.time.getHours() + ":00"}</Text></View>
+                                    <View><Text style={styles.texttime}>{r.time.getHours() + ":" + minutes}</Text></View>
                                     <View><TouchableOpacity onPressIn={() => { current_sport = r.eventname; navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
                                 </View>)
                         }
@@ -270,10 +278,14 @@ function PlanningScreen({ navigation }) {
                 <View><Text style={styles.textday}>Samedi</Text></View>
                 {
                     planning["listeevent"].map(r => {
+                        var minutes = r.time.getMinutes();
+                        if (minutes == 0) {
+                            minutes = "00"
+                        }
                         if (r.time < samedi && r.time > vendredi) {
                             return (
                                 <View>
-                                    <View><Text style={styles.texttime}>{r.time.getHours() + ":00"}</Text></View>
+                                    <View><Text style={styles.texttime}>{r.time.getHours() + ":" + minutes}</Text></View>
                                     <View><TouchableOpacity onPressIn={() => { current_sport = r.eventname; navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
                                 </View>)
                         }
@@ -285,10 +297,14 @@ function PlanningScreen({ navigation }) {
                 <View><Text style={styles.textday}>Dimanche</Text></View>
                 {
                     planning["listeevent"].map(r => {
+                        var minutes = r.time.getMinutes();
+                        if (minutes == 0) {
+                            minutes = "00"
+                        }
                         if (r.time < dimanche && r.time > samedi) {
                             return (
                                 <View>
-                                    <View><Text style={styles.texttime}>{r.time.getHours() + ":00"}</Text></View>
+                                    <View><Text style={styles.texttime}>{r.time.getHours() + ":" + minutes}</Text></View>
                                     <View><TouchableOpacity onPressIn={() => { if (r.time.getHours() < 12) { current_sport = r.eventname; navigation.navigate('SportDetails', { sportname: r.eventname }) } }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
                                 </View>)
                         }

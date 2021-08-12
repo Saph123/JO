@@ -325,7 +325,7 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
         // gestion taille fenetre: affichage un peu plus large :)
         if (level.length > 1) {
 
-            setWidth(200 * ((level.length - 1) * (level.length - 1)));
+            setWidth(400 * ((level.length - 1) * (level.length - 1)));
             setHeight(Math.max(200 * (level.length + 1), Dimensions.get("window").height + 100));
         }
         else {
@@ -333,7 +333,7 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
             setHeight(1000);
 
         }
-        console.log(200 * ((level.length - 1) * (level.length - 1)));
+        console.log(400 * ((level.length - 1) * (level.length - 1)));
         setmatches(local_array_match);
     }
     else { // gestion listes (trail/tong)
@@ -348,6 +348,7 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
                 console.log(liste[i]["Players"])
                 local_liste.push(new Liste(liste[i]["Players"], liste[i]["score"], liste[i]["rank"], 0));
             }
+            setHeight(i * 70);
         }
         else {
 
