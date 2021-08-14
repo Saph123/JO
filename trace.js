@@ -1,6 +1,6 @@
 // import styles from "./style";
 import { useNavigation } from '@react-navigation/native';
-import { Button, View, Dimensions, ActivityIndicator, TextInput, Text, Image } from 'react-native';
+import { Platform, Button, View, Dimensions, ActivityIndicator, TextInput, Text, Image } from 'react-native';
 import * as React from 'react';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { Svg, Polyline } from 'react-native-svg';
@@ -272,9 +272,23 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
 
 
     await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
-
-        displayed_state = data['status'];
-
+        if (displayed_state == "") {
+            console.log("firsttime", data['status'])
+            // first time we use the one in the server
+            displayed_state = data['status'];
+        }
+        else { // seen an issue when going from a sport that have more states than another
+            var possibleState = false;
+            for (var i in data['states']) {
+                if (displayed_state == data['states'][i]) {
+                    possibleState = true;
+                    break;
+                }
+            }
+            if (!possibleState) {
+                displayed_state = data['status'];
+            }
+        }
         return data;
     });
     if (displayed_state == "poules") {
@@ -396,9 +410,10 @@ export function toggle_status(status, setStatus, navigation, sportname) {
             else {
                 displayed_state = status.states[0];
             }
+            status.status = displayed_state
             setStatus(status);
             console.log(status," at the end")
-            navigation.navigate(navigation.dangerouslyGetState().routes[navigation.dangerouslyGetState().index].name, { sportname: { sportname }, refresh: "refresh" });
+            navigation.reset({routes : [{name: "Home"}, { name: navigation.dangerouslyGetState().routes[navigation.dangerouslyGetState().index].name, sportname : sportname}]});
             break;
         }
     }
@@ -409,8 +424,25 @@ export async function fetch_status(sportname, setStatus) {
 
 
     fetch_status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
+        if (displayed_state == "") {
+            console.log("firsttime", data['status'])
+            // first time we use the one in the server
+            displayed_state = data['status'];
+        }
+        else { // seen an issue when going from a sport that have more states than another
+            var possibleState = false;
+            for (var i in data['states']) {
+                if (displayed_state == data['states'][i]) {
+                    possibleState = true;
+                    data["status"] = displayed_state;
+                    break;
+                }
+            }
+            if (!possibleState) {
+                displayed_state = data['status'];
+            }
+        }
         setStatus(data);
-        displayed_state = data['status'];
         return data;
     }).catch(err => console.log(err));
     return fetch_status;
@@ -420,16 +452,31 @@ export function GetState(sportname, status, setStatus, navigation) {
 
     const [loaded, setloaded] = React.useState(0);
     const [local_status, setLocalStatus] = React.useState("");
-
+    var right
+    var top
     React.useEffect(() => {
         fetch_status(sportname, setStatus).then(r => { setLocalStatus(r['status']); setloaded(1) });
     }, []);
+    if (Platform.OS === "ios") {
+
+        if (local_status == "final"){
+            right = 85
+        }
+        else {
+            right = 80
+        }
+        top = 40
+    }
+    else {
+        right = 30
+        top = 10
+    }
 
     if (loaded == 0) {
         return <View><ActivityIndicator color="000000" /></View>;
     }
     else {
-        return <View><TouchableOpacity onPressIn={() => toggle_status(status, setStatus, navigation, sportname)}><Text style={{ marginTop: 10, marginRight: 30, color: "white" }}>{local_status}</Text></TouchableOpacity></View>;
+        return <View><TouchableOpacity onPressIn={() => toggle_status(status, setStatus, navigation, sportname)}><Text style={{ marginTop: top, marginRight: right, color: "white" }}>{local_status}</Text></TouchableOpacity></View>;
     }
 }
 

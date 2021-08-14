@@ -229,10 +229,10 @@ function HomeScreen({ route, navigation }) {
 function PlanningScreen({ navigation }) {
 
     var planning = new Planning();
-    var jeudi = new Date('2021-08-27T00:00:00');
-    var vendredi = new Date('2021-08-28T00:00:00');
-    var samedi = new Date('2021-08-29T00:00:00');
-    var dimanche = new Date('2021-08-30T00:00:00');
+    var jeudi = new Date('2021-08-27T00:00:00+02:00');
+    var vendredi = new Date('2021-08-28T00:00:00+02:00');
+    var samedi = new Date('2021-08-29T00:00:00+02:00');
+    var dimanche = new Date('2021-08-30T00:00:00+02:00');
 
     return (
         <PinchZoomView style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, flexDirection: "row", width: 1000, height: 1000 }} maxScale={1} minScale={0.5} >
