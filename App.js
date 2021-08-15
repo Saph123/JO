@@ -8,7 +8,7 @@ import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { Audio } from 'expo-av';
 import CountDown from 'react-native-countdown-component';
 import { Planning, getNextEventseconds } from "./planning.js";
-import { Trace, GetState, fetch_status } from "./trace.js";
+import { Trace, GetState, fetch_status, fetch_results } from "./trace.js";
 import { ClipPath } from 'react-native-svg';
 
 // import myMP3File from './assets/guylabedav.mp3';
@@ -439,6 +439,41 @@ function SportDetailsScreen({ route, navigation }) {
 };
 
 function UsernameScreen({ navigation }) {
+    const [results, setResults] = React.useState();
+    React.useEffect(() => {
+        let rank = 0
+        let gold_medals = 0
+        let gold_wins = []
+        let silver_medals = 0
+        let silver_wins = []
+        let bronze_medals = 0
+        let bronze_wins = []
+        fetch_results(username, setResults).then(r => {
+            console.log(r["gold"])
+            rank = r["rank"]
+            gold_medals = r["gold"]["number"]
+            console.log(gold_medals)
+            if (gold_medals) {
+                gold_wins = r["gold"]["sports"]
+                console.log(gold_wins)
+            }
+            silver_medals = r["silver"]["number"]
+            console.log(silver_medals)
+            if (silver_medals) {
+                silver_wins = r["silver"]["sports"]
+                console.log(silver_wins)
+            }
+            bronze_medals = r["bronze"]["number"]
+            console.log(bronze_medals)
+            if (bronze_medals) {
+                bronze_wins = r["bronze"]["sports"]
+                console.log(bronze_wins)
+            }
+        }
+        );
+
+    }, []);
+
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
             <Text style={{ flex: 6, color: 'red' }}>Username screen!</Text>
@@ -498,11 +533,17 @@ function App() {
                         fontWeight: 'bold',
                     },
                 }} initialRouteName="Home">
-                    <Stack.Screen options={({ navigation }) => ({ title: "Home", headerRight: () => (<View style={{ flexDirection: "row", margin: 10 }}><TouchableOpacity onPressIn={playmegaphone}><Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} /></TouchableOpacity><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}><Text style={{ color: "white", margin: 30, alignSelf: "center" }}>{username}</Text></TouchableOpacity></View>) })} name="Home" component={HomeScreen} />
-                    <Stack.Screen options={{ title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text></View> }} name="Login" component={Login} />
-                    <Stack.Screen options={{ title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text></View> }} name="Planning" component={PlanningScreen} />
-                    <Stack.Screen options={({ navigation }) => ({ title: current_sport, headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>{GetState(current_sport, headerstatus, setstatus, navigation)}<View><Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text></View><TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View> })} initialParams={{ sportname: current_sport }} name="SportDetails" component={SportDetailsScreen} />
-                    <Stack.Screen options={{ headerRight: () => <TouchableOpacity onPressIn={() => arbitre = true}><Image style={{ borderRadius: 15, width: 20, height: 20 }} source={require('./assets/sifflet.png')} /></TouchableOpacity> }} name="UsernameScreen" component={UsernameScreen} />
+                    <Stack.Screen options={({ navigation }) => ({ title: "Home", headerRight: () => (<View style={{ flexDirection: "row", margin: 10 }}><TouchableOpacity onPressIn={playmegaphone}><Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} /></TouchableOpacity><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}>
+                        <Text style={{ color: "white", marginTop: 32, marginRight: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text></TouchableOpacity></View>) })} name="Home" component={HomeScreen} />
+                    <Stack.Screen options={{ title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text>
+                    </View> }} name="Login" component={Login} />
+                    <Stack.Screen options={{ title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>
+                        <Text style={{ color: "white", marginRight: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text
+                        ></View> }} name="Planning" component={PlanningScreen} />
+                    <Stack.Screen options={({ navigation }) => ({ title: current_sport, headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>{GetState(current_sport, headerstatus, setstatus, navigation)}<View>
+                        <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text></View>
+                        <TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View> })} initialParams={{ sportname: current_sport }} name="SportDetails" component={SportDetailsScreen} />
+                    <Stack.Screen name="UsernameScreen" component={UsernameScreen} />
                 </Stack.Navigator>
             </ArbitreContext.Provider>
         </NavigationContainer>

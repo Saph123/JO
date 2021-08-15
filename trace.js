@@ -448,6 +448,21 @@ export async function fetch_status(sportname, setStatus) {
     return fetch_status;
 }
 
+export async function fetch_results( username, setResults ) {
+    let fetch_results = {}
+    let player_data = {}
+
+    fetch_results = await fetch("http://91.121.143.104:7070/results/global.json").then(response => response.json()).then(data => {
+        for (player_data in data) {
+            if ( data[player_data]["name"] == username ){
+                return data[player_data]
+            }
+        }
+    }).catch(err => console.log(err));
+    setResults(fetch_results)
+    return fetch_results;
+}
+
 export function GetState(sportname, status, setStatus, navigation) {
 
     const [loaded, setloaded] = React.useState(0);
