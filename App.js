@@ -1,6 +1,6 @@
 // import styles from "./style";
 import * as React from 'react';
-import { Button, View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Alert } from 'react-native';
+import { Button, View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal } from 'react-native';
 import { NavigationContainer, useNavigation, useTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import PinchZoomView from 'react-native-pinch-zoom-view';

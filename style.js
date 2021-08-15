@@ -169,6 +169,24 @@ module.exports = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5
     },
+    matchZoomView: {
+        margin: 20,
+        minWidth: 300,
+        minHeight:600,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignSelf: "center",
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5
+    },
     openButton: {
         backgroundColor: "#F194FF",
         borderRadius: 20,
@@ -179,6 +197,12 @@ module.exports = StyleSheet.create({
         color: "white",
         fontWeight: "bold",
         textAlign: "center"
+    },
+    closeButton: {
+        width:23,
+        height:19,
+        alignItems:"flex-end",
+        alignSelf:"flex-end"
     },
     modalText: {
         marginBottom: 15,

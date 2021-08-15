@@ -1,6 +1,6 @@
 // import styles from "./style";
 import { useNavigation } from '@react-navigation/native';
-import { Platform, Button, View, Dimensions, ActivityIndicator, TextInput, Text, Image } from 'react-native';
+import { Platform, Button, View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Pressable } from 'react-native';
 import * as React from 'react';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { Svg, Polyline } from 'react-native-svg';
@@ -15,6 +15,7 @@ export const Trace = (props) => {
     const username = props.username;
     const width = props.width;
     const height = 170;
+
     const [loading, setloading] = React.useState(true);
     const [matches, setmatches] = React.useState([]);
     const [levels, setlevels] = React.useState([]);
@@ -394,7 +395,7 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
 
         setListe(local_liste);
         setWidth(1000);
-        
+
     }
 
 }
@@ -412,8 +413,8 @@ export function toggle_status(status, setStatus, navigation, sportname) {
             }
             status.status = displayed_state
             setStatus(status);
-            console.log(status," at the end")
-            navigation.reset({routes : [{name: "Home"}, { name: navigation.dangerouslyGetState().routes[navigation.dangerouslyGetState().index].name, sportname : sportname}]});
+            console.log(status, " at the end")
+            navigation.reset({ routes: [{ name: "Home" }, { name: navigation.dangerouslyGetState().routes[navigation.dangerouslyGetState().index].name, sportname: sportname }] });
             break;
         }
     }
@@ -448,13 +449,13 @@ export async function fetch_status(sportname, setStatus) {
     return fetch_status;
 }
 
-export async function fetch_results( username, setResults ) {
+export async function fetch_results(username, setResults) {
     let fetch_results = {}
     let player_data = {}
 
     fetch_results = await fetch("http://91.121.143.104:7070/results/global.json").then(response => response.json()).then(data => {
         for (player_data in data) {
-            if ( data[player_data]["name"] == username ){
+            if (data[player_data]["name"] == username) {
                 return data[player_data]
             }
         }
@@ -474,7 +475,7 @@ export function GetState(sportname, status, setStatus, navigation) {
     }, []);
     if (Platform.OS === "ios") {
 
-        if (local_status == "final"){
+        if (local_status == "final") {
             right = 85
         }
         else {
@@ -494,7 +495,37 @@ export function GetState(sportname, status, setStatus, navigation) {
         return <View><TouchableOpacity onPressIn={() => toggle_status(status, setStatus, navigation, sportname)}><Text style={{ marginTop: top, marginRight: right, color: "white" }}>{local_status}</Text></TouchableOpacity></View>;
     }
 }
+function crement_score_team(teamnumber, curMatch, matchArray, setMatchArray, incrementorDecrement) { // 0 to increment, 1 to decrement
+    let scoreteam1 = Number(curMatch.score.split(":")[0]);
+    let scoreteam2 = Number(curMatch.score.split(":")[1]);
+    if (teamnumber == 1) {
+        if (incrementorDecrement == 0) {
 
+            scoreteam1 += 1;
+        }
+        else if (scoreteam1 > 0) {
+            scoreteam1 -= 1;
+        }
+    }
+    else {
+        if (incrementorDecrement == 0) {
+
+            scoreteam2 += 1;
+        }
+        else if (scoreteam2 > 0) {
+            scoreteam2 -= 1;
+        }
+    }
+    let finalscore = scoreteam1 + ":" + scoreteam2;
+    console.log(finalscore);
+    for (let i in matchArray) {
+        if (matchArray[i].uniqueId == curMatch.uniqueId) {
+            matchArray[i].score = finalscore;
+        }
+    }
+    setMatchArray([...matchArray]);
+
+}
 
 const Matchcomp = (props) => {
     const matches = props.matches;
@@ -502,10 +533,12 @@ const Matchcomp = (props) => {
     const autho = props.autho;
     const sport = props.sport;
     const username = props.username;
+    const [matchZoom, setMatchZoom] = React.useState(false);
     const [local_fetch, setFetching] = React.useState(true)
     const [score, setScore] = React.useState([]);
 
     const [match_array, set_match_array] = React.useState([]);
+    const [curMatchZoom, setCurrMatchZoom] = React.useState({});
     const temp_array = []
     const array_score = [];
     for (var i = 0; i < matches.length; i++) {
@@ -529,12 +562,62 @@ const Matchcomp = (props) => {
     if (autho) {
         return (
             <View style={styles.line}>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={matchZoom}
+                    supportedOrientations={['portrait', 'landscape']}
+                >
+                    <View style={styles.matchZoomView}>
+                        <Pressable style={styles.closeButton} onPressIn={() => { setMatchZoom(false) }}><Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} /></Pressable>
+                        <View style={{ flexDirection: "column", flex: 1, justifyContent: "space-evenly" }}>
+                            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                                <View style={{ width: 200, justifyContent: "center" }}><Text style={{ textAlignVertical: "center" }}>{curMatchZoom.team1}</Text></View>
+                                <View style={{ marginLeft: 30, justifyContent: "center" }}>
+                                    <Pressable onPressIn={() => { crement_score_team(1, curMatchZoom, match_array, set_match_array, 0) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/plus.png')} /></Pressable>
+                                    <Text style={{ textAlign: "center" }}>{curMatchZoom.score == undefined ? "0" : curMatchZoom.score.split(":")[0]}</Text>
+                                    <Pressable onPressIn={() => { crement_score_team(1, curMatchZoom, match_array, set_match_array, 1) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/moins.png')} /></Pressable>
+                                </View>
+                            </View>
+                            <View><Text style={{ textAlign: "center" }}>VS</Text></View>
+                            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                                <View style={{ width: 200, justifyContent: "center" }}><Text style={{ textAlignVertical: "center" }}>{curMatchZoom.team2}</Text></View>
+                                <View style={{ marginLeft: 30, justifyContent: "center" }}>
+                                    <Pressable onPressIn={() => { crement_score_team(2, curMatchZoom, match_array, set_match_array, 0) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/plus.png')} /></Pressable>
+                                    <Text style={{ textAlign: "center" }}>{curMatchZoom.score == undefined ? "0" : curMatchZoom.score.split(":")[1]}</Text>
+                                    <Pressable onPressIn={() => { crement_score_team(2, curMatchZoom, match_array, set_match_array, 1) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/moins.png')} /></Pressable>
+                                </View>
+                            </View>
+                            <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+                                <Pressable style={{ alignSelf: "center" }} onPress={() => {
+                                    // props.setloading(true);
+                                    // setFetching(true);
+                                    // setOver(match_array, match_array.indexOf(curMatchZoom))
+                                    let local_ind = match_array.indexOf(curMatchZoom);
+                                    determine_winner(match_array, local_ind, set_match_array, match_array[local_ind].score, username, sport, "playoff", setFetching, level);
+                                    // fetch_matches(props.sport, props.setmatches, props.setGroups, props.setlevel, props.setmatchesgroup, null, props.setWidth, props.setHeight).then(r => {
+                                    // props.setloading(false);
+                                    // })
+                                }}>
+                                    <View>{over_text(match_array, match_array.indexOf(curMatchZoom))}</View>
+                                </Pressable>
+                                <Pressable onPress={() => { alert("not done yet") }
+                                }>
+                                    <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/save.png')}></Image>
+                                </Pressable>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
                 {match_array.map((r, index) => {
                     return (<View style={r.over == 0 ? styles.match : styles.matchover}>
-                        <Text test={r.team1} style={r.over == 2 ? styles.lose : styles.teamnormal}>{r.team1}</Text>
+                        <Text style={r.over == 2 ? styles.lose : styles.teamnormal}>{r.team1}</Text>
                         <Text style={{ fontSize: 24, fontWeight: "bold" }}>{"vs"}</Text><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text>
-                        <TextInput style={styles.score} value={score[index]} onChangeText={(text) => { array_score[index] = text; setScore(array_score) }} />
-                        <TouchableOpacity onPress={() => {
+                        <Text style={styles.score}>{score[index]}</Text>
+                        <Button style={styles.openButton} title="Edit" onPress={() => { setCurrMatchZoom(r); setMatchZoom(true) }
+                        }>
+                        </Button>
+                        {/* <TouchableOpacity onPress={() => {
                             props.setloading(true);
                             setFetching(true);
                             determine_winner(match_array, index, set_match_array, score, username, sport, "playoff", setFetching, level);
@@ -542,7 +625,7 @@ const Matchcomp = (props) => {
                                 props.setloading(false);
                             })
                         }}><Text>{over_text(match_array, index)}</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>)
                 })}
             </View>
@@ -578,10 +661,14 @@ function pushmatch(username, sport, match, type, uniqueId) {
 
     }).catch((err) => { console.log(err, "Issue with server!") });
 }
+function setOver(matchArray, index, setMatchArray, type) {
 
+
+}
 function determine_winner(match, index, setfun, score, username, sport, type, setFetching = "", level = 0) {
     // TODO : add push function to json through raspi
     let topush = false;
+    console.log(score)
     let tmp_array = JSON.parse(JSON.stringify(match));
     let uniqueId = 0;
     if (type == "poules") {
@@ -625,15 +712,14 @@ function determine_winner(match, index, setfun, score, username, sport, type, se
         if (tmp_array[index].over != 0) {
             tmp_array[index].over = 0;
             setfun(tmp_array);
-            tmp_array[index].score = score[index];
+            tmp_array[index].score = score;
             setFetching(true);
             pushmatch(username, sport, tmp_array[index], type, tmp_array[index].uniqueId)
             setfun(tmp_array);
             setFetching(false);
             return;
         }
-        tmp_array[index].score = score[index];
-        let scores = score[index].split(":");
+        let scores = score.split(":");
         if (scores.length == 2) {
             if (parseInt(scores[0]) > parseInt(scores[1])) {
                 tmp_array[index].over = 1;
@@ -703,7 +789,7 @@ const Matchpoule = (props) => {
                                 props.setloading(false);
                             })
                         }}>
-                            <Text>{over_text(match, index)}</Text></TouchableOpacity>
+                            <View>{over_text(match, index)}</View></TouchableOpacity>
                     </View>)
                 })}
             </View>
@@ -728,13 +814,18 @@ const Matchpoule = (props) => {
 
 
 function over_text(match, index) {
+    if (index == -1) {
+        return (
+            <View></View>
+        )
+    }
     if (match[index].over != 0) {
         return (
-            <Image style={{ borderRadius: 5, borderWidth: 2, borderColor: "black", width: 20, height: 20, alignSelf: "center" }} source={require('./assets/goback.png')} />
+            <Image style={{ borderRadius: 5, borderWidth: 2, borderColor: "black", width: 24, height: 26, alignSelf: "center" }} source={require('./assets/goback.png')} />
         )
     }
     return (
-        <Image style={{ borderRadius: 5, borderWidth: 2, borderColor: "black", width: 20, height: 20 }} source={require('./assets/finish.png')} />
+        <Image style={{ borderRadius: 5, borderWidth: 2, borderColor: "black", width: 24, height: 26 }} source={require('./assets/finish.png')} />
 
     )
 
