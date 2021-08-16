@@ -6,14 +6,14 @@ export class Planning{
 
         for (var event in planning)
         {
-            this.listeevent.push({eventname:event, time:new Date(planning[event])});
+            this.listeevent.push({eventname:event, timeBegin:new Date(planning[event][0]), timeEnd:new Date(planning[event][1])});
         }
     }
     
 }
 export function getNextEventseconds(){
     var now = Date.now();
-    var min = new Date(planning['Soirée d\'ouverture!']) - Date.now();
+    var min = new Date(planning['Soirée d\'ouverture!'][0]) - Date.now();
     if(min > 0)
     {
         min = Math.trunc(min/1000.0);

@@ -210,6 +210,20 @@ module.exports = StyleSheet.create({
         marginBottom: 15,
         textAlign: "center"
     },
+    inProgress: {
+        // flex: 1,
+        backgroundColor: "#ff8484",
+        width: 70,
+        height: 70,
+
+        borderWidth: 1,
+        borderColor: 'black',
+        borderRadius: 10,
+        alignItems: 'stretch',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        margin: 8,
+    },
     homebuttons: {
         // flex: 1,
         backgroundColor: "#FED8B1",
