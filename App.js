@@ -435,33 +435,40 @@ function UsernameScreen({ navigation }) {
     const [silverWins, setSilverWins] = React.useState("");
     const [bronzeWins, setBronzeWins] = React.useState("");
     React.useEffect(() => {
-        fetch_results(username).then(r => {
-            switch (Number(r["rank"])) {
-                case 1:
-                    setRank("1st!!!");
-                    break;
-                case 2:
-                    setRank("2nd!");
-                    break;
-                case 3:
-                    setRank("3rd!")
-                    break;
-                default:
-                    setRank(r["rank"] + "th")
-                    break;
+        fetch_results().then(r => {
+            
+        for (var player_data in r) {
+            if (r[player_data]["name"] == username) {
+                console.log(r[player_data])
+                    switch (Number(r[player_data]["rank"])) {
+                        case 1:
+                            setRank("1st!!!");
+                            break;
+                        case 2:
+                            setRank("2nd!");
+                            break;
+                        case 3:
+                            setRank("3rd!")
+                            break;
+                        default:
+                            setRank(r[player_data]["rank"] + "th")
+                            break;
 
-            }
-            setGoldMedal(r["gold"]["number"])
-            if (goldMedals) {
-                setGoldWins(r["gold"]["sports"])
-            }
-            setSilverMedal(r["silver"]["number"])
-            if (silverMedals) {
-                setSilverWins(r["silver"]["sports"])
-            }
-            setBronzeMedal(r["bronze"]["number"])
-            if (bronzeMedals) {
-                setBronzeWins(r["bronze"]["sports"])
+                    }
+                    setGoldMedal(r[player_data]["gold"]["number"])
+                    if (goldMedals) {
+                        setGoldWins(r[player_data]["gold"]["sports"])
+                    }
+                    setSilverMedal(r[player_data]["silver"]["number"])
+                    if (silverMedals) {
+                        setSilverWins(r[player_data]["silver"]["sports"])
+                    }
+                    setBronzeMedal(r[player_data]["bronze"]["number"])
+                    if (bronzeMedals) {
+                        setBronzeWins(r[player_data]["bronze"]["sports"])
+                    }
+                    return
+                }
             }
         }
         );
