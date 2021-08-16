@@ -436,7 +436,21 @@ function UsernameScreen({ navigation }) {
     const [bronzeWins, setBronzeWins] = React.useState("");
     React.useEffect(() => {
         fetch_results(username).then(r => {
-            setRank(r["rank"])
+            switch (Number(r["rank"])) {
+                case 1:
+                    setRank("1st!!!");
+                    break;
+                case 2:
+                    setRank("2nd!");
+                    break;
+                case 3:
+                    setRank("3rd!")
+                    break;
+                default:
+                    setRank(r["rank"] + "th")
+                    break;
+
+            }
             setGoldMedal(r["gold"]["number"])
             if (goldMedals) {
                 setGoldWins(r["gold"]["sports"])
@@ -471,6 +485,10 @@ function UsernameScreen({ navigation }) {
             <View style={{ flexDirection: "row", justifyContent: "center" }}>
                 <Text style={styles.medailleNumber}>{bronzeMedals}</Text>
                 <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
+            </View>
+            <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Mon rang </Text></View>
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                <Text style={styles.medailleNumber}>{rank}</Text>
             </View>
         </View>
     );
