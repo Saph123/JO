@@ -34,6 +34,7 @@ export const Trace = (props) => {
         return (<ActivityIndicator size="large" color="#000000" />);
     }
     if (displayed_state == "playoff") {
+        displayed_state = ""
         return (
             <View>
                 <Svg style={styles.svg}>
@@ -406,6 +407,9 @@ export function toggle_status(status, setStatus, navigation, sportname) {
             setStatus(status);
             navigation.reset({ routes: [{ name: "Home" }, { name: navigation.dangerouslyGetState().routes[navigation.dangerouslyGetState().index].name, sportname: sportname }] });
             break;
+        }
+        else {
+            displayed_state = status.status;
         }
     }
 }
