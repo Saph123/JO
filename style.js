@@ -71,6 +71,13 @@ module.exports = StyleSheet.create({
         fontFamily: "calibri",
         width: "100%"
     },
+    teamUserIsIn: {
+        textAlign: "center",
+        // width: "100%",
+        fontSize: 16,
+        color:"black",
+        fontWeight: "bold"
+    },
     teamnormal: {
         textAlign: "center",
         // width: "100%",
@@ -124,6 +131,14 @@ module.exports = StyleSheet.create({
         // textAlign: "justify"
     },
     showPlayers: {
+        borderWidth: 1,
+        width: 400,
+        height: 30,
+        textAlign: "center",
+        textAlignVertical: "center"
+    },
+    showPlayersIsIn: {
+        fontWeight: "bold",
         borderWidth: 1,
         width: 400,
         height: 30,

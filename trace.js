@@ -106,7 +106,7 @@ export const Trace = (props) => {
                     <View>
                         <Text style={styles.showPlayers}>Athlete</Text>
                         {liste.map(r =>
-                            <Text style={styles.showPlayers}>{r.username}</Text>
+                            <Text style={r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers}>{r.username}</Text>
                         )
                         }
                     </View>
@@ -176,7 +176,7 @@ export const Trace = (props) => {
                                             return (
 
                                                 <View>
-                                                    <Text style={styles.showPlayers}>{r.username}</Text>
+                                                    <Text style={r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers}>{r.username}</Text>
                                                 </View>
                                             )
                                         }
@@ -465,7 +465,7 @@ export async function fetch_status(sportname, setStatus) {
 
 export async function fetch_results() {
     let fetch_results = {}
-    
+
     fetch_results = await fetch("http://91.121.143.104:7070/results/global.json").then(response => response.json()).then(data => {
         return data;
     }).catch(err => console.log(err));
@@ -540,13 +540,13 @@ function crement_score_team(teamnumber, curMatch, matchArray, setMatchArray, inc
     setMatchArray([...matchArray]);
 
 }
-function matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type) {
+function matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type, username) {
     return (
 
         <View style={r.over == 0 ? (type == "playoff" ? styles.match : styles.matchpoule) : (type == "playoff" ? styles.matchover : styles.matchpouleover)}>
-            <Text style={r.over == 2 ? styles.lose : styles.teamnormal}>{r.team1}</Text>
+            <Text style={r.over == 2 ? styles.lose : (r.over == 0 ? (r.team1.includes(username) ? styles.teamUserIsIn : styles.teamnormal) : styles.teamnormal)}>{r.team1}</Text>
             <Text style={styles.score}>{r.team1 == "" ? "" : r.score}</Text>
-            <View><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text></View>
+            <View><Text style={r.over == 1 ? styles.lose : (r.over == 0 ? (r.team2.includes(username) ? styles.teamUserIsIn : styles.teamnormal) : styles.teamnormal)}>{r.team2}</Text></View>
             {(r.team1 != "" && r.team2 != "" && autho) ?
                 <Pressable onPress={() => { setInitScore(r.score); setCurrMatchZoom(r); setMatchZoom(true) }}>
                     <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/editlogo.png')} />
@@ -654,7 +654,7 @@ const Matchcomp = (props) => {
     return (
         <View style={styles.line}>
             {modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_array, set_match_array, matchZoom, setMatchZoom, setFetching, props, type, initScore)}
-            {match_array.map((r) => matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type))}
+            {match_array.map((r) => matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type, username))}
         </View>
     );
 
@@ -735,7 +735,7 @@ const Matchpoule = (props) => {
         <View style={styles.column}>
             {modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match, setMatch, matchZoom, setMatchZoom, setFetching, props, type, initScore)}
             {match.map((r) =>
-                matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type)
+                matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type, username)
             )}
         </View>
     );
