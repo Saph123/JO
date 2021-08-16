@@ -122,7 +122,6 @@ export const Trace = (props) => {
                                 )
                             }
                             else {
-                                console.log("wtf");
                                 return (
                                     <View style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
                                 )
@@ -274,7 +273,6 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
 
     await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
         if (displayed_state == "") {
-            console.log("firsttime", data['status'])
             // first time we use the one in the server
             displayed_state = data['status'];
         }
@@ -320,7 +318,6 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
 
     }
     else if (displayed_state == "playoff") {
-
         matches = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => { return data });
 
         let level = [];
@@ -339,8 +336,7 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
         setlevel(level);
         // gestion taille fenetre: affichage un peu plus large :)
         if (level.length > 1) {
-
-            setWidth(400 * ((level.length - 1) * (level.length - 1)));
+            setWidth(Math.min(400 * ((level.length - 1) * (level.length - 1)), 3500));
             setHeight(Math.max(200 * (level.length + 1), Dimensions.get("window").height + 100));
         }
         else {
@@ -348,19 +344,15 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
             setHeight(1000);
 
         }
-        console.log(400 * ((level.length - 1) * (level.length - 1)));
         setmatches(local_array_match);
     }
     else { // gestion listes (trail/tong)
         let liste = {};
         liste = await fetch("http://91.121.143.104:7070/teams/" + sportname + ".json").then(response => response.json()).then(data => { return data });
         let local_liste = [];
-        console.log(liste["Series"])
         if (liste["Series"].length == 1) { // only final, as before
             liste = liste["Series"][0]["Teams"];
-            console.log(liste)
             for (var i in liste) {
-                console.log(liste[i]["Players"])
                 local_liste.push(new Liste(liste[i]["Players"], liste[i]["score"], liste[i]["rank"], 0));
             }
             setHeight(i * 100);
@@ -384,7 +376,6 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
                     if (liste["Series"][series]["Name"] != "Final") {
                         var templist = liste["Series"][series]["Teams"];
                         for (var i in liste["Series"][series]["Teams"]) {
-                            console.log()
                             local_liste.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], level));
                         }
                         level += 1;
