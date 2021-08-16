@@ -363,15 +363,16 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
                 console.log(liste[i]["Players"])
                 local_liste.push(new Liste(liste[i]["Players"], liste[i]["score"], liste[i]["rank"], 0));
             }
-            setHeight(i * 70);
+            setHeight(i * 100);
         }
         else {
 
             if (displayed_state == "final") { // affichage de la finale
                 for (var series in liste["Series"]) {
                     if (liste["Series"][series]["Name"] == "Final") {
+                        var templist = liste["Series"][series]["Teams"];
                         for (var i in liste["Series"][series]["Teams"]) {
-                            local_liste.push(new Liste(liste[i]["Players"], liste[i]["score"], liste[i]["rank"], 0));
+                            local_liste.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], 0));
                         }
                     }
                 }

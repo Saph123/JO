@@ -126,7 +126,7 @@ module.exports = StyleSheet.create({
     },
     inputScore: {
         borderWidth: 1,
-        width: 350,
+        width: 400,
         height: 30,
         textAlign: "center",
         textAlignVertical: "center"
