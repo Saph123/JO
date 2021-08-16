@@ -49,7 +49,12 @@ export const Trace = (props) => {
     }, []);
 
     if (loading) {
-        return (<ActivityIndicator size="large" color="#000000" />);
+        return (<Modal
+            // animationType=""
+            transparent={false}
+            visible={loading}
+            supportedOrientations={['portrait', 'landscape']}
+        ><View><ActivityIndicator size="large" color="black" /></View></Modal>);
     }
     if (displayed_state[sport] == "playoff") {
         return (
@@ -566,7 +571,12 @@ const Matchcomp = (props) => {
         set_match_array(temp_array);
     }, []);
     if (local_fetch) {
-        return (<View><ActivityIndicator size="large" color="#000000" style={styles.fetching} /></View>);
+        return (<Modal
+            // animationType=""
+            transparent={false}
+            visible={local_fetch}
+            supportedOrientations={['portrait', 'landscape']}
+        ><View ><ActivityIndicator size="large" color="black" /></View></Modal>);
     }
 
     if (autho) {
@@ -600,11 +610,16 @@ const Matchcomp = (props) => {
                             </View>
                             <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                                 <Pressable style={{ alignSelf: "center" }} onPress={() => {
+                                    setFetching(true);
+                                    props.setloading(true);
                                     setCurrMatchZoom(determine_winner(curMatchZoom, "playoff"));
                                     updateMatchArray(curMatchZoom, match_array, set_match_array);
                                     pushmatch(username, sport, curMatchZoom, "playoff", curMatchZoom.uniqueId);
+                                    fetch_matches(props.sport, props.setmatches, props.setGroups, props.setlevel, props.setmatchesgroup, null, props.setWidth, props.setHeight).then(r => {
+                                    setFetching(false);
+                                    props.setloading(false);
+                                    })
                                     setMatchZoom(false);
-                                    console.log(curMatchZoom.team2, curMatchZoom.team1)
                                 }}>
                                     <View>{over_text(match_array, match_array.indexOf(curMatchZoom))}</View>
                                 </Pressable>
@@ -633,15 +648,6 @@ const Matchcomp = (props) => {
                             </Pressable> : <View/>
                         }
                        
-                        {/* <TouchableOpacity onPress={() => {
-                            props.setloading(true);
-                            setFetching(true);
-                            determine_winner(match_array, index, set_match_array, score, username, sport, "playoff", setFetching, level);
-                            fetch_matches(props.sport, props.setmatches, props.setGroups, props.setlevel, props.setmatchesgroup, null, props.setWidth, props.setHeight).then(r => {
-                                props.setloading(false);
-                            })
-                        }}><Text>{over_text(match_array, index)}</Text>
-                        </TouchableOpacity> */}
                     </View>)
                 })}
             </View>
