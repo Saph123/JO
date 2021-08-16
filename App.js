@@ -439,16 +439,16 @@ function SportDetailsScreen({ route, navigation }) {
 };
 
 function UsernameScreen({ navigation }) {
-    const [results, setResults] = React.useState();
+    const [loading, setLoading] = React.useState(true);
+    let rank = 0
+    let gold_medals = 0
+    let gold_wins = []
+    let silver_medals = 0
+    let silver_wins = []
+    let bronze_medals = 0
+    let bronze_wins = []
     React.useEffect(() => {
-        let rank = 0
-        let gold_medals = 0
-        let gold_wins = []
-        let silver_medals = 0
-        let silver_wins = []
-        let bronze_medals = 0
-        let bronze_wins = []
-        fetch_results(username, setResults).then(r => {
+        fetch_results(username).then(r => {
             console.log(r["gold"])
             rank = r["rank"]
             gold_medals = r["gold"]["number"]
@@ -471,14 +471,26 @@ function UsernameScreen({ navigation }) {
             }
         }
         );
+        setLoading(false);
 
     }, []);
-
+    if (loading) {
+        return (<ActivityIndicator size="large" color="#000000" />)
+    }
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
-            <Text style={{ flex: 6, color: 'red' }}>Username screen!</Text>
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
-                <Button color='red' title="Home" onPress={() => navigation.navigate('Home')} />
+        <View style={{flex:1}}>
+            <View style={{alignItems:"center"}}><Text style={styles.medailleText}> Mes médailles </Text></View>
+            <View style={{ flexDirection: "row", justifyContent:"center" }}>
+                <Text style={styles.medailleNumber}>{bronze_medals}</Text>
+                <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
+            </View>
+            <View style={{ flexDirection: "row", justifyContent:"center" }}>
+                <Text style={styles.medailleNumber}>{silver_medals}</Text>
+                <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
+            </View>
+            <View style={{ flexDirection: "row", justifyContent:"center" }}>
+                <Text style={styles.medailleNumber}>{gold_medals}</Text>
+                <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
             </View>
         </View>
     );
@@ -533,21 +545,30 @@ function App() {
                         fontWeight: 'bold',
                     },
                 }} initialRouteName="Home">
-                    <Stack.Screen options={({ navigation }) => ({ title: "Home", headerRight: () => (<View style={{ flexDirection: "row", margin: 10 }}><TouchableOpacity onPressIn={playmegaphone}><Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} /></TouchableOpacity><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}>
-                        <Text style={{ color: "white", marginTop: 32, marginRight: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text></TouchableOpacity></View>) })} name="Home" component={HomeScreen} />
-                    
-                    <Stack.Screen options={{ title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text>
-                    </View> }} name="Login" component={Login} />
-                    
-                    <Stack.Screen options={{ title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>
-                        <Text style={{ color: "white", marginRight: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text
-                        ></View> }} name="Planning" component={PlanningScreen} />
-                    
-                    <Stack.Screen options={({ navigation }) => ({ title: current_sport, headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>{GetState(current_sport, headerstatus, setstatus, navigation)}<View>
-                    <TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}><Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text></TouchableOpacity></View>
-                        <TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View> })} initialParams={{ sportname: current_sport }} name="SportDetails" component={SportDetailsScreen} />
-                    
-                    <Stack.Screen name="UsernameScreen" component={UsernameScreen} />
+                    <Stack.Screen options={({ navigation }) => ({
+                        title: "Home", headerRight: () => (<View style={{ flexDirection: "row", margin: 10 }}><TouchableOpacity onPressIn={playmegaphone}><Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} /></TouchableOpacity><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}>
+                            <Text style={{ color: "white", marginTop: 32, marginRight: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text></TouchableOpacity></View>)
+                    })} name="Home" component={HomeScreen} />
+
+                    <Stack.Screen options={{
+                        title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text>
+                        </View>
+                    }} name="Login" component={Login} />
+
+                    <Stack.Screen options={{
+                        title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>
+                            <Text style={{ color: "white", marginRight: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text
+                            ></View>
+                    }} name="Planning" component={PlanningScreen} />
+
+                    <Stack.Screen options={({ navigation }) => ({
+                        title: current_sport, headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>{GetState(current_sport, headerstatus, setstatus, navigation)}<View>
+                            <TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}><Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text></TouchableOpacity></View>
+                            <TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View>
+                    })} initialParams={{ sportname: current_sport }} name="SportDetails" component={SportDetailsScreen} />
+
+                    <Stack.Screen options={({}) => ({
+                        title: username})} name="UsernameScreen" component={UsernameScreen} />
                 </Stack.Navigator>
             </ArbitreContext.Provider>
         </NavigationContainer>

@@ -313,5 +313,14 @@ module.exports = StyleSheet.create({
         backgroundColor: "#FED8B1",
         borderRadius:15,
         height: 600
+    },
+    medailleNumber: {
+        fontSize:26,
+        fontWeight:"bold",
+
+    },
+    medailleText:{
+        fontSize:24,
     }
+
 })

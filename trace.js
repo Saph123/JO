@@ -198,7 +198,16 @@ export const Trace = (props) => {
                                     }
                                 </View>
                                 <View>
-                                    <View style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
+                                    <View style={{ width: 60, height: 30, backgroundColor: "lightgrey" }}>
+                                        <Pressable style={{alignSelf:"center"}} onPress={() => { // Function to save only the results!
+                                            setListe([...liste]);
+                                            pushmatch(username, sport, liste, "liste", 0);
+                                        }
+                                        }>
+                                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/save.png')}></Image>
+                                        </Pressable>
+
+                                    </View>
                                     {liste.map((r, index) => {
                                         if (cur_level == r.level) {
                                             return (
@@ -270,13 +279,6 @@ export const Trace = (props) => {
                                 </View>
                             </View>
                         </View>)}
-                    <View style={{ flexDirection: "row", marginTop: 20, marginLeft: 175 }}>
-                        <Button style={styles.openButton} title="Save" onPress={() => { setListe([...liste]); pushmatch(username, sport, liste, "liste", 0); }
-                        }>
-                        </Button>
-
-                    </View>
-
                 </View >
             )
 
@@ -462,7 +464,7 @@ export async function fetch_status(sportname, setStatus) {
     return fetch_status;
 }
 
-export async function fetch_results(username, setResults) {
+export async function fetch_results(username) {
     let fetch_results = {}
     let player_data = {}
 
@@ -473,7 +475,6 @@ export async function fetch_results(username, setResults) {
             }
         }
     }).catch(err => console.log(err));
-    setResults(fetch_results)
     return fetch_results;
 }
 function updateMatchArray(curMatch, matchArray, setMatchArray) {
@@ -737,14 +738,14 @@ const Matchpoule = (props) => {
         return (<View><ActivityIndicator size="large" color="#000000" style={styles.fetching} /></View>)
     }
 
-        return (
-            <View style={styles.column}>
-                {modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match, setMatch, matchZoom, setMatchZoom, setFetching, props, type, initScore)}
-                {match.map((r) =>
-                    matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type)
-                )}
-            </View>
-        );
+    return (
+        <View style={styles.column}>
+            {modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match, setMatch, matchZoom, setMatchZoom, setFetching, props, type, initScore)}
+            {match.map((r) =>
+                matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type)
+            )}
+        </View>
+    );
 
 }
 
