@@ -22,7 +22,13 @@ function HomeScreen({ route, navigation }) {
     const [soundstatus, setSound] = React.useState();
     var planning = new Planning();
     var currentEvents = [];
+    var eventsDone = [];
     var now = Date.now();
+    for (var event in planning["listeevent"]) {
+        if (now > planning["listeevent"][event].timeEnd) {
+            eventsDone.push(planning["listeevent"][event].eventname);
+        }
+    }
     for (var event in planning["listeevent"]) {
         if (now > planning["listeevent"][event].timeBegin && now < planning["listeevent"][event].timeEnd) {
             currentEvents.push(planning["listeevent"][event].eventname);
@@ -98,32 +104,32 @@ function HomeScreen({ route, navigation }) {
             </View>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                 <View style={{ flex: 1 }}>
-                    <TouchableOpacity style={ currentEvents.includes("Trail") ? styles.inProgress : styles.homebuttons }
+                    <TouchableOpacity style={ currentEvents.includes("Trail") ? styles.inProgress : (eventsDone.includes("Trail") ? styles.eventDone : styles.homebuttons) }
                         onPress={() => { current_sport = "Trail", navigation.navigate('SportDetails', { sportname: "Trail" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/run.png')} />
                     </TouchableOpacity>
-                    <TouchableOpacity style={ currentEvents.includes("Dodgeball") ? styles.inProgress : styles.homebuttons }
+                    <TouchableOpacity style={ currentEvents.includes("Dodgeball") ? styles.inProgress : (eventsDone.includes("Dodgeball") ? styles.eventDone : styles.homebuttons) }
                         onPress={() => { current_sport = "Dodgeball", navigation.navigate('SportDetails', { sportname: "Dodgeball" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/dodgeball.png')} />
                     </TouchableOpacity>
-                    <TouchableOpacity style={ currentEvents.includes("Pizza") ? styles.inProgress : styles.homebuttons }
+                    <TouchableOpacity style={ currentEvents.includes("Pizza") ? styles.inProgress : (eventsDone.includes("Pizza") ? styles.eventDone : styles.homebuttons) }
                         onPress={() => { current_sport = "Pizza", navigation.navigate('SportDetails', { sportname: "Pizza" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/pizza.png')} />
                     </TouchableOpacity>
-                    <TouchableOpacity style={ currentEvents.includes("Tong") ? styles.inProgress : styles.homebuttons }
+                    <TouchableOpacity style={ currentEvents.includes("Tong") ? styles.inProgress : (eventsDone.includes("Tong") ? styles.eventDone : styles.homebuttons) }
                         onPress={() => { current_sport = "Tong", navigation.navigate('SportDetails', { sportname: "Tong" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/tong.png')} />
                     </TouchableOpacity>
-                    <TouchableOpacity style={ currentEvents.includes("Babyfoot") ? styles.inProgress : styles.homebuttons }
+                    <TouchableOpacity style={ currentEvents.includes("Babyfoot") ? styles.inProgress : (eventsDone.includes("Babyfoot") ? styles.eventDone : styles.homebuttons) }
                         onPress={() => { current_sport = "Babyfoot", navigation.navigate('SportDetails', { sportname: "Babyfoot" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/babyfoot.png')} />
                     </TouchableOpacity>
-                    <TouchableOpacity style={ currentEvents.includes("Flechette") ? styles.inProgress : styles.homebuttons }
+                    <TouchableOpacity style={ currentEvents.includes("Flechette") ? styles.inProgress : (eventsDone.includes("Flechette") ? styles.eventDone : styles.homebuttons) }
                         onPress={() => { current_sport = "Flechette", navigation.navigate('SportDetails', { sportname: "Flechette" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/flechette.png')} />
@@ -132,37 +138,37 @@ function HomeScreen({ route, navigation }) {
                 </View>
                 <View style={{ flex: 1 }}>
 
-                    <TouchableOpacity style={ currentEvents.includes("PingPong") ? styles.inProgress : styles.homebuttons }
+                    <TouchableOpacity style={ currentEvents.includes("PingPong") ? styles.inProgress : (eventsDone.includes("PingPong") ? styles.eventDone : styles.homebuttons) }
                         onPress={() => { current_sport = "PingPong", navigation.navigate('SportDetails', { sportname: "PingPong" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/pingpong.png')} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={ currentEvents.includes("Orientation") ? styles.inProgress : styles.homebuttons }
+                    <TouchableOpacity style={ currentEvents.includes("Orientation") ? styles.inProgress : (eventsDone.includes("Orientation") ? styles.eventDone : styles.homebuttons) }
                         onPress={() => { current_sport = "Orientation", navigation.navigate('SportDetails', { sportname: "Orientation" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/orientation.png')} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={ currentEvents.includes("Beerpong") ? styles.inProgress : styles.homebuttons }
+                    <TouchableOpacity style={ currentEvents.includes("Beerpong") ? styles.inProgress : (eventsDone.includes("Beerpong") ? styles.eventDone : styles.homebuttons) }
                         onPress={() => { current_sport = "Beerpong", navigation.navigate('SportDetails', { sportname: "Beerpong" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/beerpong.png')} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={ currentEvents.includes("Volley") ? styles.inProgress : styles.homebuttons }
+                    <TouchableOpacity style={ currentEvents.includes("Volley") ? styles.inProgress : (eventsDone.includes("Volley") ? styles.eventDone : styles.homebuttons) }
                         onPress={() => { current_sport = "Volley", navigation.navigate('SportDetails', { sportname: "Volley" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/volley.png')} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={ currentEvents.includes("Waterpolo") ? styles.inProgress : styles.homebuttons }
+                    <TouchableOpacity style={ currentEvents.includes("Waterpolo") ? styles.inProgress : (eventsDone.includes("Waterpolo") ? styles.eventDone : styles.homebuttons) }
                         onPress={() => { current_sport = "Waterpolo", navigation.navigate('SportDetails', { sportname: "Waterpolo" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/waterpolo.png')} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={ currentEvents.includes("Larmina") ? styles.inProgress : styles.homebuttons }
+                    <TouchableOpacity style={ currentEvents.includes("Larmina") ? styles.inProgress : (eventsDone.includes("Larmina") ? styles.eventDone : styles.homebuttons) }
                         onPress={() => { current_sport = "Larmina", navigation.navigate('SportDetails', { sportname: "Larmina" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/polishhorseshoe.png')} />
@@ -171,37 +177,37 @@ function HomeScreen({ route, navigation }) {
                 </View>
                 <View style={{ flex: 1 }}>
 
-                    <TouchableOpacity style={ currentEvents.includes("Natation") ? styles.inProgress : styles.homebuttons }
+                    <TouchableOpacity style={ currentEvents.includes("Natation") ? styles.inProgress : (eventsDone.includes("Natation") ? styles.eventDone : styles.homebuttons) }
                         onPress={() => { current_sport = "Natation", navigation.navigate('SportDetails', { sportname: "Natation" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/natationsynchro.png')} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={ currentEvents.includes("SpikeBall") ? styles.inProgress : styles.homebuttons }
+                    <TouchableOpacity style={ currentEvents.includes("SpikeBall") ? styles.inProgress : (eventsDone.includes("SpikeBall") ? styles.eventDone : styles.homebuttons) }
                         onPress={() => { current_sport = "SpikeBall", navigation.navigate('SportDetails', { sportname: "SpikeBall" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/spikeball.png')} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={ currentEvents.includes("Ventriglisse") ? styles.inProgress : styles.homebuttons }
+                    <TouchableOpacity style={ currentEvents.includes("Ventriglisse") ? styles.inProgress : (eventsDone.includes("Ventriglisse") ? styles.eventDone : styles.homebuttons) }
                         onPress={() => { current_sport = "Ventriglisse", navigation.navigate('SportDetails', { sportname: "Ventriglisse" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/100mricard.png')} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={ currentEvents.includes("100mRicard") ? styles.inProgress : styles.homebuttons }
+                    <TouchableOpacity style={ currentEvents.includes("100mRicard") ? styles.inProgress : (eventsDone.includes("100mRicard") ? styles.eventDone : styles.homebuttons) }
                         onPress={() => { current_sport = "100mRicard", navigation.navigate('SportDetails', { sportname: "100mRicard" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/100mricard.png')} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={ currentEvents.includes("Petanque") ? styles.inProgress : styles.homebuttons }
+                    <TouchableOpacity style={ currentEvents.includes("Petanque") ? styles.inProgress : (eventsDone.includes("Petanque") ? styles.eventDone : styles.homebuttons) }
                         onPress={() => { current_sport = "Petanque", navigation.navigate('SportDetails', { sportname: "Petanque" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/petanque.png')} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={ currentEvents.includes("Molky") ? styles.inProgress : styles.homebuttons }
+                    <TouchableOpacity style={ currentEvents.includes("Molky") ? styles.inProgress : (eventsDone.includes("Molky") ? styles.eventDone : styles.homebuttons) }
                         onPress={() => { current_sport = "Molky", navigation.navigate('SportDetails', { sportname: "Molky" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/petanque.png')} />

@@ -239,6 +239,20 @@ module.exports = StyleSheet.create({
         alignSelf: 'center',
         margin: 8,
     },
+    eventDone: {
+        // flex: 1,
+        backgroundColor: "#ADADAD",
+        width: 70,
+        height: 70,
+
+        borderWidth: 1,
+        borderColor: 'black',
+        borderRadius: 10,
+        alignItems: 'stretch',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        margin: 8,
+    },
     homebuttons: {
         // flex: 1,
         backgroundColor: "#FED8B1",
