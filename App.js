@@ -10,7 +10,7 @@ import CountDown from 'react-native-countdown-component';
 import { Planning, getNextEventseconds } from "./planning.js";
 import { Trace, GetState, fetch_status, fetch_results } from "./trace.js";
 
-let username = "Ugo";
+let username = "Max";
 let current_sport = "Sportname";
 const styles = require("./style.js");
 const ArbitreContext = React.createContext(false);
@@ -427,34 +427,27 @@ function SportDetailsScreen({ route, navigation }) {
 
 function UsernameScreen({ navigation }) {
     const [loading, setLoading] = React.useState(true);
-    let rank = 0
-    let gold_medals = 0
-    let gold_wins = []
-    let silver_medals = 0
-    let silver_wins = []
-    let bronze_medals = 0
-    let bronze_wins = []
+    const [goldMedals, setGoldMedal] = React.useState(0);
+    const [rank, setRank] = React.useState(0);
+    const [silverMedals, setSilverMedal] = React.useState(0);
+    const [bronzeMedals, setBronzeMedal] = React.useState(0);
+    const [goldWins, setGoldWins] = React.useState("");
+    const [silverWins, setSilverWins] = React.useState("");
+    const [bronzeWins, setBronzeWins] = React.useState("");
     React.useEffect(() => {
         fetch_results(username).then(r => {
-            console.log(r["gold"])
-            rank = r["rank"]
-            gold_medals = r["gold"]["number"]
-            console.log(gold_medals)
-            if (gold_medals) {
-                gold_wins = r["gold"]["sports"]
-                console.log(gold_wins)
+            setRank(r["rank"])
+            setGoldMedal(r["gold"]["number"])
+            if (goldMedals) {
+                setGoldWins(r["gold"]["sports"])
             }
-            silver_medals = r["silver"]["number"]
-            console.log(silver_medals)
-            if (silver_medals) {
-                silver_wins = r["silver"]["sports"]
-                console.log(silver_wins)
+            setSilverMedal(r["silver"]["number"])
+            if (silverMedals) {
+                setSilverWins(r["silver"]["sports"])
             }
-            bronze_medals = r["bronze"]["number"]
-            console.log(bronze_medals)
-            if (bronze_medals) {
-                bronze_wins = r["bronze"]["sports"]
-                console.log(bronze_wins)
+            setBronzeMedal(r["bronze"]["number"])
+            if (bronzeMedals) {
+                setBronzeWins(r["bronze"]["sports"])
             }
         }
         );
@@ -465,19 +458,19 @@ function UsernameScreen({ navigation }) {
         return (<ActivityIndicator size="large" color="#000000" />)
     }
     return (
-        <View style={{flex:1}}>
-            <View style={{alignItems:"center"}}><Text style={styles.medailleText}> Mes médailles </Text></View>
-            <View style={{ flexDirection: "row", justifyContent:"center" }}>
-                <Text style={styles.medailleNumber}>{bronze_medals}</Text>
-                <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
+        <View style={{ flex: 1 }}>
+            <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Mes médailles </Text></View>
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                <Text style={styles.medailleNumber}>{goldMedals}</Text>
+                <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
             </View>
-            <View style={{ flexDirection: "row", justifyContent:"center" }}>
-                <Text style={styles.medailleNumber}>{silver_medals}</Text>
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                <Text style={styles.medailleNumber}>{silverMedals}</Text>
                 <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
             </View>
-            <View style={{ flexDirection: "row", justifyContent:"center" }}>
-                <Text style={styles.medailleNumber}>{gold_medals}</Text>
-                <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                <Text style={styles.medailleNumber}>{bronzeMedals}</Text>
+                <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
             </View>
         </View>
     );
@@ -554,8 +547,9 @@ function App() {
                             <TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View>
                     })} initialParams={{ sportname: current_sport }} name="SportDetails" component={SportDetailsScreen} />
 
-                    <Stack.Screen options={({}) => ({
-                        title: username})} name="UsernameScreen" component={UsernameScreen} />
+                    <Stack.Screen options={({ }) => ({
+                        title: username
+                    })} name="UsernameScreen" component={UsernameScreen} />
                 </Stack.Navigator>
             </ArbitreContext.Provider>
         </NavigationContainer>

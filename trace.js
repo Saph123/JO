@@ -5,7 +5,6 @@ import * as React from 'react';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { Svg, Polyline } from 'react-native-svg';
 import { Table, Row } from 'react-native-table-component';
-import { username } from './App.js'
 import 'react-native-url-polyfill/auto';
 const styles = require("./style.js");
 let displayed_state = {
