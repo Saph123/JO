@@ -1,6 +1,6 @@
 // import styles from "./style";
 import * as React from 'react';
-import { Button, View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal } from 'react-native';
+import { Button, View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Platform } from 'react-native';
 import { NavigationContainer, useNavigation, useTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import PinchZoomView from 'react-native-pinch-zoom-view';
@@ -9,7 +9,8 @@ import { Audio } from 'expo-av';
 import CountDown from 'react-native-countdown-component';
 import { Planning, getNextEventseconds } from "./planning.js";
 import { Trace, GetState, fetch_status, fetch_results } from "./trace.js";
-
+import Constants from 'expo-constants';
+import * as Notifications from 'expo-notifications';
 let username = "Max";
 let current_sport = "Sportname";
 const styles = require("./style.js");
@@ -22,18 +23,13 @@ function HomeScreen({ route, navigation }) {
     var planning = new Planning();
     var currentEvents = [];
     var now = Date.now();
-    console.log(now)
-    console.log(planning)
     for (var event in planning["listeevent"]) {
-        console.log(now)
-        console.log(planning["listeevent"][event])
         if (now > planning["listeevent"][event].timeBegin && now < planning["listeevent"][event].timeEnd) {
             currentEvents.push(planning["listeevent"][event].eventname);
-            console.log(planning["listeevent"][event].eventname)
         }
     }
-    console.log(currentEvents)
     async function playcluedo() {
+        pushcluedo(route.params.pushtoken);
         if (soundstatus == undefined) {
 
             console.log('Loading Sound');
@@ -219,8 +215,8 @@ function HomeScreen({ route, navigation }) {
                 <TouchableOpacity style={{ alignSelf: "center" }} onPressIn={playcluedo}>
                     <Image style={{ borderRadius: 10, borderWidth: 1, borderColor: "black" }} source={require('./assets/cluedo.png')} />
                 </TouchableOpacity>
-                <TouchableOpacity style={{ alignSelf: "center" }} onPressIn={() => { navigation.navigate('SummaryScreen')}}>
-                    <Image style={{ borderRadius: 5, borderWidth: 1, width:60, height:80, borderColor: "black", margin:10 }} resizeMode="contain" source={require('./assets/summary.png')} />
+                <TouchableOpacity style={{ alignSelf: "center" }} onPressIn={() => { navigation.navigate('SummaryScreen') }}>
+                    <Image style={{ borderRadius: 5, borderWidth: 1, width: 60, height: 80, borderColor: "black", margin: 10 }} resizeMode="contain" source={require('./assets/summary.png')} />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.loginbutton}
                     onPress={() => { navigation.navigate('Login') }}
@@ -443,7 +439,7 @@ function SportDetailsScreen({ route, navigation }) {
 };
 
 function SummaryScreen() {
-    return(
+    return (
         <View>
             <Text> Summary screen blyat!</Text>
         </View>
@@ -460,10 +456,10 @@ function UsernameScreen() {
     const [bronzeWins, setBronzeWins] = React.useState([]);
     React.useEffect(() => {
         fetch_results().then(r => {
-            
-        for (var player_data in r) {
-            if (r[player_data]["name"] == username) {
-                console.log(r[player_data])
+
+            for (var player_data in r) {
+                if (r[player_data]["name"] == username) {
+                    console.log(r[player_data])
                     switch (Number(r[player_data]["rank"])) {
                         case 1:
                             setRank("1st!!!");
@@ -509,29 +505,35 @@ function UsernameScreen() {
                 <Text style={styles.medailleNumber}>{goldMedals}</Text>
                 <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
             </View>
-                <View style={{alignItems:"center"}}>
-                    {goldWins.map(r => {return(
+            <View style={{ alignItems: "center" }}>
+                {goldWins.map(r => {
+                    return (
                         <Text>{r}</Text>
-                    )})}
-                </View>
+                    )
+                })}
+            </View>
             <View style={{ flexDirection: "row", justifyContent: "center" }}>
                 <Text style={styles.medailleNumber}>{silverMedals}</Text>
                 <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
             </View>
-            <View style={{alignItems:"center"}}>
-                    {silverWins.map(r => {return(
+            <View style={{ alignItems: "center" }}>
+                {silverWins.map(r => {
+                    return (
                         <Text>{r}</Text>
-                    )})}
-                </View>
+                    )
+                })}
+            </View>
             <View style={{ flexDirection: "row", justifyContent: "center" }}>
                 <Text style={styles.medailleNumber}>{bronzeMedals}</Text>
                 <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
             </View>
-            <View style={{alignItems:"center"}}>
-                    {bronzeWins.map(r => {return(
+            <View style={{ alignItems: "center" }}>
+                {bronzeWins.map(r => {
+                    return (
                         <Text>{r}</Text>
-                    )})}
-                </View>
+                    )
+                })}
+            </View>
             <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Mon rang </Text></View>
             <View style={{ flexDirection: "row", justifyContent: "center" }}>
                 <Text style={styles.medailleNumber}>{rank}</Text>
@@ -540,8 +542,76 @@ function UsernameScreen() {
     );
 }
 // var firsttimesoun
+async function registerForPushNotificationsAsync() {
+    let token;
+    if (Constants.isDevice) {
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        if (existingStatus !== 'granted') {
+            const { status } = await Notifications.requestPermissionsAsync();
+            finalStatus = status;
+        }
+        if (finalStatus !== 'granted') {
+            alert('Failed to get push token for push notification!');
+            return;
+        }
+        token = (await Notifications.getExpoPushTokenAsync()).data;
+        console.log(token);
+    } else {
+        alert('Must use physical device for Push Notifications');
+    }
+
+    if (Platform.OS === 'android') {
+        Notifications.setNotificationChannelAsync('default', {
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: '#FF231F7C',
+        });
+    }
+
+    return token;
+}
+async function pushtoken(token){
+        // 5 second timeout:
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+        console.log("pushing token", token);
+        // // push to server
+    fetch("http://91.121.143.104:7070/pushtoken", { signal: controller.signal, method: "POST", body: JSON.stringify({ "token": token }) }).then(r => {
 
 
+    }).catch((err) => { console.log(err, "May be it's normal") });
+}
+async function pushcluedo(){
+        // 5 second timeout:
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+        // // push to server
+    fetch("http://91.121.143.104:7070/cluedo", { signal: controller.signal, method: "POST", body: JSON.stringify({ "cluedo": username }) }).then(r => {
+
+
+    }).catch((err) => { console.log(err, "May be it's normal") });
+}
+
+async function sendPushNotification(expoPushToken) {
+    const message = {
+      to: expoPushToken,
+      sound: 'default',
+      title: 'CLUEDOOOOO',
+      body: '',
+    };
+  
+    await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
+  }
 const Stack = createStackNavigator();
 function App() {
     // var test = new Planning();
@@ -549,6 +619,10 @@ function App() {
     const [arbitre, setArbitre] = React.useState(false);
     const [headerstatus, setstatus] = React.useState();
     const [soundstatus, setSound] = React.useState();
+    const [expoPushToken, setExpoPushToken] = React.useState('');
+    const [notification, setNotification] = React.useState(false);
+    const notificationListener = React.useRef();
+    const responseListener = React.useRef();
     async function playmegaphone() {
         if (soundstatus == undefined) {
 
@@ -576,6 +650,23 @@ function App() {
         }
 
     }
+    React.useEffect(() => {
+        registerForPushNotificationsAsync().then(token => {setExpoPushToken(token); pushtoken(token)});
+        // This listener is fired whenever a notification is received while the app is foregrounded
+        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+            setNotification(notification);
+        });
+
+        // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+            console.log(response);
+        });
+
+        return () => {
+            Notifications.removeNotificationSubscription(notificationListener.current);
+            Notifications.removeNotificationSubscription(responseListener.current);
+        };
+    }, []);
     return (
         <NavigationContainer>
             <ArbitreContext.Provider value={arbitre}>
@@ -592,7 +683,7 @@ function App() {
                     <Stack.Screen options={({ navigation }) => ({
                         title: "Home", headerRight: () => (<View style={{ flexDirection: "row", margin: 10 }}><TouchableOpacity onPressIn={playmegaphone}><Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} /></TouchableOpacity><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}>
                             <Text style={{ color: "white", marginTop: 32, marginRight: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text></TouchableOpacity></View>)
-                    })} name="Home" component={HomeScreen} />
+                    })} initialParams={{ pushtoken: expoPushToken }} name="Home" component={HomeScreen} />
 
                     <Stack.Screen options={{
                         title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text>
@@ -610,7 +701,7 @@ function App() {
                             <TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}><Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text></TouchableOpacity></View>
                             <TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View>
                     })} initialParams={{ sportname: current_sport }} name="SportDetails" component={SportDetailsScreen} />
-<Stack.Screen options={() => ({title: "Résumé"})}name="SummaryScreen" component={SummaryScreen}/>
+                    <Stack.Screen options={() => ({ title: "Résumé" })} name="SummaryScreen" component={SummaryScreen} />
                     <Stack.Screen options={() => ({
                         title: username
                     })} name="UsernameScreen" component={UsernameScreen} />
