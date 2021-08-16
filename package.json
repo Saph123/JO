@@ -36,7 +36,8 @@
     "react-native-unimodules": "~0.12.0",
     "react-native-url-polyfill": "^1.3.0",
     "react-native-web": "~0.13.12",
-    "react-tournament-bracket": "^0.2.4"
+    "react-tournament-bracket": "^0.2.4",
+    "expo-notifications": "~0.8.2"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",
