@@ -713,7 +713,6 @@ const Matchpoule = (props) => {
     const sport = props.sport;
     const poulename = props.poule;
     const [local_fetch, setFetching] = React.useState(true)
-    const [score, setScore] = React.useState([]);
     const [match, setMatch] = React.useState([]);
     const [curMatchZoom, setCurrMatchZoom] = React.useState({});
     const [matchZoom, setMatchZoom] = React.useState(false);
@@ -767,23 +766,6 @@ function over_text(match, index) {
     )
 
 }
-// function manage_score_over(match, index, score, setScore, username, sport) {
-//     if (match[index].over == 0) {
-//         return (
-//             <View style={{ flexDirection: "row" }}>
-//                 <TextInput style={styles.score} value={score[index]} onChangeText={(text) => { let tmp_array_score = JSON.parse(JSON.stringify(score)); tmp_array_score[index] = text; setScore(tmp_array_score) }} />
-//                 <TouchableOpacity onPress={() => { match[index].score = score[index]; pushmatch(username, sport, match[index], "poules", uniqueId = match[index].uniqueId) }} ><Image style={{ borderRadius: 5, borderWidth: 2, borderColor: "black", width: 20, height: 20, alignSelf: "center" }} source={require('./assets/validatelogo.png')} /></TouchableOpacity>
-//             </View>
-//         )
-//     }
-//     return (
-//         <View>
-//             <Text style={styles.score} >{score[index]}</Text>
-//             {/* <TouchableOpacity onPress={() => { pushscore(score[index]) }} ><Image style={{ borderRadius: 5, borderWidth: 2, borderColor: "black", width: 20, height: 20, alignSelf: "center" }} source={require('./assets/validatelogo.png')} /></TouchableOpacity> */}
-//         </View>
-//     )
-// }
-
 class Match {
     constructor(sport, team1, team2, uniqueId, score, over, level, poulename, nextmatch) {
         // this.numberOfPlayer = Number(numberOfPlayer)

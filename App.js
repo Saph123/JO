@@ -535,14 +535,18 @@ function App() {
                 }} initialRouteName="Home">
                     <Stack.Screen options={({ navigation }) => ({ title: "Home", headerRight: () => (<View style={{ flexDirection: "row", margin: 10 }}><TouchableOpacity onPressIn={playmegaphone}><Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} /></TouchableOpacity><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}>
                         <Text style={{ color: "white", marginTop: 32, marginRight: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text></TouchableOpacity></View>) })} name="Home" component={HomeScreen} />
+                    
                     <Stack.Screen options={{ title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text>
                     </View> }} name="Login" component={Login} />
+                    
                     <Stack.Screen options={{ title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>
                         <Text style={{ color: "white", marginRight: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text
                         ></View> }} name="Planning" component={PlanningScreen} />
+                    
                     <Stack.Screen options={({ navigation }) => ({ title: current_sport, headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>{GetState(current_sport, headerstatus, setstatus, navigation)}<View>
-                        <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text></View>
+                    <TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}><Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text></TouchableOpacity></View>
                         <TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View> })} initialParams={{ sportname: current_sport }} name="SportDetails" component={SportDetailsScreen} />
+                    
                     <Stack.Screen name="UsernameScreen" component={UsernameScreen} />
                 </Stack.Navigator>
             </ArbitreContext.Provider>
