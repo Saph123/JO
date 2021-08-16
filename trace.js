@@ -730,7 +730,6 @@ const Matchpoule = (props) => {
     }
     React.useEffect(() => {
         setFetching(false);
-        setScore(array_score);
         setMatch(match_array);
     }, []);
     if (local_fetch) {

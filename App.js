@@ -9,18 +9,8 @@ import { Audio } from 'expo-av';
 import CountDown from 'react-native-countdown-component';
 import { Planning, getNextEventseconds } from "./planning.js";
 import { Trace, GetState, fetch_status, fetch_results } from "./trace.js";
-import { ClipPath } from 'react-native-svg';
 
-// import myMP3File from './assets/guylabedav.mp3';
-// const Sound = require('react-native-sound');
-// Sound.setCategory('Playback');
-
-// Do whatever you like with it.
-// Sound(myMP3File, () => console.log('soundfile loaded!'));
-
-// import Orientation from 'react-native-orientation';
-
-let username = "Max";
+let username = "Ugo";
 let current_sport = "Sportname";
 const styles = require("./style.js");
 const ArbitreContext = React.createContext(false);
@@ -315,15 +305,12 @@ function PlanningScreen({ navigation }) {
 
 };
 function Login({ navigation }) {
-    const width = Dimensions.get("window").width;
-    const height = Dimensions.get("window").height / 2;
     const [userName, setuserName] = React.useState(null);
     const [password, setpassword] = React.useState(null);
     const controller = new AbortController()
 
     // 5 second timeout:
     const timeoutId = setTimeout(() => controller.abort(), 5000)
-    // let local_match = React.useState("");
     if (username == "") {
         return (
             <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
