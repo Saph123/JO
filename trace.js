@@ -98,7 +98,6 @@ export const Trace = (props) => {
                         <View style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
                         {liste.map((r, index) => {
                             if (r.rank == 1) {
-                                console.log("kekw");
                                 return (
                                     <View style={{ flexDirection: "row" }} >
                                         <View style={styles.medailleopaque}>
@@ -405,7 +404,6 @@ export function toggle_status(status, setStatus, navigation, sportname) {
             }
             status.status = displayed_state
             setStatus(status);
-            console.log(status, " at the end")
             navigation.reset({ routes: [{ name: "Home" }, { name: navigation.dangerouslyGetState().routes[navigation.dangerouslyGetState().index].name, sportname: sportname }] });
             break;
         }
@@ -418,7 +416,6 @@ export async function fetch_status(sportname, setStatus) {
 
     fetch_status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
         if (displayed_state == "") {
-            console.log("firsttime", data['status'])
             // first time we use the one in the server
             displayed_state = data['status'];
         }
@@ -455,7 +452,14 @@ export async function fetch_results(username, setResults) {
     setResults(fetch_results)
     return fetch_results;
 }
-
+function updateMatchArray(curMatch, matchArray, setMatchArray){
+    for( var i in matchArray){
+        if(curMatch.uniqueId == matchArray[i].uniqueId){
+            matchArray[i] = curMatch;
+        }
+    }
+    setMatchArray([...matchArray]);
+}
 export function GetState(sportname, status, setStatus, navigation) {
 
     const [loaded, setloaded] = React.useState(0);
@@ -509,7 +513,6 @@ function crement_score_team(teamnumber, curMatch, matchArray, setMatchArray, inc
         }
     }
     let finalscore = scoreteam1 + ":" + scoreteam2;
-    console.log(finalscore);
     for (let i in matchArray) {
         if (matchArray[i].uniqueId == curMatch.uniqueId) {
             matchArray[i].score = finalscore;
@@ -527,24 +530,21 @@ const Matchcomp = (props) => {
     const username = props.username;
     const [matchZoom, setMatchZoom] = React.useState(false);
     const [local_fetch, setFetching] = React.useState(true)
-    const [score, setScore] = React.useState([]);
 
     const [match_array, set_match_array] = React.useState([]);
     const [curMatchZoom, setCurrMatchZoom] = React.useState({});
-    const temp_array = []
-    const array_score = [];
+    const temp_array = [];
+    const [initScore, setInitScore] = React.useState("");
     for (var i = 0; i < matches.length; i++) {
         for (var match in matches[i]) {
             if (matches[i][match]['level'] == level) {
                 temp_array.push(matches[i][match]);
-                array_score.push(matches[i][match].score);
             }
         }
     }
 
     React.useEffect(() => {
         setFetching(false);
-        setScore(array_score);
         set_match_array(temp_array);
     }, []);
     if (local_fetch) {
@@ -561,7 +561,7 @@ const Matchcomp = (props) => {
                     supportedOrientations={['portrait', 'landscape']}
                 >
                     <View style={styles.matchZoomView}>
-                        <Pressable style={styles.closeButton} onPressIn={() => { setMatchZoom(false) }}><Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} /></Pressable>
+                        <Pressable style={styles.closeButton} onPressIn={() => { console.log("initialscore", initScore); curMatchZoom.score = initScore; updateMatchArray(curMatchZoom, match_array, set_match_array);setMatchZoom(false) }}><Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} /></Pressable>
                         <View style={{ flexDirection: "column", flex: 1, justifyContent: "space-evenly" }}>
                             <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                                 <View style={{ width: 200, justifyContent: "center" }}><Text style={{ textAlignVertical: "center" }}>{curMatchZoom.team1}</Text></View>
@@ -580,20 +580,23 @@ const Matchcomp = (props) => {
                                     <Pressable onPressIn={() => { crement_score_team(2, curMatchZoom, match_array, set_match_array, 1) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/moins.png')} /></Pressable>
                                 </View>
                             </View>
-                            <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+                            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                                 <Pressable style={{ alignSelf: "center" }} onPress={() => {
-                                    // props.setloading(true);
-                                    // setFetching(true);
-                                    // setOver(match_array, match_array.indexOf(curMatchZoom))
-                                    let local_ind = match_array.indexOf(curMatchZoom);
-                                    determine_winner(match_array, local_ind, set_match_array, match_array[local_ind].score, username, sport, "playoff", setFetching, level);
-                                    // fetch_matches(props.sport, props.setmatches, props.setGroups, props.setlevel, props.setmatchesgroup, null, props.setWidth, props.setHeight).then(r => {
-                                    // props.setloading(false);
-                                    // })
+                                    setCurrMatchZoom(determine_winner(curMatchZoom, "playoff"));
+                                    updateMatchArray(curMatchZoom, match_array, set_match_array);
+                                    pushmatch(username, sport, curMatchZoom, "playoff", curMatchZoom.uniqueId);
+                                    setMatchZoom(false);
+                                    console.log(curMatchZoom.team2, curMatchZoom.team1)
                                 }}>
                                     <View>{over_text(match_array, match_array.indexOf(curMatchZoom))}</View>
                                 </Pressable>
-                                <Pressable onPress={() => { alert("not done yet") }
+                                <Pressable onPress={() => { // Function to save only the results!
+                                    setFetching(true);
+                                    updateMatchArray(curMatchZoom, match_array, set_match_array);
+                                    pushmatch(username, sport, curMatchZoom, "playoff", curMatchZoom.uniqueId) 
+                                    setFetching(false);
+                                    alert("Saved to server!"); // TODO : transform to modal
+                                }
                                 }>
                                     <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/save.png')}></Image>
                                 </Pressable>
@@ -601,14 +604,17 @@ const Matchcomp = (props) => {
                         </View>
                     </View>
                 </Modal>
-                {match_array.map((r, index) => {
+                {match_array.map((r) => {
                     return (<View style={r.over == 0 ? styles.match : styles.matchover}>
                         <Text style={r.over == 2 ? styles.lose : styles.teamnormal}>{r.team1}</Text>
-                        <Text style={{ fontSize: 24, fontWeight: "bold" }}>{"vs"}</Text><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text>
-                        <Text style={styles.score}>{score[index]}</Text>
-                        <Button style={styles.openButton} title="Edit" onPress={() => { setCurrMatchZoom(r); setMatchZoom(true) }
-                        }>
-                        </Button>
+                        <Text style={styles.score}>{r.team1 == "" ? "" : r.score}</Text>
+                        <View><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text></View>
+                        {(r.team1 != "" && r.team2 != "") ?
+                            <Pressable onPress={() => { setInitScore(r.score);setCurrMatchZoom(r); setMatchZoom(true) }}>
+                                <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/editlogo.png')}/>
+                            </Pressable> : <View/>
+                        }
+                       
                         {/* <TouchableOpacity onPress={() => {
                             props.setloading(true);
                             setFetching(true);
@@ -628,7 +634,7 @@ const Matchcomp = (props) => {
             {match_array.map((r, index) => {
                 return (<View style={r.over == 0 ? styles.match : styles.matchover}>
                     <Text style={r.over == 2 ? styles.lose : styles.teamnormal}>{r.team1}</Text>
-                    <Text>{"vs"}</Text><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text><Text style={styles.score} >{score[index]}</Text></View>)
+                    <Text>{"vs"}</Text><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text><Text style={styles.score} >{r.score}</Text></View>)
             })}
         </View>
     );
@@ -638,13 +644,11 @@ const Matchcomp = (props) => {
 function pushmatch(username, sport, match, type, uniqueId) {
 
     // 5 second timeout:
-    console.log(username, sport, match, type)
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     console.log("pushing!")
     // // push to server
     fetch("http://91.121.143.104:7070/pushmatch", { signal: controller.signal, method: "POST", body: JSON.stringify({ "sport": sport, "username": username, "type": type, "match": match, uniqueId: uniqueId }) }).then(r => {
-        console.log(r);
         if (r.status == 200) {
         }
         else {
@@ -653,16 +657,7 @@ function pushmatch(username, sport, match, type, uniqueId) {
 
     }).catch((err) => { console.log(err, "Issue with server!") });
 }
-function setOver(matchArray, index, setMatchArray, type) {
-
-
-}
-function determine_winner(match, index, setfun, score, username, sport, type, setFetching = "", level = 0) {
-    // TODO : add push function to json through raspi
-    let topush = false;
-    console.log(score)
-    let tmp_array = JSON.parse(JSON.stringify(match));
-    let uniqueId = 0;
+function determine_winner(curMatch, type) {
     if (type == "poules") {
         if (tmp_array[index].over != 0) {
             tmp_array[index].over = 0;
@@ -672,7 +667,7 @@ function determine_winner(match, index, setfun, score, username, sport, type, se
             pushmatch(username, sport, tmp_array[index], type, tmp_array[index].uniqueId)
             setfun(tmp_array);
             setFetching(false);
-            return;
+            return curMatch;
         }
         tmp_array[index].score = score[index];
         let scores = score[index].split(":");
@@ -694,32 +689,18 @@ function determine_winner(match, index, setfun, score, username, sport, type, se
         }
     }
     else if (type == "playoff") {
-        // console.log(tmp_array[index].uniqueId)
-        // for (var i in tmp_array){
-        //     if(tmp_array[i].level == level){
-        //         console.log(tmp_array[Number(i) + Number(index)], Number(i) + Number(index));
-        //         break;
-        //     }
-        // }
-        if (tmp_array[index].over != 0) {
-            tmp_array[index].over = 0;
-            setfun(tmp_array);
-            tmp_array[index].score = score;
-            setFetching(true);
-            pushmatch(username, sport, tmp_array[index], type, tmp_array[index].uniqueId)
-            setfun(tmp_array);
-            setFetching(false);
-            return;
+
+        if (curMatch.over != 0) {
+            curMatch.over = 0;
+            return curMatch;
         }
-        let scores = score.split(":");
+        let scores = curMatch.score.split(":");
         if (scores.length == 2) {
             if (parseInt(scores[0]) > parseInt(scores[1])) {
-                tmp_array[index].over = 1;
-                topush = true;
+                curMatch.over = 1;
             }
             else if (parseInt(scores[0]) < parseInt(scores[1])) {
-                tmp_array[index].over = 2;
-                topush = true;
+                curMatch.over = 2;
             }
             else {
                 alert("Either a tie, or not parsable. Score should be x:x");
@@ -729,12 +710,8 @@ function determine_winner(match, index, setfun, score, username, sport, type, se
             alert("Either a tie, or not parsable. Score should be x:x");
         }
     }
-    if (topush) {
-        setFetching(true);
-        pushmatch(username, sport, tmp_array[index], type, tmp_array[index].uniqueId)
-        setfun(tmp_array);
-        setFetching(false);
-    }
+    return curMatch;
+
 }
 const Matchpoule = (props) => {
     const matches = props.matches;

@@ -22,16 +22,26 @@ module.exports = StyleSheet.create({
         backgroundColor: "#EFF8FF"
     },
     matchover: {
-        flexDirection: 'column',
-        alignItems: "center",
-        justifyContent: "space-between",
         backgroundColor: "#D62628",
+        flexDirection: 'column',
+        justifyContent: "space-evenly",
         borderWidth: 1,
-        alignSelf: "center",
+        alignItems: "center",
         marginLeft: 30,
         marginRight: 30,
         width: 100,
-        minHeight:120
+        minHeight:130
+    },
+    match: {
+        backgroundColor: "#A8DADC",
+        flexDirection: 'column',
+        justifyContent: "space-evenly",
+        borderWidth: 1,
+        alignItems: "center",
+        marginLeft: 30,
+        marginRight: 30,
+        width: 100,
+        minHeight:130
     },
     matchpouleover: {
         backgroundColor: "#D62628",
@@ -43,17 +53,6 @@ module.exports = StyleSheet.create({
         margin: 30,
         width: 200,
         borderRadius: 15
-    },
-    match: {
-        flexDirection: 'column',
-        justifyContent: "space-evenly",
-        backgroundColor: "#A8DADC",
-        borderWidth: 1,
-        alignItems: "center",
-        marginLeft: 30,
-        marginRight: 30,
-        width: 100,
-        minHeight:120
     },
     matchpoule: {
         backgroundColor: "#A8DADC",
@@ -74,15 +73,15 @@ module.exports = StyleSheet.create({
     },
     teamnormal: {
         textAlign: "center",
-        width: "100%",
+        // width: "100%",
         fontSize: 16,
+        color:"black"
     },
     lose: {
         textAlign: "center",
-        width: "100%",
+        // width: "100%",
         color: "grey",
         textDecorationLine: "line-through",
-        // fontSize: 16
     },
     fetching: {
         position: 'absolute',
@@ -133,8 +132,10 @@ module.exports = StyleSheet.create({
     },
     score: {
         textAlign: "center",
-        borderColor: "black",
-        borderWidth: 1,
+        fontWeight:"bold",
+        fontSize:26
+        // borderColor: "black",
+        // borderWidth: 1,
         // maxWidth:50
     },
     svg: {
@@ -186,12 +187,6 @@ module.exports = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5
-    },
-    openButton: {
-        backgroundColor: "#F194FF",
-        borderRadius: 20,
-        padding: 10,
-        elevation: 2
     },
     textStyle: {
         color: "white",
