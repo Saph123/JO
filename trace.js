@@ -105,9 +105,9 @@ export const Trace = (props) => {
             return (
                 <View style={{ flexDirection: "row" }}>
                     <View>
-                        <Text style={styles.inputScore}>Athlete</Text>
+                        <Text style={styles.showPlayers}>Athlete</Text>
                         {liste.map(r =>
-                            <Text style={styles.inputScore}>{r.username}</Text>
+                            <Text style={styles.showPlayers}>{r.username}</Text>
                         )
                         }
                     </View>
@@ -167,17 +167,17 @@ export const Trace = (props) => {
                     {series_level.map(cur_level =>
                         <View>
                             <View>
-                                <Text style={{ textAlign: "center", fontSize: 20, fontWeight: "bold" }}>{cur_level == 0 ? "Final" : ("Serie" + cur_level)}</Text>
+                                <Text style={{ marginLeft: 175, fontSize: 20, fontWeight: "bold" }}>{cur_level == 0 ? "Final" : ("Serie" + cur_level)}</Text>
                             </View>
                             <View style={{ flexDirection: "row" }}>
                                 <View>
-                                    <Text style={styles.inputScore}>Athlete</Text>
+                                    <Text style={styles.showPlayers}>Athlete</Text>
                                     {liste.map(r => {
                                         if (cur_level == r.level) {
                                             return (
 
                                                 <View>
-                                                    <Text style={styles.inputScore}>{r.username}</Text>
+                                                    <Text style={styles.showPlayers}>{r.username}</Text>
                                                 </View>
                                             )
                                         }
@@ -270,7 +270,7 @@ export const Trace = (props) => {
                                 </View>
                             </View>
                         </View>)}
-                    <View style={{ flexDirection: "row", marginTop: 20, marginLeft: 250 }}>
+                    <View style={{ flexDirection: "row", marginTop: 20, marginLeft: 175 }}>
                         <Button style={styles.openButton} title="Save" onPress={() => { setListe([...liste]); pushmatch(username, sport, liste, "liste", 0); }
                         }>
                         </Button>

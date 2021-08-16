@@ -123,9 +123,16 @@ module.exports = StyleSheet.create({
         fontFamily: "cochin",
         // textAlign: "justify"
     },
-    inputScore: {
+    showPlayers: {
         borderWidth: 1,
         width: 400,
+        height: 30,
+        textAlign: "center",
+        textAlignVertical: "center"
+    },
+    inputScore: {
+        borderWidth: 1,
+        width: 100,
         height: 30,
         textAlign: "center",
         textAlignVertical: "center"
