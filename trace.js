@@ -9,24 +9,25 @@ import { username } from './App.js'
 import 'react-native-url-polyfill/auto';
 const styles = require("./style.js");
 let displayed_state = {
-    "Trail":"",
-    "Dodgeball":"",
-    "Pizza":"",
-    "Tong":"",
-    "Babyfoot":"",
-    "Flechette":"",
-    "PingPong":"",
-    "Orientation":"",
-    "Beerpong":"",
-    "Volley":"",
-    "Waterpolo":"",
-    "Larmina":"",
-    "Natation":"",
-    "SpikeBall":"",
-    "Ventriglisse":"",
-    "100mRicard":"",
-    "Petanque":"",
-    "Molky":""};
+    "Trail": "",
+    "Dodgeball": "",
+    "Pizza": "",
+    "Tong": "",
+    "Babyfoot": "",
+    "Flechette": "",
+    "PingPong": "",
+    "Orientation": "",
+    "Beerpong": "",
+    "Volley": "",
+    "Waterpolo": "",
+    "Larmina": "",
+    "Natation": "",
+    "SpikeBall": "",
+    "Ventriglisse": "",
+    "100mRicard": "",
+    "Petanque": "",
+    "Molky": ""
+};
 export const Trace = (props) => {
     const sport = props.sport;
     const autho = props.autho;
@@ -475,9 +476,9 @@ export async function fetch_results(username, setResults) {
     setResults(fetch_results)
     return fetch_results;
 }
-function updateMatchArray(curMatch, matchArray, setMatchArray){
-    for( var i in matchArray){
-        if(curMatch.uniqueId == matchArray[i].uniqueId){
+function updateMatchArray(curMatch, matchArray, setMatchArray) {
+    for (var i in matchArray) {
+        if (curMatch.uniqueId == matchArray[i].uniqueId) {
             matchArray[i] = curMatch;
         }
     }
@@ -544,7 +545,83 @@ function crement_score_team(teamnumber, curMatch, matchArray, setMatchArray, inc
     setMatchArray([...matchArray]);
 
 }
+function matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type) {
+    return (
 
+        <View style={r.over == 0 ? (type == "playoff" ? styles.match : styles.matchpoule) : (type == "playoff" ? styles.matchover : styles.matchpouleover)}>
+            <Text style={r.over == 2 ? styles.lose : styles.teamnormal}>{r.team1}</Text>
+            <Text style={styles.score}>{r.team1 == "" ? "" : r.score}</Text>
+            <View><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text></View>
+            {(r.team1 != "" && r.team2 != "" && autho) ?
+                <Pressable onPress={() => { setInitScore(r.score); setCurrMatchZoom(r); setMatchZoom(true) }}>
+                    <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/editlogo.png')} />
+                </Pressable> : <View />
+            }
+
+        </View>)
+
+}
+function modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_array, set_match_array, matchZoom, setMatchZoom, setFetching, props, type, initScore) {
+    return (
+        <Modal
+            animationType="slide"
+            transparent={true}
+            visible={matchZoom}
+            supportedOrientations={['portrait', 'landscape']}
+        >
+            <View style={styles.matchZoomView}>
+                <Pressable style={styles.closeButton} onPressIn={() => { console.log("initialscore", initScore); curMatchZoom.score = initScore; updateMatchArray(curMatchZoom, match_array, set_match_array); setMatchZoom(false) }}><Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} /></Pressable>
+                <View style={{ flexDirection: "column", flex: 1, justifyContent: "space-evenly" }}>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                        <View style={{ width: 200, justifyContent: "center" }}><Text style={{ textAlignVertical: "center" }}>{curMatchZoom.team1}</Text></View>
+                        <View style={{ marginLeft: 30, justifyContent: "center" }}>
+                            <Pressable onPressIn={() => { crement_score_team(1, curMatchZoom, match_array, set_match_array, 0) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/plus.png')} /></Pressable>
+                            <Text style={{ textAlign: "center" }}>{curMatchZoom.score == undefined ? "0" : curMatchZoom.score.split(":")[0]}</Text>
+                            <Pressable onPressIn={() => { crement_score_team(1, curMatchZoom, match_array, set_match_array, 1) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/moins.png')} /></Pressable>
+                        </View>
+                    </View>
+                    <View><Text style={{ textAlign: "center" }}>VS</Text></View>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                        <View style={{ width: 200, justifyContent: "center" }}><Text style={{ textAlignVertical: "center" }}>{curMatchZoom.team2}</Text></View>
+                        <View style={{ marginLeft: 30, justifyContent: "center" }}>
+                            <Pressable onPressIn={() => { crement_score_team(2, curMatchZoom, match_array, set_match_array, 0) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/plus.png')} /></Pressable>
+                            <Text style={{ textAlign: "center" }}>{curMatchZoom.score == undefined ? "0" : curMatchZoom.score.split(":")[1]}</Text>
+                            <Pressable onPressIn={() => { crement_score_team(2, curMatchZoom, match_array, set_match_array, 1) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/moins.png')} /></Pressable>
+                        </View>
+                    </View>
+                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                        <Pressable style={{ alignSelf: "center" }} onPress={() => {
+                            setFetching(true);
+                            props.setloading(true);
+                            setCurrMatchZoom(determine_winner(curMatchZoom, type));
+                            updateMatchArray(curMatchZoom, match_array, set_match_array);
+                            pushmatch(username, sport, curMatchZoom, type, curMatchZoom.uniqueId);
+                            fetch_matches(props.sport, props.setmatches, props.setGroups, props.setlevel, props.setmatchesgroup, null, props.setWidth, props.setHeight).then(r => {
+                                setFetching(false);
+                                props.setloading(false);
+                            })
+                            setMatchZoom(false);
+                        }}>
+                            <View>{over_text(match_array, match_array.indexOf(curMatchZoom))}</View>
+                        </Pressable>
+                        <Pressable onPress={() => { // Function to save only the results!
+                            setFetching(true);
+                            updateMatchArray(curMatchZoom, match_array, set_match_array);
+                            pushmatch(username, sport, curMatchZoom, type, curMatchZoom.uniqueId)
+                            setFetching(false);
+                            setMatchZoom(false);
+                            alert("Saved to server!"); // TODO : transform to modal
+                        }
+                        }>
+                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/save.png')}></Image>
+                        </Pressable>
+                    </View>
+                </View>
+            </View>
+        </Modal>
+
+    );
+}
 const Matchcomp = (props) => {
     const matches = props.matches;
     const level = props.level;
@@ -553,7 +630,7 @@ const Matchcomp = (props) => {
     const username = props.username;
     const [matchZoom, setMatchZoom] = React.useState(false);
     const [local_fetch, setFetching] = React.useState(true)
-
+    const type = "playoff"
     const [match_array, set_match_array] = React.useState([]);
     const [curMatchZoom, setCurrMatchZoom] = React.useState({});
     const temp_array = [];
@@ -579,90 +656,12 @@ const Matchcomp = (props) => {
         ><View ><ActivityIndicator size="large" color="black" /></View></Modal>);
     }
 
-    if (autho) {
-        return (
-            <View style={styles.line}>
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={matchZoom}
-                    supportedOrientations={['portrait', 'landscape']}
-                >
-                    <View style={styles.matchZoomView}>
-                        <Pressable style={styles.closeButton} onPressIn={() => { console.log("initialscore", initScore); curMatchZoom.score = initScore; updateMatchArray(curMatchZoom, match_array, set_match_array);setMatchZoom(false) }}><Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} /></Pressable>
-                        <View style={{ flexDirection: "column", flex: 1, justifyContent: "space-evenly" }}>
-                            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                                <View style={{ width: 200, justifyContent: "center" }}><Text style={{ textAlignVertical: "center" }}>{curMatchZoom.team1}</Text></View>
-                                <View style={{ marginLeft: 30, justifyContent: "center" }}>
-                                    <Pressable onPressIn={() => { crement_score_team(1, curMatchZoom, match_array, set_match_array, 0) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/plus.png')} /></Pressable>
-                                    <Text style={{ textAlign: "center" }}>{curMatchZoom.score == undefined ? "0" : curMatchZoom.score.split(":")[0]}</Text>
-                                    <Pressable onPressIn={() => { crement_score_team(1, curMatchZoom, match_array, set_match_array, 1) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/moins.png')} /></Pressable>
-                                </View>
-                            </View>
-                            <View><Text style={{ textAlign: "center" }}>VS</Text></View>
-                            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                                <View style={{ width: 200, justifyContent: "center" }}><Text style={{ textAlignVertical: "center" }}>{curMatchZoom.team2}</Text></View>
-                                <View style={{ marginLeft: 30, justifyContent: "center" }}>
-                                    <Pressable onPressIn={() => { crement_score_team(2, curMatchZoom, match_array, set_match_array, 0) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/plus.png')} /></Pressable>
-                                    <Text style={{ textAlign: "center" }}>{curMatchZoom.score == undefined ? "0" : curMatchZoom.score.split(":")[1]}</Text>
-                                    <Pressable onPressIn={() => { crement_score_team(2, curMatchZoom, match_array, set_match_array, 1) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/moins.png')} /></Pressable>
-                                </View>
-                            </View>
-                            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                                <Pressable style={{ alignSelf: "center" }} onPress={() => {
-                                    setFetching(true);
-                                    props.setloading(true);
-                                    setCurrMatchZoom(determine_winner(curMatchZoom, "playoff"));
-                                    updateMatchArray(curMatchZoom, match_array, set_match_array);
-                                    pushmatch(username, sport, curMatchZoom, "playoff", curMatchZoom.uniqueId);
-                                    fetch_matches(props.sport, props.setmatches, props.setGroups, props.setlevel, props.setmatchesgroup, null, props.setWidth, props.setHeight).then(r => {
-                                    setFetching(false);
-                                    props.setloading(false);
-                                    })
-                                    setMatchZoom(false);
-                                }}>
-                                    <View>{over_text(match_array, match_array.indexOf(curMatchZoom))}</View>
-                                </Pressable>
-                                <Pressable onPress={() => { // Function to save only the results!
-                                    setFetching(true);
-                                    updateMatchArray(curMatchZoom, match_array, set_match_array);
-                                    pushmatch(username, sport, curMatchZoom, "playoff", curMatchZoom.uniqueId) 
-                                    setFetching(false);
-                                    alert("Saved to server!"); // TODO : transform to modal
-                                }
-                                }>
-                                    <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/save.png')}></Image>
-                                </Pressable>
-                            </View>
-                        </View>
-                    </View>
-                </Modal>
-                {match_array.map((r) => {
-                    return (<View style={r.over == 0 ? styles.match : styles.matchover}>
-                        <Text style={r.over == 2 ? styles.lose : styles.teamnormal}>{r.team1}</Text>
-                        <Text style={styles.score}>{r.team1 == "" ? "" : r.score}</Text>
-                        <View><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text></View>
-                        {(r.team1 != "" && r.team2 != "") ?
-                            <Pressable onPress={() => { setInitScore(r.score);setCurrMatchZoom(r); setMatchZoom(true) }}>
-                                <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/editlogo.png')}/>
-                            </Pressable> : <View/>
-                        }
-                       
-                    </View>)
-                })}
-            </View>
-        );
-    }
     return (
         <View style={styles.line}>
-            {match_array.map((r, index) => {
-                return (<View style={r.over == 0 ? styles.match : styles.matchover}>
-                    <Text style={r.over == 2 ? styles.lose : styles.teamnormal}>{r.team1}</Text>
-                    <Text>{"vs"}</Text><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text><Text style={styles.score} >{r.score}</Text></View>)
-            })}
+            {modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_array, set_match_array, matchZoom, setMatchZoom, setFetching, props, type, initScore)}
+            {match_array.map((r) => matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type))}
         </View>
     );
-
 
 }
 function pushmatch(username, sport, match, type, uniqueId) {
@@ -682,58 +681,27 @@ function pushmatch(username, sport, match, type, uniqueId) {
     }).catch((err) => { console.log(err, "Issue with server!") });
 }
 function determine_winner(curMatch, type) {
-    if (type == "poules") {
-        if (tmp_array[index].over != 0) {
-            tmp_array[index].over = 0;
-            setfun(tmp_array);
-            tmp_array[index].score = score[index];
-            setFetching(true);
-            pushmatch(username, sport, tmp_array[index], type, tmp_array[index].uniqueId)
-            setfun(tmp_array);
-            setFetching(false);
-            return curMatch;
-        }
-        tmp_array[index].score = score[index];
-        let scores = score[index].split(":");
-        if (scores.length == 2) {
-            if (parseInt(scores[0]) > parseInt(scores[1])) {
-                tmp_array[index].over = 1;
-                topush = true;
-            }
-            else if (parseInt(scores[0]) < parseInt(scores[1])) {
-                tmp_array[index].over = 2;
-                topush = true;
-            }
-            else {
-                alert("Either a tie, or not parsable. Score should be x:x");
-            }
-        }
-        else {
-            alert("Either a tie, or not parsable. Score should be x:x");
-        }
-    }
-    else if (type == "playoff") {
 
-        if (curMatch.over != 0) {
-            curMatch.over = 0;
-            return curMatch;
+    if (curMatch.over != 0) {
+        curMatch.over = 0;
+        return curMatch;
+    }
+    let scores = curMatch.score.split(":");
+    if (scores.length == 2) {
+        if (parseInt(scores[0]) > parseInt(scores[1])) {
+            curMatch.over = 1;
         }
-        let scores = curMatch.score.split(":");
-        if (scores.length == 2) {
-            if (parseInt(scores[0]) > parseInt(scores[1])) {
-                curMatch.over = 1;
-            }
-            else if (parseInt(scores[0]) < parseInt(scores[1])) {
-                curMatch.over = 2;
-            }
-            else {
-                alert("Either a tie, or not parsable. Score should be x:x");
-            }
+        else if (parseInt(scores[0]) < parseInt(scores[1])) {
+            curMatch.over = 2;
         }
         else {
             alert("Either a tie, or not parsable. Score should be x:x");
         }
     }
+    else {
+        alert("Either a tie, or not parsable. Score should be x:x");
+    }
+
     return curMatch;
 
 }
@@ -746,8 +714,11 @@ const Matchpoule = (props) => {
     const poulename = props.poule;
     const [local_fetch, setFetching] = React.useState(true)
     const [score, setScore] = React.useState([]);
-    const [match, setMatch] = React.useState([])
-    const navigation = useNavigation()
+    const [match, setMatch] = React.useState([]);
+    const [curMatchZoom, setCurrMatchZoom] = React.useState({});
+    const [matchZoom, setMatchZoom] = React.useState(false);
+    const [initScore, setInitScore] = React.useState("");
+    const type = "poules";
     let match_array = [];
     let array_score = [];
     for (var i = 0; i < matches.length; i++) {
@@ -766,42 +737,15 @@ const Matchpoule = (props) => {
 
         return (<View><ActivityIndicator size="large" color="#000000" style={styles.fetching} /></View>)
     }
-    if (autho && !local_fetch) {
+
         return (
             <View style={styles.column}>
-                {match.map((r, index) => {
-                    return (<View style={r.over == 0 ? styles.matchpoule : styles.matchpouleover}>
-                        <Text style={r.over == 2 ? styles.lose : styles.teamnormal}>{r.team1}</Text>
-                        <Text>{"vs"}</Text><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text>
-                        <View style={{ flexDirection: "row" }}>{manage_score_over(match, index, score, setScore, username, sport)}</View>
-                        <TouchableOpacity onPress={() => {
-                            props.setloading(true);
-                            setFetching(true);
-                            determine_winner(match, index, setMatch, score, username, sport, "poules", setFetching, 0);
-                            fetch_matches(props.sport, props.setmatches, props.setGroups, props.setlevel, props.setmatchesgroup, null, props.setWidth, props.setHeight).then(r => {
-                                props.setloading(false);
-                            })
-                        }}>
-                            <View>{over_text(match, index)}</View></TouchableOpacity>
-                    </View>)
-                })}
+                {modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match, setMatch, matchZoom, setMatchZoom, setFetching, props, type, initScore)}
+                {match.map((r) =>
+                    matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type)
+                )}
             </View>
         );
-    }
-
-
-    return (
-        <View style={styles.column}>
-            {match_array.map((r, index) => {
-                return (
-                    <View style={r.over == 0 ? styles.matchpoule : styles.matchpouleover}>
-                        <Text style={r.over == 2 ? styles.lose : styles.teamnormal}>{r.team1}</Text>
-                        <Text>{"vs"}</Text><Text style={r.over == 1 ? styles.lose : styles.teamnormal}>{r.team2}</Text><Text style={styles.score}>{score[index]}</Text>
-                    </View>)
-            })}
-        </View>
-    );
-
 
 }
 
@@ -823,22 +767,22 @@ function over_text(match, index) {
     )
 
 }
-function manage_score_over(match, index, score, setScore, username, sport) {
-    if (match[index].over == 0) {
-        return (
-            <View style={{ flexDirection: "row" }}>
-                <TextInput style={styles.score} value={score[index]} onChangeText={(text) => { let tmp_array_score = JSON.parse(JSON.stringify(score)); tmp_array_score[index] = text; setScore(tmp_array_score) }} />
-                <TouchableOpacity onPress={() => { match[index].score = score[index]; pushmatch(username, sport, match[index], "poules", uniqueId = match[index].uniqueId) }} ><Image style={{ borderRadius: 5, borderWidth: 2, borderColor: "black", width: 20, height: 20, alignSelf: "center" }} source={require('./assets/validatelogo.png')} /></TouchableOpacity>
-            </View>
-        )
-    }
-    return (
-        <View>
-            <Text style={styles.score} >{score[index]}</Text>
-            {/* <TouchableOpacity onPress={() => { pushscore(score[index]) }} ><Image style={{ borderRadius: 5, borderWidth: 2, borderColor: "black", width: 20, height: 20, alignSelf: "center" }} source={require('./assets/validatelogo.png')} /></TouchableOpacity> */}
-        </View>
-    )
-}
+// function manage_score_over(match, index, score, setScore, username, sport) {
+//     if (match[index].over == 0) {
+//         return (
+//             <View style={{ flexDirection: "row" }}>
+//                 <TextInput style={styles.score} value={score[index]} onChangeText={(text) => { let tmp_array_score = JSON.parse(JSON.stringify(score)); tmp_array_score[index] = text; setScore(tmp_array_score) }} />
+//                 <TouchableOpacity onPress={() => { match[index].score = score[index]; pushmatch(username, sport, match[index], "poules", uniqueId = match[index].uniqueId) }} ><Image style={{ borderRadius: 5, borderWidth: 2, borderColor: "black", width: 20, height: 20, alignSelf: "center" }} source={require('./assets/validatelogo.png')} /></TouchableOpacity>
+//             </View>
+//         )
+//     }
+//     return (
+//         <View>
+//             <Text style={styles.score} >{score[index]}</Text>
+//             {/* <TouchableOpacity onPress={() => { pushscore(score[index]) }} ><Image style={{ borderRadius: 5, borderWidth: 2, borderColor: "black", width: 20, height: 20, alignSelf: "center" }} source={require('./assets/validatelogo.png')} /></TouchableOpacity> */}
+//         </View>
+//     )
+// }
 
 class Match {
     constructor(sport, team1, team2, uniqueId, score, over, level, poulename, nextmatch) {
