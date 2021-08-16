@@ -8,7 +8,25 @@ import { Table, Row } from 'react-native-table-component';
 import { username } from './App.js'
 import 'react-native-url-polyfill/auto';
 const styles = require("./style.js");
-let displayed_state = "";
+let displayed_state = {
+    "Trail":"",
+    "Dodgeball":"",
+    "Pizza":"",
+    "Tong":"",
+    "Babyfoot":"",
+    "Flechette":"",
+    "PingPong":"",
+    "Orientation":"",
+    "Beerpong":"",
+    "Volley":"",
+    "Waterpolo":"",
+    "Larmina":"",
+    "Natation":"",
+    "SpikeBall":"",
+    "Ventriglisse":"",
+    "100mRicard":"",
+    "Petanque":"",
+    "Molky":""};
 export const Trace = (props) => {
     const sport = props.sport;
     const autho = props.autho;
@@ -33,8 +51,7 @@ export const Trace = (props) => {
     if (loading) {
         return (<ActivityIndicator size="large" color="#000000" />);
     }
-    if (displayed_state == "playoff") {
-        displayed_state = ""
+    if (displayed_state[sport] == "playoff") {
         return (
             <View>
                 <Svg style={styles.svg}>
@@ -54,7 +71,7 @@ export const Trace = (props) => {
             </View>
         );
     }
-    else if (displayed_state == "poules") {
+    else if (displayed_state[sport] == "poules") {
 
         return (
             <View style={{ flexDirection: "row", flex: 1, position: "absolute", top: 0, left: 0 }}>
@@ -272,25 +289,25 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
 
 
     await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
-        if (displayed_state == "") {
+        if (displayed_state[sportname] == "") {
             // first time we use the one in the server
-            displayed_state = data['status'];
+            displayed_state[sportname] = data['status'];
         }
         else { // seen an issue when going from a sport that have more states than another
             var possibleState = false;
             for (var i in data['states']) {
-                if (displayed_state == data['states'][i]) {
+                if (displayed_state[sportname] == data['states'][i]) {
                     possibleState = true;
                     break;
                 }
             }
             if (!possibleState) {
-                displayed_state = data['status'];
+                displayed_state[sportname] = data['status'];
             }
         }
         return data;
     });
-    if (displayed_state == "poules") {
+    if (displayed_state[sportname] == "poules") {
         matches_group = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_poules.json").then(response => response.json()).then(data => { return data });
         var i = 0;
         let array_groups = [];
@@ -317,7 +334,7 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
         setHeight(400 * (array_groups.length + 1) * 4);
 
     }
-    else if (displayed_state == "playoff") {
+    else if (displayed_state[sportname] == "playoff") {
         matches = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => { return data });
 
         let level = [];
@@ -359,7 +376,7 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
         }
         else {
 
-            if (displayed_state == "final") { // affichage de la finale
+            if (displayed_state[sportname] == "final") { // affichage de la finale
                 for (var series in liste["Series"]) {
                     if (liste["Series"][series]["Name"] == "Final") {
                         var templist = liste["Series"][series]["Teams"];
@@ -396,20 +413,17 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
 export function toggle_status(status, setStatus, navigation, sportname) {
 
     for (var i = 0; i < status.states.length; i++) {
-        if (status.states[i] == displayed_state) {
+        if (status.states[i] == displayed_state[sportname]) {
             if (i + 1 < status.states.length) {
-                displayed_state = status.states[i + 1];
+                displayed_state[sportname] = status.states[i + 1];
             }
             else {
-                displayed_state = status.states[0];
+                displayed_state[sportname] = status.states[0];
             }
-            status.status = displayed_state
+            status.status = displayed_state[sportname]
             setStatus(status);
             navigation.reset({ routes: [{ name: "Home" }, { name: navigation.dangerouslyGetState().routes[navigation.dangerouslyGetState().index].name, sportname: sportname }] });
             break;
-        }
-        else {
-            displayed_state = status.status;
         }
     }
 }
@@ -419,21 +433,21 @@ export async function fetch_status(sportname, setStatus) {
 
 
     fetch_status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
-        if (displayed_state == "") {
+        if (displayed_state[sportname] == "") {
             // first time we use the one in the server
-            displayed_state = data['status'];
+            displayed_state[sportname] = data['status'];
         }
         else { // seen an issue when going from a sport that have more states than another
             var possibleState = false;
             for (var i in data['states']) {
-                if (displayed_state == data['states'][i]) {
+                if (displayed_state[sportname] == data['states'][i]) {
                     possibleState = true;
-                    data["status"] = displayed_state;
+                    data["status"] = displayed_state[sportname];
                     break;
                 }
             }
             if (!possibleState) {
-                displayed_state = data['status'];
+                displayed_state[sportname] = data['status'];
             }
         }
         setStatus(data);
