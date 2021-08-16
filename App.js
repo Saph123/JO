@@ -205,6 +205,9 @@ function HomeScreen({ route, navigation }) {
                 <TouchableOpacity style={{ alignSelf: "center" }} onPressIn={playcluedo}>
                     <Image style={{ borderRadius: 10, borderWidth: 1, borderColor: "black" }} source={require('./assets/cluedo.png')} />
                 </TouchableOpacity>
+                <TouchableOpacity style={{ alignSelf: "center" }} onPressIn={() => { navigation.navigate('SummaryScreen')}}>
+                    <Image style={{ borderRadius: 5, borderWidth: 1, width:60, height:80, borderColor: "black", margin:10 }} resizeMode="contain" source={require('./assets/summary.png')} />
+                </TouchableOpacity>
                 <TouchableOpacity style={styles.loginbutton}
                     onPress={() => { navigation.navigate('Login') }}
                 >
@@ -425,15 +428,22 @@ function SportDetailsScreen({ route, navigation }) {
     )
 };
 
-function UsernameScreen({ navigation }) {
+function SummaryScreen() {
+    return(
+        <View>
+            <Text> Summary screen blyat!</Text>
+        </View>
+    )
+}
+function UsernameScreen() {
     const [loading, setLoading] = React.useState(true);
     const [goldMedals, setGoldMedal] = React.useState(0);
     const [rank, setRank] = React.useState(0);
     const [silverMedals, setSilverMedal] = React.useState(0);
     const [bronzeMedals, setBronzeMedal] = React.useState(0);
-    const [goldWins, setGoldWins] = React.useState("");
-    const [silverWins, setSilverWins] = React.useState("");
-    const [bronzeWins, setBronzeWins] = React.useState("");
+    const [goldWins, setGoldWins] = React.useState([]);
+    const [silverWins, setSilverWins] = React.useState([]);
+    const [bronzeWins, setBronzeWins] = React.useState([]);
     React.useEffect(() => {
         fetch_results(username).then(r => {
             switch (Number(r["rank"])) {
@@ -452,15 +462,15 @@ function UsernameScreen({ navigation }) {
 
             }
             setGoldMedal(r["gold"]["number"])
-            if (goldMedals) {
+            if (r["gold"]["number"]) {
                 setGoldWins(r["gold"]["sports"])
             }
             setSilverMedal(r["silver"]["number"])
-            if (silverMedals) {
+            if (r["silver"]["number"]) {
                 setSilverWins(r["silver"]["sports"])
             }
             setBronzeMedal(r["bronze"]["number"])
-            if (bronzeMedals) {
+            if (r["bronze"]["number"]) {
                 setBronzeWins(r["bronze"]["sports"])
             }
         }
@@ -478,14 +488,29 @@ function UsernameScreen({ navigation }) {
                 <Text style={styles.medailleNumber}>{goldMedals}</Text>
                 <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
             </View>
+                <View style={{alignItems:"center"}}>
+                    {goldWins.map(r => {return(
+                        <Text>{r}</Text>
+                    )})}
+                </View>
             <View style={{ flexDirection: "row", justifyContent: "center" }}>
                 <Text style={styles.medailleNumber}>{silverMedals}</Text>
                 <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
             </View>
+            <View style={{alignItems:"center"}}>
+                    {silverWins.map(r => {return(
+                        <Text>{r}</Text>
+                    )})}
+                </View>
             <View style={{ flexDirection: "row", justifyContent: "center" }}>
                 <Text style={styles.medailleNumber}>{bronzeMedals}</Text>
                 <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
             </View>
+            <View style={{alignItems:"center"}}>
+                    {bronzeWins.map(r => {return(
+                        <Text>{r}</Text>
+                    )})}
+                </View>
             <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Mon rang </Text></View>
             <View style={{ flexDirection: "row", justifyContent: "center" }}>
                 <Text style={styles.medailleNumber}>{rank}</Text>
@@ -564,8 +589,8 @@ function App() {
                             <TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}><Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text></TouchableOpacity></View>
                             <TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View>
                     })} initialParams={{ sportname: current_sport }} name="SportDetails" component={SportDetailsScreen} />
-
-                    <Stack.Screen options={({ }) => ({
+<Stack.Screen options={() => ({title: "Résumé"})}name="SummaryScreen" component={SummaryScreen}/>
+                    <Stack.Screen options={() => ({
                         title: username
                     })} name="UsernameScreen" component={UsernameScreen} />
                 </Stack.Navigator>
