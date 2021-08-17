@@ -347,6 +347,7 @@ function Login({ navigation }) {
                         fetch("http://91.121.143.104:7070/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "username": userName, "password": password }) }).then(r => {
                             if (r.status == 200) {
                                 username = userName; navigation.navigate('Home', { refresh: "refresh" });
+                                pushtoken(route.params.pushtoken, username)
                                 return;
                             }
                             else {
@@ -578,13 +579,13 @@ async function registerForPushNotificationsAsync() {
 
     return token;
 }
-async function pushtoken(token){
+async function pushtoken(token, username){
         // 5 second timeout:
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 15000);
         console.log("pushing token", token);
         // // push to server
-    fetch("http://91.121.143.104:7070/pushtoken", { signal: controller.signal, method: "POST", body: JSON.stringify({ "token": token }) }).then(r => {
+    fetch("http://91.121.143.104:7070/pushtoken", { signal: controller.signal, method: "POST", body: JSON.stringify({ "token": token, "username":username }) }).then(r => {
 
 
     }).catch((err) => { console.log(err, "May be it's normal") });
@@ -657,7 +658,7 @@ function App() {
 
     }
     React.useEffect(() => {
-        registerForPushNotificationsAsync().then(token => {setExpoPushToken(token); pushtoken(token)});
+        registerForPushNotificationsAsync().then(token => {setExpoPushToken(token); pushtoken(token, username)});
         // This listener is fired whenever a notification is received while the app is foregrounded
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
             setNotification(notification);
@@ -694,7 +695,7 @@ function App() {
                     <Stack.Screen options={{
                         title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text>
                         </View>
-                    }} name="Login" component={Login} />
+                    }} initialParams={{ pushtoken: expoPushToken }} name="Login" component={Login} />
 
                     <Stack.Screen options={{
                         title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>
