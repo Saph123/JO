@@ -517,23 +517,23 @@ export function GetState(sportname, status, setStatus, navigation) {
 
     const [loaded, setloaded] = React.useState(0);
     const [local_status, setLocalStatus] = React.useState("");
-    var right
     var top
+    var left
     React.useEffect(() => {
         fetch_status(sportname, setStatus).then(r => { setLocalStatus(r['status']); setloaded(1) });
     }, []);
     if (Platform.OS === "ios") {
 
         if (local_status == "final") {
-            right = 85
+            left = -115
         }
         else {
-            right = 80
+            left = -122
         }
         top = 40
     }
     else {
-        right = 30
+        left = 120
         top = 10
     }
 
@@ -541,7 +541,7 @@ export function GetState(sportname, status, setStatus, navigation) {
         return <View><ActivityIndicator color="000000" /></View>;
     }
     else {
-        return <View><TouchableOpacity onPressIn={() => toggle_status(status, setStatus, navigation, sportname)}><Text style={{ marginTop: top, marginRight: right, color: "white" }}>{local_status}</Text></TouchableOpacity></View>;
+        return <View><TouchableOpacity onPressIn={() => toggle_status(status, setStatus, navigation, sportname)}><Text style={{ marginTop: top, marginLeft: left, color: "white" }}>{local_status}</Text></TouchableOpacity></View>;
     }
 }
 function crement_score_team(teamnumber, curMatch, matchArray, setMatchArray, incrementorDecrement) { // 0 to increment, 1 to decrement
