@@ -370,7 +370,7 @@ module.exports = StyleSheet.create({
         height: 600
     },
     medailleNumber: {
-        fontSize:26,
+        fontSize:18,
         fontWeight:"bold",
         marginRight:5,
         marginLeft:5,
