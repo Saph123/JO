@@ -11,18 +11,18 @@ import { Planning, getNextEventseconds } from "./planning.js";
 import { Trace, GetState, fetch_status, fetch_results } from "./trace.js";
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
-let username = "Max";
+let username = "";
 let current_sport = "Sportname";
 const styles = require("./style.js");
 const ArbitreContext = React.createContext(false);
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: false,
-      shouldSetBadge: false,
+        shouldShowAlert: true,
+        shouldPlaySound: false,
+        shouldSetBadge: false,
     }),
-  });
+});
 
 
 function HomeScreen({ route, navigation }) {
@@ -37,46 +37,46 @@ function HomeScreen({ route, navigation }) {
     async function playcluedo() {
         pushcluedo(route.params.pushtoken);
         if (soundstatus == undefined) {
-            
+
             console.log('Loading Sound');
             const { sound } = await Audio.Sound.createAsync(
                 require('./assets/cluedo.wav')
-                );
-                setSound(sound);
-                await sound.playAsync()
-            }
-            if (soundstatus != undefined) {
-                
-                var test = await soundstatus.getStatusAsync();
-                if (test.isPlaying == true) {
-                    await soundstatus.stopAsync();
-                    
-                }
-                else {
-                    await soundstatus.stopAsync();
-                    await soundstatus.playAsync();
-                }
-            }
-            
+            );
+            setSound(sound);
+            await sound.playAsync()
         }
-        React.useEffect(() => {
-            var dateJO = new Date('2021-08-26T20:00:00');
-            var test = getNextEventseconds();
-            var eventDone = []
-            var currEvent = []
-            // setSecondsleft(Math.trunc((dateJO - Date.now())/1000));
-            setSecondsleft(test.time);
-            setNextEvent(test.name);
-            for (var event in planning["listeevent"]) {
-                if (now > planning["listeevent"][event].timeEnd) {
-                    eventDone.push(planning["listeevent"][event].eventname);
-                }
+        if (soundstatus != undefined) {
+
+            var test = await soundstatus.getStatusAsync();
+            if (test.isPlaying == true) {
+                await soundstatus.stopAsync();
+
             }
-            for (var event in planning["listeevent"]) {
-                if (now > planning["listeevent"][event].timeBegin && now < planning["listeevent"][event].timeEnd) {
-                    currEvent.push(planning["listeevent"][event].eventname);
-                }
+            else {
+                await soundstatus.stopAsync();
+                await soundstatus.playAsync();
             }
+        }
+
+    }
+    React.useEffect(() => {
+        var dateJO = new Date('2021-08-26T20:00:00');
+        var test = getNextEventseconds();
+        var eventDone = []
+        var currEvent = []
+        // setSecondsleft(Math.trunc((dateJO - Date.now())/1000));
+        setSecondsleft(test.time);
+        setNextEvent(test.name);
+        for (var event in planning["listeevent"]) {
+            if (now > planning["listeevent"][event].timeEnd) {
+                eventDone.push(planning["listeevent"][event].eventname);
+            }
+        }
+        for (var event in planning["listeevent"]) {
+            if (now > planning["listeevent"][event].timeBegin && now < planning["listeevent"][event].timeEnd) {
+                currEvent.push(planning["listeevent"][event].eventname);
+            }
+        }
         setEventsDone(eventDone);
         setCurrentEvents(currEvent);
         setLoading(0);
@@ -118,32 +118,32 @@ function HomeScreen({ route, navigation }) {
             </View>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                 <View style={{ flex: 1 }}>
-                    <TouchableOpacity style={ currentEvents.includes("Trail") ? styles.inProgress : (eventsDone.includes("Trail") ? styles.eventDone : styles.homebuttons) }
+                    <TouchableOpacity style={currentEvents.includes("Trail") ? styles.inProgress : (eventsDone.includes("Trail") ? styles.eventDone : styles.homebuttons)}
                         onPress={() => { current_sport = "Trail", navigation.navigate('SportDetails', { sportname: "Trail" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/run.png')} />
                     </TouchableOpacity>
-                    <TouchableOpacity style={ currentEvents.includes("Dodgeball") ? styles.inProgress : (eventsDone.includes("Dodgeball") ? styles.eventDone : styles.homebuttons) }
+                    <TouchableOpacity style={currentEvents.includes("Dodgeball") ? styles.inProgress : (eventsDone.includes("Dodgeball") ? styles.eventDone : styles.homebuttons)}
                         onPress={() => { current_sport = "Dodgeball", navigation.navigate('SportDetails', { sportname: "Dodgeball" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/dodgeball.png')} />
                     </TouchableOpacity>
-                    <TouchableOpacity style={ currentEvents.includes("Pizza") ? styles.inProgress : (eventsDone.includes("Pizza") ? styles.eventDone : styles.homebuttons) }
+                    <TouchableOpacity style={currentEvents.includes("Pizza") ? styles.inProgress : (eventsDone.includes("Pizza") ? styles.eventDone : styles.homebuttons)}
                         onPress={() => { current_sport = "Pizza", navigation.navigate('SportDetails', { sportname: "Pizza" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/pizza.png')} />
                     </TouchableOpacity>
-                    <TouchableOpacity style={ currentEvents.includes("Tong") ? styles.inProgress : (eventsDone.includes("Tong") ? styles.eventDone : styles.homebuttons) }
+                    <TouchableOpacity style={currentEvents.includes("Tong") ? styles.inProgress : (eventsDone.includes("Tong") ? styles.eventDone : styles.homebuttons)}
                         onPress={() => { current_sport = "Tong", navigation.navigate('SportDetails', { sportname: "Tong" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/tong.png')} />
                     </TouchableOpacity>
-                    <TouchableOpacity style={ currentEvents.includes("Babyfoot") ? styles.inProgress : (eventsDone.includes("Babyfoot") ? styles.eventDone : styles.homebuttons) }
+                    <TouchableOpacity style={currentEvents.includes("Babyfoot") ? styles.inProgress : (eventsDone.includes("Babyfoot") ? styles.eventDone : styles.homebuttons)}
                         onPress={() => { current_sport = "Babyfoot", navigation.navigate('SportDetails', { sportname: "Babyfoot" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/babyfoot.png')} />
                     </TouchableOpacity>
-                    <TouchableOpacity style={ currentEvents.includes("Flechette") ? styles.inProgress : (eventsDone.includes("Flechette") ? styles.eventDone : styles.homebuttons) }
+                    <TouchableOpacity style={currentEvents.includes("Flechette") ? styles.inProgress : (eventsDone.includes("Flechette") ? styles.eventDone : styles.homebuttons)}
                         onPress={() => { current_sport = "Flechette", navigation.navigate('SportDetails', { sportname: "Flechette" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="center" resizeMethod="auto" source={require('./assets/sports/flechette.png')} />
@@ -152,37 +152,37 @@ function HomeScreen({ route, navigation }) {
                 </View>
                 <View style={{ flex: 1 }}>
 
-                    <TouchableOpacity style={ currentEvents.includes("PingPong") ? styles.inProgress : (eventsDone.includes("PingPong") ? styles.eventDone : styles.homebuttons) }
+                    <TouchableOpacity style={currentEvents.includes("PingPong") ? styles.inProgress : (eventsDone.includes("PingPong") ? styles.eventDone : styles.homebuttons)}
                         onPress={() => { current_sport = "PingPong", navigation.navigate('SportDetails', { sportname: "PingPong" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/pingpong.png')} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={ currentEvents.includes("Orientation") ? styles.inProgress : (eventsDone.includes("Orientation") ? styles.eventDone : styles.homebuttons) }
+                    <TouchableOpacity style={currentEvents.includes("Orientation") ? styles.inProgress : (eventsDone.includes("Orientation") ? styles.eventDone : styles.homebuttons)}
                         onPress={() => { current_sport = "Orientation", navigation.navigate('SportDetails', { sportname: "Orientation" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/orientation.png')} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={ currentEvents.includes("Beerpong") ? styles.inProgress : (eventsDone.includes("Beerpong") ? styles.eventDone : styles.homebuttons) }
+                    <TouchableOpacity style={currentEvents.includes("Beerpong") ? styles.inProgress : (eventsDone.includes("Beerpong") ? styles.eventDone : styles.homebuttons)}
                         onPress={() => { current_sport = "Beerpong", navigation.navigate('SportDetails', { sportname: "Beerpong" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/beerpong.png')} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={ currentEvents.includes("Volley") ? styles.inProgress : (eventsDone.includes("Volley") ? styles.eventDone : styles.homebuttons) }
+                    <TouchableOpacity style={currentEvents.includes("Volley") ? styles.inProgress : (eventsDone.includes("Volley") ? styles.eventDone : styles.homebuttons)}
                         onPress={() => { current_sport = "Volley", navigation.navigate('SportDetails', { sportname: "Volley" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/volley.png')} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={ currentEvents.includes("Waterpolo") ? styles.inProgress : (eventsDone.includes("Waterpolo") ? styles.eventDone : styles.homebuttons) }
+                    <TouchableOpacity style={currentEvents.includes("Waterpolo") ? styles.inProgress : (eventsDone.includes("Waterpolo") ? styles.eventDone : styles.homebuttons)}
                         onPress={() => { current_sport = "Waterpolo", navigation.navigate('SportDetails', { sportname: "Waterpolo" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/waterpolo.png')} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={ currentEvents.includes("Larmina") ? styles.inProgress : (eventsDone.includes("Larmina") ? styles.eventDone : styles.homebuttons) }
+                    <TouchableOpacity style={currentEvents.includes("Larmina") ? styles.inProgress : (eventsDone.includes("Larmina") ? styles.eventDone : styles.homebuttons)}
                         onPress={() => { current_sport = "Larmina", navigation.navigate('SportDetails', { sportname: "Larmina" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/polish.png')} />
@@ -191,37 +191,37 @@ function HomeScreen({ route, navigation }) {
                 </View>
                 <View style={{ flex: 1 }}>
 
-                    <TouchableOpacity style={ currentEvents.includes("Natation") ? styles.inProgress : (eventsDone.includes("Natation") ? styles.eventDone : styles.homebuttons) }
+                    <TouchableOpacity style={currentEvents.includes("Natation") ? styles.inProgress : (eventsDone.includes("Natation") ? styles.eventDone : styles.homebuttons)}
                         onPress={() => { current_sport = "Natation", navigation.navigate('SportDetails', { sportname: "Natation" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/natationsynchro.png')} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={ currentEvents.includes("SpikeBall") ? styles.inProgress : (eventsDone.includes("SpikeBall") ? styles.eventDone : styles.homebuttons) }
+                    <TouchableOpacity style={currentEvents.includes("SpikeBall") ? styles.inProgress : (eventsDone.includes("SpikeBall") ? styles.eventDone : styles.homebuttons)}
                         onPress={() => { current_sport = "SpikeBall", navigation.navigate('SportDetails', { sportname: "SpikeBall" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/spikeball.png')} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={ currentEvents.includes("Ventriglisse") ? styles.inProgress : (eventsDone.includes("Ventriglisse") ? styles.eventDone : styles.homebuttons) }
+                    <TouchableOpacity style={currentEvents.includes("Ventriglisse") ? styles.inProgress : (eventsDone.includes("Ventriglisse") ? styles.eventDone : styles.homebuttons)}
                         onPress={() => { current_sport = "Ventriglisse", navigation.navigate('SportDetails', { sportname: "Ventriglisse" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/100mricard.png')} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={ currentEvents.includes("100mRicard") ? styles.inProgress : (eventsDone.includes("100mRicard") ? styles.eventDone : styles.homebuttons) }
+                    <TouchableOpacity style={currentEvents.includes("100mRicard") ? styles.inProgress : (eventsDone.includes("100mRicard") ? styles.eventDone : styles.homebuttons)}
                         onPress={() => { current_sport = "100mRicard", navigation.navigate('SportDetails', { sportname: "100mRicard" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/100mricard.png')} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={ currentEvents.includes("Petanque") ? styles.inProgress : (eventsDone.includes("Petanque") ? styles.eventDone : styles.homebuttons) }
+                    <TouchableOpacity style={currentEvents.includes("Petanque") ? styles.inProgress : (eventsDone.includes("Petanque") ? styles.eventDone : styles.homebuttons)}
                         onPress={() => { current_sport = "Petanque", navigation.navigate('SportDetails', { sportname: "Petanque" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/petanque.png')} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={ currentEvents.includes("Molky") ? styles.inProgress : (eventsDone.includes("Molky") ? styles.eventDone : styles.homebuttons) }
+                    <TouchableOpacity style={currentEvents.includes("Molky") ? styles.inProgress : (eventsDone.includes("Molky") ? styles.eventDone : styles.homebuttons)}
                         onPress={() => { current_sport = "Molky", navigation.navigate('SportDetails', { sportname: "Molky" }) }}
                     >
                         <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/molkky.png')} />
@@ -337,7 +337,7 @@ function PlanningScreen({ navigation }) {
         </PinchZoomView>)
 
 };
-function Login({route, navigation }) {
+function Login({ route, navigation }) {
     const [userName, setuserName] = React.useState(null);
     const [password, setpassword] = React.useState(null);
     const controller = new AbortController()
@@ -360,7 +360,7 @@ function Login({route, navigation }) {
 
                         fetch("http://91.121.143.104:7070/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "username": userName, "password": password }) }).then(r => {
                             if (r.status == 200) {
-                                username = userName; 
+                                username = userName;
                                 pushtoken(route.params.pushtoken, username);
                                 navigation.navigate('Home', { refresh: "refresh" });
                                 return;
@@ -386,17 +386,17 @@ function Login({route, navigation }) {
                         })}>
                     </Button>
                 </View>
-            <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Nos partenaires </Text></View>
-            <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                <Image style={styles.logosah} source={require('./assets/sah.png')} />
-            </View>
-            <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                <Image style={styles.logoalstom} source={require('./assets/alstom.png')} />
-            </View>
-            <View style={{ flexDirection: "row", justifyContent: "center", marginLeft: -20 }}>
-                <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
-                <Image style={styles.logomaximator} source={require('./assets/maximator.png')} />
-            </View>
+                <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Nos partenaires </Text></View>
+                <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                    <Image style={styles.logosah} source={require('./assets/sah.png')} />
+                </View>
+                <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                    <Image style={styles.logoalstom} source={require('./assets/alstom.png')} />
+                </View>
+                <View style={{ flexDirection: "row", justifyContent: "center", marginLeft: -20 }}>
+                    <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
+                    <Image style={styles.logomaximator} source={require('./assets/maximator.png')} />
+                </View>
             </View>
         )
     }
@@ -482,12 +482,74 @@ function SportDetailsScreen({ route, navigation }) {
 
     )
 };
+function addth(rank) {
+    switch (Number(rank)) {
+        case 1:
+            return ("er!!!");
+            break;
+        case 2:
+            return ("nd!!");
+            break;
+        // case 3:
+        //     return("rd!")
+        //     break;
+        default:
+            return ("ème")
+            break;
 
+    }
+}
 function SummaryScreen() {
+    const [loading, setLoading] = React.useState(true);
+    const [tableauMedaille, setTableauMedaille] = React.useState([{}]);
+    React.useEffect(() => {
+        fetch_results().then(r => {
+            let tempArray = []
+            for (var i in r) {
+                console.log(r[i].gold)
+                console.log(r[i].silver.number)
+                for (var j = 0; j < 50; j++) {
+                    if (r[i].rank == j) {
+                        let tmp = { name: r[i].name, rank: r[i].rank, or:r[i].gold.number, bronze:r[i].bronze.number, argent:r[i].silver.number };
+                        tempArray.push(tmp);
+                    }
+                }
+            }
+            setTableauMedaille(tempArray)
+            setLoading(false);
+        })
+
+    }, []);
+    if (loading) {
+        return (<ActivityIndicator size="large" color="#000000" />)
+    }
     return (
-        <View>
-            <Text> Summary screen blyat!</Text>
-        </View>
+        <ScrollView>
+            {tableauMedaille.map(r => {
+
+
+                return (
+                    <View style={{ flexDirection: "row", justifyContent: "flex-start" }}>
+                        <View style={{ flexDirection: "row", width:120}}>
+                        <Text style={styles.medailleNumber}>{r.rank + addth(r.rank)}</Text>
+                        </View>
+                        <View style={{ flexDirection: "row", width:130}}>
+                        <Text style={styles.medailleText}>{r.name}</Text>
+                        </View>
+                        <Text style={styles.medailleNumber}>{r.or}</Text>
+                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
+                        <Text style={styles.medailleNumber}>{r.argent}</Text>
+                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
+                        <Text style={styles.medailleNumber}>{r.bronze}</Text>
+                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
+
+
+                    </View>
+                );
+            }
+            )
+            }
+        </ScrollView>
     )
 }
 function UsernameScreen() {
@@ -504,22 +566,7 @@ function UsernameScreen() {
 
             for (var player_data in r) {
                 if (r[player_data]["name"] == username) {
-                    console.log(r[player_data])
-                    switch (Number(r[player_data]["rank"])) {
-                        case 1:
-                            setRank("1st!!!");
-                            break;
-                        case 2:
-                            setRank("2nd!");
-                            break;
-                        case 3:
-                            setRank("3rd!")
-                            break;
-                        default:
-                            setRank(r[player_data]["rank"] + "th")
-                            break;
-
-                    }
+                    setRank(r[player_data]["rank"] + addth(Number(r[player_data]["rank"])))
                     setGoldMedal(r[player_data]["gold"]["number"])
                     if (r[player_data]["gold"]["number"]) {
                         setGoldWins(r[player_data]["gold"]["sports"])
@@ -617,22 +664,21 @@ async function registerForPushNotificationsAsync() {
 
     return token;
 }
-async function pushtoken(token, username){
-        // 5 second timeout:
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000);
-        console.log("pushing token", token);
-        // // push to server
-    fetch("http://91.121.143.104:7070/pushtoken", { signal: controller.signal, method: "POST", body: JSON.stringify({ "token": token, "username":username }) }).then(r => {
-
-
+async function pushtoken(token, username) {
+    // 5 second timeout:
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    console.log("pushing token", token);
+    // // push to server
+    fetch("http://91.121.143.104:7070/pushtoken", { signal: controller.signal, method: "POST", body: JSON.stringify({ "token": token, "username": username }) }).then(r => {
+        return;
     }).catch((err) => { console.log(err, "May be it's normal") });
 }
-async function pushcluedo(){
-        // 5 second timeout:
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000);
-        // // push to server
+async function pushcluedo() {
+    // 5 second timeout:
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    // // push to server
     fetch("http://91.121.143.104:7070/cluedo", { signal: controller.signal, method: "POST", body: JSON.stringify({ "cluedo": username }) }).then(r => {
 
 
@@ -641,22 +687,22 @@ async function pushcluedo(){
 
 async function sendPushNotification(expoPushToken) {
     const message = {
-      to: expoPushToken,
-      sound: 'default',
-      title: 'CLUEDOOOOO',
-      body: '',
+        to: expoPushToken,
+        sound: 'default',
+        title: 'CLUEDOOOOO',
+        body: '',
     };
-  
+
     await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Accept-encoding': 'gzip, deflate',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(message),
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Accept-encoding': 'gzip, deflate',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(message),
     });
-  }
+}
 const Stack = createStackNavigator();
 function App() {
     // var test = new Planning();
@@ -696,7 +742,7 @@ function App() {
 
     }
     React.useEffect(() => {
-        registerForPushNotificationsAsync().then(token => {setExpoPushToken(token); pushtoken(token, username)});
+        registerForPushNotificationsAsync().then(token => { setExpoPushToken(token); pushtoken(token, username) });
         // This listener is fired whenever a notification is received while the app is foregrounded
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
             setNotification(notification);
@@ -747,7 +793,7 @@ function App() {
                             <TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}><Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text></TouchableOpacity></View>
                             <TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View>
                     })} initialParams={{ sportname: current_sport }} name="SportDetails" component={SportDetailsScreen} />
-                    <Stack.Screen options={() => ({ title: "Résumé" })} name="SummaryScreen" component={SummaryScreen} />
+                    <Stack.Screen options={() => ({ title: "Tableau des médailles" })} name="SummaryScreen" component={SummaryScreen} />
                     <Stack.Screen options={() => ({
                         title: username
                     })} name="UsernameScreen" component={UsernameScreen} />

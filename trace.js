@@ -487,6 +487,15 @@ export async function fetch_results() {
     }).catch(err => console.log(err));
     return fetch_results;
 }
+
+// export async function fetchSummary(sport) {
+//     let fetch_results = {}
+
+//     fetch_results = await fetch("http://91.121.143.104:7070/results/sports/.json").then(response => response.json()).then(data => {
+//         return data;
+//     }).catch(err => console.log(err));
+//     return fetch_results;
+// }
 function updateMatchArray(curMatch, matchArray, setMatchArray) {
     for (var i in matchArray) {
         if (curMatch.uniqueId == matchArray[i].uniqueId) {
