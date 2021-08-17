@@ -21,7 +21,8 @@
       "bundleIdentifier": "JO.apk"
     },
     "android": {
-      "package": "JO.apk"
+      "package": "JO.apk",
+      "googleServicesFile": "./google-services.json"
     },
     "description": ""
   }

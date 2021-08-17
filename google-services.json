@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "270895173763",
+    "project_id": "jomeyssiez",
+    "storage_bucket": "jomeyssiez.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:270895173763:android:f652dfe6c5b00076394bb6",
+        "android_client_info": {
+          "package_name": "JO.apk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "270895173763-itkq0k4tgnfhmq58jjbj09n4nuek0oj9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6-i-Z5M1tVUU-QV3EgpkkM__jEFh_84s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "270895173763-itkq0k4tgnfhmq58jjbj09n4nuek0oj9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
