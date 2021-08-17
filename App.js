@@ -1,6 +1,6 @@
 // import styles from "./style";
 import * as React from 'react';
-import { Button, View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Platform } from 'react-native';
+import { Button, View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Platform, Pressable } from 'react-native';
 import { NavigationContainer, useNavigation, useTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import PinchZoomView from 'react-native-pinch-zoom-view';
@@ -338,40 +338,42 @@ function PlanningScreen({ navigation }) {
 
 };
 function Login({ route, navigation }) {
-    const [userName, setuserName] = React.useState(null);
-    const [password, setpassword] = React.useState(null);
+    const [userName, setuserName] = React.useState("username");
+    const [password, setpassword] = React.useState("password");
     const controller = new AbortController()
 
     // 5 second timeout:
     const timeoutId = setTimeout(() => controller.abort(), 5000)
     if (username == "") {
         return (
-            <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
-                <View style={{ flexDirection: "row", margin: 15 }}>
-                    <Text style={{ textAlign: "center", borderWidth: 1, borderRightWidth: 0, height: 20 }}> Username:</Text>
-                    <TextInput autoCompleteType="username" style={{ textAlign: "center", borderWidth: 1, height: 20, minWidth: 100 }} onChangeText={text => { setuserName(""); setuserName(text) }} value={userName}></TextInput>
-                </View>
-                <View style={{ flexDirection: "row", margin: 15 }}>
-                    <Text style={{ textAlign: "center", borderWidth: 1, borderRightWidth: 0, height: 20 }}> Password:</Text>
-                    <TextInput autoCompleteType="password" secureTextEntry={true} style={{ textAlign: "center", borderWidth: 1, height: 20, minWidth: 100 }} onChangeText={text => setpassword(text)} value={password}></TextInput>
-                </View>
-                <View style={{ margin: 30, flexDirection: "row" }}>
-                    <Button style={{ margin: 30 }} color='red' title="Log in" onPress={() =>
+            <View style={{flexDirection:"column", flex:1}}>
+                <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
+                    <View style={{ flexDirection: "row", margin: 15 }}>
+                        {/* <Text style={{ textAlign: "center", borderWidth: 1, borderRadius:15, borderRightWidth: 0, height: 20 }}> Username:</Text> */}
+                        <TextInput onFocus={() => setuserName("")} autoCompleteType="username" style={{ textAlign: "center",borderRadius:15, borderWidth: 1, height: 20, minWidth: 100 }} onChangeText={text => { setuserName(""); setuserName(text) }} value={userName}></TextInput>
+                    </View>
+                    <View style={{ flexDirection: "row", margin: 15 }}>
+                        {/* <Text style={{ textAlign: "center", borderWidth: 1, borderRadius:15, borderRightWidth: 0, height: 20 }}> Password:</Text> */}
+                        <TextInput onFocus={() => setpassword("")} autoCompleteType="password" secureTextEntry={true} style={{ textAlign: "center", borderWidth: 1, borderRadius:15, height: 20, minWidth: 100 }} onChangeText={text => setpassword(text)} value={password}></TextInput>
+                    </View>
+                    <View style={{ margin: 30, flexDirection: "row" }}>
+                        <Pressable style={{ width: 60, height: 30, borderRadius: 15, backgroundColor: "#ff8484",justifyContent:"center" }} title="Log in" onPress={() =>
 
-                        fetch("http://91.121.143.104:7070/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "username": userName, "password": password }) }).then(r => {
-                            if (r.status == 200) {
-                                username = userName;
-                                pushtoken(route.params.pushtoken, username);
-                                navigation.navigate('Home', { refresh: "refresh" });
-                                return;
-                            }
-                            else {
-                                alert("Wrong login or password!");
-                                return;
-                            }
-                        }).catch(() => { console.log("Issue with server!"); return })}>
-                    </Button>
-                    {/* <Button style={{ margin: 30 }} color='grey' title="Register" onPress={() =>
+                            fetch("http://91.121.143.104:7070/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "username": userName, "password": password }) }).then(r => {
+                                if (r.status == 200) {
+                                    username = userName;
+                                    pushtoken(route.params.pushtoken, username);
+                                    navigation.navigate('Home', { refresh: "refresh" });
+                                    return;
+                                }
+                                else {
+                                    alert("Wrong login or password!");
+                                    return;
+                                }
+                            }).catch(() => { console.log("Issue with server!"); return })}>
+                            <Text style={{ textAlign: "center", textAlignVertical: "center" }}>Login</Text>
+                        </Pressable>
+                        {/* <Button style={{ margin: 30 }} color='grey' title="Register" onPress={() =>
 
                         fetch("http://91.121.143.104:7070/register", { method: "POST", body: JSON.stringify({ "username": userName, "password": password }) }).then(r => {
                             if (r.status == 200) {
@@ -385,19 +387,23 @@ function Login({ route, navigation }) {
                             }
                         })}>
                     </Button> */}
+                    </View>
+
+                </View >
+                <View style={{ flex: 1 }}>
+                    <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Nos partenaires </Text></View>
+                    {/* <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                    </View> */}
+                    <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                        <Image style={styles.logosah} source={require('./assets/sah.png')} />
+                        <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
+                        <Image style={styles.logomaximator} source={require('./assets/maximator.png')} />
+                    </View>
+                    <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                        <Image style={styles.logoalstom} source={require('./assets/alstom.png')} />
+                    </View>
                 </View>
-                <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Nos partenaires </Text></View>
-                <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                    <Image style={styles.logosah} source={require('./assets/sah.png')} />
-                </View>
-                <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                    <Image style={styles.logoalstom} source={require('./assets/alstom.png')} />
-                </View>
-                <View style={{ flexDirection: "row", justifyContent: "center", marginLeft: -20 }}>
-                    <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
-                    <Image style={styles.logomaximator} source={require('./assets/maximator.png')} />
-                </View>
-            </View>
+            </View >
         )
     }
     return (
@@ -510,7 +516,7 @@ function SummaryScreen() {
                 console.log(r[i].silver.number)
                 for (var j = 0; j < 50; j++) {
                     if (r[i].rank == j) {
-                        let tmp = { name: r[i].name, rank: r[i].rank, or:r[i].gold.number, bronze:r[i].bronze.number, argent:r[i].silver.number };
+                        let tmp = { name: r[i].name, rank: r[i].rank, or: r[i].gold.number, bronze: r[i].bronze.number, argent: r[i].silver.number };
                         tempArray.push(tmp);
                     }
                 }
@@ -530,11 +536,11 @@ function SummaryScreen() {
 
                 return (
                     <View style={{ flexDirection: "row", justifyContent: "flex-start" }}>
-                        <View style={{ flexDirection: "row", width:120}}>
-                        <Text style={styles.medailleNumber}>{r.rank + addth(r.rank)}</Text>
+                        <View style={{ flexDirection: "row", width: 120 }}>
+                            <Text style={styles.medailleNumber}>{r.rank + addth(r.rank)}</Text>
                         </View>
-                        <View style={{ flexDirection: "row", width:130}}>
-                        <Text style={styles.medailleText}>{r.name}</Text>
+                        <View style={{ flexDirection: "row", width: 130 }}>
+                            <Text style={styles.medailleText}>{r.name}</Text>
                         </View>
                         <Text style={styles.medailleNumber}>{r.or}</Text>
                         <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
