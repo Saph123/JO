@@ -479,8 +479,7 @@ function UsernameScreen({ navigation}) {
     const [eventsDone, setEventsDone] = React.useState([]);
     const [eventsInProgress, setEventsInProgess] = React.useState([]);
     var planning = new Planning();
-    //var now = Date.now();
-    var now = new Date("2021-08-28T15:30:00+02:00")
+    var now = Date.now();
     React.useEffect(() => {
         var eventDone = []
         var currEvent = []
