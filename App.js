@@ -361,14 +361,14 @@ function Login({ navigation }) {
                         fetch("http://91.121.143.104:7070/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "username": userName, "password": password }) }).then(r => {
                             if (r.status == 200) {
                                 username = userName; navigation.navigate('Home', { refresh: "refresh" });
-                                pushtoken(route.params.pushtoken, username)
+                                pushtoken(route.params.pushtoken, userName)
                                 return;
                             }
                             else {
                                 alert("Wrong login or password!");
                                 return;
                             }
-                        }).catch(() => { alert("Issue with server!"); return })}>
+                        }).catch(() => { console.log("Issue with server!"); return })}>
                     </Button>
                     {/* <Button style={{ margin: 30 }} color='grey' title="Register" onPress={() =>
 
