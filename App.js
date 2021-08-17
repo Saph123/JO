@@ -385,6 +385,17 @@ function Login({ navigation }) {
                         })}>
                     </Button>
                 </View>
+            <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Nos partenaires </Text></View>
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                <Image style={styles.logosah} source={require('./assets/sah.png')} />
+            </View>
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                <Image style={styles.logoalstom} source={require('./assets/alstom.png')} />
+            </View>
+            <View style={{ flexDirection: "row", justifyContent: "center", marginLeft: -20 }}>
+                <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
+                <Image style={styles.logomaximator} source={require('./assets/maximator.png')} />
+            </View>
             </View>
         )
     }
@@ -395,7 +406,19 @@ function Login({ navigation }) {
                 onPress={() => { { username = "" }; navigation.navigate('Login', { refresh: "refresh" }) }}
             >
                 <Text style={styles.texthomebutton}>Log out!</Text>
-            </TouchableOpacity></View>
+            </TouchableOpacity>
+            <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Nos partenaires </Text></View>
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                <Image style={styles.logosah} source={require('./assets/sah.png')} />
+            </View>
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                <Image style={styles.logoalstom} source={require('./assets/alstom.png')} />
+            </View>
+            <View style={{ flexDirection: "row", justifyContent: "center", marginLeft: -20 }}>
+                <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
+                <Image style={styles.logomaximator} source={require('./assets/maximator.png')} />
+            </View>
+        </View>
     )
 };
 
