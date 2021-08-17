@@ -337,7 +337,7 @@ function PlanningScreen({ navigation }) {
         </PinchZoomView>)
 
 };
-function Login({ navigation }) {
+function Login({route, navigation }) {
     const [userName, setuserName] = React.useState(null);
     const [password, setpassword] = React.useState(null);
     const controller = new AbortController()
@@ -349,26 +349,27 @@ function Login({ navigation }) {
             <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
                 <View style={{ flexDirection: "row", margin: 15 }}>
                     <Text style={{ textAlign: "center", borderWidth: 1, borderRightWidth: 0, height: 20 }}> Username:</Text>
-                    <TextInput style={{ textAlign: "center", borderWidth: 1, height: 20, minWidth: 100 }} onChangeText={text => { setuserName(""); setuserName(text) }} value={userName}></TextInput>
+                    <TextInput autoCompleteType="username" style={{ textAlign: "center", borderWidth: 1, height: 20, minWidth: 100 }} onChangeText={text => { setuserName(""); setuserName(text) }} value={userName}></TextInput>
                 </View>
                 <View style={{ flexDirection: "row", margin: 15 }}>
                     <Text style={{ textAlign: "center", borderWidth: 1, borderRightWidth: 0, height: 20 }}> Password:</Text>
-                    <TextInput secureTextEntry={true} style={{ textAlign: "center", borderWidth: 1, height: 20, minWidth: 100 }} onChangeText={text => setpassword(text)} value={password}></TextInput>
+                    <TextInput autoCompleteType="password" secureTextEntry={true} style={{ textAlign: "center", borderWidth: 1, height: 20, minWidth: 100 }} onChangeText={text => setpassword(text)} value={password}></TextInput>
                 </View>
                 <View style={{ margin: 30, flexDirection: "row" }}>
                     <Button style={{ margin: 30 }} color='red' title="Log in" onPress={() =>
 
                         fetch("http://91.121.143.104:7070/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "username": userName, "password": password }) }).then(r => {
                             if (r.status == 200) {
-                                username = userName; navigation.navigate('Home', { refresh: "refresh" });
-                                pushtoken(route.params.pushtoken, username)
+                                username = userName; 
+                                pushtoken(route.params.pushtoken, username);
+                                navigation.navigate('Home', { refresh: "refresh" });
                                 return;
                             }
                             else {
                                 alert("Wrong login or password!");
                                 return;
                             }
-                        }).catch(() => { alert("Issue with server!"); return })}>
+                        }).catch(() => { console.log("Issue with server!"); return })}>
                     </Button>
                     <Button style={{ margin: 30 }} color='grey' title="Register" onPress={() =>
 
