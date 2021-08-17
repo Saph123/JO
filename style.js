@@ -309,6 +309,18 @@ module.exports = StyleSheet.create({
         width: 68,
         height: 68,
     },
+    logosah: {
+        width: 108,
+        height: 108,
+    },
+    logomaximator: {
+        width: 40,
+        height: 108,
+    },
+    logoalstom: {
+        width: 220,
+        height: 68,
+    },
     medailletransparent: {
         width: 20,
         height: 30,

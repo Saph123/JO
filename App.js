@@ -30,51 +30,55 @@ function HomeScreen({ route, navigation }) {
     const [secondsleft, setSecondsleft] = React.useState(1000);
     const [nextEvent, setNextEvent] = React.useState("");
     const [soundstatus, setSound] = React.useState();
+    const [currentEvents, setCurrentEvents] = React.useState([]);
+    const [eventsDone, setEventsDone] = React.useState([]);
     var planning = new Planning();
-    var currentEvents = [];
-    var eventsDone = [];
     var now = Date.now();
-    for (var event in planning["listeevent"]) {
-        if (now > planning["listeevent"][event].timeEnd) {
-            eventsDone.push(planning["listeevent"][event].eventname);
-        }
-    }
-    for (var event in planning["listeevent"]) {
-        if (now > planning["listeevent"][event].timeBegin && now < planning["listeevent"][event].timeEnd) {
-            currentEvents.push(planning["listeevent"][event].eventname);
-        }
-    }
     async function playcluedo() {
         pushcluedo(route.params.pushtoken);
         if (soundstatus == undefined) {
-
+            
             console.log('Loading Sound');
             const { sound } = await Audio.Sound.createAsync(
                 require('./assets/cluedo.wav')
-            );
-            setSound(sound);
-            await sound.playAsync()
-        }
-        if (soundstatus != undefined) {
-
-            var test = await soundstatus.getStatusAsync();
-            if (test.isPlaying == true) {
-                await soundstatus.stopAsync();
-
+                );
+                setSound(sound);
+                await sound.playAsync()
             }
-            else {
-                await soundstatus.stopAsync();
-                await soundstatus.playAsync();
+            if (soundstatus != undefined) {
+                
+                var test = await soundstatus.getStatusAsync();
+                if (test.isPlaying == true) {
+                    await soundstatus.stopAsync();
+                    
+                }
+                else {
+                    await soundstatus.stopAsync();
+                    await soundstatus.playAsync();
+                }
             }
+            
         }
-
-    }
-    React.useEffect(() => {
-        var dateJO = new Date('2021-08-26T20:00:00');
-        var test = getNextEventseconds();
-        // setSecondsleft(Math.trunc((dateJO - Date.now())/1000));
-        setSecondsleft(test.time);
-        setNextEvent(test.name);
+        React.useEffect(() => {
+            var dateJO = new Date('2021-08-26T20:00:00');
+            var test = getNextEventseconds();
+            var eventDone = []
+            var currEvent = []
+            // setSecondsleft(Math.trunc((dateJO - Date.now())/1000));
+            setSecondsleft(test.time);
+            setNextEvent(test.name);
+            for (var event in planning["listeevent"]) {
+                if (now > planning["listeevent"][event].timeEnd) {
+                    eventDone.push(planning["listeevent"][event].eventname);
+                }
+            }
+            for (var event in planning["listeevent"]) {
+                if (now > planning["listeevent"][event].timeBegin && now < planning["listeevent"][event].timeEnd) {
+                    currEvent.push(planning["listeevent"][event].eventname);
+                }
+            }
+        setEventsDone(eventDone);
+        setCurrentEvents(currEvent);
         setLoading(0);
     }, []);
     if (loading) {
@@ -381,6 +385,17 @@ function Login({ navigation }) {
                         })}>
                     </Button> */}
                 </View>
+            <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Nos partenaires </Text></View>
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                <Image style={styles.logosah} source={require('./assets/sah.png')} />
+            </View>
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                <Image style={styles.logoalstom} source={require('./assets/alstom.png')} />
+            </View>
+            <View style={{ flexDirection: "row", justifyContent: "center", marginLeft: -20 }}>
+                <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
+                <Image style={styles.logomaximator} source={require('./assets/maximator.png')} />
+            </View>
             </View>
         )
     }
@@ -391,7 +406,19 @@ function Login({ navigation }) {
                 onPress={() => { { username = "" }; navigation.navigate('Login', { refresh: "refresh" }) }}
             >
                 <Text style={styles.texthomebutton}>Log out!</Text>
-            </TouchableOpacity></View>
+            </TouchableOpacity>
+            <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Nos partenaires </Text></View>
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                <Image style={styles.logosah} source={require('./assets/sah.png')} />
+            </View>
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                <Image style={styles.logoalstom} source={require('./assets/alstom.png')} />
+            </View>
+            <View style={{ flexDirection: "row", justifyContent: "center", marginLeft: -20 }}>
+                <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
+                <Image style={styles.logomaximator} source={require('./assets/maximator.png')} />
+            </View>
+        </View>
     )
 };
 
