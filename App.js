@@ -11,7 +11,7 @@ import { Planning, getNextEventseconds } from "./planning.js";
 import { Trace, GetState, fetch_status, fetch_results } from "./trace.js";
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
-let username = "Max";
+let username = "";
 let current_sport = "Sportname";
 const styles = require("./style.js");
 const ArbitreContext = React.createContext(false);
