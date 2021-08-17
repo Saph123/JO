@@ -454,7 +454,7 @@ function SummaryScreen() {
                             <Text style={styles.medailleNumber}>{r.rank + addth(r.rank)}</Text>
                         </View>
                         <View style={{ flexDirection: "row", width: 130 }}>
-                            <Text style={styles.medailleText}>{r.name}</Text>
+                            <Text style={{fontSize:20}}>{r.name}</Text>
                         </View>
                         <Text style={styles.medailleNumber}>{r.or}</Text>
                         <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
