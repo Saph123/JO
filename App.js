@@ -155,8 +155,15 @@ function HomeScreen({ route, navigation }) {
                 <TouchableOpacity style={styles.loginbutton}
                     onPress={() => { navigation.navigate('Login') }}
                 >
+
                     <Text style={styles.texthomebutton}>Login</Text>
                 </TouchableOpacity>
+                    {username == "Max" || username == "Ugo" || username == "Antoine" ? <TouchableOpacity style={styles.loginbutton}
+                    onPress={() => { navigation.navigate('pushNotifScreen') }}
+                >
+
+                    <Text style={styles.logoutbutton}>Push Notif!</Text>
+                </TouchableOpacity>: <View></View>}
             </View>
         </ScrollView>
 
@@ -473,6 +480,20 @@ function SummaryScreen() {
         </ScrollView>
     )
 }
+function pushNotifScreen() {
+    const [title, setTitle] = React.useState("Title");
+    const [body, setBody] = React.useState("Body");
+    const [to, setTo] = React.useState("to ( can be all)");
+    return(
+        <View>
+            <TextInput onFocus={() => setTitle("")} style={{ textAlign: "center",borderRadius:15, borderWidth: 1, height: 20, minWidth: 100, margin:30 }} onChangeText={text => { setTitle(text); }} value={title}></TextInput>
+            <TextInput onFocus={() => setBody("")} style={{ textAlign: "center",borderRadius:15, borderWidth: 1, height: 20, minWidth: 100, margin:30 }} onChangeText={text => { setBody(text); }} value={body}></TextInput>
+            <TextInput onFocus={() => setTitle("")} style={{ textAlign: "center",borderRadius:15, borderWidth: 1, height: 20, minWidth: 100, margin:30 }} onChangeText={text => { setTo(text); }} value={to}></TextInput>
+            <Pressable style={styles.logoutbutton} onPressIn={() => askPushNotif(username, title, body, to)}><Text style={{ textAlign: "center"}}> Push!</Text></Pressable>
+        </View>
+    )
+
+}
 function UsernameScreen({ navigation}) {
     const [loading, setLoading] = React.useState(true);
     const [goldMedals, setGoldMedal] = React.useState(0);
@@ -691,24 +712,15 @@ async function pushcluedo() {
     }).catch((err) => { console.log(err, "May be it's normal") });
 }
 
-async function sendPushNotification(expoPushToken) {
-    const message = {
-        to: expoPushToken,
-        sound: 'default',
-        title: 'CLUEDOOOOO',
-        body: '',
-    };
-
-    await fetch('https://exp.host/--/api/v2/push/send', {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Accept-encoding': 'gzip, deflate',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(message),
-    });
+async function askPushNotif(username, title, body, to) {
+    // 5 second timeout:
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    // // push to server
+    fetch("http://91.121.143.104:7070/pushnotif", { signal: controller.signal, method: "POST", body: JSON.stringify({ "username": username, "title":title, "body":body, to:"to"}) }).then(r => {
+    }).catch((err) => { console.log(err, "May be it's normal") });
 }
+
 const Stack = createStackNavigator();
 function App() {
     // var test = new Planning();
@@ -803,6 +815,11 @@ function App() {
                     <Stack.Screen options={() => ({
                         title: username
                     })} name="UsernameScreen" component={UsernameScreen} />
+                   
+                    <Stack.Screen options={() => ({
+                        title: "Notif tool"
+                    })} initialParams={{ username: username }} name="pushNotifScreen" component={pushNotifScreen} /> 
+                
                 </Stack.Navigator>
             </ArbitreContext.Provider>
         </NavigationContainer>
