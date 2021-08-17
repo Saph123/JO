@@ -488,6 +488,15 @@ export async function fetch_results() {
     return fetch_results;
 }
 
+export async function fetch_activities(username, setArbitre, setEvents) {
+    await fetch("http://91.121.143.104:7070/athletes/" + username + ".json").then(response => response.json()).then(data => {
+        setArbitre(data["arbitre"])
+        setEvents(data["activities"])
+        return;
+    }).catch(err => console.log(err));
+    return ;
+}
+
 // export async function fetchSummary(sport) {
 //     let fetch_results = {}
 
