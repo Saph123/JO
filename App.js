@@ -521,15 +521,15 @@ function UsernameScreen() {
 
                     }
                     setGoldMedal(r[player_data]["gold"]["number"])
-                    if (goldMedals) {
+                    if (r[player_data]["gold"]["number"]) {
                         setGoldWins(r[player_data]["gold"]["sports"])
                     }
                     setSilverMedal(r[player_data]["silver"]["number"])
-                    if (silverMedals) {
+                    if (r[player_data]["silver"]["number"]) {
                         setSilverWins(r[player_data]["silver"]["sports"])
                     }
                     setBronzeMedal(r[player_data]["bronze"]["number"])
-                    if (bronzeMedals) {
+                    if (r[player_data]["bronze"]["number"]) {
                         setBronzeWins(r[player_data]["bronze"]["sports"])
                     }
                     return
