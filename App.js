@@ -371,7 +371,7 @@ function Login({ route, navigation }) {
                             }
                         }).catch(() => { console.log("Issue with server!"); return })}>
                     </Button>
-                    <Button style={{ margin: 30 }} color='grey' title="Register" onPress={() =>
+                    {/* <Button style={{ margin: 30 }} color='grey' title="Register" onPress={() =>
 
                         fetch("http://91.121.143.104:7070/register", { method: "POST", body: JSON.stringify({ "username": userName, "password": password }) }).then(r => {
                             if (r.status == 200) {
@@ -384,7 +384,7 @@ function Login({ route, navigation }) {
                                 alert("Issue with yourlogin");
                             }
                         })}>
-                    </Button>
+                    </Button> */}
                 </View>
                 <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Nos partenaires </Text></View>
                 <View style={{ flexDirection: "row", justifyContent: "center" }}>
