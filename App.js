@@ -38,7 +38,7 @@ function HomeScreen({ route, navigation }) {
         pushcluedo(route.params.pushtoken);
         if (soundstatus == undefined) {
 
-            console.log('Loading Sound');
+            
             const { sound } = await Audio.Sound.createAsync(
                 require('./assets/cluedo.wav')
             );
@@ -291,7 +291,7 @@ function Login({ route, navigation }) {
                                     alert("Wrong login or password!");
                                     return;
                                 }
-                            }).catch(() => { console.log("Issue with server!"); return })}>
+                            }).catch(() => { alert("Issue with server!"); return })}>
                             <Text style={{ textAlign: "center", textAlignVertical: "center" }}>Login</Text>
                         </Pressable>
                         {/* <Button style={{ margin: 30 }} color='grey' title="Register" onPress={() =>
@@ -433,8 +433,8 @@ function SummaryScreen() {
         fetch_results().then(r => {
             let tempArray = []
             for (var i in r) {
-                console.log(r[i].gold)
-                console.log(r[i].silver.number)
+                
+                
                 for (var j = 0; j < 50; j++) {
                     if (r[i].rank == j) {
                         let tmp = { name: r[i].name, rank: r[i].rank, or: r[i].gold.number, bronze: r[i].bronze.number, argent: r[i].silver.number };
@@ -526,8 +526,8 @@ function UsernameScreen({ navigation }) {
         }
         setEventsInProgess(currEvent)
     }, []);
-    console.log(arbitre)
-    console.log(events)
+    
+    
     React.useEffect(() => {
         fetch_results().then(r => {
 
@@ -675,7 +675,7 @@ async function registerForPushNotificationsAsync() {
             return;
         }
         token = (await Notifications.getExpoPushTokenAsync()).data;
-        console.log(token);
+        
     } else {
         alert('Must use physical device for Push Notifications');
     }
@@ -695,11 +695,11 @@ async function pushtoken(token, username) {
     // 5 second timeout:
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
-    console.log("pushing token", token);
+    
     // // push to server
     fetch("http://91.121.143.104:7070/pushtoken", { signal: controller.signal, method: "POST", body: JSON.stringify({"version":version, "token": token, "username": username }) }).then(r => {
         return;
-    }).catch((err) => { console.log(err, "May be it's normal") });
+    }).catch((err) => { alert("May be it's normal") });
 }
 async function pushcluedo() {
     // 5 second timeout:
@@ -709,7 +709,7 @@ async function pushcluedo() {
     fetch("http://91.121.143.104:7070/cluedo", { signal: controller.signal, method: "POST", body: JSON.stringify({"version":version, "cluedo": username }) }).then(r => {
 
 
-    }).catch((err) => { console.log(err, "May be it's normal") });
+    }).catch((err) => { alert("May be it's normal") });
 }
 
 async function askPushNotif(username, title, body, to) {
@@ -718,7 +718,7 @@ async function askPushNotif(username, title, body, to) {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     // // push to server
     fetch("http://91.121.143.104:7070/pushnotif", { signal: controller.signal, method: "POST", body: JSON.stringify({"version":version, "username": username, "title": title, "body": body, "to": to }) }).then(r => {
-    }).catch((err) => { console.log(err, "May be it's normal") });
+    }).catch((err) => { alert("May be it's normal") });
 }
 
 const Stack = createStackNavigator();
@@ -735,7 +735,7 @@ function App() {
     async function playmegaphone() {
         if (soundstatus == undefined) {
 
-            console.log('Loading Sound');
+            
             Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
 
             const { sound } = await Audio.Sound.createAsync(
@@ -747,7 +747,7 @@ function App() {
         }
         if (soundstatus != undefined) {
             var test = await soundstatus.getStatusAsync();
-            console.log(test.isPlaying)
+            
             if (test.isPlaying == true) {
                 await soundstatus.stopAsync();
 
@@ -771,7 +771,7 @@ function App() {
 
         // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-            console.log(response);
+            
         });
 
         return () => {

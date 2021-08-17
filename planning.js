@@ -22,7 +22,7 @@ export function getNextEventseconds(){
     for (var event in planning)
     {
 
-        // console.log(planning[event]);
+        // 
     }
     // var dateJO = new Date('2021-08-26T20:00:00');
 }

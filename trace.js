@@ -45,7 +45,7 @@ export const Trace = (props) => {
     React.useEffect(() => {
         fetch_matches(sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, props.setWidth, props.setHeight).then(r => {
             setloading(false)
-        }).catch(err => console.log(err));
+        }).catch(err => alert(err));
 
 
     }, []);
@@ -477,7 +477,7 @@ export async function fetch_status(sportname, setStatus) {
         }
         setStatus(data);
         return data;
-    }).catch(err => console.log(err));
+    }).catch(err => alert(err));
     return fetch_status;
 }
 
@@ -486,7 +486,7 @@ export async function fetch_results() {
 
     fetch_results = await fetch("http://91.121.143.104:7070/results/global.json").then(response => response.json()).then(data => {
         return data;
-    }).catch(err => console.log(err));
+    }).catch(err => alert(err));
     return fetch_results;
 }
 
@@ -495,7 +495,7 @@ export async function fetch_activities(username, setArbitre, setEvents) {
         setArbitre(data["arbitre"])
         setEvents(data["activities"])
         return;
-    }).catch(err => console.log(err));
+    }).catch(err => alert(err));
     return ;
 }
 
@@ -504,7 +504,7 @@ export async function fetch_activities(username, setArbitre, setEvents) {
 
 //     fetch_results = await fetch("http://91.121.143.104:7070/results/sports/.json").then(response => response.json()).then(data => {
 //         return data;
-//     }).catch(err => console.log(err));
+//     }).catch(err => alert(err));
 //     return fetch_results;
 // }
 function updateMatchArray(curMatch, matchArray, setMatchArray) {
@@ -601,7 +601,7 @@ function modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_a
             supportedOrientations={['portrait', 'landscape']}
         >
             <View style={styles.matchZoomView}>
-                <Pressable style={styles.closeButton} onPressIn={() => { console.log("initialscore", initScore); curMatchZoom.score = initScore; updateMatchArray(curMatchZoom, match_array, set_match_array); setMatchZoom(false) }}><Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} /></Pressable>
+                <Pressable style={styles.closeButton} onPressIn={() => {  curMatchZoom.score = initScore; updateMatchArray(curMatchZoom, match_array, set_match_array); setMatchZoom(false) }}><Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} /></Pressable>
                 <View style={{ flexDirection: "column", flex: 1, justifyContent: "space-evenly" }}>
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                         <View style={{ width: 200, justifyContent: "center" }}><Text style={{ textAlignVertical: "center" }}>{curMatchZoom.team1}</Text></View>
@@ -700,16 +700,17 @@ function pushmatch(username, sport, match, type, uniqueId) {
     // 5 second timeout:
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
-    console.log("pushing!")
+    
     // // push to server
     fetch("http://91.121.143.104:7070/pushmatch", { signal: controller.signal, method: "POST", body: JSON.stringify({"version":version, "sport": sport, "username": username, "type": type, "match": match, uniqueId: uniqueId }) }).then(r => {
         if (r.status == 200) {
+        alert("Saved to server!")
         }
         else {
             alert("Wrong login or password!");
         }
 
-    }).catch((err) => { console.log(err, "Issue with server!") });
+    }).catch((err) => { alert("Issue with server!") });
 }
 function determine_winner(curMatch, type) {
 
