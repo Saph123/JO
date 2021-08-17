@@ -449,7 +449,7 @@ function SummaryScreen() {
 
 
                 return (
-                    <View style={{ flexDirection: "row", justifyContent: "flex-start", borderBottomWidth:1 }}>
+                    <View style={{ flexDirection: "row", justifyContent: "flex-start", borderBottomWidth:1, borderColor:"lightgrey"}}>
                         <View style={{ flexDirection: "row", width: 100 }}>
                             <Text style={styles.medailleNumber}>{r.rank + addth(r.rank)}</Text>
                         </View>
