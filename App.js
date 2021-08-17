@@ -449,20 +449,21 @@ function SummaryScreen() {
 
 
                 return (
-                    <View style={{ flexDirection: "row", justifyContent: "flex-start" }}>
+                    <View style={{ flexDirection: "row", justifyContent: "flex-start", borderBottomWidth:1 }}>
                         <View style={{ flexDirection: "row", width: 100 }}>
                             <Text style={styles.medailleNumber}>{r.rank + addth(r.rank)}</Text>
                         </View>
-                        <View style={{ flexDirection: "row", width: 130 }}>
+                        <View style={{ flexDirection: "row", width: 130}}>
                             <Text style={{fontSize:18}}>{r.name}</Text>
                         </View>
+                        <View style={{ flexDirection: "row", width: 130}}>
                         <Text style={styles.medailleNumber}>{r.or}</Text>
                         <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
                         <Text style={styles.medailleNumber}>{r.argent}</Text>
                         <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
                         <Text style={styles.medailleNumber}>{r.bronze}</Text>
                         <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
-
+                        </View>
 
                     </View>
                 );
