@@ -15,7 +15,7 @@ let username = "";
 let current_sport = "Sportname";
 const styles = require("./style.js");
 const ArbitreContext = React.createContext(false);
-
+let version = 1
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
         shouldShowAlert: true,
@@ -93,7 +93,8 @@ function HomeScreen({ route, navigation }) {
                     borderBottomWidth: 1,
                 }}
                 />
-                <Text>Home Screen</Text>
+                <Text style={{fontWeight:"bold"}}>Tu dois te connecter d'abord!</Text>
+                <Text style={{fontWeight:"bold"}}>Demande à Max tes identifiants</Text>
                 <TouchableOpacity style={styles.loginbutton}
                     onPress={() => { navigation.navigate('Login') }}
                 >
@@ -323,7 +324,7 @@ function Login({ route, navigation }) {
         <View>
             <Text style={styles.texthomebutton}>Currently logged in as {username}</Text>
             <TouchableOpacity style={styles.logoutbutton}
-                onPress={() => { { username = "" }; navigation.navigate('Login', { refresh: "refresh" }) }}
+                onPress={() => { { username = "" }; navigation.navigate('Home', { refresh: "refresh" }) }}
             >
                 <Text style={styles.texthomebutton}>Log out!</Text>
             </TouchableOpacity>
