@@ -601,7 +601,7 @@ function UsernameScreen({ navigation }) {
                 </View>
                 <View style={{ flex: 1, alignContent: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                     <View style={{ flex: 1 }}>
-                        <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Participant </Text></View>
+                        <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Mes activités </Text></View>
                         {events.map(r => {
                             return (
                                 <View>
@@ -611,7 +611,7 @@ function UsernameScreen({ navigation }) {
                         })}
                     </View>
                     <View style={{ flex: 1 }}>
-                        <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Arbitre </Text></View>
+                        <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> J'arbitre </Text></View>
                         {arbitre.map(r => {
                             return (
                                 <View>
