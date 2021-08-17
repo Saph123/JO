@@ -651,7 +651,7 @@ function lutImg(sportname) {
         Larmina: require('./assets/sports/polish.png'),
         Natation: require('./assets/sports/natationsynchro.png'),
         SpikeBall: require('./assets/sports/spikeball.png'),
-        Ventriglisse: require('./assets/sports/100mricard.png'),
+        Ventriglisse: require('./assets/sports/ventriglisse.png'),
         "100mRicard": require('./assets/sports/100mricard.png'),
         Petanque: require('./assets/sports/petanque.png'),
         Molky: require('./assets/sports/molkky.png'),
