@@ -198,7 +198,7 @@ export const Trace = (props) => {
                                 </View>
                                 <View>
                                     <View style={{ width: 60, height: 30, backgroundColor: "lightgrey" }}>
-                                        <Pressable style={{alignSelf:"center"}} onPress={() => { // Function to save only the results!
+                                        <Pressable style={{ alignSelf: "center" }} onPress={() => { // Function to save only the results!
                                             setListe([...liste]);
                                             pushmatch(username, sport, liste, "liste", 0);
                                         }
@@ -217,10 +217,15 @@ export const Trace = (props) => {
                                                         <TouchableOpacity
                                                             onPressIn={() => {
                                                                 setloading(true);
+                                                                var count = 0;
+                                                                for (var i = 0; i < liste.length; ++i) {
+                                                                    if (liste[i].rank == 3)
+                                                                        count++;
+                                                                }
                                                                 if (r.rank == 3) {
                                                                     r.rank = 0
                                                                 }
-                                                                else {
+                                                                else if (count < 2) {
                                                                     r.rank = 3;
                                                                 }
                                                                 // uncomment if you want only one medal
@@ -236,10 +241,15 @@ export const Trace = (props) => {
                                                         <TouchableOpacity
                                                             onPressIn={() => {
                                                                 setloading(true);
+                                                                var count = 0;
+                                                                for (var i = 0; i < liste.length; ++i) {
+                                                                    if (liste[i].rank == 2)
+                                                                        count++;
+                                                                }
                                                                 if (r.rank == 2) {
                                                                     r.rank = 0
                                                                 }
-                                                                else {
+                                                                else if (count < 2) {
                                                                     r.rank = 2;
                                                                 }
                                                                 // uncomment if you want only one medal
@@ -255,10 +265,16 @@ export const Trace = (props) => {
                                                         <TouchableOpacity
                                                             onPressIn={() => {
                                                                 setloading(true);
+
+                                                                var count = 0;
+                                                                for (var i = 0; i < liste.length; ++i) {
+                                                                    if (liste[i].rank == 1)
+                                                                        count++;
+                                                                }
                                                                 if (r.rank == 1) {
                                                                     r.rank = 0
                                                                 }
-                                                                else {
+                                                                else if (count < 2) {
                                                                     r.rank = 1;
                                                                 }
                                                                 // uncomment if you want only one medal

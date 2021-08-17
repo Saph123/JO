@@ -18,7 +18,8 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "JO.apk"
+      "bundleIdentifier": "JO.ipa",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "package": "JO.apk",
