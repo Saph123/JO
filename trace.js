@@ -700,7 +700,7 @@ function pushmatch(username, sport, match, type, uniqueId) {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     console.log("pushing!")
     // // push to server
-    fetch("http://91.121.143.104:7070/pushmatch", { signal: controller.signal, method: "POST", body: JSON.stringify({ "sport": sport, "username": username, "type": type, "match": match, uniqueId: uniqueId }) }).then(r => {
+    fetch("http://91.121.143.104:7070/pushmatch", { signal: controller.signal, method: "POST", body: JSON.stringify({"version":version, "sport": sport, "username": username, "type": type, "match": match, uniqueId: uniqueId }) }).then(r => {
         if (r.status == 200) {
         }
         else {

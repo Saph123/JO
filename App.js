@@ -15,7 +15,7 @@ let username = "";
 let current_sport = "Sportname";
 const styles = require("./style.js");
 const ArbitreContext = React.createContext(false);
-let version = 1
+export let version = 1
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
         shouldShowAlert: true,
@@ -280,7 +280,7 @@ function Login({ route, navigation }) {
                     <View style={{ margin: 30, flexDirection: "row" }}>
                         <Pressable style={{ width: 60, height: 30, borderRadius: 15, backgroundColor: "#ff8484", justifyContent: "center" }} title="Log in" onPress={() =>
 
-                            fetch("http://91.121.143.104:7070/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "username": userName, "password": password }) }).then(r => {
+                            fetch("http://91.121.143.104:7070/login", { signal: controller.signal, method: "POST", body: JSON.stringify({"version":version, "username": userName, "password": password }) }).then(r => {
                                 if (r.status == 200) {
                                     username = userName;
                                     pushtoken(route.params.pushtoken, username);
@@ -296,7 +296,7 @@ function Login({ route, navigation }) {
                         </Pressable>
                         {/* <Button style={{ margin: 30 }} color='grey' title="Register" onPress={() =>
 
-                        fetch("http://91.121.143.104:7070/register", { method: "POST", body: JSON.stringify({ "username": userName, "password": password }) }).then(r => {
+                        fetch("http://91.121.143.104:7070/register", { method: "POST", body: JSON.stringify({"version":version, "username": userName, "password": password }) }).then(r => {
                             if (r.status == 200) {
                                 username = userName; navigation.navigate('Home', { refresh: "refresh" })
                             }
@@ -697,7 +697,7 @@ async function pushtoken(token, username) {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     console.log("pushing token", token);
     // // push to server
-    fetch("http://91.121.143.104:7070/pushtoken", { signal: controller.signal, method: "POST", body: JSON.stringify({ "token": token, "username": username }) }).then(r => {
+    fetch("http://91.121.143.104:7070/pushtoken", { signal: controller.signal, method: "POST", body: JSON.stringify({"version":version, "token": token, "username": username }) }).then(r => {
         return;
     }).catch((err) => { console.log(err, "May be it's normal") });
 }
@@ -706,7 +706,7 @@ async function pushcluedo() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     // // push to server
-    fetch("http://91.121.143.104:7070/cluedo", { signal: controller.signal, method: "POST", body: JSON.stringify({ "cluedo": username }) }).then(r => {
+    fetch("http://91.121.143.104:7070/cluedo", { signal: controller.signal, method: "POST", body: JSON.stringify({"version":version, "cluedo": username }) }).then(r => {
 
 
     }).catch((err) => { console.log(err, "May be it's normal") });
@@ -717,7 +717,7 @@ async function askPushNotif(username, title, body, to) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     // // push to server
-    fetch("http://91.121.143.104:7070/pushnotif", { signal: controller.signal, method: "POST", body: JSON.stringify({ "username": username, "title": title, "body": body, "to": to }) }).then(r => {
+    fetch("http://91.121.143.104:7070/pushnotif", { signal: controller.signal, method: "POST", body: JSON.stringify({"version":version, "username": username, "title": title, "body": body, "to": to }) }).then(r => {
     }).catch((err) => { console.log(err, "May be it's normal") });
 }
 
