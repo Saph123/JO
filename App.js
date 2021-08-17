@@ -337,7 +337,7 @@ function PlanningScreen({ navigation }) {
         </PinchZoomView>)
 
 };
-function Login({ navigation }) {
+function Login({ route, navigation }) {
     const [userName, setuserName] = React.useState(null);
     const [password, setpassword] = React.useState(null);
     const controller = new AbortController()
