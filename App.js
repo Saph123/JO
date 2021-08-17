@@ -185,7 +185,7 @@ function HomeScreen({ route, navigation }) {
                     <TouchableOpacity style={ currentEvents.includes("Larmina") ? styles.inProgress : (eventsDone.includes("Larmina") ? styles.eventDone : styles.homebuttons) }
                         onPress={() => { current_sport = "Larmina", navigation.navigate('SportDetails', { sportname: "Larmina" }) }}
                     >
-                        <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/polishhorseshoe.png')} />
+                        <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/polish.png')} />
                     </TouchableOpacity>
 
                 </View>
@@ -224,7 +224,7 @@ function HomeScreen({ route, navigation }) {
                     <TouchableOpacity style={ currentEvents.includes("Molky") ? styles.inProgress : (eventsDone.includes("Molky") ? styles.eventDone : styles.homebuttons) }
                         onPress={() => { current_sport = "Molky", navigation.navigate('SportDetails', { sportname: "Molky" }) }}
                     >
-                        <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/petanque.png')} />
+                        <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={require('./assets/sports/molkky.png')} />
                     </TouchableOpacity>
 
                 </View>
