@@ -93,8 +93,8 @@ function HomeScreen({ route, navigation }) {
                     borderBottomWidth: 1,
                 }}
                 />
-                <Text style={{fontWeight:"bold"}}>Tu dois te connecter d'abord!</Text>
-                <Text style={{fontWeight:"bold"}}>Demande à Max tes identifiants</Text>
+                <Text style={{ fontWeight: "bold" }}>Tu dois te connecter d'abord!</Text>
+                <Text style={{ fontWeight: "bold" }}>Demande à Max tes identifiants</Text>
                 <TouchableOpacity style={styles.loginbutton}
                     onPress={() => { navigation.navigate('Login') }}
                 >
@@ -158,12 +158,12 @@ function HomeScreen({ route, navigation }) {
 
                     <Text style={styles.texthomebutton}>Login</Text>
                 </TouchableOpacity>
-                    {username == "Max" || username == "Ugo" || username == "Antoine" ? <TouchableOpacity style={styles.loginbutton}
+                {username == "Max" || username == "Ugo" || username == "Antoine" ? <TouchableOpacity style={styles.loginbutton}
                     onPress={() => { navigation.navigate('pushNotifScreen') }}
                 >
 
                     <Text style={styles.logoutbutton}>Push Notif!</Text>
-                </TouchableOpacity>: <View></View>}
+                </TouchableOpacity> : <View></View>}
             </View>
         </ScrollView>
 
@@ -267,18 +267,18 @@ function Login({ route, navigation }) {
     const timeoutId = setTimeout(() => controller.abort(), 5000)
     if (username == "") {
         return (
-            <View style={{flexDirection:"column", flex:1}}>
+            <View style={{ flexDirection: "column", flex: 1 }}>
                 <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
                     <View style={{ flexDirection: "row", margin: 15 }}>
                         {/* <Text style={{ textAlign: "center", borderWidth: 1, borderRadius:15, borderRightWidth: 0, height: 20 }}> Username:</Text> */}
-                        <TextInput onFocus={() => setuserName("")} autoCompleteType="username" style={{ textAlign: "center",borderRadius:15, borderWidth: 1, height: 20, minWidth: 100 }} onChangeText={text => { setuserName(""); setuserName(text) }} value={userName}></TextInput>
+                        <TextInput onFocus={() => setuserName("")} autoCompleteType="username" style={{ textAlign: "center", borderRadius: 15, borderWidth: 1, height: 20, minWidth: 100 }} onChangeText={text => { setuserName(""); setuserName(text) }} value={userName}></TextInput>
                     </View>
                     <View style={{ flexDirection: "row", margin: 15 }}>
                         {/* <Text style={{ textAlign: "center", borderWidth: 1, borderRadius:15, borderRightWidth: 0, height: 20 }}> Password:</Text> */}
-                        <TextInput onFocus={() => setpassword("")} autoCompleteType="password" secureTextEntry={true} style={{ textAlign: "center", borderWidth: 1, borderRadius:15, height: 20, minWidth: 100 }} onChangeText={text => setpassword(text)} value={password}></TextInput>
+                        <TextInput onFocus={() => setpassword("")} autoCompleteType="password" secureTextEntry={true} style={{ textAlign: "center", borderWidth: 1, borderRadius: 15, height: 20, minWidth: 100 }} onChangeText={text => setpassword(text)} value={password}></TextInput>
                     </View>
                     <View style={{ margin: 30, flexDirection: "row" }}>
-                        <Pressable style={{ width: 60, height: 30, borderRadius: 15, backgroundColor: "#ff8484",justifyContent:"center" }} title="Log in" onPress={() =>
+                        <Pressable style={{ width: 60, height: 30, borderRadius: 15, backgroundColor: "#ff8484", justifyContent: "center" }} title="Log in" onPress={() =>
 
                             fetch("http://91.121.143.104:7070/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "username": userName, "password": password }) }).then(r => {
                                 if (r.status == 200) {
@@ -329,23 +329,28 @@ function Login({ route, navigation }) {
     }
     return (
         <View>
+            <View style={{flex:1}}>
+
+            </View>
             <Text style={styles.texthomebutton}>Currently logged in as {username}</Text>
             <TouchableOpacity style={styles.logoutbutton}
                 onPress={() => { { username = "" }; navigation.navigate('Home', { refresh: "refresh" }) }}
             >
                 <Text style={styles.texthomebutton}>Log out!</Text>
             </TouchableOpacity>
-            <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Nos partenaires </Text></View>
-            <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                <Image style={styles.logosah} source={require('./assets/sah.png')} />
-            </View>
-            <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                <Image style={styles.logoalstom} source={require('./assets/alstom.png')} />
-            </View>
-            <View style={{ flexDirection: "row", justifyContent: "center", marginLeft: -20 }}>
-                <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
-                <Image style={styles.logomaximator} source={require('./assets/maximator.png')} />
-            </View>
+            <View style={{ flex: 1 }}>
+                    <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Nos partenaires </Text></View>
+                    {/* <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                    </View> */}
+                    <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                        <Image style={styles.logosah} source={require('./assets/sah.png')} />
+                        <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
+                        <Image style={styles.logomaximator} source={require('./assets/maximator.png')} />
+                    </View>
+                    <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                        <Image style={styles.logoalstom} source={require('./assets/alstom.png')} />
+                    </View>
+                </View>
         </View>
     )
 };
@@ -417,9 +422,6 @@ function addth(rank) {
         case 2:
             return ("nd!!");
             break;
-        // case 3:
-        //     return("rd!")
-        //     break;
         default:
             return ("ème")
             break;
@@ -456,20 +458,20 @@ function SummaryScreen() {
 
 
                 return (
-                    <View style={{ flexDirection: "row", justifyContent: "flex-start", borderBottomWidth:1, borderColor:"lightgrey"}}>
+                    <View style={{ flexDirection: "row", justifyContent: "flex-start", borderBottomWidth: 1, borderColor: "lightgrey" }}>
                         <View style={{ flexDirection: "row", width: 100 }}>
                             <Text style={styles.medailleNumber}>{r.rank + addth(r.rank)}</Text>
                         </View>
-                        <View style={{ flexDirection: "row", width: 130}}>
-                            <Text style={{fontSize:18}}>{r.name}</Text>
+                        <View style={{ flexDirection: "row", width: 130 }}>
+                            <Text style={{ fontSize: 18 }}>{r.name}</Text>
                         </View>
-                        <View style={{ flexDirection: "row", width: 130}}>
-                        <Text style={styles.medailleNumber}>{r.or}</Text>
-                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
-                        <Text style={styles.medailleNumber}>{r.argent}</Text>
-                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
-                        <Text style={styles.medailleNumber}>{r.bronze}</Text>
-                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
+                        <View style={{ flexDirection: "row", width: 130 }}>
+                            <Text style={styles.medailleNumber}>{r.or}</Text>
+                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
+                            <Text style={styles.medailleNumber}>{r.argent}</Text>
+                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
+                            <Text style={styles.medailleNumber}>{r.bronze}</Text>
+                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
                         </View>
 
                     </View>
@@ -483,18 +485,18 @@ function SummaryScreen() {
 function pushNotifScreen() {
     const [title, setTitle] = React.useState("Title");
     const [body, setBody] = React.useState("Body");
-    const [to, setTo] = React.useState("to ( can be all)");
-    return(
+    const [to, setTo] = React.useState("all");
+    return (
         <View>
-            <TextInput onFocus={() => setTitle("")} style={{ textAlign: "center",borderRadius:15, borderWidth: 1, height: 20, minWidth: 100, margin:30 }} onChangeText={text => { setTitle(text); }} value={title}></TextInput>
-            <TextInput onFocus={() => setBody("")} style={{ textAlign: "center",borderRadius:15, borderWidth: 1, height: 20, minWidth: 100, margin:30 }} onChangeText={text => { setBody(text); }} value={body}></TextInput>
-            <TextInput onFocus={() => setTitle("")} style={{ textAlign: "center",borderRadius:15, borderWidth: 1, height: 20, minWidth: 100, margin:30 }} onChangeText={text => { setTo(text); }} value={to}></TextInput>
-            <Pressable style={styles.logoutbutton} onPressIn={() => askPushNotif(username, title, body, to)}><Text style={{ textAlign: "center"}}> Push!</Text></Pressable>
+            <TextInput onFocus={() => setTitle("")} style={{ textAlign: "center", borderRadius: 15, borderWidth: 1, height: 20, minWidth: 100, margin: 30 }} onChangeText={text => { setTitle(text); }} value={title}></TextInput>
+            <TextInput onFocus={() => setBody("")} style={{ textAlign: "center", borderRadius: 15, borderWidth: 1, height: 20, minWidth: 100, margin: 30 }} onChangeText={text => { setBody(text); }} value={body}></TextInput>
+            <TextInput onFocus={() => setTo("")} style={{ textAlign: "center", borderRadius: 15, borderWidth: 1, height: 20, minWidth: 100, margin: 30 }} onChangeText={text => { setTo(text); }} value={to}></TextInput>
+            <Pressable style={styles.logoutbutton} onPressIn={() => askPushNotif(username, title, body, to)}><Text style={{ textAlign: "center" }}> Push!</Text></Pressable>
         </View>
     )
 
 }
-function UsernameScreen({ navigation}) {
+function UsernameScreen({ navigation }) {
     const [loading, setLoading] = React.useState(true);
     const [goldMedals, setGoldMedal] = React.useState(0);
     const [rank, setRank] = React.useState(0);
@@ -526,8 +528,8 @@ function UsernameScreen({ navigation}) {
         }
         setEventsInProgess(currEvent)
     }, []);
-        console.log(arbitre)
-        console.log(events)
+    console.log(arbitre)
+    console.log(events)
     React.useEffect(() => {
         fetch_results().then(r => {
 
@@ -560,76 +562,76 @@ function UsernameScreen({ navigation}) {
     return (
         <ScrollView>
 
-        <View style={{ flex: 1 }}>
-            <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Mes médailles </Text></View>
-            <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                <Text style={styles.medailleNumber}>{goldMedals}</Text>
-                <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
-            </View>
-            <View style={{ alignItems: "center" }}>
-                {goldWins.map(r => {
-                    return (
-                        <Text>{r}</Text>
-                    )
-                })}
-            </View>
-            <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                <Text style={styles.medailleNumber}>{silverMedals}</Text>
-                <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
-            </View>
-            <View style={{ alignItems: "center" }}>
-                {silverWins.map(r => {
-                    return (
-                        <Text>{r}</Text>
-                    )
-                })}
-            </View>
-            <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                <Text style={styles.medailleNumber}>{bronzeMedals}</Text>
-                <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
-            </View>
-            <View style={{ alignItems: "center" }}>
-                {bronzeWins.map(r => {
-                    return (
-                        <Text>{r}</Text>
-                    )
-                })}
-            </View>
-            <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Mon rang </Text></View>
-            <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                <Text style={styles.medailleNumber}>{rank}</Text>
-            </View>
-            <View style={{ flex: 1, alignContent: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
-                <View style={{ flex: 1 }}>
-                <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Participant </Text></View>
-                    {events.map(r => {
-                        return (
-                            <View>
-                        {eventView(eventsInProgress, eventsDone, r, navigation)}
-                        </View>
-                    )
-                })}
+            <View style={{ flex: 1 }}>
+                <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Mes médailles </Text></View>
+                <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                    <Text style={styles.medailleNumber}>{goldMedals}</Text>
+                    <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
                 </View>
-                <View style={{ flex: 1 }}>
-                <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Arbitre </Text></View>
-                    {arbitre.map(r => {
+                <View style={{ alignItems: "center" }}>
+                    {goldWins.map(r => {
                         return (
-                            <View>
-                        {eventView([], [], r, navigation)}
-                        </View>
-                    )
-                })}
+                            <Text>{r}</Text>
+                        )
+                    })}
+                </View>
+                <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                    <Text style={styles.medailleNumber}>{silverMedals}</Text>
+                    <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
+                </View>
+                <View style={{ alignItems: "center" }}>
+                    {silverWins.map(r => {
+                        return (
+                            <Text>{r}</Text>
+                        )
+                    })}
+                </View>
+                <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                    <Text style={styles.medailleNumber}>{bronzeMedals}</Text>
+                    <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
+                </View>
+                <View style={{ alignItems: "center" }}>
+                    {bronzeWins.map(r => {
+                        return (
+                            <Text>{r}</Text>
+                        )
+                    })}
+                </View>
+                <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Mon rang </Text></View>
+                <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                    <Text style={styles.medailleNumber}>{rank}</Text>
+                </View>
+                <View style={{ flex: 1, alignContent: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
+                    <View style={{ flex: 1 }}>
+                        <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Participant </Text></View>
+                        {events.map(r => {
+                            return (
+                                <View>
+                                    {eventView(eventsInProgress, eventsDone, r, navigation)}
+                                </View>
+                            )
+                        })}
+                    </View>
+                    <View style={{ flex: 1 }}>
+                        <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Arbitre </Text></View>
+                        {arbitre.map(r => {
+                            return (
+                                <View>
+                                    {eventView([], [], r, navigation)}
+                                </View>
+                            )
+                        })}
+                    </View>
                 </View>
             </View>
-        </View>
-    </ScrollView>
+        </ScrollView>
     );
 }
 
 function eventView(currentEvents, eventsDone, sportname, navigation) {
-    return(
-        <TouchableOpacity style={ currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons) }
-        onPress={() => { current_sport = sportname, navigation.navigate('SportDetails', { sportname: sportname }) }}
+    return (
+        <TouchableOpacity style={currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)}
+            onPress={() => { current_sport = sportname, navigation.navigate('SportDetails', { sportname: sportname }) }}
         >
             <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
         </TouchableOpacity>)
@@ -637,25 +639,25 @@ function eventView(currentEvents, eventsDone, sportname, navigation) {
 
 function lutImg(sportname) {
     var lut = {
-        Trail : require('./assets/sports/run.png'),
-        Dodgeball : require('./assets/sports/dodgeball.png'),
-        Pizza : require('./assets/sports/pizza.png'),
-        Tong : require('./assets/sports/tong.png'),
-        Babyfoot : require('./assets/sports/babyfoot.png'),
-        Flechette : require('./assets/sports/flechette.png'),
-        PingPong : require('./assets/sports/pingpong.png'),
-        Orientation : require('./assets/sports/orientation.png'),
-        Beerpong : require('./assets/sports/beerpong.png'),
-        Volley : require('./assets/sports/volley.png'),
-        Waterpolo : require('./assets/sports/waterpolo.png'),
-        Larmina : require('./assets/sports/polish.png'),
-        Natation : require('./assets/sports/natationsynchro.png'),
-        SpikeBall : require('./assets/sports/spikeball.png'),
-        Ventriglisse : require('./assets/sports/100mricard.png'),
-        "100mRicard" : require('./assets/sports/100mricard.png'),
-        Petanque : require('./assets/sports/petanque.png'),
-        Molky : require('./assets/sports/molkky.png'),
-    
+        Trail: require('./assets/sports/run.png'),
+        Dodgeball: require('./assets/sports/dodgeball.png'),
+        Pizza: require('./assets/sports/pizza.png'),
+        Tong: require('./assets/sports/tong.png'),
+        Babyfoot: require('./assets/sports/babyfoot.png'),
+        Flechette: require('./assets/sports/flechette.png'),
+        PingPong: require('./assets/sports/pingpong.png'),
+        Orientation: require('./assets/sports/orientation.png'),
+        Beerpong: require('./assets/sports/beerpong.png'),
+        Volley: require('./assets/sports/volley.png'),
+        Waterpolo: require('./assets/sports/waterpolo.png'),
+        Larmina: require('./assets/sports/polish.png'),
+        Natation: require('./assets/sports/natationsynchro.png'),
+        SpikeBall: require('./assets/sports/spikeball.png'),
+        Ventriglisse: require('./assets/sports/100mricard.png'),
+        "100mRicard": require('./assets/sports/100mricard.png'),
+        Petanque: require('./assets/sports/petanque.png'),
+        Molky: require('./assets/sports/molkky.png'),
+
     };
     return lut[sportname];
 }
@@ -717,7 +719,7 @@ async function askPushNotif(username, title, body, to) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     // // push to server
-    fetch("http://91.121.143.104:7070/pushnotif", { signal: controller.signal, method: "POST", body: JSON.stringify({ "username": username, "title":title, "body":body, to:"to"}) }).then(r => {
+    fetch("http://91.121.143.104:7070/pushnotif", { signal: controller.signal, method: "POST", body: JSON.stringify({ "username": username, "title": title, "body": body, "to": to }) }).then(r => {
     }).catch((err) => { console.log(err, "May be it's normal") });
 }
 
@@ -764,7 +766,9 @@ function App() {
         // This listener is fired whenever a notification is received while the app is foregrounded
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
             setNotification(notification);
-            alert("cluedo!");
+            if(notification.request.content.title == "CLUEDO!"){
+                alert("Cluedo!!")
+            }
         });
 
         // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
@@ -815,11 +819,11 @@ function App() {
                     <Stack.Screen options={() => ({
                         title: username
                     })} name="UsernameScreen" component={UsernameScreen} />
-                   
+
                     <Stack.Screen options={() => ({
                         title: "Notif tool"
-                    })} initialParams={{ username: username }} name="pushNotifScreen" component={pushNotifScreen} /> 
-                
+                    })} initialParams={{ username: username }} name="pushNotifScreen" component={pushNotifScreen} />
+
                 </Stack.Navigator>
             </ArbitreContext.Provider>
         </NavigationContainer>
