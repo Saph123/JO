@@ -15,6 +15,16 @@ let username = "Max";
 let current_sport = "Sportname";
 const styles = require("./style.js");
 const ArbitreContext = React.createContext(false);
+
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+  });
+
+
 function HomeScreen({ route, navigation }) {
     const [loading, setLoading] = React.useState(1);
     const [secondsleft, setSecondsleft] = React.useState(1000);
@@ -662,6 +672,7 @@ function App() {
         // This listener is fired whenever a notification is received while the app is foregrounded
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
             setNotification(notification);
+            alert("cluedo!");
         });
 
         // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
