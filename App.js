@@ -283,7 +283,7 @@ function Login({ route, navigation }) {
                             fetch("http://91.121.143.104:7070/login", { signal: controller.signal, method: "POST", body: JSON.stringify({"version":version, "username": userName, "password": password }) }).then(r => {
                                 if (r.status == 200) {
                                     username = userName;
-                                    pushtoken(route.params.pushtoken, username);
+                                    pushtoken(route.params.pushtoken, userName);
                                     navigation.navigate('Home', { refresh: "refresh" });
                                     return;
                                 }

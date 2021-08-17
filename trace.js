@@ -6,7 +6,9 @@ import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { Svg, Polyline } from 'react-native-svg';
 import { Table, Row } from 'react-native-table-component';
 import 'react-native-url-polyfill/auto';
+import {version} from "./App"
 const styles = require("./style.js");
+
 let displayed_state = {
     "Trail": "",
     "Dodgeball": "",
