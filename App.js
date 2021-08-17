@@ -146,11 +146,11 @@ function HomeScreen({ route, navigation }) {
             </View>
 
             <View>
-                <TouchableOpacity style={{ alignSelf: "center" }} onPressIn={playcluedo}>
-                    <Image style={{ borderRadius: 10, borderWidth: 1, borderColor: "black" }} source={require('./assets/cluedo.png')} />
+                <TouchableOpacity style={{ alignSelf: "center", backgroundColor:"lightgrey", borderRadius: 30 }} onPress={playcluedo}>
+                    <Image style={{ borderRadius: 30, borderWidth: 1, borderColor: "black" }} source={require('./assets/cluedo.png')} />
                 </TouchableOpacity>
-                <TouchableOpacity style={{ alignSelf: "center", width: 65, height: 85, margin:10}} onPressIn={() => { navigation.navigate('SummaryScreen') }}>
-                    <Image style={{ borderRadius: 15, borderWidth: 1, borderColor: "black"}} source={require('./assets/summary.png')} />
+                <TouchableOpacity style={{ alignSelf: "center", width: 65, height: 85, margin: 10 }} onPress={() => { navigation.navigate('SummaryScreen') }}>
+                    <Image style={{ borderRadius: 15, borderWidth: 1, borderColor: "black" }} source={require('./assets/summary.png')} />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.loginbutton}
                     onPress={() => { navigation.navigate('Login') }}
@@ -328,27 +328,27 @@ function Login({ route, navigation }) {
         )
     }
     return (
-        <View style={{ flexDirection: "column", flex: 1 }}>
-            <View style={{flex:1}}>
+        <View style={{ flexDirection: "column", flex: 1, }}>
+            <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
 
+                <Text style={styles.texthomebutton}>Currently logged in as {username}</Text>
+                <TouchableOpacity style={styles.logoutbutton}
+                    onPress={() => { { username = "" }; navigation.navigate('Home', { refresh: "refresh" }) }}
+                >
+                    <Text style={styles.texthomebutton}>Log out!</Text>
+                </TouchableOpacity>
             </View>
-            <Text style={styles.texthomebutton}>Currently logged in as {username}</Text>
-            <TouchableOpacity style={styles.logoutbutton}
-                onPress={() => { { username = "" }; navigation.navigate('Home', { refresh: "refresh" }) }}
-            >
-                <Text style={styles.texthomebutton}>Log out!</Text>
-            </TouchableOpacity>
             <View style={{ flex: 1 }}>
-                    <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Nos partenaires </Text></View>
-                    <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                        <Image style={styles.logosah} source={require('./assets/sah.png')} />
-                        <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
-                        <Image style={styles.logomaximator} source={require('./assets/maximator.png')} />
-                    </View>
-                    <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-                        <Image style={styles.logoalstom} source={require('./assets/alstom.png')} />
-                    </View>
+                <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Nos partenaires </Text></View>
+                <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                    <Image style={styles.logosah} source={require('./assets/sah.png')} />
+                    <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
+                    <Image style={styles.logomaximator} source={require('./assets/maximator.png')} />
                 </View>
+                <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                    <Image style={styles.logoalstom} source={require('./assets/alstom.png')} />
+                </View>
+            </View>
         </View>
     )
 };
@@ -764,7 +764,7 @@ function App() {
         // This listener is fired whenever a notification is received while the app is foregrounded
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
             setNotification(notification);
-            if(notification.request.content.title == "CLUEDO!"){
+            if (notification.request.content.title == "CLUEDO!") {
                 alert("Cluedo!!")
             }
         });
