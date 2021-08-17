@@ -149,8 +149,8 @@ function HomeScreen({ route, navigation }) {
                 <TouchableOpacity style={{ alignSelf: "center" }} onPressIn={playcluedo}>
                     <Image style={{ borderRadius: 10, borderWidth: 1, borderColor: "black" }} source={require('./assets/cluedo.png')} />
                 </TouchableOpacity>
-                <TouchableOpacity style={{ alignSelf: "center" }} onPressIn={() => { navigation.navigate('SummaryScreen') }}>
-                    <Image style={{ borderRadius: 5, borderWidth: 1, width: 60, height: 80, borderColor: "black", margin: 10 }} resizeMode="contain" source={require('./assets/summary.png')} />
+                <TouchableOpacity style={{ alignSelf: "center", width: 65, height: 85, margin:10}} onPressIn={() => { navigation.navigate('SummaryScreen') }}>
+                    <Image style={{ borderRadius: 15, borderWidth: 1, borderColor: "black"}} source={require('./assets/summary.png')} />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.loginbutton}
                     onPress={() => { navigation.navigate('Login') }}
@@ -158,11 +158,11 @@ function HomeScreen({ route, navigation }) {
 
                     <Text style={styles.texthomebutton}>Login</Text>
                 </TouchableOpacity>
-                {username == "Max" || username == "Ugo" || username == "Antoine" ? <TouchableOpacity style={styles.loginbutton}
+                {username == "Max" || username == "Ugo" || username == "Antoine" ? <TouchableOpacity style={styles.logoutbutton}
                     onPress={() => { navigation.navigate('pushNotifScreen') }}
                 >
 
-                    <Text style={styles.logoutbutton}>Push Notif!</Text>
+                    <Text style={styles.texthomebutton}>Push Notif!</Text>
                 </TouchableOpacity> : <View></View>}
             </View>
         </ScrollView>
@@ -328,7 +328,7 @@ function Login({ route, navigation }) {
         )
     }
     return (
-        <View>
+        <View style={{ flexDirection: "column", flex: 1 }}>
             <View style={{flex:1}}>
 
             </View>
@@ -340,8 +340,6 @@ function Login({ route, navigation }) {
             </TouchableOpacity>
             <View style={{ flex: 1 }}>
                     <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Nos partenaires </Text></View>
-                    {/* <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                    </View> */}
                     <View style={{ flexDirection: "row", justifyContent: "center" }}>
                         <Image style={styles.logosah} source={require('./assets/sah.png')} />
                         <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
