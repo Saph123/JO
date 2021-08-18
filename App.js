@@ -600,7 +600,7 @@ function UsernameScreen({ navigation }) {
                 </View>
                 <View style={{ flex: 1, alignContent: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                     <View style={{ flex: 1 }}>
-                        <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Participant </Text></View>
+                        <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Mes activités </Text></View>
                         {events.map(r => {
                             return (
                                 <View>
@@ -610,7 +610,7 @@ function UsernameScreen({ navigation }) {
                         })}
                     </View>
                     <View style={{ flex: 1 }}>
-                        <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Arbitre </Text></View>
+                        <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> J'arbitre </Text></View>
                         {arbitre.map(r => {
                             return (
                                 <View>
@@ -793,7 +793,7 @@ function App() {
                 }} initialRouteName="Home">
                     <Stack.Screen options={({ navigation }) => ({
                         title: "Home", headerRight: () => (<View style={{ flexDirection: "row", margin: 10 }}><TouchableOpacity onPressIn={playmegaphone}><Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} /></TouchableOpacity><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}>
-                            <Text style={{ color: "white", marginTop: 32, marginRight: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text></TouchableOpacity></View>)
+                            <Text style={{ color: "white", marginTop: 32, marginRight: 40, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text></TouchableOpacity></View>)
                     })} initialParams={{ pushtoken: expoPushToken }} name="Home" component={HomeScreen} />
 
                     <Stack.Screen options={{
