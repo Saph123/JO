@@ -63,7 +63,7 @@ export const Trace = (props) => {
             <View>
                 <Svg style={styles.svg}>
                     {levels.slice(1).reverse().map((r, index) => matches[r].map((m, index2) =>
-                        <Polyline style={styles.svg}
+                        <Polyline key={index * 100 + index2} style={styles.svg}
                             points={(index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height)) + " " + (index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 1) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 3) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2))}
                             fill="none"
                             stroke="black"
@@ -71,7 +71,7 @@ export const Trace = (props) => {
                         />))}
                 </Svg>
                 {levels.slice(0).reverse().map(r =>
-                    <View
+                    <View key={r}
                         style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-between" }}>
                         <Matchcomp sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={props.setWidth} setHeight={props.setHeight} setloading={setloading} username={username} loading={loading} matches={matches} level={r} sport={sport} autho={autho}></Matchcomp>
                     </View>)}
@@ -91,7 +91,7 @@ export const Trace = (props) => {
                                 <Row data={[q.name, q.played, q.wins, q.loses, q.points, q.diff]} widthArr={[150, 30, 30, 30, 60, 50]} textStyle={{ margin: 6 }}></Row>)}
                         </Table>
                         <View style={{ flexDirection: "column", justifyContent: "space-around" }}>
-                            <Matchpoule sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={props.setWidth} setHeight={props.setHeight} username={username} setloading={setloading} loading={loading} poule={r.name} matches={groupmatches[index]} level={0} sport={sport} autho={autho}></Matchpoule>
+                            <Matchpoule key={index} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={props.setWidth} setHeight={props.setHeight} username={username} setloading={setloading} loading={loading} poule={r.name} matches={groupmatches[index]} level={0} sport={sport} autho={autho}></Matchpoule>
                         </View>
                     </View>)}
             </View>
@@ -576,10 +576,10 @@ function crement_score_team(teamnumber, curMatch, matchArray, setMatchArray, inc
     setMatchArray([...matchArray]);
 
 }
-function matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type, username) {
+function matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type, username, index) {
     return (
 
-        <View style={r.over == 0 ? (type == "playoff" ? styles.match : styles.matchpoule) : (type == "playoff" ? styles.matchover : styles.matchpouleover)}>
+        <View key={index} style={r.over == 0 ? (type == "playoff" ? styles.match : styles.matchpoule) : (type == "playoff" ? styles.matchover : styles.matchpouleover)}>
             <Text style={r.over == 2 ? styles.lose : (r.over == 0 ? (r.team1.includes(username) ? styles.teamUserIsIn : styles.teamnormal) : styles.teamnormal)}>{r.team1}</Text>
             <Text style={styles.score}>{r.team1 == "" ? "" : r.score}</Text>
             <View><Text style={r.over == 1 ? styles.lose : (r.over == 0 ? (r.team2.includes(username) ? styles.teamUserIsIn : styles.teamnormal) : styles.teamnormal)}>{r.team2}</Text></View>
@@ -690,7 +690,7 @@ const Matchcomp = (props) => {
     return (
         <View style={styles.line}>
             {modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_array, set_match_array, matchZoom, setMatchZoom, setFetching, props, type, initScore)}
-            {match_array.map((r) => matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type, username))}
+            {match_array.map((r, index) => matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type, username, index))}
         </View>
     );
 
@@ -771,8 +771,8 @@ const Matchpoule = (props) => {
     return (
         <View style={styles.column}>
             {modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match, setMatch, matchZoom, setMatchZoom, setFetching, props, type, initScore)}
-            {match.map((r) =>
-                matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type, username)
+            {match.map((r, index) =>
+                matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type, username, index)
             )}
         </View>
     );
