@@ -395,7 +395,7 @@ function SportDetailsScreen({ route, navigation }) {
                                 <View style={styles.modalView}>
                                     <View style={styles.centeredView}>
                                         <Text style={styles.modalText}>Arbitres:</Text>
-                                        {status['arbitre'].map(r => <Text style={styles.modalText} >{r}</Text>)}
+                                        {status['arbitre'].map(r => <Text key={r} style={styles.modalText} >{r}</Text>)}
                                     </View>
 
                                 </View>
@@ -613,7 +613,7 @@ function UsernameScreen({ navigation }) {
                         <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> J'arbitre </Text></View>
                         {arbitre.map(r => {
                             return (
-                                <View>
+                                <View key={r}>
                                     {eventView([], [], r, navigation)}
                                 </View>
                             )
