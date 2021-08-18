@@ -793,7 +793,7 @@ function App() {
                 }} initialRouteName="Home">
                     <Stack.Screen options={({ navigation }) => ({
                         title: "Home", headerRight: () => (<View style={{ flexDirection: "row", margin: 10 }}><TouchableOpacity onPressIn={playmegaphone}><Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} /></TouchableOpacity><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}>
-                            <Text style={{ color: "white", marginTop: 32, marginRight: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text></TouchableOpacity></View>)
+                            <Text style={{ color: "white", marginTop: 32, marginRight: 40, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text></TouchableOpacity></View>)
                     })} initialParams={{ pushtoken: expoPushToken }} name="Home" component={HomeScreen} />
 
                     <Stack.Screen options={{

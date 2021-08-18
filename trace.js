@@ -527,10 +527,10 @@ export function GetState(sportname, status, setStatus, navigation) {
     if (Platform.OS === "ios") {
 
         if (local_status == "final") {
-            left = -93
+            left = 120
         }
         else {
-            left = -98
+            left = 120
         }
         top = 40
     }
