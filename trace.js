@@ -34,25 +34,28 @@ export const Trace = (props) => {
     const username = props.username;
     const width = props.width;
     const height = 170;
-
+    const [status, setStatus] = React.useState(""); // this is only poule/playoff not arbitre and the rest mofo your mom blyat
     const [autho, setAutho] = React.useState(false);
     const [loading, setloading] = React.useState(true);
     const [matches, setmatches] = React.useState([]);
     const [levels, setlevels] = React.useState([]);
     const [liste, setListe] = React.useState([]);
     const [groups, setGroups] = React.useState([]);
+    const [localToggle, setLocalToggle] = React.useState(false);
     const [groupmatches, setmatchesgroup] = React.useState([]);
     const navigation = useNavigation();
     React.useEffect(() => {
-        fetch_matches(username, setAutho, props.setSportStatus, props.sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, props.setWidth, props.setHeight).then(r => {
+        console.log("useeffect")
+        console.log(localToggle, loading)
+        fetch_matches(localToggle, username, setAutho, setStatus, props.setArbitreRule, props.sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, props.setWidth, props.setHeight).then(r => {
 
             props.traceload(false);
-            setloading(false)
+            setloading(false);
+            setLocalToggle(false);
         }).catch(err => { alert(err); navigation.navigate('Home') });
 
 
     }, []);
-
     if (loading) {
         return (<Modal
             // animationType=""
@@ -61,41 +64,46 @@ export const Trace = (props) => {
             supportedOrientations={['portrait', 'landscape']}
         ><View><ActivityIndicator size="large" color="black" /></View></Modal>);
     }
-    if (displayed_state[sport] == "playoff") {
+    console.log(displayed_state[sport])
+    if (status.status == "playoff") {
+        console.log("nt22222")
         return (
             <View>
-                { (props.status.states.length > 1) ? button_switch(props.status, props.setSportStatus, navigation, sport, "poules", setloading)  : <Text></Text>}
+
                 <Svg style={styles.svg}>
                     {levels.slice(1).reverse().map((r, index) => matches[r].map((m, index2) =>
                         <Polyline key={index * 100 + index2} style={styles.svg}
-                        points={(index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height)) + " " + (index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 1) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 3) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2))}
-                        fill="none"
-                        stroke="black"
-                        strokeWidth="2"
+                            points={(index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height)) + " " + (index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 1) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 3) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2))}
+                            fill="none"
+                            stroke="black"
+                            strokeWidth="2"
                         />))}
                 </Svg>
                 {levels.slice(0).reverse().map(r =>
                     <View key={r}
-                    style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-between" }}>
-                        <Matchcomp setSportStatus={props.setSportStatus} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={props.setWidth} setHeight={props.setHeight} setloading={setloading} username={username} loading={loading} matches={matches} level={r} sport={sport} autho={autho}></Matchcomp>
+                        style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-between" }}>
+                        <Matchcomp setArbitreRule={props.setArbitreRule} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={props.setWidth} setHeight={props.setHeight} setloading={setloading} username={username} loading={loading} matches={matches} level={r} sport={sport} autho={autho}></Matchcomp>
                     </View>)}
+                    {(status.states.length > 1) ? button_switch(setLocalToggle, status, setStatus, sport, "poules", setloading)  : <Text></Text>}
             </View>
         );
     }
-    else if (displayed_state[sport] == "poules") {
+    if (status.status == "poules") {
+        console.log("ntm!")
+        console.log(groups)
         return (
             <View style={{ flexDirection: "row", flex: 1, position: "absolute", top: 0, left: 0 }}>
-                { (props.status.states.length > 1) ? button_switch(props.status, props.setSportStatus, navigation, sport, "playoff", setloading)  : <Text></Text>}
+                {(status.states.length > 1) ? button_switch(setLocalToggle, status, setStatus, sport, "playoff", setloading) : <Text></Text>}
                 {groups.map((r, index) =>
                     <View key={r.name} style={styles.tablecontainer}>
                         <Text style={{ textAlign: "center" }}>{r.name}</Text>
                         <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
                             <Row data={["Team", "P", "W", "L", "Points", "Diff"]} widthArr={[180, 35, 35, 35, 60, 50]} style={{ width: "100%", height: 40, backgroundColor: '#f1f8ff' }} textStyle={{ margin: 6, fontSize: 16 }}></Row>
                             {r.teams.sort((a, b) => a.points > b.points ? 1 : (a.points == b.points ? (a.diff > b.diff ? 1 : -1) : -1)).reverse().map(q =>
-                                <Row key={q.name} data={[q.name, q.played, q.wins, q.loses, q.points, q.diff]} widthArr={[180, 35, 35, 35, 60, 50]} textStyle={{ margin: 6, fontSize: 16, fontWeight : (q.name.includes(username) ? "bold" : "normal") }}></Row>)}
+                                <Row key={q.name} data={[q.name, q.played, q.wins, q.loses, q.points, q.diff]} widthArr={[180, 35, 35, 35, 60, 50]} textStyle={{ margin: 6, fontSize: 16, fontWeight: (q.name.includes(username) ? "bold" : "normal") }}></Row>)}
                         </Table>
                         <View style={{ flexDirection: "column", justifyContent: "space-around" }}>
-                            <Matchpoule setSportStatus={props.setSportStatus} key={index} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={props.setWidth} setHeight={props.setHeight} username={username} setloading={setloading} loading={loading} poule={r.name} matches={groupmatches[index]} level={0} sport={sport} autho={autho}></Matchpoule>
+                            <Matchpoule setArbitreRule={props.setArbitreRule} key={index} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={props.setWidth} setHeight={props.setHeight} username={username} setloading={setloading} loading={loading} poule={r.name} matches={groupmatches[index]} level={0} sport={sport} autho={autho}></Matchpoule>
                         </View>
                     </View>)}
             </View>
@@ -109,7 +117,7 @@ export const Trace = (props) => {
         if (!autho) {
             return (
                 <View style={{ flexDirection: "row" }}>
-                    { (props.status.states.length > 1) ? button_switch(props.status, props.setSportStatus, navigation, sport,(props.status.status == "series") ? "final" : "series", setloading)  : <Text></Text> }
+                    {(status.states.length > 1) ? button_switch(setLocalToggle, status, setStatus, sport, (status.status == "series") ? "final" : "series")  : <Text></Text>}
                     <View>
                         <Text style={styles.showPlayers}>Athlete</Text>
                         {liste.map(r =>
@@ -169,7 +177,7 @@ export const Trace = (props) => {
 
             return (
                 <View>
-                    { (props.status.states.length > 1) ? button_switch(props.status, props.setSportStatus, navigation, sport,(props.status.status == "series") ? "final" : "series", setloading)  : <Text></Text> }
+                    {(status.states.length > 1) ? button_switch(setLocalToggle, status, setStatus, sport, (status.status == "series") ? "final" : "series") : <Text></Text>}
                     {series_level.map(cur_level =>
                         <View key={cur_level}>
                             <View>
@@ -312,61 +320,58 @@ export const Trace = (props) => {
 
 }
 
-function button_switch(status, setStatus, navigation, sport, otherState, setloading) {
+function button_switch(setLocalToggle, status, setStatus, sport, otherState, setloading) {
     return (
-        <TouchableOpacity style={ styles.inProgress }
-        onPress={() => { toggle_status(status, setStatus, navigation, sport, setloading) }}
+        <TouchableOpacity style={styles.inProgress}
+            onPress={() => {  console.log("button");toggle_status(status, setStatus, sport, setLocalToggle, setloading) }}
         >
             <Text alignSelf="center">Switch to {otherState}</Text>
         </TouchableOpacity>)
 }
 
-async function fetch_matches(username, setAutho, setSportStatus, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setWidth, setHeight) {
+async function fetch_matches(localToggle, username, setAutho, setStatus, setArbitreRule, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setWidth, setHeight) {
 
     let matches = {};
 
     let matches_group = {};
     let status = { arbitre: "error", status: "error" }
-    while (status['arbitre'] == 'error') {
-        console.log(sportname)
+    console.log("toggle:", localToggle)
+    if (localToggle) {
+        status['status'] = displayed_state[sportname];
+    }
+    else {
 
 
-        status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
-            if (displayed_state[sportname] == "") {
-                // first time we use the one in the server
+        while (status['status'] == 'error') {
+            console.log(sportname)
+
+
+            status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
+                console.log("ici aussi")
                 displayed_state[sportname] = data['status'];
-            }
-            else { // seen an issue when going from a sport that have more states than another
-                var possibleState = false;
-                for (var i in data['states']) {
-                    if (displayed_state[sportname] == data['states'][i]) {
-                        possibleState = true;
-                        break;
+                setStatus(data);
+                console.log(data['states'], data['states'].includes("poules"))
+                for (var authouser in data['arbitre']) {
+                    if (data['arbitre'][authouser] == username) {
+                        setAutho(true);
+                    }
+                    else if ("Max" == username || "Antoine" == username || "Ugo" == username) {
+                        setAutho(true);
                     }
                 }
-                if (!possibleState) {
-                    displayed_state[sportname] = data['status'];
-                }
-            }
-            for (var authouser in data['arbitre']) {
-                if (data['arbitre'][authouser] == username) {
-                    setAutho(true);
-                }
-                else if ("Max" == username || "Antoine" == username || "Ugo" == username) {
-                    setAutho(true);
-                }
-            }
-            setSportStatus(data);
+                setArbitreRule(data);
 
-            return data;
-        }).catch(err => { alert(err); setSportStatus({ arbitre: "error", status: "error" }); return { arbitre: "error", status: "error" } });
+                return data;
+            }).catch(err => { alert(err); setArbitreRule({ status: "error", arbitre: "error", rules: "error" }); return { status: "error", arbitre: "error", rules: "error" } });
+        }
     }
+    console.log("c'est parti pour le fetch all")
+    console.log(status['states'], status['states'].includes("poules"))
     let allok = false;
     while (!allok) {
-
-
-        if (status['status'] == "poules") {
-            matches_group = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_poules.json").then(response => response.json()).then(data => { allok=true;return data });
+        if (status['states'].includes("poules")) {
+            
+            matches_group = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_poules.json").then(response => response.json()).then(data => { allok = true; return data });
             var i = 0;
             let array_groups = [];
             let array_matches_groups = [];
@@ -388,12 +393,14 @@ async function fetch_matches(username, setAutho, setSportStatus, sportname, setm
             setgroups(array_groups);
             setmatchesgroup(array_matches_groups);
             // gestion taille fenetre
-            setWidth(400 * (array_groups.length + 1));
-            setHeight(400 * (array_groups.length + 1) * 4);
+            if (displayed_state[sportname] == "playoff") {
+                setWidth(400 * (array_groups.length + 1));
+                setHeight(400 * (array_groups.length + 1) * 4);
+            }
 
         }
-        else if (status['status'] == "playoff") {
-            matches = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => { allok=true;return data });
+        if (status['states'].includes("playoff")) {
+            matches = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => { allok = true; return data });
 
             let level = [];
             let local_array_match = [[]];
@@ -410,20 +417,23 @@ async function fetch_matches(username, setAutho, setSportStatus, sportname, setm
             }
             setlevel(level);
             // gestion taille fenetre: affichage un peu plus large :)
-            if (level.length > 1) {
-                setWidth(Math.min(400 * ((level.length - 1) * (level.length - 1)), 3500));
-                setHeight(Math.max(200 * (level.length + 1), Dimensions.get("window").height + 100));
-            }
-            else {
-                setWidth(1000);
-                setHeight(1000);
+            if (displayed_state[sportname] == "playoff") {
 
+                if (level.length > 1) {
+                    setWidth(Math.min(400 * ((level.length - 1) * (level.length - 1)), 3500));
+                    setHeight(Math.max(200 * (level.length + 1), Dimensions.get("window").height + 100));
+                }
+                else {
+                    setWidth(1000);
+                    setHeight(1000);
+
+                }
             }
             setmatches(local_array_match);
         }
-        else if (status['status'] != "error") { // gestion listes (trail/tong)
+        if ("final" == status['status']) { // gestion listes (trail/tong)
             let liste = {};
-            liste = await fetch("http://91.121.143.104:7070/teams/" + sportname + ".json").then(response => response.json()).then(data => { allok=true;return data });
+            liste = await fetch("http://91.121.143.104:7070/teams/" + sportname + ".json").then(response => response.json()).then(data => { allok = true; return data });
             let local_liste = [];
             if (liste["Series"].length == 1) { // only final, as before
                 liste = liste["Series"][0]["Teams"];
@@ -432,9 +442,9 @@ async function fetch_matches(username, setAutho, setSportStatus, sportname, setm
                 }
                 setHeight(i * 100);
             }
-            else {
+        if(status['states'].includes("series")) {
 
-                if (displayed_state[sportname] == "final") { // affichage de la finale
+                if (status['status'] == "final") { // affichage de la finale
                     for (var series in liste["Series"]) {
                         if (liste["Series"][series]["Name"] == "Final") {
                             var templist = liste["Series"][series]["Teams"];
@@ -446,14 +456,14 @@ async function fetch_matches(username, setAutho, setSportStatus, sportname, setm
                     setHeight(i * 100);
                 }
                 else { // consolidation des series avant la finale
-                    var level = 1;
+                    var levellist = 1;
                     for (var series in liste["Series"]) {
                         if (liste["Series"][series]["Name"] != "Final") {
                             var templist = liste["Series"][series]["Teams"];
                             for (var i in liste["Series"][series]["Teams"]) {
-                                local_liste.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], level));
+                                local_liste.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], levellist));
                             }
-                            level += 1;
+                            levellist += 1;
                         }
                     }
                     setHeight(i * 100 * level);
@@ -461,7 +471,10 @@ async function fetch_matches(username, setAutho, setSportStatus, sportname, setm
             }
 
             setListe(local_liste);
-            setWidth(1000);
+            if (displayed_state[sportname] == 'series' && displayed_state[sportname] == "final") {
+
+                setWidth(1000);
+            }
 
         }
     }
@@ -469,7 +482,7 @@ async function fetch_matches(username, setAutho, setSportStatus, sportname, setm
 }
 
 
-export function toggle_status(status, setStatus, navigation, sportname, setloading) {
+export function toggle_status(status, setStatus, sportname, setLocalToggle, setloading) {
 
     for (var i = 0; i < status.states.length; i++) {
         if (status.states[i] == displayed_state[sportname]) {
@@ -479,43 +492,20 @@ export function toggle_status(status, setStatus, navigation, sportname, setloadi
             else {
                 displayed_state[sportname] = status.states[0];
             }
+            console.log("avant", status.status)
             status.status = displayed_state[sportname]
-            setStatus(status);
-            navigation.reset({ routes: [{ name: "Home" }, { name: navigation.dangerouslyGetState().routes[navigation.dangerouslyGetState().index].name, sportname: sportname }] });
+            console.log("apres", status.status)
             setloading(true);
+            setStatus(JSON.parse(JSON.stringify(status)));
+            setloading(false);
+            // console.log(status.status, displayed_state[sportname])
+            // setloading(true);
+            setLocalToggle(true);
             break;
         }
     }
 }
 
-export async function fetch_status(sportname, setStatus) {
-    let fetch_status = {}
-
-
-    fetch_status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
-        if (displayed_state[sportname] == "") {
-            // first time we use the one in the server
-            displayed_state[sportname] = data['status'];
-        }
-        else { // seen an issue when going from a sport that have more states than another
-            var possibleState = false;
-            for (var i in data['states']) {
-                if (displayed_state[sportname] == data['states'][i]) {
-                    possibleState = true;
-                    data["status"] = displayed_state[sportname];
-                    break;
-                }
-            }
-            if (!possibleState) {
-                displayed_state[sportname] = data['status'];
-            }
-        }
-        setStatus(data);
-        return data;
-    }).catch(err => { alert(err); return { status: "error", arbitre: "tamere" } });
-    return fetch_status;
-
-}
 
 export async function fetch_results() {
     let fetch_results = {}
@@ -535,14 +525,6 @@ export async function fetch_activities(username, setArbitre, setEvents) {
     return;
 }
 
-// export async function fetchSummary(sport) {
-//     let fetch_results = {}
-
-//     fetch_results = await fetch("http://91.121.143.104:7070/results/sports/.json").then(response => response.json()).then(data => {
-//         return data;
-//     }).catch(err => alert(err));
-//     return fetch_results;
-// }
 function updateMatchArray(curMatch, matchArray, setMatchArray) {
     for (var i in matchArray) {
         if (curMatch.uniqueId == matchArray[i].uniqueId) {
@@ -599,7 +581,7 @@ function matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, typ
         </View>)
 
 }
-function modalZoomMatch(setSportStatus, username, sport, curMatchZoom, setCurrMatchZoom, match_array, set_match_array, matchZoom, setMatchZoom, setFetching, props, type, initScore) {
+function modalZoomMatch(setArbitreRule, setStatus, username, sport, curMatchZoom, setCurrMatchZoom, match_array, set_match_array, matchZoom, setMatchZoom, setFetching, props, type, initScore) {
     return (
         <Modal
             animationType="slide"
@@ -634,7 +616,7 @@ function modalZoomMatch(setSportStatus, username, sport, curMatchZoom, setCurrMa
                             setCurrMatchZoom(determine_winner(curMatchZoom, type));
                             updateMatchArray(curMatchZoom, match_array, set_match_array);
                             pushmatch(username, sport, curMatchZoom, type, curMatchZoom.uniqueId);
-                            fetch_matches(username, setAutho, setSportStatus, props.sport, props.setmatches, props.setGroups, props.setlevel, props.setmatchesgroup, null, props.setWidth, props.setHeight).then(r => {
+                            fetch_matches(False, username, setAutho, setStatus, setArbitreRule, props.sport, props.setmatches, props.setGroups, props.setlevel, props.setmatchesgroup, null, props.setWidth, props.setHeight).then(r => {
                                 setFetching(false);
                                 props.setloading(false);
                             })
@@ -696,7 +678,7 @@ const Matchcomp = (props) => {
 
     return (
         <View style={styles.line}>
-            {modalZoomMatch(props.setSportStatus, username, sport, curMatchZoom, setCurrMatchZoom, match_array, set_match_array, matchZoom, setMatchZoom, setFetching, props, type, initScore)}
+            {/* {modalZoomMatch(props.setArbitreRule, username, sport, curMatchZoom, setCurrMatchZoom, match_array, set_match_array, matchZoom, setMatchZoom, setFetching, props, type, initScore)} */}
             {match_array.map((r, index) => matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type, username, index))}
         </View>
     );
@@ -777,7 +759,7 @@ const Matchpoule = (props) => {
 
     return (
         <View style={styles.column}>
-            {modalZoomMatch(props.setSportStatus, username, sport, curMatchZoom, setCurrMatchZoom, match, setMatch, matchZoom, setMatchZoom, setFetching, props, type, initScore)}
+            {/* {modalZoomMatch(props.setArbitreRule, props.setStatus, username, sport, curMatchZoom, setCurrMatchZoom, match, setMatch, matchZoom, setMatchZoom, setFetching, props, type, initScore)} */}
             {match.map((r, index) =>
                 matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type, username, index)
             )}

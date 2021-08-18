@@ -8,10 +8,10 @@ import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { Audio } from 'expo-av';
 import CountDown from 'react-native-countdown-component';
 import { Planning, getNextEventseconds } from "./planning.js";
-import { Trace, GetState, fetch_status, fetch_results, fetch_activities } from "./trace.js";
+import { Trace, fetch_results, fetch_activities } from "./trace.js";
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
-let username = "";
+let username = "KeKw";
 const styles = require("./style.js");
 const ArbitreContext = React.createContext(false);
 export let version = 1
@@ -359,10 +359,15 @@ function SportDetailsScreen({ route }) {
     const [window_width, setWidth] = React.useState(Dimensions.get("window").width);
     const [window_height, setHeight] = React.useState(Dimensions.get("window").height);
     const [loadingmain, setloading] = React.useState(true);
-    const [status, setSportStatus] = React.useState({ arbitre: "error", status: "error" });
+    const [status, setArbitreRule] = React.useState({ arbitre: "error", status: "error" });
     const [regle, setRegle] = React.useState(false);
     React.useEffect(() => {
+        console.log("ici wesh")
+        console.log("ici wesh")
+        console.log("ici wesh")
         setloading(false);
+        console.log("kekw")
+
 
     }, []);
 
@@ -399,7 +404,7 @@ function SportDetailsScreen({ route }) {
                 }
             </ArbitreContext.Consumer>
 
-            <Trace status={status} username={username} sport={route.params.sportname} width={window_width} height={window_height} setHeight={setHeight} setWidth={setWidth} setSportStatus={setSportStatus} traceload={setloading} />
+            <Trace status={status} username={username} sport={route.params.sportname} width={window_width} height={window_height} setHeight={setHeight} setWidth={setWidth} setArbitreRule={setArbitreRule} traceload={setloading} />
         </PinchZoomView>
 
     )
