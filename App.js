@@ -149,6 +149,9 @@ function HomeScreen({ route, navigation }) {
                 <TouchableOpacity style={{ alignSelf: "center", backgroundColor: "lightgrey", borderRadius: 30 }} onPress={playcluedo}>
                     <Image style={{ borderRadius: 30, borderWidth: 1, borderColor: "black" }} source={require('./assets/cluedo.png')} />
                 </TouchableOpacity>
+                <Pressable style={styles.inProgress} onPress={() => { navigation.navigate('ClickerScreen') }} >
+                    <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
+                </Pressable>
                 <TouchableOpacity style={{ alignSelf: "center", width: 65, height: 85, margin: 10 }} onPress={() => { navigation.navigate('SummaryScreen') }}>
                     <Image style={{ borderRadius: 15, borderWidth: 1, borderColor: "black" }} source={require('./assets/summary.png')} />
                 </TouchableOpacity>
@@ -357,10 +360,10 @@ function SportDetailsScreen({ route }) {
     const [window_width, setWidth] = React.useState(Dimensions.get("window").width);
     const [window_height, setHeight] = React.useState(Dimensions.get("window").height);
     const [loadingmain, setloading] = React.useState(true);
-    const [status, setSportStatus] = React.useState({arbitre:"error", status:"error"});
+    const [status, setSportStatus] = React.useState({ arbitre: "error", status: "error" });
     const [regle, setRegle] = React.useState(false);
     React.useEffect(() => {
-            setloading(false);
+        setloading(false);
 
     }, []);
 
@@ -379,15 +382,15 @@ function SportDetailsScreen({ route }) {
                                 visible={value || regle}
                                 supportedOrientations={['portrait', 'landscape']}
                             >
-                            <View style={styles.modalView}>
-                            <ScrollView onScroll={() => setRegle(true)} onScrollEndDrag={() => setTimeout(() => setRegle(false), 3000)} >
-                                <View style={styles.centeredView}>
-                                    <Text style={styles.modalText}>Arbitres:</Text>
-                                    {status['arbitre'] != "error" ? status['arbitre'].map(r => <Text key={r} style={styles.modalText} >{r}</Text>) : <View></View>}
-                                    <Text style={styles.modalText}>Règles:</Text>
-                                    <Text style={styles.modalText}>{status['rules']}</Text>
-                                </View>
-                            </ScrollView>
+                                <View style={styles.modalView}>
+                                    <ScrollView onScroll={() => setRegle(true)} onScrollEndDrag={() => setTimeout(() => setRegle(false), 3000)} >
+                                        <View style={styles.centeredView}>
+                                            <Text style={styles.modalText}>Arbitres:</Text>
+                                            {status['arbitre'] != "error" ? status['arbitre'].map(r => <Text key={r} style={styles.modalText} >{r}</Text>) : <View></View>}
+                                            <Text style={styles.modalText}>Règles:</Text>
+                                            <Text style={styles.modalText}>{status['rules']}</Text>
+                                        </View>
+                                    </ScrollView>
 
                                 </View>
                             </Modal>
@@ -397,7 +400,7 @@ function SportDetailsScreen({ route }) {
                 }
             </ArbitreContext.Consumer>
 
-            <Trace status={status} username={username} sport={route.params.sportname} width={window_width} height={window_height} setHeight={setHeight} setWidth={setWidth} setSportStatus={setSportStatus} traceload={setloading}/>
+            <Trace status={status} username={username} sport={route.params.sportname} width={window_width} height={window_height} setHeight={setHeight} setWidth={setWidth} setSportStatus={setSportStatus} traceload={setloading} />
         </PinchZoomView>
 
     )
@@ -470,6 +473,14 @@ function SummaryScreen() {
         </ScrollView>
     )
 }
+function ClickerScreen() {
+    return (
+        <Pressable style={styles.inProgress} >
+            <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
+        </Pressable>
+    )
+
+}
 function pushNotifScreen() {
     const [title, setTitle] = React.useState("Title");
     const [body, setBody] = React.useState("Body");
@@ -482,7 +493,6 @@ function pushNotifScreen() {
             <Pressable style={styles.logoutbutton} onPressIn={() => askPushNotif(username, title, body, to)}><Text style={{ textAlign: "center" }}> Push!</Text></Pressable>
         </View>
     )
-
 }
 function UsernameScreen({ navigation }) {
     const [loading, setLoading] = React.useState(true);
@@ -810,6 +820,10 @@ function App() {
                     <Stack.Screen options={() => ({
                         title: "Notif tool"
                     })} initialParams={{ username: username }} name="pushNotifScreen" component={pushNotifScreen} />
+
+                    <Stack.Screen options={() => ({
+                        title: "Clicker!"
+                    })} initialParams={{ username: username }} name="ClickerScreen" component={ClickerScreen} />
 
                 </Stack.Navigator>
             </ArbitreContext.Provider>
