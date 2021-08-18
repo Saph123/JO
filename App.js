@@ -38,7 +38,7 @@ function HomeScreen({ route, navigation }) {
         pushcluedo(route.params.pushtoken);
         if (soundstatus == undefined) {
 
-            
+
             const { sound } = await Audio.Sound.createAsync(
                 require('./assets/cluedo.wav')
             );
@@ -146,7 +146,7 @@ function HomeScreen({ route, navigation }) {
             </View>
 
             <View>
-                <TouchableOpacity style={{ alignSelf: "center", backgroundColor:"lightgrey", borderRadius: 30 }} onPress={playcluedo}>
+                <TouchableOpacity style={{ alignSelf: "center", backgroundColor: "lightgrey", borderRadius: 30 }} onPress={playcluedo}>
                     <Image style={{ borderRadius: 30, borderWidth: 1, borderColor: "black" }} source={require('./assets/cluedo.png')} />
                 </TouchableOpacity>
                 <TouchableOpacity style={{ alignSelf: "center", width: 65, height: 85, margin: 10 }} onPress={() => { navigation.navigate('SummaryScreen') }}>
@@ -270,7 +270,7 @@ function Login({ route, navigation }) {
                 <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
                     <View style={{ flexDirection: "row", margin: 15 }}>
                         {/* <Text style={{ textAlign: "center", borderWidth: 1, borderRadius:15, borderRightWidth: 0, height: 20 }}> Username:</Text> */}
-                        <TextInput onFocus={() => {if (Platform.OS !== "ios")  {setuserName("")}} }  onTouchStart={() => {if (Platform.OS === "ios")  {setuserName("")}} } autoCompleteType="username" style={{ textAlign: "center", borderRadius: 15, borderWidth: 1, height: 20, minWidth: 100 }} onChangeText={text => { setuserName(""); setuserName(text) }} value={userName}></TextInput>
+                        <TextInput onFocus={() => { if (Platform.OS !== "ios") { setuserName("") } }} onTouchStart={() => { if (Platform.OS === "ios") { setuserName("") } }} autoCompleteType="username" style={{ textAlign: "center", borderRadius: 15, borderWidth: 1, height: 20, minWidth: 100 }} onChangeText={text => { setuserName(""); setuserName(text) }} value={userName}></TextInput>
                     </View>
                     <View style={{ flexDirection: "row", margin: 15 }}>
                         {/* <Text style={{ textAlign: "center", borderWidth: 1, borderRadius:15, borderRightWidth: 0, height: 20 }}> Password:</Text> */}
@@ -279,7 +279,7 @@ function Login({ route, navigation }) {
                     <View style={{ margin: 30, flexDirection: "row" }}>
                         <Pressable style={{ width: 60, height: 30, borderRadius: 15, backgroundColor: "#ff8484", justifyContent: "center" }} title="Log in" onPress={() =>
 
-                            fetch("http://91.121.143.104:7070/login", { signal: controller.signal, method: "POST", body: JSON.stringify({"version":version, "username": userName, "password": password }) }).then(r => {
+                            fetch("http://91.121.143.104:7070/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": userName, "password": password }) }).then(r => {
                                 if (r.status == 200) {
                                     username = userName;
                                     pushtoken(route.params.pushtoken, userName);
@@ -352,29 +352,16 @@ function Login({ route, navigation }) {
     )
 };
 
-function SportDetailsScreen({ route, navigation }) {
+function SportDetailsScreen({ route }) {
 
     const [window_width, setWidth] = React.useState(Dimensions.get("window").width);
     const [window_height, setHeight] = React.useState(Dimensions.get("window").height);
-    const [authorized, setauthorized] = React.useState(false);
     const [loadingmain, setloading] = React.useState(true);
-    const [status, setlocalStatus] = React.useState();
+    const [status, setSportStatus] = React.useState({arbitre:"error", status:"error"});
     const [regle, setRegle] = React.useState(false);
+    const navigation = useNavigation();
     React.useEffect(() => {
-        fetch_status(route.params.sportname, setlocalStatus).then(r => {
-            setlocalStatus(r);
-            for (var authouser in r['arbitre']) {
-                if (r['arbitre'][authouser] == username) {
-                    setauthorized(true);
-                }
-                else if ("Max" == username || "Antoine" == username || "Ugo" == username) {
-                    setauthorized(true);
-                }
-            }
             setloading(false);
-
-        }
-        );
 
     }, []);
 
@@ -393,15 +380,15 @@ function SportDetailsScreen({ route, navigation }) {
                                 visible={value || regle}
                                 supportedOrientations={['portrait', 'landscape']}
                             >
-                            <View style={styles.modalView}>
-                            <ScrollView onScroll={() => setRegle(true)} onScrollEndDrag={() => setTimeout(() => setRegle(false), 1000)} >
-                                <View style={styles.centeredView}>
-                                    <Text style={styles.modalText}>Arbitres:</Text>
-                                    {status['arbitre'].map(r => <Text style={styles.modalText} >{r}</Text>)}
-                                    <Text style={styles.modalText}>Règles:</Text>
-                                    <Text style={styles.modalText}>{status['rules']}</Text>
-                                </View>
-                            </ScrollView>
+                                <View style={styles.modalView}>
+                                    <ScrollView onScroll={() => setRegle(true)} onScrollEndDrag={() => setTimeout(() => setRegle(false), 1000)} >
+                                        <View style={styles.centeredView}>
+                                            <Text style={styles.modalText}>Arbitres:</Text>
+                                            {status['arbitre'] != "error" ? status['arbitre'].map(r => <Text key={r} style={styles.modalText} >{r}</Text>) : <View></View>}
+                                            <Text style={styles.modalText}>Règles:</Text>
+                                            <Text style={styles.modalText}>{status['rules']}</Text>
+                                        </View>
+                                    </ScrollView>
 
                                 </View>
                             </Modal>
@@ -411,7 +398,7 @@ function SportDetailsScreen({ route, navigation }) {
                 }
             </ArbitreContext.Consumer>
 
-            <Trace username={username} sport={route.params.sportname} width={window_width} height={window_height} setHeight={setHeight} setWidth={setWidth} autho={authorized} />
+            <Trace status={status} username={username} sport={route.params.sportname} width={window_width} height={window_height} setHeight={setHeight} setWidth={setWidth} setSportStatus={setSportStatus} traceload={setloading}/>
         </PinchZoomView>
 
     )
@@ -437,8 +424,8 @@ function SummaryScreen() {
         fetch_results().then(r => {
             let tempArray = []
             for (var i in r) {
-                
-                
+
+
                 for (var j = 0; j < 50; j++) {
                     if (r[i].rank == j) {
                         let tmp = { name: r[i].name, rank: r[i].rank, or: r[i].gold.number, bronze: r[i].bronze.number, argent: r[i].silver.number };
@@ -530,8 +517,8 @@ function UsernameScreen({ navigation }) {
         }
         setEventsInProgess(currEvent)
     }, []);
-    
-    
+
+
     React.useEffect(() => {
         fetch_results().then(r => {
 
@@ -584,7 +571,7 @@ function UsernameScreen({ navigation }) {
                 <View style={{ alignItems: "center" }}>
                     {silverWins.map(r => {
                         return (
-                            <Text  key={r}>{r}</Text>
+                            <Text key={r}>{r}</Text>
                         )
                     })}
                 </View>
@@ -595,7 +582,7 @@ function UsernameScreen({ navigation }) {
                 <View style={{ alignItems: "center" }}>
                     {bronzeWins.map(r => {
                         return (
-                            <Text  key={r}>{r}</Text>
+                            <Text key={r}>{r}</Text>
                         )
                     })}
                 </View>
@@ -608,7 +595,7 @@ function UsernameScreen({ navigation }) {
                         <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Mes activités </Text></View>
                         {events.map(r => {
                             return (
-                                <View  key={r}>
+                                <View key={r}>
                                     {eventView(eventsInProgress, eventsDone, r, navigation)}
                                 </View>
                             )
@@ -679,7 +666,7 @@ async function registerForPushNotificationsAsync() {
             return;
         }
         token = (await Notifications.getExpoPushTokenAsync()).data;
-        
+
     } else {
         alert('Must use physical device for Push Notifications');
     }
@@ -699,9 +686,9 @@ async function pushtoken(token, username) {
     // 5 second timeout:
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
-    
+
     // // push to server
-    fetch("http://91.121.143.104:7070/pushtoken", { signal: controller.signal, method: "POST", body: JSON.stringify({"version":version, "token": token, "username": username }) }).then(r => {
+    fetch("http://91.121.143.104:7070/pushtoken", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "token": token, "username": username }) }).then(r => {
         return;
     }).catch((err) => { alert("May be it's normal") });
 }
@@ -710,7 +697,7 @@ async function pushcluedo() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     // // push to server
-    fetch("http://91.121.143.104:7070/cluedo", { signal: controller.signal, method: "POST", body: JSON.stringify({"version":version, "cluedo": username }) }).then(r => {
+    fetch("http://91.121.143.104:7070/cluedo", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "cluedo": username }) }).then(r => {
 
 
     }).catch((err) => { alert("May be it's normal") });
@@ -721,7 +708,7 @@ async function askPushNotif(username, title, body, to) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     // // push to server
-    fetch("http://91.121.143.104:7070/pushnotif", { signal: controller.signal, method: "POST", body: JSON.stringify({"version":version, "username": username, "title": title, "body": body, "to": to }) }).then(r => {
+    fetch("http://91.121.143.104:7070/pushnotif", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "title": title, "body": body, "to": to }) }).then(r => {
     }).catch((err) => { alert("May be it's normal") });
 }
 
@@ -739,7 +726,7 @@ function App() {
     async function playmegaphone() {
         if (soundstatus == undefined) {
 
-            
+
             Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
 
             const { sound } = await Audio.Sound.createAsync(
@@ -751,7 +738,7 @@ function App() {
         }
         if (soundstatus != undefined) {
             var test = await soundstatus.getStatusAsync();
-            
+
             if (test.isPlaying == true) {
                 await soundstatus.stopAsync();
 
@@ -775,7 +762,7 @@ function App() {
 
         // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-            
+
         });
 
         return () => {
@@ -811,9 +798,8 @@ function App() {
                             <Text style={{ color: "white", marginRight: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text
                             ></View>
                     }} name="Planning" component={PlanningScreen} />
-
                     <Stack.Screen options={({ navigation }) => ({
-                        title: current_sport, headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>{GetState(current_sport, headerstatus, setstatus, navigation)}<View>
+                        title: current_sport, headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><View>
                             <TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}><Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text></TouchableOpacity></View>
                             <TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 1000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View>
                     })} initialParams={{ sportname: current_sport }} name="SportDetails" component={SportDetailsScreen} />

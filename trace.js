@@ -6,7 +6,7 @@ import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { Svg, Polyline } from 'react-native-svg';
 import { Table, Row } from 'react-native-table-component';
 import 'react-native-url-polyfill/auto';
-import {version} from "./App"
+import { version } from "./App"
 const styles = require("./style.js");
 
 let displayed_state = {
@@ -31,21 +31,25 @@ let displayed_state = {
 };
 export const Trace = (props) => {
     const sport = props.sport;
-    const autho = props.autho;
     const username = props.username;
     const width = props.width;
     const height = 170;
 
+    const [autho, setAutho] = React.useState(false);
     const [loading, setloading] = React.useState(true);
     const [matches, setmatches] = React.useState([]);
     const [levels, setlevels] = React.useState([]);
     const [liste, setListe] = React.useState([]);
     const [groups, setGroups] = React.useState([]);
     const [groupmatches, setmatchesgroup] = React.useState([]);
+    const navigation = useNavigation();
     React.useEffect(() => {
-        fetch_matches(sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, props.setWidth, props.setHeight).then(r => {
+        console.log("useeffect trace")
+        fetch_matches(username, setAutho, props.setSportStatus, sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, props.setWidth, props.setHeight).then(r => {
+
+            props.traceload(false);
             setloading(false)
-        }).catch(err => alert(err));
+        }).catch(err => { alert(err); navigation.navigate('Home') });
 
 
     }, []);
@@ -73,7 +77,7 @@ export const Trace = (props) => {
                 {levels.slice(0).reverse().map(r =>
                     <View key={r}
                         style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-between" }}>
-                        <Matchcomp sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={props.setWidth} setHeight={props.setHeight} setloading={setloading} username={username} loading={loading} matches={matches} level={r} sport={sport} autho={autho}></Matchcomp>
+                        <Matchcomp setSportStatus={props.setSportStatus} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={props.setWidth} setHeight={props.setHeight} setloading={setloading} username={username} loading={loading} matches={matches} level={r} sport={sport} autho={autho}></Matchcomp>
                     </View>)}
             </View>
         );
@@ -91,7 +95,7 @@ export const Trace = (props) => {
                                 <Row key={q.name} data={[q.name, q.played, q.wins, q.loses, q.points, q.diff]} widthArr={[150, 30, 30, 30, 60, 50]} textStyle={{ margin: 6 }}></Row>)}
                         </Table>
                         <View style={{ flexDirection: "column", justifyContent: "space-around" }}>
-                            <Matchpoule key={index} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={props.setWidth} setHeight={props.setHeight} username={username} setloading={setloading} loading={loading} poule={r.name} matches={groupmatches[index]} level={0} sport={sport} autho={autho}></Matchpoule>
+                            <Matchpoule setSportStatus={props.setSportStatus} key={index} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={props.setWidth} setHeight={props.setHeight} username={username} setloading={setloading} loading={loading} poule={r.name} matches={groupmatches[index]} level={0} sport={sport} autho={autho}></Matchpoule>
                         </View>
                     </View>)}
             </View>
@@ -177,7 +181,7 @@ export const Trace = (props) => {
                                         if (cur_level == r.level) {
                                             return (
 
-                                                <View  key={r.username}>
+                                                <View key={r.username}>
                                                     <Text style={r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers}>{r.username}</Text>
                                                 </View>
                                             )
@@ -188,10 +192,10 @@ export const Trace = (props) => {
                                 </View>
                                 <View>
                                     <Text style={styles.inputScore}>Score/Temps</Text>
-                                    {liste.map((r,index) => {
+                                    {liste.map((r, index) => {
                                         if (cur_level == r.level) {
                                             return (
-                                                <TextInput  key={r.username} onChangeText={(text) => { r.score = text; }} style={styles.inputScore}>{r.score}</TextInput>
+                                                <TextInput key={r.username} onChangeText={(text) => { r.score = text; }} style={styles.inputScore}>{r.score}</TextInput>
                                             )
                                         }
                                     }
@@ -306,14 +310,14 @@ export const Trace = (props) => {
 
 
 }
-async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setWidth, setHeight) {
+async function fetch_matches(username, setAutho, setSportStatus, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setWidth, setHeight) {
 
     let matches = {};
 
     let matches_group = {};
 
 
-    await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
+    let status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
         if (displayed_state[sportname] == "") {
             // first time we use the one in the server
             displayed_state[sportname] = data['status'];
@@ -330,9 +334,20 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
                 displayed_state[sportname] = data['status'];
             }
         }
+        for (var authouser in data['arbitre']) {
+            if (data['arbitre'][authouser] == username) {
+                setAutho(true);
+            }
+            else if ("Max" == username || "Antoine" == username || "Ugo" == username) {
+                setAutho(true);
+            }
+        }
+        setSportStatus(data);
+
         return data;
-    });
-    if (displayed_state[sportname] == "poules") {
+    }).catch(err => { alert(err); setSportStatus({ arbitre: "error", status: "error" }); return { arbitre: "error", status: "error" } });
+    console.log(status);
+    if (status['status'] == "poules") {
         matches_group = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_poules.json").then(response => response.json()).then(data => { return data });
         var i = 0;
         let array_groups = [];
@@ -359,7 +374,7 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
         setHeight(400 * (array_groups.length + 1) * 4);
 
     }
-    else if (displayed_state[sportname] == "playoff") {
+    else if (status['status'] == "playoff") {
         matches = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => { return data });
 
         let level = [];
@@ -388,7 +403,7 @@ async function fetch_matches(sportname, setmatches, setgroups, setlevel, setmatc
         }
         setmatches(local_array_match);
     }
-    else { // gestion listes (trail/tong)
+    else if (status['status'] != "error") { // gestion listes (trail/tong)
         let liste = {};
         liste = await fetch("http://91.121.143.104:7070/teams/" + sportname + ".json").then(response => response.json()).then(data => { return data });
         let local_liste = [];
@@ -477,8 +492,9 @@ export async function fetch_status(sportname, setStatus) {
         }
         setStatus(data);
         return data;
-    }).catch(err => alert(err));
+    }).catch(err => { alert(err); return { status: "error", arbitre: "tamere" } });
     return fetch_status;
+
 }
 
 export async function fetch_results() {
@@ -496,7 +512,7 @@ export async function fetch_activities(username, setArbitre, setEvents) {
         setEvents(data["activities"])
         return;
     }).catch(err => alert(err));
-    return ;
+    return;
 }
 
 // export async function fetchSummary(sport) {
@@ -522,7 +538,7 @@ export function GetState(sportname, status, setStatus, navigation) {
     var top
     var left
     React.useEffect(() => {
-        fetch_status(sportname, setStatus).then(r => { setLocalStatus(r['status']); setloaded(1) });
+        // fetch_status(sportname, setStatus).then(r => { if(r['status'] == "error"){navigation.Back()};setLocalStatus(r['status']); setloaded(1) });
     }, []);
     if (Platform.OS === "ios") {
 
@@ -592,7 +608,7 @@ function matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, typ
         </View>)
 
 }
-function modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_array, set_match_array, matchZoom, setMatchZoom, setFetching, props, type, initScore) {
+function modalZoomMatch(setSportStatus, username, sport, curMatchZoom, setCurrMatchZoom, match_array, set_match_array, matchZoom, setMatchZoom, setFetching, props, type, initScore) {
     return (
         <Modal
             animationType="slide"
@@ -601,7 +617,7 @@ function modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_a
             supportedOrientations={['portrait', 'landscape']}
         >
             <View style={styles.matchZoomView}>
-                <Pressable style={styles.closeButton} onPressIn={() => {  curMatchZoom.score = initScore; updateMatchArray(curMatchZoom, match_array, set_match_array); setMatchZoom(false) }}><Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} /></Pressable>
+                <Pressable style={styles.closeButton} onPressIn={() => { curMatchZoom.score = initScore; updateMatchArray(curMatchZoom, match_array, set_match_array); setMatchZoom(false) }}><Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} /></Pressable>
                 <View style={{ flexDirection: "column", flex: 1, justifyContent: "space-evenly" }}>
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                         <View style={{ width: 200, justifyContent: "center" }}><Text style={{ textAlignVertical: "center" }}>{curMatchZoom.team1}</Text></View>
@@ -627,7 +643,7 @@ function modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_a
                             setCurrMatchZoom(determine_winner(curMatchZoom, type));
                             updateMatchArray(curMatchZoom, match_array, set_match_array);
                             pushmatch(username, sport, curMatchZoom, type, curMatchZoom.uniqueId);
-                            fetch_matches(props.sport, props.setmatches, props.setGroups, props.setlevel, props.setmatchesgroup, null, props.setWidth, props.setHeight).then(r => {
+                            fetch_matches(username, setAutho, setSportStatus, props.sport, props.setmatches, props.setGroups, props.setlevel, props.setmatchesgroup, null, props.setWidth, props.setHeight).then(r => {
                                 setFetching(false);
                                 props.setloading(false);
                             })
@@ -689,7 +705,7 @@ const Matchcomp = (props) => {
 
     return (
         <View style={styles.line}>
-            {modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_array, set_match_array, matchZoom, setMatchZoom, setFetching, props, type, initScore)}
+            {modalZoomMatch(props.setSportStatus, username, sport, curMatchZoom, setCurrMatchZoom, match_array, set_match_array, matchZoom, setMatchZoom, setFetching, props, type, initScore)}
             {match_array.map((r, index) => matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type, username, index))}
         </View>
     );
@@ -700,11 +716,11 @@ function pushmatch(username, sport, match, type, uniqueId) {
     // 5 second timeout:
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
-    
+
     // // push to server
-    fetch("http://91.121.143.104:7070/pushmatch", { signal: controller.signal, method: "POST", body: JSON.stringify({"version":version, "sport": sport, "username": username, "type": type, "match": match, uniqueId: uniqueId }) }).then(r => {
+    fetch("http://91.121.143.104:7070/pushmatch", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sport, "username": username, "type": type, "match": match, uniqueId: uniqueId }) }).then(r => {
         if (r.status == 200) {
-        alert("Saved to server!")
+            alert("Saved to server!")
         }
         else {
             alert("Wrong login or password!");
@@ -770,7 +786,7 @@ const Matchpoule = (props) => {
 
     return (
         <View style={styles.column}>
-            {modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match, setMatch, matchZoom, setMatchZoom, setFetching, props, type, initScore)}
+            {modalZoomMatch(props.setSportStatus, username, sport, curMatchZoom, setCurrMatchZoom, match, setMatch, matchZoom, setMatchZoom, setFetching, props, type, initScore)}
             {match.map((r, index) =>
                 matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type, username, index)
             )}
