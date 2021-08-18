@@ -290,7 +290,7 @@ function Login({ route, navigation }) {
                                     alert("Wrong login or password!");
                                     return;
                                 }
-                            }).catch(() => { alert("Issue with server!"); return })}>
+                            }).catch((err) => { alert(err, "Issue with server!"); return })}>
                             <Text style={{ textAlign: "center", textAlignVertical: "center" }}>Login</Text>
                         </Pressable>
                         {/* <Button style={{ margin: 30 }} color='grey' title="Register" onPress={() =>
