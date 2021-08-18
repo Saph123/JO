@@ -359,6 +359,7 @@ function SportDetailsScreen({ route, navigation }) {
     const [authorized, setauthorized] = React.useState(false);
     const [loadingmain, setloading] = React.useState(true);
     const [status, setlocalStatus] = React.useState();
+    const [regle, setRegle] = React.useState(false);
     React.useEffect(() => {
         fetch_status(route.params.sportname, setlocalStatus).then(r => {
             setlocalStatus(r);
@@ -389,11 +390,11 @@ function SportDetailsScreen({ route, navigation }) {
                             <Modal
                                 animationType="slide"
                                 transparent={true}
-                                visible={value}
+                                visible={value || regle}
                                 supportedOrientations={['portrait', 'landscape']}
                             >
                             <View style={styles.modalView}>
-                            <ScrollView>
+                            <ScrollView onScroll={() => setRegle(true)} onScrollEndDrag={() => setTimeout(() => setRegle(false), 1000)} >
                                 <View style={styles.centeredView}>
                                     <Text style={styles.modalText}>Arbitres:</Text>
                                     {status['arbitre'].map(r => <Text style={styles.modalText} >{r}</Text>)}
