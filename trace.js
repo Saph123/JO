@@ -42,15 +42,13 @@ export const Trace = (props) => {
     const [liste, setListe] = React.useState([]);
     const [final, setFinal] = React.useState([])
     const [groups, setGroups] = React.useState([]);
-    const [localToggle, setLocalToggle] = React.useState(false);
     const [groupmatches, setmatchesgroup] = React.useState([]);
     const navigation = useNavigation();
     React.useEffect(() => {
-        fetch_matches(localToggle, username, setAutho, setStatus, props.setArbitreRule, props.sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, props.setWidth, props.setHeight).then(r => {
+        fetch_matches(username, setAutho, setStatus, props.setArbitreRule, props.sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, props.setWidth, props.setHeight).then(r => {
 
             props.traceload(false);
             setloading(false);
-            setLocalToggle(false);
         }).catch(err => { alert(err); navigation.navigate('Home') });
 
 
@@ -81,14 +79,14 @@ export const Trace = (props) => {
                         style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-between" }}>
                         <Matchcomp setArbitreRule={props.setArbitreRule} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={props.setWidth} setHeight={props.setHeight} setloading={setloading} username={username} loading={loading} matches={matches} level={r} sport={sport} autho={autho}></Matchcomp>
                     </View>)}
-                {(status.states.length > 1) ? button_switch(setLocalToggle, status, setStatus, sport, "poules", setloading) : <Text></Text>}
+                {(status.states.length > 1) ? button_switch(status, setStatus, sport, "poules", setloading, props.setWidth, props.setHeight, team_number) : <Text></Text>}
             </View>
         );
     }
     if (status.status == "poules") {
         return (
             <View style={{ flexDirection: "row", flex: 1, position: "absolute", top: 0, left: 0 }}>
-                {(status.states.length > 1) ? button_switch(setLocalToggle, status, setStatus, sport, "playoff", setloading) : <Text></Text>}
+                {(status.states.length > 1) ? button_switch(status, setStatus, sport, "playoff", setloading, props.setWidth, props.setHeight, team_number) : <Text></Text>}
                 {groups.map((r, index) =>
                     <View key={r.name} style={styles.tablecontainer}>
                         <Text style={{ textAlign: "center" }}>{r.name}</Text>
@@ -105,12 +103,12 @@ export const Trace = (props) => {
         )
 
     }
-    else{ // Other (list like trail etc.)
-        if(status.status == "final"){
+    else { // Other (list like trail etc.)
+        if (status.status == "final") {
 
             var local_liste = final;
         }
-        else{
+        else {
             var local_liste = liste;
             console.log(liste);
         }
@@ -120,7 +118,7 @@ export const Trace = (props) => {
         if (!autho) {
             return (
                 <View style={{ flexDirection: "row" }}>
-                    {(status.states.length > 1) ? button_switch(setLocalToggle, status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading) : <Text></Text>}
+                    {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, team_number) : <Text></Text>}
                     <View>
                         <Text style={styles.showPlayers}>Athlete</Text>
                         {local_liste.map(r =>
@@ -179,7 +177,7 @@ export const Trace = (props) => {
 
             return (
                 <View>
-                    {(status.states.length > 1) ? button_switch(setLocalToggle, status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading) : <Text></Text>}
+                    {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, team_number) : <Text></Text>}
                     {series_level.map(cur_level =>
                         <View key={cur_level}>
                             <View>
@@ -321,52 +319,43 @@ export const Trace = (props) => {
 
 
 }
-function setWindowSize(type, setWidth, setHeight, number_of_team){
-    if(type == "playoff"){
-
-    }
-}
-function button_switch(setLocalToggle, status, setStatus, sport, otherState, setloading) {
+function button_switch(status, setStatus, sport, otherState, setloading, setWidth, setHeight, team_number) {
     return (
         <TouchableOpacity style={styles.inProgress}
-            onPress={() => { toggle_status(status, setStatus, sport, setLocalToggle, setloading) }}
+            onPress={() => { toggle_status(status, setStatus, sport, setloading) }}
         >
             <Text alignSelf="center">Switch to {otherState}</Text>
         </TouchableOpacity>)
 }
 
-async function fetch_matches(localToggle, username, setAutho, setStatus, setArbitreRule, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setWidth, setHeight) {
+async function fetch_matches(username, setAutho, setStatus, setArbitreRule, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setWidth, setHeight) {
 
     let matches = {};
 
     let matches_group = {};
     let status = { arbitre: "error", status: "error" }
-    if (localToggle) {
-        status['status'] = displayed_state[sportname];
-    }
-    else {
 
 
-        while (status['status'] == 'error') {
+    while (status['status'] == 'error') {
 
 
-            status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
-                displayed_state[sportname] = data['status'];
-                setStatus(data);
-                for (var authouser in data['arbitre']) {
-                    if (data['arbitre'][authouser] == username) {
-                        setAutho(true);
-                    }
-                    else if ("Max" == username || "Antoine" == username || "Ugo" == username) {
-                        setAutho(true);
-                    }
+        status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
+            displayed_state[sportname] = data['status'];
+            setStatus(data);
+            for (var authouser in data['arbitre']) {
+                if (data['arbitre'][authouser] == username) {
+                    setAutho(true);
                 }
-                setArbitreRule(data);
+                else if ("Max" == username || "Antoine" == username || "Ugo" == username) {
+                    setAutho(true);
+                }
+            }
+            setArbitreRule(data);
 
-                return data;
-            }).catch(err => { alert(err); setArbitreRule({ status: "error", arbitre: "error", rules: "error" }); return { status: "error", arbitre: "error", rules: "error" } });
-        }
+            return data;
+        }).catch(err => { alert(err); setArbitreRule({ status: "error", arbitre: "error", rules: "error" }); return { status: "error", arbitre: "error", rules: "error" } });
     }
+
     let allok = false;
     while (!allok) {
         if (status['states'].includes("poules")) {
@@ -432,10 +421,10 @@ async function fetch_matches(localToggle, username, setAutho, setStatus, setArbi
             setmatches(local_array_match);
         }
         if (status['states'].includes("final")) { // gestion listes (trail/tong)
-                let liste = {};
-                liste = await fetch("http://91.121.143.104:7070/teams/" + sportname + ".json").then(response => response.json()).then(data => { allok = true; return data });
-                let local_liste = [];
-                let local_final = [];
+            let liste = {};
+            liste = await fetch("http://91.121.143.104:7070/teams/" + sportname + ".json").then(response => response.json()).then(data => { allok = true; return data });
+            let local_liste = [];
+            let local_final = [];
             var levellist = 1;
             for (var series in liste["Series"]) {
                 console.log(liste["Series"][series]["Name"]);
@@ -447,12 +436,12 @@ async function fetch_matches(localToggle, username, setAutho, setStatus, setArbi
                     setFinal(local_final)
                 }
                 else { // consolidation des series avant la finale
-                        var templist = liste["Series"][series]["Teams"];
-                        for (var i in liste["Series"][series]["Teams"]) {
-                            local_liste.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], levellist));
-                        }
-                        setListe(local_liste);
-                        levellist += 1;
+                    var templist = liste["Series"][series]["Teams"];
+                    for (var i in liste["Series"][series]["Teams"]) {
+                        local_liste.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], levellist));
+                    }
+                    setListe(local_liste);
+                    levellist += 1;
                 }
             }
             setListe(local_liste);
@@ -461,13 +450,13 @@ async function fetch_matches(localToggle, username, setAutho, setStatus, setArbi
     if (displayed_state[sportname] == 'series' || displayed_state[sportname] == "final") {
 
         setWidth(1500);
-        setHeight(1500); 
+        setHeight(1500);
     }
 
 }
 
 
-export function toggle_status(status, setStatus, sportname, setLocalToggle, setloading) {
+export function toggle_status(status, setStatus, sportname, setloading) {
 
     for (var i = 0; i < status.states.length; i++) {
         if (status.states[i] == displayed_state[sportname]) {
@@ -481,7 +470,6 @@ export function toggle_status(status, setStatus, sportname, setLocalToggle, setl
             setloading(true);
             setStatus(JSON.parse(JSON.stringify(status))); // immutable object ffs
             setloading(false);
-            setLocalToggle(true);
             break;
         }
     }

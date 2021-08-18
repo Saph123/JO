@@ -172,7 +172,7 @@ function HomeScreen({ route, navigation }) {
     );
 }
 
-function PlanningScreen({ navigation }) {
+function PlanningScreen({ route, navigation }) {
 
     var planning = new Planning();
     var jeudi = new Date('2021-08-27T00:00:00+02:00');
@@ -251,7 +251,7 @@ function PlanningScreen({ navigation }) {
                             return (
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
-                                    <View><TouchableOpacity onPressIn={() => { if (r.timeBegin.getHours() < 12) { setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) } }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
+                                    <View><TouchableOpacity onPressIn={() => { if (r.timeBegin.getHours() < 12) { route.params.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) } }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
                                 </View>)
                         }
                     })
