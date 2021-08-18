@@ -383,7 +383,7 @@ function SportDetailsScreen({ route }) {
                                 supportedOrientations={['portrait', 'landscape']}
                             >
                                 <View style={styles.modalView}>
-                                    <ScrollView onScroll={() => setRegle(true)} onScrollEndDrag={() => setTimeout(() => setRegle(false), 3000)} >
+                                    <ScrollView onScroll={() => setRegle(true)} onScrollEndDrag={() => setTimeout(() => setRegle(false), 2000)} >
                                         <View style={styles.centeredView}>
                                             <Text style={styles.modalText}>Arbitres:</Text>
                                             {status['arbitre'] != "error" ? status['arbitre'].map(r => <Text key={r} style={styles.modalText} >{r}</Text>) : <View></View>}

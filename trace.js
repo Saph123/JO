@@ -34,7 +34,7 @@ export const Trace = (props) => {
     const username = props.username;
     const width = props.width;
     const height = 170;
-    const [status, setStatus] = React.useState(""); // this is only poule/playoff not arbitre and the rest mofo your mom blyat
+    const [status, setStatus] = React.useState({ status: "error", states: "error" }); // this is only poule/playoff not arbitre and the rest mofo your mom blyat
     const [autho, setAutho] = React.useState(false);
     const [loading, setloading] = React.useState(true);
     const [matches, setmatches] = React.useState([]);
@@ -45,7 +45,7 @@ export const Trace = (props) => {
     const [groupmatches, setmatchesgroup] = React.useState([]);
     const navigation = useNavigation();
     React.useEffect(() => {
-        fetch_matches(username, setAutho, setStatus, props.setArbitreRule, props.sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, props.setWidth, props.setHeight).then(r => {
+        fetch_matches(true, null, username, setAutho, setStatus, props.setArbitreRule, props.sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, props.setWidth, props.setHeight).then(r => {
 
             props.traceload(false);
             setloading(false);
@@ -77,16 +77,16 @@ export const Trace = (props) => {
                 {levels.slice(0).reverse().map(r =>
                     <View key={r}
                         style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-between" }}>
-                        <Matchcomp setArbitreRule={props.setArbitreRule} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={props.setWidth} setHeight={props.setHeight} setloading={setloading} username={username} loading={loading} matches={matches} level={r} sport={sport} autho={autho}></Matchcomp>
+                        <Matchcomp status={status} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={props.setWidth} setHeight={props.setHeight} setloading={setloading} username={username} loading={loading} matches={matches} level={r} sport={sport} autho={autho}></Matchcomp>
                     </View>)}
-                {(status.states.length > 1) ? button_switch(status, setStatus, sport, "poules", setloading, props.setWidth, props.setHeight, team_number) : <Text></Text>}
+                {(status.states.length > 1) ? button_switch(status, setStatus, sport, "poules", setloading, props.setWidth, props.setHeight, groups) : <Text></Text>}
             </View>
         );
     }
     if (status.status == "poules") {
         return (
             <View style={{ flexDirection: "row", flex: 1, position: "absolute", top: 0, left: 0 }}>
-                {(status.states.length > 1) ? button_switch(status, setStatus, sport, "playoff", setloading, props.setWidth, props.setHeight, team_number) : <Text></Text>}
+                {(status.states.length > 1) ? button_switch(status, setStatus, sport, "playoff", setloading, props.setWidth, props.setHeight, levels) : <Text></Text>}
                 {groups.map((r, index) =>
                     <View key={r.name} style={styles.tablecontainer}>
                         <Text style={{ textAlign: "center" }}>{r.name}</Text>
@@ -96,7 +96,7 @@ export const Trace = (props) => {
                                 <Row key={q.name} data={[q.name, q.played, q.wins, q.loses, q.points, q.diff]} widthArr={[180, 35, 35, 35, 60, 50]} textStyle={{ margin: 6, fontSize: 16, fontWeight: (q.name.includes(username) ? "bold" : "normal") }}></Row>)}
                         </Table>
                         <View style={{ flexDirection: "column", justifyContent: "space-around" }}>
-                            <Matchpoule setArbitreRule={props.setArbitreRule} key={index} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={props.setWidth} setHeight={props.setHeight} username={username} setloading={setloading} loading={loading} poule={r.name} matches={groupmatches[index]} level={0} sport={sport} autho={autho}></Matchpoule>
+                            <Matchpoule status={status} key={index} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={props.setWidth} setHeight={props.setHeight} username={username} setloading={setloading} loading={loading} poule={r.name} matches={groupmatches[index]} level={0} sport={sport} autho={autho}></Matchpoule>
                         </View>
                     </View>)}
             </View>
@@ -110,63 +110,68 @@ export const Trace = (props) => {
         }
         else {
             var local_liste = liste;
-            console.log(liste);
         }
         var temp_level_series = local_liste.map(r => r.level);
         var series_level = [...new Set(temp_level_series)]; // unique levels
 
         if (!autho) {
             return (
-                <View style={{ flexDirection: "row" }}>
-                    {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, team_number) : <Text></Text>}
-                    <View>
-                        <Text style={styles.showPlayers}>Athlete</Text>
-                        {local_liste.map(r =>
-                            <Text style={r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers}>{r.username}</Text>
-                        )
-                        }
-                    </View>
-                    <View>
-                        <Text style={styles.inputScore}>Score/Temps</Text>
-                        {local_liste.map(r =>
-                            <Text style={styles.inputScore}>{r.score}</Text>
-                        )
-                        }
-                    </View>
-                    <View>
-                        <View style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
-                        {local_liste.map((r, index) => {
-                            if (r.rank == 1) {
-                                return (
-                                    <View style={{ flexDirection: "row" }} >
+                <View>
+
+                <View styles={{width:70, height:70, alignSelf:"center"}}>
+
+                    {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, 0) : <Text></Text>}
+                </View>
+                    <View style={{ flexDirection: "row" }}>
+                        <View>
+                            <Text style={styles.showPlayers}>Athlete</Text>
+                            {local_liste.map(r =>
+                                <Text style={r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers}>{r.username}</Text>
+                            )
+                            }
+                        </View>
+                        <View>
+                            <Text style={styles.inputScore}>Score/Temps</Text>
+                            {local_liste.map(r =>
+                                <Text style={styles.inputScore}>{r.score}</Text>
+                            )
+                            }
+                        </View>
+                        <View>
+                            <View style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
+                            {local_liste.map((r, index) => {
+                                if (r.rank == 1) {
+                                    return (
+                                        <View style={{ flexDirection: "row" }} >
+                                            <View style={styles.medailleopaque}>
+                                                <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
+                                            </View>
+                                        </View>)
+
+                                }
+                                else if (r.rank == 2) {
+                                    return (
                                         <View style={styles.medailleopaque}>
-                                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
+                                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
+                                        </View>)
+                                }
+                                else if (r.rank == 3) {
+                                    return (
+                                        <View style={styles.medailleopaque}>
+                                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
                                         </View>
-                                    </View>)
+                                    )
+                                }
+                                else {
+                                    return (
+                                        <View style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
+                                    )
+                                }
+                            }
+                            )}
+                        </View>
 
-                            }
-                            else if (r.rank == 2) {
-                                return (
-                                    <View style={styles.medailleopaque}>
-                                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
-                                    </View>)
-                            }
-                            else if (r.rank == 3) {
-                                return (
-                                    <View style={styles.medailleopaque}>
-                                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
-                                    </View>
-                                )
-                            }
-                            else {
-                                return (
-                                    <View style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
-                                )
-                            }
-                        }
-                        )}
                     </View>
-
                 </View>
 
 
@@ -177,7 +182,7 @@ export const Trace = (props) => {
 
             return (
                 <View>
-                    {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, team_number) : <Text></Text>}
+                    {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, 0) : <Text></Text>}
                     {series_level.map(cur_level =>
                         <View key={cur_level}>
                             <View>
@@ -320,42 +325,61 @@ export const Trace = (props) => {
 
 }
 function button_switch(status, setStatus, sport, otherState, setloading, setWidth, setHeight, team_number) {
+    if (otherState == "playoff") { // so we will be in groups
+        setWidth(400 * (team_number.length + 1));
+        setHeight(400 * (team_number.length + 1) * 4); // poule de 4 en dur
+    }
+    else if (otherState == "poules") {
+        if (team_number.length > 1) {
+            setWidth(Math.min(400 * ((team_number.length - 1) * (team_number.length - 1)), 3500));
+            setHeight(Math.max(200 * (team_number.length + 1), Dimensions.get("window").height + 100));
+        }
+        else {
+            setWidth(1000);
+            setHeight(1000);
+        }
+    }
     return (
-        <TouchableOpacity style={styles.inProgress}
+        <Pressable style={styles.inProgress}
             onPress={() => { toggle_status(status, setStatus, sport, setloading) }}
         >
             <Text alignSelf="center">Switch to {otherState}</Text>
-        </TouchableOpacity>)
+        </Pressable>)
 }
 
-async function fetch_matches(username, setAutho, setStatus, setArbitreRule, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setWidth, setHeight) {
+async function fetch_matches(fetchStatus, statusState, username, setAutho, setStatus, setArbitreRule, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setWidth, setHeight) {
 
     let matches = {};
 
-    let matches_group = {};
+
     let status = { arbitre: "error", status: "error" }
+    if (fetchStatus) {
 
 
-    while (status['status'] == 'error') {
+        let matches_group = {};
+        while (status['status'] == 'error') {
 
 
-        status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
-            displayed_state[sportname] = data['status'];
-            setStatus(data);
-            for (var authouser in data['arbitre']) {
-                if (data['arbitre'][authouser] == username) {
-                    setAutho(true);
+            status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
+                displayed_state[sportname] = data['status'];
+                setStatus(data);
+                for (var authouser in data['arbitre']) {
+                    if (data['arbitre'][authouser] == username) {
+                        setAutho(true);
+                    }
+                    else if ("Max" == username || "Antoine" == username || "Ugo" == username) {
+                        setAutho(true);
+                    }
                 }
-                else if ("Max" == username || "Antoine" == username || "Ugo" == username) {
-                    setAutho(true);
-                }
-            }
-            setArbitreRule(data);
+                setArbitreRule(data);
 
-            return data;
-        }).catch(err => { alert(err); setArbitreRule({ status: "error", arbitre: "error", rules: "error" }); return { status: "error", arbitre: "error", rules: "error" } });
+                return data;
+            }).catch(err => { alert(err); setArbitreRule({ status: "error", arbitre: "error", rules: "error" }); return { status: "error", arbitre: "error", rules: "error" } });
+        }
     }
-
+    else {
+        status = statusState;
+    }
     let allok = false;
     while (!allok) {
         if (status['states'].includes("poules")) {
@@ -379,8 +403,8 @@ async function fetch_matches(username, setAutho, setStatus, setArbitreRule, spor
                 }
                 array_matches_groups.push(local_array_groupmatch);
             }
-            setgroups(array_groups);
-            setmatchesgroup(array_matches_groups);
+            setgroups(JSON.parse(JSON.stringify(array_groups)));
+            setmatchesgroup(JSON.parse(JSON.stringify(array_matches_groups)));
             // gestion taille fenetre
             if (displayed_state[sportname] == "poules") {
                 setWidth(400 * (array_groups.length + 1));
@@ -404,7 +428,7 @@ async function fetch_matches(username, setAutho, setStatus, setArbitreRule, spor
                     local_array_match[matches[prop][match_iter]["level"]].push(new Match(sportname, matches[prop][match_iter]["team1"], matches[prop][match_iter]["team2"], matches[prop][match_iter]["uniqueId"], matches[prop][match_iter]["score"], matches[prop][match_iter]["over"], matches[prop][match_iter]["level"], "", matches[prop][match_iter]["nextmatch"]));
                 }
             }
-            setlevel(level);
+            setlevel(JSON.parse(JSON.stringify(level)));
             // gestion taille fenetre: affichage un peu plus large :)
             if (displayed_state[sportname] == "playoff") {
 
@@ -415,10 +439,9 @@ async function fetch_matches(username, setAutho, setStatus, setArbitreRule, spor
                 else {
                     setWidth(1000);
                     setHeight(1000);
-
                 }
             }
-            setmatches(local_array_match);
+            setmatches(JSON.parse(JSON.stringify(local_array_match)));
         }
         if (status['states'].includes("final")) { // gestion listes (trail/tong)
             let liste = {};
@@ -427,7 +450,6 @@ async function fetch_matches(username, setAutho, setStatus, setArbitreRule, spor
             let local_final = [];
             var levellist = 1;
             for (var series in liste["Series"]) {
-                console.log(liste["Series"][series]["Name"]);
                 if (liste["Series"][series]["Name"] == "Final") {
                     var templist = liste["Series"][series]["Teams"];
                     for (var i in liste["Series"][series]["Teams"]) {
@@ -550,7 +572,7 @@ function matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, typ
         </View>)
 
 }
-function modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_array, set_match_array, matchZoom, setMatchZoom, setFetching, type, initScore) {
+function modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_array, set_match_array, matchZoom, setMatchZoom, status, type, initScore, props) {
     return (
         <Modal
             animationType="slide"
@@ -578,16 +600,19 @@ function modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_a
                             <Pressable onPressIn={() => { crement_score_team(2, curMatchZoom, match_array, set_match_array, 1) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/moins.png')} /></Pressable>
                         </View>
                     </View>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                    <View style={{ flexDirection: "row", justifyContent: "center" }}>
                         <Pressable style={{ alignSelf: "center" }} onPress={() => {
+                            props.setloading(true);
                             setCurrMatchZoom(determine_winner(curMatchZoom));
                             updateMatchArray(curMatchZoom, match_array, set_match_array);
                             pushmatch(username, sport, curMatchZoom, type, curMatchZoom.uniqueId);
                             setMatchZoom(false);
+                            fetch_matches(false, status, username, null, null, null, sport, props.setmatches, props.setGroups, props.setlevel, props.setmatchesgroup, null, null, props.setWidth, props.setHeight).then(r => props.setloading(false))
+
                         }}>
                             <View>{over_text(match_array, match_array.indexOf(curMatchZoom))}</View>
                         </Pressable>
-                        <Pressable onPress={() => { // Function to save only the results!
+                        {/* <Pressable onPress={() => { // Function to save only the results!
                             setFetching(true);
                             updateMatchArray(curMatchZoom, match_array, set_match_array);
                             pushmatch(username, sport, curMatchZoom, type, curMatchZoom.uniqueId)
@@ -597,7 +622,7 @@ function modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_a
                         }
                         }>
                             <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/save.png')}></Image>
-                        </Pressable>
+                        </Pressable> */}
                     </View>
                 </View>
             </View>
@@ -641,7 +666,7 @@ const Matchcomp = (props) => {
 
     return (
         <View style={styles.line}>
-            {modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_array, set_match_array, matchZoom, setMatchZoom, setFetching, type, initScore)}
+            {modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_array, set_match_array, matchZoom, setMatchZoom, props.status, type, initScore, props)}
             {match_array.map((r, index) => matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type, username, index))}
         </View>
     );
@@ -722,7 +747,7 @@ const Matchpoule = (props) => {
 
     return (
         <View style={styles.column}>
-            {modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match, setMatch, matchZoom, setMatchZoom, setFetching, type, initScore)}
+            {modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match, setMatch, matchZoom, setMatchZoom, props.status, type, initScore, props)}
             {match.map((r, index) =>
                 matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type, username, index)
             )}
