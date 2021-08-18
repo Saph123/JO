@@ -11,7 +11,7 @@ import { Planning, getNextEventseconds } from "./planning.js";
 import { Trace, fetch_results, fetch_activities } from "./trace.js";
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
-let username = "Max";
+let username = "";
 const styles = require("./style.js");
 const ArbitreContext = React.createContext(false);
 export let version = 1
