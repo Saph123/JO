@@ -11,7 +11,7 @@ import { Planning, getNextEventseconds } from "./planning.js";
 import { Trace, fetch_results, fetch_activities } from "./trace.js";
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
-let username = "KeKw";
+let username = "Max";
 const styles = require("./style.js");
 const ArbitreContext = React.createContext(false);
 export let version = 1
@@ -362,11 +362,7 @@ function SportDetailsScreen({ route }) {
     const [status, setArbitreRule] = React.useState({ arbitre: "error", status: "error" });
     const [regle, setRegle] = React.useState(false);
     React.useEffect(() => {
-        console.log("ici wesh")
-        console.log("ici wesh")
-        console.log("ici wesh")
         setloading(false);
-        console.log("kekw")
 
 
     }, []);

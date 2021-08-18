@@ -45,8 +45,6 @@ export const Trace = (props) => {
     const [groupmatches, setmatchesgroup] = React.useState([]);
     const navigation = useNavigation();
     React.useEffect(() => {
-        console.log("useeffect")
-        console.log(localToggle, loading)
         fetch_matches(localToggle, username, setAutho, setStatus, props.setArbitreRule, props.sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, props.setWidth, props.setHeight).then(r => {
 
             props.traceload(false);
@@ -64,9 +62,7 @@ export const Trace = (props) => {
             supportedOrientations={['portrait', 'landscape']}
         ><View><ActivityIndicator size="large" color="black" /></View></Modal>);
     }
-    console.log(displayed_state[sport])
     if (status.status == "playoff") {
-        console.log("nt22222")
         return (
             <View>
 
@@ -89,8 +85,6 @@ export const Trace = (props) => {
         );
     }
     if (status.status == "poules") {
-        console.log("ntm!")
-        console.log(groups)
         return (
             <View style={{ flexDirection: "row", flex: 1, position: "absolute", top: 0, left: 0 }}>
                 {(status.states.length > 1) ? button_switch(setLocalToggle, status, setStatus, sport, "playoff", setloading) : <Text></Text>}
@@ -140,7 +134,6 @@ export const Trace = (props) => {
                                     <View style={{ flexDirection: "row" }} >
                                         <View style={styles.medailleopaque}>
                                             <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
-                                            {/* <Text>KEKW</Text> */}
                                         </View>
                                     </View>)
 
@@ -323,7 +316,7 @@ export const Trace = (props) => {
 function button_switch(setLocalToggle, status, setStatus, sport, otherState, setloading) {
     return (
         <TouchableOpacity style={styles.inProgress}
-            onPress={() => {  console.log("button");toggle_status(status, setStatus, sport, setLocalToggle, setloading) }}
+            onPress={() => { toggle_status(status, setStatus, sport, setLocalToggle, setloading) }}
         >
             <Text alignSelf="center">Switch to {otherState}</Text>
         </TouchableOpacity>)
@@ -335,7 +328,6 @@ async function fetch_matches(localToggle, username, setAutho, setStatus, setArbi
 
     let matches_group = {};
     let status = { arbitre: "error", status: "error" }
-    console.log("toggle:", localToggle)
     if (localToggle) {
         status['status'] = displayed_state[sportname];
     }
@@ -343,14 +335,11 @@ async function fetch_matches(localToggle, username, setAutho, setStatus, setArbi
 
 
         while (status['status'] == 'error') {
-            console.log(sportname)
 
 
             status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
-                console.log("ici aussi")
                 displayed_state[sportname] = data['status'];
                 setStatus(data);
-                console.log(data['states'], data['states'].includes("poules"))
                 for (var authouser in data['arbitre']) {
                     if (data['arbitre'][authouser] == username) {
                         setAutho(true);
@@ -365,8 +354,6 @@ async function fetch_matches(localToggle, username, setAutho, setStatus, setArbi
             }).catch(err => { alert(err); setArbitreRule({ status: "error", arbitre: "error", rules: "error" }); return { status: "error", arbitre: "error", rules: "error" } });
         }
     }
-    console.log("c'est parti pour le fetch all")
-    console.log(status['states'], status['states'].includes("poules"))
     let allok = false;
     while (!allok) {
         if (status['states'].includes("poules")) {
@@ -492,14 +479,10 @@ export function toggle_status(status, setStatus, sportname, setLocalToggle, setl
             else {
                 displayed_state[sportname] = status.states[0];
             }
-            console.log("avant", status.status)
             status.status = displayed_state[sportname]
-            console.log("apres", status.status)
             setloading(true);
-            setStatus(JSON.parse(JSON.stringify(status)));
+            setStatus(JSON.parse(JSON.stringify(status))); // immutable object ffs
             setloading(false);
-            // console.log(status.status, displayed_state[sportname])
-            // setloading(true);
             setLocalToggle(true);
             break;
         }
@@ -581,7 +564,7 @@ function matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, typ
         </View>)
 
 }
-function modalZoomMatch(setArbitreRule, setStatus, username, sport, curMatchZoom, setCurrMatchZoom, match_array, set_match_array, matchZoom, setMatchZoom, setFetching, props, type, initScore) {
+function modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_array, set_match_array, matchZoom, setMatchZoom, setFetching, type, initScore) {
     return (
         <Modal
             animationType="slide"
@@ -611,15 +594,9 @@ function modalZoomMatch(setArbitreRule, setStatus, username, sport, curMatchZoom
                     </View>
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                         <Pressable style={{ alignSelf: "center" }} onPress={() => {
-                            setFetching(true);
-                            props.setloading(true);
-                            setCurrMatchZoom(determine_winner(curMatchZoom, type));
+                            setCurrMatchZoom(determine_winner(curMatchZoom));
                             updateMatchArray(curMatchZoom, match_array, set_match_array);
                             pushmatch(username, sport, curMatchZoom, type, curMatchZoom.uniqueId);
-                            fetch_matches(False, username, setAutho, setStatus, setArbitreRule, props.sport, props.setmatches, props.setGroups, props.setlevel, props.setmatchesgroup, null, props.setWidth, props.setHeight).then(r => {
-                                setFetching(false);
-                                props.setloading(false);
-                            })
                             setMatchZoom(false);
                         }}>
                             <View>{over_text(match_array, match_array.indexOf(curMatchZoom))}</View>
@@ -678,7 +655,7 @@ const Matchcomp = (props) => {
 
     return (
         <View style={styles.line}>
-            {/* {modalZoomMatch(props.setArbitreRule, username, sport, curMatchZoom, setCurrMatchZoom, match_array, set_match_array, matchZoom, setMatchZoom, setFetching, props, type, initScore)} */}
+            {modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_array, set_match_array, matchZoom, setMatchZoom, setFetching, type, initScore)}
             {match_array.map((r, index) => matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type, username, index))}
         </View>
     );
@@ -701,7 +678,7 @@ function pushmatch(username, sport, match, type, uniqueId) {
 
     }).catch((err) => { alert("Issue with server!") });
 }
-function determine_winner(curMatch, type) {
+function determine_winner(curMatch) {
 
     if (curMatch.over != 0) {
         curMatch.over = 0;
@@ -759,7 +736,7 @@ const Matchpoule = (props) => {
 
     return (
         <View style={styles.column}>
-            {/* {modalZoomMatch(props.setArbitreRule, props.setStatus, username, sport, curMatchZoom, setCurrMatchZoom, match, setMatch, matchZoom, setMatchZoom, setFetching, props, type, initScore)} */}
+            {modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match, setMatch, matchZoom, setMatchZoom, setFetching, type, initScore)}
             {match.map((r, index) =>
                 matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type, username, index)
             )}
