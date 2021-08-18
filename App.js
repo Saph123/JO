@@ -392,11 +392,15 @@ function SportDetailsScreen({ route, navigation }) {
                                 visible={value}
                                 supportedOrientations={['portrait', 'landscape']}
                             >
-                                <View style={styles.modalView}>
-                                    <View style={styles.centeredView}>
-                                        <Text style={styles.modalText}>Arbitres:</Text>
-                                        {status['arbitre'].map(r => <Text key={r} style={styles.modalText} >{r}</Text>)}
-                                    </View>
+                            <View style={styles.modalView}>
+                            <ScrollView>
+                                <View style={styles.centeredView}>
+                                    <Text style={styles.modalText}>Arbitres:</Text>
+                                    {status['arbitre'].map(r => <Text style={styles.modalText} >{r}</Text>)}
+                                    <Text style={styles.modalText}>Règles:</Text>
+                                    <Text style={styles.modalText}>{status['rules']}</Text>
+                                </View>
+                            </ScrollView>
 
                                 </View>
                             </Modal>
