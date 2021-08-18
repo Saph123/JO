@@ -568,7 +568,7 @@ function UsernameScreen({ navigation }) {
                 <View style={{ alignItems: "center" }}>
                     {goldWins.map(r => {
                         return (
-                            <Text>{r}</Text>
+                            <Text key={r}>{r}</Text>
                         )
                     })}
                 </View>
@@ -579,7 +579,7 @@ function UsernameScreen({ navigation }) {
                 <View style={{ alignItems: "center" }}>
                     {silverWins.map(r => {
                         return (
-                            <Text>{r}</Text>
+                            <Text  key={r}>{r}</Text>
                         )
                     })}
                 </View>
@@ -590,7 +590,7 @@ function UsernameScreen({ navigation }) {
                 <View style={{ alignItems: "center" }}>
                     {bronzeWins.map(r => {
                         return (
-                            <Text>{r}</Text>
+                            <Text  key={r}>{r}</Text>
                         )
                     })}
                 </View>
@@ -603,7 +603,7 @@ function UsernameScreen({ navigation }) {
                         <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Mes activités </Text></View>
                         {events.map(r => {
                             return (
-                                <View>
+                                <View  key={r}>
                                     {eventView(eventsInProgress, eventsDone, r, navigation)}
                                 </View>
                             )

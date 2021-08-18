@@ -166,18 +166,18 @@ export const Trace = (props) => {
                 <View>
 
                     {series_level.map(cur_level =>
-                        <View>
+                        <View key={cur_level}>
                             <View>
                                 <Text style={{ marginLeft: 175, fontSize: 20, fontWeight: "bold" }}>{cur_level == 0 ? "Final" : ("Serie" + cur_level)}</Text>
                             </View>
                             <View style={{ flexDirection: "row" }}>
                                 <View>
                                     <Text style={styles.showPlayers}>Athlete</Text>
-                                    {liste.map(r => {
+                                    {liste.map((r, index) => {
                                         if (cur_level == r.level) {
                                             return (
 
-                                                <View>
+                                                <View  key={r.username}>
                                                     <Text style={r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers}>{r.username}</Text>
                                                 </View>
                                             )
@@ -188,10 +188,10 @@ export const Trace = (props) => {
                                 </View>
                                 <View>
                                     <Text style={styles.inputScore}>Score/Temps</Text>
-                                    {liste.map(r => {
+                                    {liste.map((r,index) => {
                                         if (cur_level == r.level) {
                                             return (
-                                                <TextInput onChangeText={(text) => { r.score = text; }} style={styles.inputScore}>{r.score}</TextInput>
+                                                <TextInput  key={r.username} onChangeText={(text) => { r.score = text; }} style={styles.inputScore}>{r.score}</TextInput>
                                             )
                                         }
                                     }
@@ -214,7 +214,7 @@ export const Trace = (props) => {
                                             return (
 
 
-                                                <View style={{ flexDirection: "row" }} >
+                                                <View key={r.username} style={{ flexDirection: "row" }} >
                                                     <View style={r.rank == 3 ? styles.medailleopaque : styles.medailletransparent}>
                                                         <TouchableOpacity
                                                             onPressIn={() => {
