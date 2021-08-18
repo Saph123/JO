@@ -118,28 +118,28 @@ function HomeScreen({ route, navigation }) {
             </View>
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                 <View style={{ flex: 1 }}>
-                    {eventView(currentEvents, eventsDone, "Trail", navigation)}
-                    {eventView(currentEvents, eventsDone, "Dodgeball", navigation)}
-                    {eventView(currentEvents, eventsDone, "Pizza", navigation)}
-                    {eventView(currentEvents, eventsDone, "Tong", navigation)}
-                    {eventView(currentEvents, eventsDone, "Babyfoot", navigation)}
-                    {eventView(currentEvents, eventsDone, "Flechette", navigation)}
+                    {eventView(currentEvents, eventsDone, "Trail", navigation, route.params.setCurrentSport)}
+                    {eventView(currentEvents, eventsDone, "Dodgeball", navigation, route.params.setCurrentSport)}
+                    {eventView(currentEvents, eventsDone, "Pizza", navigation, route.params.setCurrentSport)}
+                    {eventView(currentEvents, eventsDone, "Tong", navigation, route.params.setCurrentSport)}
+                    {eventView(currentEvents, eventsDone, "Babyfoot", navigation, route.params.setCurrentSport)}
+                    {eventView(currentEvents, eventsDone, "Flechette", navigation, route.params.setCurrentSport)}
                 </View>
                 <View style={{ flex: 1 }}>
-                    {eventView(currentEvents, eventsDone, "PingPong", navigation)}
-                    {eventView(currentEvents, eventsDone, "Orientation", navigation)}
-                    {eventView(currentEvents, eventsDone, "Beerpong", navigation)}
-                    {eventView(currentEvents, eventsDone, "Volley", navigation)}
-                    {eventView(currentEvents, eventsDone, "Waterpolo", navigation)}
-                    {eventView(currentEvents, eventsDone, "Larmina", navigation)}
+                    {eventView(currentEvents, eventsDone, "PingPong", navigation, route.params.setCurrentSport)}
+                    {eventView(currentEvents, eventsDone, "Orientation", navigation, route.params.setCurrentSport)}
+                    {eventView(currentEvents, eventsDone, "Beerpong", navigation, route.params.setCurrentSport)}
+                    {eventView(currentEvents, eventsDone, "Volley", navigation, route.params.setCurrentSport)}
+                    {eventView(currentEvents, eventsDone, "Waterpolo", navigation, route.params.setCurrentSport)}
+                    {eventView(currentEvents, eventsDone, "Larmina", navigation, route.params.setCurrentSport)}
                 </View>
                 <View style={{ flex: 1 }}>
-                    {eventView(currentEvents, eventsDone, "Natation", navigation)}
-                    {eventView(currentEvents, eventsDone, "SpikeBall", navigation)}
-                    {eventView(currentEvents, eventsDone, "Ventriglisse", navigation)}
-                    {eventView(currentEvents, eventsDone, "100mRicard", navigation)}
-                    {eventView(currentEvents, eventsDone, "Petanque", navigation)}
-                    {eventView(currentEvents, eventsDone, "Molky", navigation)}
+                    {eventView(currentEvents, eventsDone, "Natation", navigation, route.params.setCurrentSport)}
+                    {eventView(currentEvents, eventsDone, "SpikeBall", navigation, route.params.setCurrentSport)}
+                    {eventView(currentEvents, eventsDone, "Ventriglisse", navigation, route.params.setCurrentSport)}
+                    {eventView(currentEvents, eventsDone, "100mRicard", navigation, route.params.setCurrentSport)}
+                    {eventView(currentEvents, eventsDone, "Petanque", navigation, route.params.setCurrentSport)}
+                    {eventView(currentEvents, eventsDone, "Molky", navigation, route.params.setCurrentSport)}
                 </View>
 
             </View>
@@ -213,7 +213,7 @@ function PlanningScreen({ navigation }) {
                             return (
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
-                                    <View><TouchableOpacity onPressIn={() => { setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
+                                    <View><TouchableOpacity onPressIn={() => { route.params.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
                                 </View>)
                         }
                     })
@@ -232,7 +232,7 @@ function PlanningScreen({ navigation }) {
                             return (
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
-                                    <View><TouchableOpacity onPressIn={() => { setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
+                                    <View><TouchableOpacity onPressIn={() => { route.params.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
                                 </View>)
                         }
                     })
@@ -625,7 +625,7 @@ function UsernameScreen({ navigation }) {
     );
 }
 
-function eventView(currentEvents, eventsDone, sportname, navigation) {
+function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentSport) {
     return (
         <TouchableOpacity style={currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)}
             onPress={() => { setCurrentSport(sportname), navigation.navigate('SportDetails', { sportname: sportname }) }}
@@ -795,7 +795,7 @@ function App() {
                     <Stack.Screen options={({ navigation }) => ({
                         title: "Home", headerRight: () => (<View style={{ flexDirection: "row", margin: 10 }}><TouchableOpacity onPressIn={playmegaphone}><Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} /></TouchableOpacity><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}>
                             <Text style={{ color: "white", marginTop: 32, marginRight: 40, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text></TouchableOpacity></View>)
-                    })} initialParams={{ pushtoken: expoPushToken }} name="Home" component={HomeScreen} />
+                    })} initialParams={{ pushtoken: expoPushToken, setCurrentSport: setCurrentSport }} name="Home" component={HomeScreen} />
 
                     <Stack.Screen options={{
                         title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text>
@@ -804,9 +804,8 @@ function App() {
 
                     <Stack.Screen options={{
                         title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>
-                            <Text style={{ color: "white", marginRight: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text
-                            ></View>
-                    }} name="Planning" component={PlanningScreen} />
+                            <Text style={{ color: "white", marginRight: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text></View>
+                    }} initialParams={{ setCurrentSport: setCurrentSport }} name="Planning" component={PlanningScreen} />
                     <Stack.Screen options={({ navigation }) => ({
                         title: currentSport, headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><View>
                             <TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}><Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text></TouchableOpacity></View>
