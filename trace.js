@@ -44,7 +44,7 @@ export const Trace = (props) => {
     const [groupmatches, setmatchesgroup] = React.useState([]);
     const navigation = useNavigation();
     React.useEffect(() => {
-        fetch_matches(username, setAutho, props.setSportStatus, sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, props.setWidth, props.setHeight).then(r => {
+        fetch_matches(username, setAutho, props.setSportStatus, props.sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, props.setWidth, props.setHeight).then(r => {
 
             props.traceload(false);
             setloading(false)
@@ -64,6 +64,7 @@ export const Trace = (props) => {
     if (displayed_state[sport] == "playoff") {
         return (
             <View>
+            { (props.status.states.length > 1) ? button_switch(props.status, props.setSportStatus, navigation, sport, "poules")  : <Text></Text>}
                 <Svg style={styles.svg}>
                     {levels.slice(1).reverse().map((r, index) => matches[r].map((m, index2) =>
                         <Polyline key={index * 100 + index2} style={styles.svg}
@@ -82,9 +83,9 @@ export const Trace = (props) => {
         );
     }
     else if (displayed_state[sport] == "poules") {
-
         return (
             <View style={{ flexDirection: "row", flex: 1, position: "absolute", top: 0, left: 0 }}>
+                { (props.status.states.length > 1) ? button_switch(props.status, props.setSportStatus, navigation, sport, "playoff")  : <Text></Text>}
                 {groups.map((r, index) =>
                     <View key={r.name} style={styles.tablecontainer}>
                         <Text style={{ textAlign: "center" }}>{r.name}</Text>
@@ -108,6 +109,7 @@ export const Trace = (props) => {
         if (!autho) {
             return (
                 <View style={{ flexDirection: "row" }}>
+                    { (props.status.states.length > 1) ? button_switch(props.status, props.setSportStatus, navigation, sport,(props.status.status == "series") ? "final" : "series")  : <Text></Text> }
                     <View>
                         <Text style={styles.showPlayers}>Athlete</Text>
                         {liste.map(r =>
@@ -167,7 +169,7 @@ export const Trace = (props) => {
 
             return (
                 <View>
-
+                    { (props.status.states.length > 1) ? button_switch(props.status, props.setSportStatus, navigation, sport,(props.status.status == "series") ? "final" : "series")  : <Text></Text> }
                     {series_level.map(cur_level =>
                         <View key={cur_level}>
                             <View>
@@ -309,6 +311,16 @@ export const Trace = (props) => {
 
 
 }
+
+function button_switch(status, setStatus, navigation, sport, otherState) {
+    return (
+        <TouchableOpacity style={ styles.inProgress }
+        onPress={() => { toggle_status(status, setStatus, navigation, sport) }}
+        >
+            <Text alignSelf="center">Switch to {otherState}</Text>
+        </TouchableOpacity>)
+}
+
 async function fetch_matches(username, setAutho, setSportStatus, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setWidth, setHeight) {
 
     let matches = {};
@@ -316,6 +328,7 @@ async function fetch_matches(username, setAutho, setSportStatus, sportname, setm
     let matches_group = {};
     let status = { arbitre: "error", status: "error" }
     while (status['arbitre'] == 'error') {
+        console.log(sportname)
 
 
         status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
