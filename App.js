@@ -12,7 +12,6 @@ import { Trace, GetState, fetch_status, fetch_results, fetch_activities } from "
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 let username = "";
-let current_sport = "Sportname";
 const styles = require("./style.js");
 const ArbitreContext = React.createContext(false);
 export let version = 1
@@ -214,7 +213,7 @@ function PlanningScreen({ navigation }) {
                             return (
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
-                                    <View><TouchableOpacity onPressIn={() => { current_sport = r.eventname; navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
+                                    <View><TouchableOpacity onPressIn={() => { setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
                                 </View>)
                         }
                     })
@@ -233,7 +232,7 @@ function PlanningScreen({ navigation }) {
                             return (
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
-                                    <View><TouchableOpacity onPressIn={() => { current_sport = r.eventname; navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
+                                    <View><TouchableOpacity onPressIn={() => { setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
                                 </View>)
                         }
                     })
@@ -252,7 +251,7 @@ function PlanningScreen({ navigation }) {
                             return (
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
-                                    <View><TouchableOpacity onPressIn={() => { if (r.timeBegin.getHours() < 12) { current_sport = r.eventname; navigation.navigate('SportDetails', { sportname: r.eventname }) } }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
+                                    <View><TouchableOpacity onPressIn={() => { if (r.timeBegin.getHours() < 12) { setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) } }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
                                 </View>)
                         }
                     })
@@ -629,7 +628,7 @@ function UsernameScreen({ navigation }) {
 function eventView(currentEvents, eventsDone, sportname, navigation) {
     return (
         <TouchableOpacity style={currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)}
-            onPress={() => { current_sport = sportname, navigation.navigate('SportDetails', { sportname: sportname }) }}
+            onPress={() => { setCurrentSport(sportname), navigation.navigate('SportDetails', { sportname: sportname }) }}
         >
             <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
         </TouchableOpacity>)
@@ -732,6 +731,7 @@ function App() {
     const [notification, setNotification] = React.useState(false);
     const notificationListener = React.useRef();
     const responseListener = React.useRef();
+    const [currentSport, setCurrentSport] = React.useState("Sportname");
     async function playmegaphone() {
         if (soundstatus == undefined) {
 
@@ -808,10 +808,10 @@ function App() {
                             ></View>
                     }} name="Planning" component={PlanningScreen} />
                     <Stack.Screen options={({ navigation }) => ({
-                        title: current_sport, headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><View>
+                        title: currentSport, headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><View>
                             <TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}><Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text></TouchableOpacity></View>
                             <TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 3000)}><Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} /></TouchableOpacity></View>
-                    })} initialParams={{ sportname: current_sport }} name="SportDetails" component={SportDetailsScreen} />
+                    })} initialParams={{ sportname: currentSport }} name="SportDetails" component={SportDetailsScreen} />
                     <Stack.Screen options={() => ({ title: "Tableau des médailles" })} name="SummaryScreen" component={SummaryScreen} />
                     <Stack.Screen options={() => ({
                         title: username
