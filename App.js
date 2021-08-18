@@ -262,16 +262,22 @@ function Login({ route, navigation }) {
     const [userName, setuserName] = React.useState("username");
     const [password, setpassword] = React.useState("password");
     const controller = new AbortController()
-
+    let userView;
     // 5 second timeout:
     const timeoutId = setTimeout(() => controller.abort(), 5000)
+    if (Platform.OS === "ios") {
+        userView = <TextInput onTouchStart={() => setuserName("")} autoCompleteType="username" style={{ textAlign: "center", borderRadius: 15, borderWidth: 1, height: 20, minWidth: 100 }} onChangeText={text => { setuserName(""); setuserName(text) }} value={userName}></TextInput>
+        }
+    else {
+        userView = <TextInput onFocus={() => setuserName("")} autoCompleteType="username" style={{ textAlign: "center", borderRadius: 15, borderWidth: 1, height: 20, minWidth: 100 }} onChangeText={text => { setuserName(""); setuserName(text) }} value={userName}></TextInput>
+    }
     if (username == "") {
         return (
             <View style={{ flexDirection: "column", flex: 1 }}>
                 <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
                     <View style={{ flexDirection: "row", margin: 15 }}>
                         {/* <Text style={{ textAlign: "center", borderWidth: 1, borderRadius:15, borderRightWidth: 0, height: 20 }}> Username:</Text> */}
-                        <TextInput onFocus={() => setuserName("")} autoCompleteType="username" style={{ textAlign: "center", borderRadius: 15, borderWidth: 1, height: 20, minWidth: 100 }} onChangeText={text => { setuserName(""); setuserName(text) }} value={userName}></TextInput>
+                        {userView}
                     </View>
                     <View style={{ flexDirection: "row", margin: 15 }}>
                         {/* <Text style={{ textAlign: "center", borderWidth: 1, borderRadius:15, borderRightWidth: 0, height: 20 }}> Password:</Text> */}
