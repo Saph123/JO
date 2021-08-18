@@ -40,12 +40,13 @@ export const Trace = (props) => {
     const [matches, setmatches] = React.useState([]);
     const [levels, setlevels] = React.useState([]);
     const [liste, setListe] = React.useState([]);
+    const [final, setFinal] = React.useState([])
     const [groups, setGroups] = React.useState([]);
     const [localToggle, setLocalToggle] = React.useState(false);
     const [groupmatches, setmatchesgroup] = React.useState([]);
     const navigation = useNavigation();
     React.useEffect(() => {
-        fetch_matches(localToggle, username, setAutho, setStatus, props.setArbitreRule, props.sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, props.setWidth, props.setHeight).then(r => {
+        fetch_matches(localToggle, username, setAutho, setStatus, props.setArbitreRule, props.sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, props.setWidth, props.setHeight).then(r => {
 
             props.traceload(false);
             setloading(false);
@@ -80,7 +81,7 @@ export const Trace = (props) => {
                         style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-between" }}>
                         <Matchcomp setArbitreRule={props.setArbitreRule} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={props.setWidth} setHeight={props.setHeight} setloading={setloading} username={username} loading={loading} matches={matches} level={r} sport={sport} autho={autho}></Matchcomp>
                     </View>)}
-                    {(status.states.length > 1) ? button_switch(setLocalToggle, status, setStatus, sport, "poules", setloading)  : <Text></Text>}
+                {(status.states.length > 1) ? button_switch(setLocalToggle, status, setStatus, sport, "poules", setloading) : <Text></Text>}
             </View>
         );
     }
@@ -104,31 +105,39 @@ export const Trace = (props) => {
         )
 
     }
-    else { // Other (list like trail etc.)
-        var temp_level_series = liste.map(r => r.level);
+    else{ // Other (list like trail etc.)
+        if(status.status == "final"){
+
+            var local_liste = final;
+        }
+        else{
+            var local_liste = liste;
+            console.log(liste);
+        }
+        var temp_level_series = local_liste.map(r => r.level);
         var series_level = [...new Set(temp_level_series)]; // unique levels
 
         if (!autho) {
             return (
                 <View style={{ flexDirection: "row" }}>
-                    {(status.states.length > 1) ? button_switch(setLocalToggle, status, setStatus, sport, (status.status == "series") ? "final" : "series")  : <Text></Text>}
+                    {(status.states.length > 1) ? button_switch(setLocalToggle, status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading) : <Text></Text>}
                     <View>
                         <Text style={styles.showPlayers}>Athlete</Text>
-                        {liste.map(r =>
+                        {local_liste.map(r =>
                             <Text style={r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers}>{r.username}</Text>
                         )
                         }
                     </View>
                     <View>
                         <Text style={styles.inputScore}>Score/Temps</Text>
-                        {liste.map(r =>
+                        {local_liste.map(r =>
                             <Text style={styles.inputScore}>{r.score}</Text>
                         )
                         }
                     </View>
                     <View>
                         <View style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
-                        {liste.map((r, index) => {
+                        {local_liste.map((r, index) => {
                             if (r.rank == 1) {
                                 return (
                                     <View style={{ flexDirection: "row" }} >
@@ -170,7 +179,7 @@ export const Trace = (props) => {
 
             return (
                 <View>
-                    {(status.states.length > 1) ? button_switch(setLocalToggle, status, setStatus, sport, (status.status == "series") ? "final" : "series") : <Text></Text>}
+                    {(status.states.length > 1) ? button_switch(setLocalToggle, status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading) : <Text></Text>}
                     {series_level.map(cur_level =>
                         <View key={cur_level}>
                             <View>
@@ -179,7 +188,7 @@ export const Trace = (props) => {
                             <View style={{ flexDirection: "row" }}>
                                 <View>
                                     <Text style={styles.showPlayers}>Athlete</Text>
-                                    {liste.map((r, index) => {
+                                    {local_liste.map((r, index) => {
                                         if (cur_level == r.level) {
                                             return (
 
@@ -194,7 +203,7 @@ export const Trace = (props) => {
                                 </View>
                                 <View>
                                     <Text style={styles.inputScore}>Score/Temps</Text>
-                                    {liste.map((r, index) => {
+                                    {local_liste.map((r, index) => {
                                         if (cur_level == r.level) {
                                             return (
                                                 <TextInput key={r.username} onChangeText={(text) => { r.score = text; }} style={styles.inputScore}>{r.score}</TextInput>
@@ -207,15 +216,15 @@ export const Trace = (props) => {
                                 <View>
                                     <View style={{ width: 60, height: 30, backgroundColor: "lightgrey" }}>
                                         <Pressable style={{ alignSelf: "center" }} onPress={() => { // Function to save only the results!
-                                            setListe([...liste]);
-                                            pushmatch(username, sport, liste, "liste", 0);
+                                            setListe([...local_liste]);
+                                            pushmatch(username, sport, local_liste, "liste", 0);
                                         }
                                         }>
                                             <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/save.png')}></Image>
                                         </Pressable>
 
                                     </View>
-                                    {liste.map((r, index) => {
+                                    {local_liste.map((r, index) => {
                                         if (cur_level == r.level) {
                                             return (
 
@@ -226,8 +235,8 @@ export const Trace = (props) => {
                                                             onPressIn={() => {
                                                                 setloading(true);
                                                                 var count = 0;
-                                                                for (var i = 0; i < liste.length; ++i) {
-                                                                    if (liste[i].rank == 3)
+                                                                for (var i = 0; i < local_liste.length; ++i) {
+                                                                    if (local_liste[i].rank == 3)
                                                                         count++;
                                                                 }
                                                                 if (r.rank == 3) {
@@ -237,8 +246,8 @@ export const Trace = (props) => {
                                                                     r.rank = 3;
                                                                 }
                                                                 // uncomment if you want only one medal
-                                                                // liste.map((q, index2) => { if (r != q && q.rank == 3) { q.rank = 0 } }); 
-                                                                setListe([...liste]);
+                                                                // local_liste.map((q, index2) => { if (r != q && q.rank == 3) { q.rank = 0 } }); 
+                                                                setListe([...local_liste]);
                                                                 setloading(false)
                                                             }}
                                                         >
@@ -250,8 +259,8 @@ export const Trace = (props) => {
                                                             onPressIn={() => {
                                                                 setloading(true);
                                                                 var count = 0;
-                                                                for (var i = 0; i < liste.length; ++i) {
-                                                                    if (liste[i].rank == 2)
+                                                                for (var i = 0; i < local_liste.length; ++i) {
+                                                                    if (local_liste[i].rank == 2)
                                                                         count++;
                                                                 }
                                                                 if (r.rank == 2) {
@@ -261,8 +270,8 @@ export const Trace = (props) => {
                                                                     r.rank = 2;
                                                                 }
                                                                 // uncomment if you want only one medal
-                                                                // liste.map((q, index2) => { if (r != q && q.rank == 2) { q.rank = 0 } });
-                                                                setListe([...liste]);
+                                                                // local_liste.map((q, index2) => { if (r != q && q.rank == 2) { q.rank = 0 } });
+                                                                setListe([...local_liste]);
                                                                 setloading(false)
                                                             }}
                                                         >
@@ -275,8 +284,8 @@ export const Trace = (props) => {
                                                                 setloading(true);
 
                                                                 var count = 0;
-                                                                for (var i = 0; i < liste.length; ++i) {
-                                                                    if (liste[i].rank == 1)
+                                                                for (var i = 0; i < local_liste.length; ++i) {
+                                                                    if (local_liste[i].rank == 1)
                                                                         count++;
                                                                 }
                                                                 if (r.rank == 1) {
@@ -286,8 +295,8 @@ export const Trace = (props) => {
                                                                     r.rank = 1;
                                                                 }
                                                                 // uncomment if you want only one medal
-                                                                // liste.map((q, index2) => { if (r != q && q.rank == 1) { q.rank = 0 } });
-                                                                setListe([...liste]);
+                                                                // local_liste.map((q, index2) => { if (r != q && q.rank == 1) { q.rank = 0 } });
+                                                                setListe([...local_liste]);
                                                                 setloading(false)
                                                             }}
                                                         >
@@ -312,7 +321,11 @@ export const Trace = (props) => {
 
 
 }
+function setWindowSize(type, setWidth, setHeight, number_of_team){
+    if(type == "playoff"){
 
+    }
+}
 function button_switch(setLocalToggle, status, setStatus, sport, otherState, setloading) {
     return (
         <TouchableOpacity style={styles.inProgress}
@@ -322,7 +335,7 @@ function button_switch(setLocalToggle, status, setStatus, sport, otherState, set
         </TouchableOpacity>)
 }
 
-async function fetch_matches(localToggle, username, setAutho, setStatus, setArbitreRule, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setWidth, setHeight) {
+async function fetch_matches(localToggle, username, setAutho, setStatus, setArbitreRule, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setWidth, setHeight) {
 
     let matches = {};
 
@@ -357,7 +370,7 @@ async function fetch_matches(localToggle, username, setAutho, setStatus, setArbi
     let allok = false;
     while (!allok) {
         if (status['states'].includes("poules")) {
-            
+
             matches_group = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_poules.json").then(response => response.json()).then(data => { allok = true; return data });
             var i = 0;
             let array_groups = [];
@@ -380,7 +393,7 @@ async function fetch_matches(localToggle, username, setAutho, setStatus, setArbi
             setgroups(array_groups);
             setmatchesgroup(array_matches_groups);
             // gestion taille fenetre
-            if (displayed_state[sportname] == "playoff") {
+            if (displayed_state[sportname] == "poules") {
                 setWidth(400 * (array_groups.length + 1));
                 setHeight(400 * (array_groups.length + 1) * 4);
             }
@@ -418,52 +431,37 @@ async function fetch_matches(localToggle, username, setAutho, setStatus, setArbi
             }
             setmatches(local_array_match);
         }
-        if ("final" == status['status']) { // gestion listes (trail/tong)
-            let liste = {};
-            liste = await fetch("http://91.121.143.104:7070/teams/" + sportname + ".json").then(response => response.json()).then(data => { allok = true; return data });
-            let local_liste = [];
-            if (liste["Series"].length == 1) { // only final, as before
-                liste = liste["Series"][0]["Teams"];
-                for (var i in liste) {
-                    local_liste.push(new Liste(liste[i]["Players"], liste[i]["score"], liste[i]["rank"], 0));
-                }
-                setHeight(i * 100);
-            }
-        if(status['states'].includes("series")) {
-
-                if (status['status'] == "final") { // affichage de la finale
-                    for (var series in liste["Series"]) {
-                        if (liste["Series"][series]["Name"] == "Final") {
-                            var templist = liste["Series"][series]["Teams"];
-                            for (var i in liste["Series"][series]["Teams"]) {
-                                local_liste.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], 0));
-                            }
-                        }
+        if (status['states'].includes("final")) { // gestion listes (trail/tong)
+                let liste = {};
+                liste = await fetch("http://91.121.143.104:7070/teams/" + sportname + ".json").then(response => response.json()).then(data => { allok = true; return data });
+                let local_liste = [];
+                let local_final = [];
+            var levellist = 1;
+            for (var series in liste["Series"]) {
+                console.log(liste["Series"][series]["Name"]);
+                if (liste["Series"][series]["Name"] == "Final") {
+                    var templist = liste["Series"][series]["Teams"];
+                    for (var i in liste["Series"][series]["Teams"]) {
+                        local_final.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], 0));
                     }
-                    setHeight(i * 100);
+                    setFinal(local_final)
                 }
                 else { // consolidation des series avant la finale
-                    var levellist = 1;
-                    for (var series in liste["Series"]) {
-                        if (liste["Series"][series]["Name"] != "Final") {
-                            var templist = liste["Series"][series]["Teams"];
-                            for (var i in liste["Series"][series]["Teams"]) {
-                                local_liste.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], levellist));
-                            }
-                            levellist += 1;
+                        var templist = liste["Series"][series]["Teams"];
+                        for (var i in liste["Series"][series]["Teams"]) {
+                            local_liste.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], levellist));
                         }
-                    }
-                    setHeight(i * 100 * level);
+                        setListe(local_liste);
+                        levellist += 1;
                 }
             }
-
             setListe(local_liste);
-            if (displayed_state[sportname] == 'series' && displayed_state[sportname] == "final") {
-
-                setWidth(1000);
-            }
-
         }
+    }
+    if (displayed_state[sportname] == 'series' || displayed_state[sportname] == "final") {
+
+        setWidth(1500);
+        setHeight(1500); 
     }
 
 }
