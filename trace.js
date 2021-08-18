@@ -182,7 +182,9 @@ export const Trace = (props) => {
 
             return (
                 <View>
+                    <View style={{width:70, height:70, justifyContent:'flex-start'}}>
                     {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, 0) : <Text></Text>}
+                    </View>
                     {series_level.map(cur_level =>
                         <View key={cur_level}>
                             <View>
