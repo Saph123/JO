@@ -359,7 +359,6 @@ function SportDetailsScreen({ route }) {
     const [loadingmain, setloading] = React.useState(true);
     const [status, setSportStatus] = React.useState({arbitre:"error", status:"error"});
     const [regle, setRegle] = React.useState(false);
-    const navigation = useNavigation();
     React.useEffect(() => {
             setloading(false);
 

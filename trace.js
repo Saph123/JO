@@ -44,7 +44,6 @@ export const Trace = (props) => {
     const [groupmatches, setmatchesgroup] = React.useState([]);
     const navigation = useNavigation();
     React.useEffect(() => {
-        console.log("useeffect trace")
         fetch_matches(username, setAutho, props.setSportStatus, sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, props.setWidth, props.setHeight).then(r => {
 
             props.traceload(false);
@@ -315,136 +314,143 @@ async function fetch_matches(username, setAutho, setSportStatus, sportname, setm
     let matches = {};
 
     let matches_group = {};
+    let status = { arbitre: "error", status: "error" }
+    while (status['arbitre'] == 'error') {
 
 
-    let status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
-        if (displayed_state[sportname] == "") {
-            // first time we use the one in the server
-            displayed_state[sportname] = data['status'];
-        }
-        else { // seen an issue when going from a sport that have more states than another
-            var possibleState = false;
-            for (var i in data['states']) {
-                if (displayed_state[sportname] == data['states'][i]) {
-                    possibleState = true;
-                    break;
-                }
-            }
-            if (!possibleState) {
+        status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
+            if (displayed_state[sportname] == "") {
+                // first time we use the one in the server
                 displayed_state[sportname] = data['status'];
             }
-        }
-        for (var authouser in data['arbitre']) {
-            if (data['arbitre'][authouser] == username) {
-                setAutho(true);
+            else { // seen an issue when going from a sport that have more states than another
+                var possibleState = false;
+                for (var i in data['states']) {
+                    if (displayed_state[sportname] == data['states'][i]) {
+                        possibleState = true;
+                        break;
+                    }
+                }
+                if (!possibleState) {
+                    displayed_state[sportname] = data['status'];
+                }
             }
-            else if ("Max" == username || "Antoine" == username || "Ugo" == username) {
-                setAutho(true);
+            for (var authouser in data['arbitre']) {
+                if (data['arbitre'][authouser] == username) {
+                    setAutho(true);
+                }
+                else if ("Max" == username || "Antoine" == username || "Ugo" == username) {
+                    setAutho(true);
+                }
             }
-        }
-        setSportStatus(data);
+            setSportStatus(data);
 
-        return data;
-    }).catch(err => { alert(err); setSportStatus({ arbitre: "error", status: "error" }); return { arbitre: "error", status: "error" } });
-    console.log(status);
-    if (status['status'] == "poules") {
-        matches_group = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_poules.json").then(response => response.json()).then(data => { return data });
-        var i = 0;
-        let array_groups = [];
-        let array_matches_groups = [];
-        let local_array_groupmatch = [];
-        for (var groupname in matches_group["groups"]) {
-            let local_group = matches_group["groups"][groupname];
-            array_groups.push(new Group(sportname, local_group.name, local_group.teams, i, false));
-            i++;
-        }
-        for (var groupname in matches_group["groups"]) {
-            let local_group = matches_group["groups"][groupname];
-            for (var match in local_group.matches) {
-                let local_match = local_group.matches[match];
-                local_array_groupmatch.push(new Match(sportname, local_match.team1, local_match.team2, local_match.uniqueId, local_match.score, local_match.over, local_match.level, local_group.name, ""));
+            return data;
+        }).catch(err => { alert(err); setSportStatus({ arbitre: "error", status: "error" }); return { arbitre: "error", status: "error" } });
+    }
+    let allok = false;
+    while (!allok) {
+
+
+        if (status['status'] == "poules") {
+            matches_group = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_poules.json").then(response => response.json()).then(data => { allok=true;return data });
+            var i = 0;
+            let array_groups = [];
+            let array_matches_groups = [];
+            let local_array_groupmatch = [];
+            for (var groupname in matches_group["groups"]) {
+                let local_group = matches_group["groups"][groupname];
+                array_groups.push(new Group(sportname, local_group.name, local_group.teams, i, false));
                 i++;
             }
-            array_matches_groups.push(local_array_groupmatch);
-        }
-        setgroups(array_groups);
-        setmatchesgroup(array_matches_groups);
-        // gestion taille fenetre
-        setWidth(400 * (array_groups.length + 1));
-        setHeight(400 * (array_groups.length + 1) * 4);
-
-    }
-    else if (status['status'] == "playoff") {
-        matches = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => { return data });
-
-        let level = [];
-        let local_array_match = [[]];
-        for (let j = 0; j < await matches['levels']; j++) {
-            level.push(j);
-
-            local_array_match.push([]); // need to be initiliazed or doesnt work ffs...
-
-        }
-        for (const prop in await matches) {
-            for (const match_iter in await matches[prop]) {
-                local_array_match[matches[prop][match_iter]["level"]].push(new Match(sportname, matches[prop][match_iter]["team1"], matches[prop][match_iter]["team2"], matches[prop][match_iter]["uniqueId"], matches[prop][match_iter]["score"], matches[prop][match_iter]["over"], matches[prop][match_iter]["level"], "", matches[prop][match_iter]["nextmatch"]));
+            for (var groupname in matches_group["groups"]) {
+                let local_group = matches_group["groups"][groupname];
+                for (var match in local_group.matches) {
+                    let local_match = local_group.matches[match];
+                    local_array_groupmatch.push(new Match(sportname, local_match.team1, local_match.team2, local_match.uniqueId, local_match.score, local_match.over, local_match.level, local_group.name, ""));
+                    i++;
+                }
+                array_matches_groups.push(local_array_groupmatch);
             }
-        }
-        setlevel(level);
-        // gestion taille fenetre: affichage un peu plus large :)
-        if (level.length > 1) {
-            setWidth(Math.min(400 * ((level.length - 1) * (level.length - 1)), 3500));
-            setHeight(Math.max(200 * (level.length + 1), Dimensions.get("window").height + 100));
-        }
-        else {
-            setWidth(1000);
-            setHeight(1000);
+            setgroups(array_groups);
+            setmatchesgroup(array_matches_groups);
+            // gestion taille fenetre
+            setWidth(400 * (array_groups.length + 1));
+            setHeight(400 * (array_groups.length + 1) * 4);
 
         }
-        setmatches(local_array_match);
-    }
-    else if (status['status'] != "error") { // gestion listes (trail/tong)
-        let liste = {};
-        liste = await fetch("http://91.121.143.104:7070/teams/" + sportname + ".json").then(response => response.json()).then(data => { return data });
-        let local_liste = [];
-        if (liste["Series"].length == 1) { // only final, as before
-            liste = liste["Series"][0]["Teams"];
-            for (var i in liste) {
-                local_liste.push(new Liste(liste[i]["Players"], liste[i]["score"], liste[i]["rank"], 0));
+        else if (status['status'] == "playoff") {
+            matches = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => { allok=true;return data });
+
+            let level = [];
+            let local_array_match = [[]];
+            for (let j = 0; j < await matches['levels']; j++) {
+                level.push(j);
+
+                local_array_match.push([]); // need to be initiliazed or doesnt work ffs...
+
             }
-            setHeight(i * 100);
-        }
-        else {
+            for (const prop in await matches) {
+                for (const match_iter in await matches[prop]) {
+                    local_array_match[matches[prop][match_iter]["level"]].push(new Match(sportname, matches[prop][match_iter]["team1"], matches[prop][match_iter]["team2"], matches[prop][match_iter]["uniqueId"], matches[prop][match_iter]["score"], matches[prop][match_iter]["over"], matches[prop][match_iter]["level"], "", matches[prop][match_iter]["nextmatch"]));
+                }
+            }
+            setlevel(level);
+            // gestion taille fenetre: affichage un peu plus large :)
+            if (level.length > 1) {
+                setWidth(Math.min(400 * ((level.length - 1) * (level.length - 1)), 3500));
+                setHeight(Math.max(200 * (level.length + 1), Dimensions.get("window").height + 100));
+            }
+            else {
+                setWidth(1000);
+                setHeight(1000);
 
-            if (displayed_state[sportname] == "final") { // affichage de la finale
-                for (var series in liste["Series"]) {
-                    if (liste["Series"][series]["Name"] == "Final") {
-                        var templist = liste["Series"][series]["Teams"];
-                        for (var i in liste["Series"][series]["Teams"]) {
-                            local_liste.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], 0));
-                        }
-                    }
+            }
+            setmatches(local_array_match);
+        }
+        else if (status['status'] != "error") { // gestion listes (trail/tong)
+            let liste = {};
+            liste = await fetch("http://91.121.143.104:7070/teams/" + sportname + ".json").then(response => response.json()).then(data => { allok=true;return data });
+            let local_liste = [];
+            if (liste["Series"].length == 1) { // only final, as before
+                liste = liste["Series"][0]["Teams"];
+                for (var i in liste) {
+                    local_liste.push(new Liste(liste[i]["Players"], liste[i]["score"], liste[i]["rank"], 0));
                 }
                 setHeight(i * 100);
             }
-            else { // consolidation des series avant la finale
-                var level = 1;
-                for (var series in liste["Series"]) {
-                    if (liste["Series"][series]["Name"] != "Final") {
-                        var templist = liste["Series"][series]["Teams"];
-                        for (var i in liste["Series"][series]["Teams"]) {
-                            local_liste.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], level));
+            else {
+
+                if (displayed_state[sportname] == "final") { // affichage de la finale
+                    for (var series in liste["Series"]) {
+                        if (liste["Series"][series]["Name"] == "Final") {
+                            var templist = liste["Series"][series]["Teams"];
+                            for (var i in liste["Series"][series]["Teams"]) {
+                                local_liste.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], 0));
+                            }
                         }
-                        level += 1;
                     }
+                    setHeight(i * 100);
                 }
-                setHeight(i * 100 * level);
+                else { // consolidation des series avant la finale
+                    var level = 1;
+                    for (var series in liste["Series"]) {
+                        if (liste["Series"][series]["Name"] != "Final") {
+                            var templist = liste["Series"][series]["Teams"];
+                            for (var i in liste["Series"][series]["Teams"]) {
+                                local_liste.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], level));
+                            }
+                            level += 1;
+                        }
+                    }
+                    setHeight(i * 100 * level);
+                }
             }
+
+            setListe(local_liste);
+            setWidth(1000);
+
         }
-
-        setListe(local_liste);
-        setWidth(1000);
-
     }
 
 }
