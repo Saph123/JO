@@ -64,19 +64,19 @@ export const Trace = (props) => {
     if (displayed_state[sport] == "playoff") {
         return (
             <View>
-            { (props.status.states.length > 1) ? button_switch(props.status, props.setSportStatus, navigation, sport, "poules")  : <Text></Text>}
+                { (props.status.states.length > 1) ? button_switch(props.status, props.setSportStatus, navigation, sport, "poules", setloading)  : <Text></Text>}
                 <Svg style={styles.svg}>
                     {levels.slice(1).reverse().map((r, index) => matches[r].map((m, index2) =>
                         <Polyline key={index * 100 + index2} style={styles.svg}
-                            points={(index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height)) + " " + (index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 1) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 3) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2))}
-                            fill="none"
-                            stroke="black"
-                            strokeWidth="2"
+                        points={(index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height)) + " " + (index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 1) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 3) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2))}
+                        fill="none"
+                        stroke="black"
+                        strokeWidth="2"
                         />))}
                 </Svg>
                 {levels.slice(0).reverse().map(r =>
                     <View key={r}
-                        style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-between" }}>
+                    style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-between" }}>
                         <Matchcomp setSportStatus={props.setSportStatus} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={props.setWidth} setHeight={props.setHeight} setloading={setloading} username={username} loading={loading} matches={matches} level={r} sport={sport} autho={autho}></Matchcomp>
                     </View>)}
             </View>
@@ -85,7 +85,7 @@ export const Trace = (props) => {
     else if (displayed_state[sport] == "poules") {
         return (
             <View style={{ flexDirection: "row", flex: 1, position: "absolute", top: 0, left: 0 }}>
-                { (props.status.states.length > 1) ? button_switch(props.status, props.setSportStatus, navigation, sport, "playoff")  : <Text></Text>}
+                { (props.status.states.length > 1) ? button_switch(props.status, props.setSportStatus, navigation, sport, "playoff", setloading)  : <Text></Text>}
                 {groups.map((r, index) =>
                     <View key={r.name} style={styles.tablecontainer}>
                         <Text style={{ textAlign: "center" }}>{r.name}</Text>
@@ -109,7 +109,7 @@ export const Trace = (props) => {
         if (!autho) {
             return (
                 <View style={{ flexDirection: "row" }}>
-                    { (props.status.states.length > 1) ? button_switch(props.status, props.setSportStatus, navigation, sport,(props.status.status == "series") ? "final" : "series")  : <Text></Text> }
+                    { (props.status.states.length > 1) ? button_switch(props.status, props.setSportStatus, navigation, sport,(props.status.status == "series") ? "final" : "series", setloading)  : <Text></Text> }
                     <View>
                         <Text style={styles.showPlayers}>Athlete</Text>
                         {liste.map(r =>
@@ -169,7 +169,7 @@ export const Trace = (props) => {
 
             return (
                 <View>
-                    { (props.status.states.length > 1) ? button_switch(props.status, props.setSportStatus, navigation, sport,(props.status.status == "series") ? "final" : "series")  : <Text></Text> }
+                    { (props.status.states.length > 1) ? button_switch(props.status, props.setSportStatus, navigation, sport,(props.status.status == "series") ? "final" : "series", setloading)  : <Text></Text> }
                     {series_level.map(cur_level =>
                         <View key={cur_level}>
                             <View>
@@ -312,10 +312,10 @@ export const Trace = (props) => {
 
 }
 
-function button_switch(status, setStatus, navigation, sport, otherState) {
+function button_switch(status, setStatus, navigation, sport, otherState, setloading) {
     return (
         <TouchableOpacity style={ styles.inProgress }
-        onPress={() => { toggle_status(status, setStatus, navigation, sport) }}
+        onPress={() => { toggle_status(status, setStatus, navigation, sport, setloading) }}
         >
             <Text alignSelf="center">Switch to {otherState}</Text>
         </TouchableOpacity>)
@@ -469,7 +469,7 @@ async function fetch_matches(username, setAutho, setSportStatus, sportname, setm
 }
 
 
-export function toggle_status(status, setStatus, navigation, sportname) {
+export function toggle_status(status, setStatus, navigation, sportname, setloading) {
 
     for (var i = 0; i < status.states.length; i++) {
         if (status.states[i] == displayed_state[sportname]) {
@@ -482,6 +482,7 @@ export function toggle_status(status, setStatus, navigation, sportname) {
             status.status = displayed_state[sportname]
             setStatus(status);
             navigation.reset({ routes: [{ name: "Home" }, { name: navigation.dangerouslyGetState().routes[navigation.dangerouslyGetState().index].name, sportname: sportname }] });
+            setloading(true);
             break;
         }
     }
@@ -550,37 +551,8 @@ function updateMatchArray(curMatch, matchArray, setMatchArray) {
     }
     setMatchArray([...matchArray]);
 }
-export function GetState(sportname, status, setStatus, navigation) {
 
-    const [loaded, setloaded] = React.useState(0);
-    const [local_status, setLocalStatus] = React.useState("");
-    var top
-    var left
-    React.useEffect(() => {
-        // fetch_status(sportname, setStatus).then(r => { if(r['status'] == "error"){navigation.Back()};setLocalStatus(r['status']); setloaded(1) });
-    }, []);
-    if (Platform.OS === "ios") {
 
-        if (local_status == "final") {
-            left = 120
-        }
-        else {
-            left = 120
-        }
-        top = 40
-    }
-    else {
-        left = 120
-        top = 10
-    }
-
-    if (loaded == 0) {
-        return <View><ActivityIndicator color="000000" /></View>;
-    }
-    else {
-        return <View><TouchableOpacity onPressIn={() => toggle_status(status, setStatus, navigation, sportname)}><Text style={{ marginTop: top, marginLeft: left, color: "white" }}>{local_status}</Text></TouchableOpacity></View>;
-    }
-}
 function crement_score_team(teamnumber, curMatch, matchArray, setMatchArray, incrementorDecrement) { // 0 to increment, 1 to decrement
     let scoreteam1 = Number(curMatch.score.split(":")[0]);
     let scoreteam2 = Number(curMatch.score.split(":")[1]);

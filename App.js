@@ -614,7 +614,7 @@ function UsernameScreen({ navigation }) {
                         {arbitre.map(r => {
                             return (
                                 <View key={r}>
-                                    {eventView([], [], r, navigation)}
+                                    {eventView(eventsInProgress, eventsDone, r, navigation)}
                                 </View>
                             )
                         })}
