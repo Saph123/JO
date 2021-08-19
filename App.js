@@ -281,20 +281,11 @@ function Login({ route, navigation }) {
                                 ref={video}
                                 style={{width:Dimensions.get('window').width, height:Dimensions.get('window').height}}
                                 source={require("./assets/oss.mp4")}
-                                // useNativeControls
                                 resizeMode="contain"
                                 isLooping
                                 onPlaybackStatusUpdate={status => setStatus(() => status)}
                                 
                             />
-                            {/* <View style={styles.homebuttons}> */}
-                                {/* <Button
-                                    title={status.isPlaying ? 'Pause' : 'Play'}
-                                    onPress={() =>
-                                        status.isPlaying ? video.current.pauseAsync() : video.current.playAsync()
-                                    }
-                                /> */}
-                            {/* </View> */}
                         </View>
                     </Pressable>
                 </Modal>
