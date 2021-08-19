@@ -1,7 +1,7 @@
 // import styles from "./style";
 import * as React from 'react';
 import { View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Platform, Pressable, Linking, Button } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import PinchZoomView from 'react-native-pinch-zoom-view';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
@@ -25,7 +25,7 @@ Notifications.setNotificationHandler({
     }),
 });
 
-function manageEvents(setEventsDone, setCurrentEvents){
+function manageEvents(setEventsDone, setCurrentEvents) {
     var planning = new Planning();
     var localnow = Date.now();
     var eventDone = []
@@ -33,7 +33,7 @@ function manageEvents(setEventsDone, setCurrentEvents){
     for (var event in planning["listeevent"]) {
         if (localnow > planning["listeevent"][event].timeEnd) {
             eventDone.push(planning["listeevent"][event].eventname);
-            
+
         }
     }
     for (var event in planning["listeevent"]) {
@@ -42,7 +42,7 @@ function manageEvents(setEventsDone, setCurrentEvents){
         }
     }
 
-    setTimeout(()=> manageEvents(setEventsDone, setCurrentEvents), 60000)
+    setTimeout(() => manageEvents(setEventsDone, setCurrentEvents), 60000)
 
     setEventsDone(eventDone);
     setCurrentEvents(currEvent);
@@ -81,8 +81,6 @@ function HomeScreen({ route, navigation }) {
     }
     React.useEffect(() => {
         manageEvents(setEventsDone, setCurrentEvents)
-        console.log(route.params)
-        setTimeout(() => console.log(route.params), 5000);
         var test = getNextEventseconds();
         setSecondsleft(test.time);
         setNextEvent(test.name);
@@ -325,7 +323,7 @@ function Login({ route, navigation }) {
                 </View >
                 <View style={{ flex: 1, justifyContent: "center" }}>
                     <View style={{ alignItems: "center" }}><Text style={styles.medailleText}>Brought to you by </Text></View>
-                    <View style={{ alignItems: "center" }}><TouchableOpacity onPress={() => {setScep(true)}}>
+                    <View style={{ alignItems: "center" }}><TouchableOpacity onPress={() => { setScep(true) }}>
                         <Image style={styles.logosah} source={require('./assets/logoSCEP.png')} />
                     </TouchableOpacity></View>
                 </View>
@@ -355,39 +353,39 @@ function Login({ route, navigation }) {
     }
     return (
         <ScrollView>
-        {videoScep(setScep, scep, video)}
-        <View style={{ flexDirection: "column", flex: 1, }}>
-            <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
+            {videoScep(setScep, scep, video)}
+            <View style={{ flexDirection: "column", flex: 1, }}>
+                <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
 
-                <Text style={styles.texthomebutton}>Currently logged in as {username}</Text>
-                <TouchableOpacity style={styles.logoutbutton}
-                    onPress={() => { { username = "" }; navigation.navigate('Home', { refresh: "refresh" }) }}
+                    <Text style={styles.texthomebutton}>Currently logged in as {username}</Text>
+                    <TouchableOpacity style={styles.logoutbutton}
+                        onPress={() => { { username = "" }; navigation.navigate('Home', { refresh: "refresh" }) }}
                     >
-                    <Text style={styles.texthomebutton}>Log out!</Text>
-                </TouchableOpacity>
-            </View>
-            <View style={{ flex: 1 }}>
+                        <Text style={styles.texthomebutton}>Log out!</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={{ flex: 1 }}>
                     <View style={{ alignItems: "center" }}><Text style={styles.medailleText}>Brought to you by </Text></View>
-                    <View style={{ alignItems: "center" }}><TouchableOpacity onPress={() => {setScep(true)}}>
+                    <View style={{ alignItems: "center" }}><TouchableOpacity onPress={() => { setScep(true) }}>
                         <Image style={styles.logosah} source={require('./assets/logoSCEP.png')} />
                     </TouchableOpacity></View>
-                <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Sponsors </Text></View>
-                <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                    <Image style={styles.logosah} source={require('./assets/sah.png')} />
-                    <TouchableOpacity style={styles.logosah}
-                        onPress={() => { { username = "" }; navigation.navigate('VanRommel', { refresh: "refresh" }) }}
+                    <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Sponsors </Text></View>
+                    <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                        <Image style={styles.logosah} source={require('./assets/sah.png')} />
+                        <TouchableOpacity style={styles.logosah}
+                            onPress={() => { { username = "" }; navigation.navigate('VanRommel', { refresh: "refresh" }) }}
                         >
-                        <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => Linking.openURL('https://www.biere-amsterdam.com/la-gamme/maximator/#')}>
-                        <Image style={styles.logomaximator} source={require('./assets/maximator.png')} />
-                    </TouchableOpacity>
-                </View>
-                <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-                    <Image style={styles.logoalstom} source={require('./assets/alstom.png')} />
+                            <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => Linking.openURL('https://www.biere-amsterdam.com/la-gamme/maximator/#')}>
+                            <Image style={styles.logomaximator} source={require('./assets/maximator.png')} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                        <Image style={styles.logoalstom} source={require('./assets/alstom.png')} />
+                    </View>
                 </View>
             </View>
-        </View>
         </ScrollView>
     )
 };
@@ -511,11 +509,52 @@ function SummaryScreen() {
         </ScrollView>
     )
 }
+function pushClicker(navigation, ) {
+    console.log("pushing ", test)
+    for (var i in navigation.getState().routes) {
+        if (navigation.getState().routes[i].name == "ClickerScreen") { // on est tjs sur l'ecran on relance
+            setTimeout(() => pushClicker(navigation, test, username), 5000);
+        }
+    }
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    fetch("http://91.121.143.104:7070/clicker", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "count": test }) }).then(r => {
+        if (r.status == 200) {
+            
+            return;
+        }
+    }).catch((err) => { console.log(err, "Issue with server! Sorry friend") });
+}
+
+let test = 0;
 function ClickerScreen() {
+    const [myRank, setMyRank] = React.useState("");
+    const [count, setCount] = React.useState(0);
+    const navigation = useNavigation();
+    React.useEffect(() => {
+        var fetchok = false;
+        // while(!fetchok){
+
+        let status = fetch("http://91.121.143.104:7070/teams/Clicker.json").then(response => response.json()).then(data => {
+            for (var i in data) {
+                if (data[i].Players == username) {
+                    setMyRank(data[i].rank);
+                    setCount(data[i].Clicks);
+                }
+            }
+            return data;
+        }).catch(err => { alert(err); return [] });
+        setTimeout(() => { pushClicker(navigation) }, 5000);
+
+        // }
+    }, []);
     return (
-        <Pressable style={styles.inProgress} >
-            <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
-        </Pressable>
+        <View>
+            <Text style={{ alignSelf: "center" }}>Your clicks: {count}</Text><Text>Your rank : {myRank}</Text>
+            <Pressable onPressIn={() => { test=count+1;setCount(count + 1) }} style={styles.inProgress} >
+                <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
+            </Pressable>
+        </View>
     )
 
 }
@@ -708,27 +747,27 @@ function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentS
         </TouchableOpacity>)
 }
 
-function videoScep (setScep, scep, video) {
+function videoScep(setScep, scep, video) {
     return (
-        <Modal style={{ width:"100%", height:"100%", alignSelf: "center" }}
-        visible={scep}
-        
-        onShow={() => video.current.playAsync()}>
+        <Modal style={{ width: "100%", height: "100%", alignSelf: "center" }}
+            visible={scep}
 
-            <Pressable onPress={() => {setScep(false);video.current.stopAsync()}}>
-            <View>
-                <Video
-                    ref={video}
-                    style={{width:"100%", height:"100%"}}
-                    source={require("./assets/oss.mp4")}
-                    resizeMode="cover"
-                    isLooping={false}
-                    onPlaybackStatusUpdate={status => {if(status.durationMillis == status.positionMillis && status.durationMillis){ setScep(false)}}}
-                    
-                />
-            </View>
-        </Pressable>
-    </Modal>
+            onShow={() => video.current.playAsync()}>
+
+            <Pressable onPress={() => { setScep(false); video.current.stopAsync() }}>
+                <View>
+                    <Video
+                        ref={video}
+                        style={{ width: "100%", height: "100%" }}
+                        source={require("./assets/oss.mp4")}
+                        resizeMode="cover"
+                        isLooping={false}
+                        onPlaybackStatusUpdate={status => { if (status.durationMillis == status.positionMillis && status.durationMillis) { setScep(false) } }}
+
+                    />
+                </View>
+            </Pressable>
+        </Modal>
     )
 }
 function lutImg(sportname) {
@@ -854,10 +893,10 @@ function App() {
         }
 
     }
-    
+
     React.useEffect(() => {
 
-        
+
         registerForPushNotificationsAsync().then(token => { setExpoPushToken(token); pushtoken(token, username) });
         // This listener is fired whenever a notification is received while the app is foregrounded
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
@@ -868,7 +907,7 @@ function App() {
             // else{
             //     if(notification.request.content.body.indexOf("Commence dans") != -1)
             //     {
-                    
+
 
 
             //     }
@@ -898,7 +937,7 @@ function App() {
                         fontWeight: 'bold',
                     },
                 }} initialRouteName="Home">
-                    <Stack.Screen options={({ navigation}) => ({
+                    <Stack.Screen options={({ navigation }) => ({
                         title: "Home", headerRight: () => (
                             <View style={{ flexDirection: "row", margin: 10 }}>
                                 <TouchableOpacity onPressIn={playmegaphone}>
@@ -908,7 +947,7 @@ function App() {
                                     <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
                                 </TouchableOpacity></View>
                             </View>)
-                    })} initialParams={{ pushtoken: expoPushToken, setCurrentSport: setCurrentSport}} name="Home" component={HomeScreen} />
+                    })} initialParams={{ pushtoken: expoPushToken, setCurrentSport: setCurrentSport }} name="Home" component={HomeScreen} />
 
                     <Stack.Screen options={{
                         title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text>
