@@ -1,17 +1,16 @@
 // import styles from "./style";
 import * as React from 'react';
-import { View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Platform, Pressable, Linking } from 'react-native';
+import { View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Platform, Pressable, Linking, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import PinchZoomView from 'react-native-pinch-zoom-view';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
-import { Audio } from 'expo-av';
+import { Audio, Video, AVPlaybackStatus } from 'expo-av';
 import CountDown from 'react-native-countdown-component';
 import { Planning, getNextEventseconds } from "./planning.js";
 import { Trace, fetch_results, fetch_activities } from "./trace.js";
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
-import { set } from 'react-native-reanimated';
 
 let username = "";
 const styles = require("./style.js");
@@ -263,18 +262,40 @@ function PlanningScreen({ route, navigation }) {
 function Login({ route, navigation }) {
     const [userName, setuserName] = React.useState("username");
     const [password, setpassword] = React.useState("password");
-    const [scep, setScep] = React.useState(false)
+    const [scep, setScep] = React.useState(false);
+    const video = React.useRef(null);
+    const [status, setStatus] = React.useState({});
     const controller = new AbortController()
     // 5 second timeout:
     const timeoutId = setTimeout(() => controller.abort(), 5000)
     if (username == "") {
         return (
-            <View style={{ flexDirection: "column", flex: 1 }}>
+            <ScrollView style={{ flexDirection: "column", flex: 1 }}>
                 <Modal style={{ alignSelf: "center" }}
-                    visible={scep}>
-                    <Pressable onPress={() => setScep(false)}>
+                    visible={scep}
+                    onShow={() => video.current.playAsync()}>
 
-                        <Image style={{ width: Dimensions.get("window").width, height: Dimensions.get("window").height }} source={require("./assets/scep.gif")}></Image>
+                        <Pressable onPress={() => {setScep(false);video.current.stopAsync()}}>
+                        <View>
+                            <Video
+                                ref={video}
+                                style={{width:Dimensions.get('window').width, height:Dimensions.get('window').height}}
+                                source={require("./assets/oss.mp4")}
+                                // useNativeControls
+                                resizeMode="contain"
+                                isLooping
+                                onPlaybackStatusUpdate={status => setStatus(() => status)}
+                                
+                            />
+                            {/* <View style={styles.homebuttons}> */}
+                                {/* <Button
+                                    title={status.isPlaying ? 'Pause' : 'Play'}
+                                    onPress={() =>
+                                        status.isPlaying ? video.current.pauseAsync() : video.current.playAsync()
+                                    }
+                                /> */}
+                            {/* </View> */}
+                        </View>
                     </Pressable>
                 </Modal>
                 <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
@@ -320,9 +341,9 @@ function Login({ route, navigation }) {
                     </View>
 
                 </View >
-                <View style={{flex:1, justifyContent:"center"}}>
-                <View style={{ alignItems: "center" }}><Text style={styles.medailleText}>Brought to you by </Text></View>
-                <View style={{ alignItems: "center" }}><TouchableOpacity onPress={() => setScep(true)}>
+                <View style={{ flex: 1, justifyContent: "center" }}>
+                    <View style={{ alignItems: "center" }}><Text style={styles.medailleText}>Brought to you by </Text></View>
+                    <View style={{ alignItems: "center" }}><TouchableOpacity onPress={() => {setScep(true)}}>
                         <Image style={styles.logosah} source={require('./assets/logoSCEP.png')} />
                     </TouchableOpacity></View>
                 </View>
@@ -347,7 +368,7 @@ function Login({ route, navigation }) {
                         <Image style={styles.logoalstom} source={require('./assets/alstom.png')} />
                     </View>
                 </View>
-            </View >
+            </ScrollView >
         )
     }
     return (
