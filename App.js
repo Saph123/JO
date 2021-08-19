@@ -1,7 +1,7 @@
 // import styles from "./style";
 import * as React from 'react';
-import { Button, View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Platform, Pressable, ImageBackground } from 'react-native';
-import { NavigationContainer, useNavigation, useTheme } from '@react-navigation/native';
+import { View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Platform, Pressable,Linking} from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import PinchZoomView from 'react-native-pinch-zoom-view';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
@@ -322,7 +322,9 @@ function Login({ route, navigation }) {
                 >
                     <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
                 </TouchableOpacity>
+                <TouchableOpacity onPress={() => Linking.openURL('https://www.biere-amsterdam.com/la-gamme/maximator/#')}>
                         <Image style={styles.logomaximator} source={require('./assets/maximator.png')} />
+                </TouchableOpacity>
                     </View>
                     <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
                         <Image style={styles.logoalstom} source={require('./assets/alstom.png')} />
@@ -351,7 +353,9 @@ function Login({ route, navigation }) {
                 >
                     <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
                 </TouchableOpacity>
+                <TouchableOpacity onPress={() => Linking.openURL('https://www.biere-amsterdam.com/la-gamme/maximator/#')}>
                     <Image style={styles.logomaximator} source={require('./assets/maximator.png')} />
+                </TouchableOpacity>
                 </View>
                 <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
                     <Image style={styles.logoalstom} source={require('./assets/alstom.png')} />
@@ -515,6 +519,23 @@ function VanRommelScreen() {
                 </View>
                 <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
                 <View style={{ alignItems: "center" }}><Image style={{width: "90%", height: 160}} source={require('./assets/williwaller2006.jpg')} /></View>
+            <View style={{ flex: 1, alignContent: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
+                <View style={{ flex: 1 }}>
+                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
+                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
+                <TouchableOpacity onPress={() => Linking.openURL('mailto:fritkotvanrommel@gmail.com')}>
+                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16, color :"blue", textDecorationLine: "underline" }}>Nous contacter</Text></View>
+                </TouchableOpacity>
+                
+                </View>
+                <View style={{ flex: 1 }}>
+                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
+                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
+                <TouchableOpacity onPress={() => Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfNP_1o3R7emNIM9B-JFRfge6lWQuD_0gyflO3xorB0MNUaVg/viewform')}>
+                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16, color :"blue", textDecorationLine: "underline" }}>Nous rejoindre</Text></View>
+                </TouchableOpacity>
+                </View>
+            </View>
         </ScrollView>
         
     )
