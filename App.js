@@ -1,7 +1,7 @@
 // import styles from "./style";
 import * as React from 'react';
-import { Button, View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Platform, Pressable, ImageBackground } from 'react-native';
-import { NavigationContainer, useNavigation, useTheme } from '@react-navigation/native';
+import { View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Platform, Pressable,Linking} from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import PinchZoomView from 'react-native-pinch-zoom-view';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
@@ -323,7 +323,9 @@ function Login({ route, navigation }) {
                 >
                     <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
                 </TouchableOpacity>
+                <TouchableOpacity onPress={() => Linking.openURL('https://www.biere-amsterdam.com/la-gamme/maximator/#')}>
                         <Image style={styles.logomaximator} source={require('./assets/maximator.png')} />
+                </TouchableOpacity>
                     </View>
                     <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
                         <Image style={styles.logoalstom} source={require('./assets/alstom.png')} />
@@ -352,7 +354,9 @@ function Login({ route, navigation }) {
                 >
                     <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
                 </TouchableOpacity>
+                <TouchableOpacity onPress={() => Linking.openURL('https://www.biere-amsterdam.com/la-gamme/maximator/#')}>
                     <Image style={styles.logomaximator} source={require('./assets/maximator.png')} />
+                </TouchableOpacity>
                 </View>
                 <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
                     <Image style={styles.logoalstom} source={require('./assets/alstom.png')} />
