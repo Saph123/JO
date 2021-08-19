@@ -535,7 +535,7 @@ function pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex) {
     console.log("pushing ", test)
     for (var i in navigation.getState().routes) {
         if (navigation.getState().routes[i].name == "ClickerScreen") { // on est tjs sur l'ecran on relance
-            setTimeout(() => pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex), 5000);
+            setTimeout(() => pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex), 1000);
         }
     }
     
@@ -560,7 +560,7 @@ function ClickerScreen() {
         // while(!fetchok){
         fetch_clicker(setUserNames, setCount, setRanks, setMyIndex);
         
-        setTimeout(() =>  pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex), 5000);
+        setTimeout(() =>  pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex), 1000);
 
         // }
     }, []);
