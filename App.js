@@ -1,6 +1,6 @@
 // import styles from "./style";
 import * as React from 'react';
-import { View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Platform, Pressable,Linking} from 'react-native';
+import { View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Platform, Pressable, Linking } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import PinchZoomView from 'react-native-pinch-zoom-view';
@@ -12,6 +12,7 @@ import { Trace, fetch_results, fetch_activities } from "./trace.js";
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import { set } from 'react-native-reanimated';
+
 let username = "";
 const styles = require("./style.js");
 const ArbitreContext = React.createContext(false);
@@ -105,13 +106,13 @@ function HomeScreen({ route, navigation }) {
     return (
 
         <ScrollView>
-                
-                {secondsleft < 0? <View><Pressable style={styles.loginbutton}><Text style={styles.texthomebutton}>Planning</Text></Pressable></View>:secondsleft == 0 ? <Pressable onPress={() => navigation.navigate('Planning')}>
-                    <Image style={{alignSelf:"center"}}  source={require('./assets/80s.gif')}/></Pressable>:<View><Text style={{ alignSelf: "center" }}>{nextEvent + " dans :"}</Text><CountDown
+
+            {secondsleft < 0 ? <View><Pressable style={styles.loginbutton}><Text style={styles.texthomebutton}>Planning</Text></Pressable></View> : secondsleft == 0 ? <Pressable onPress={() => navigation.navigate('Planning')}>
+                <Image style={{ alignSelf: "center" }} source={require('./assets/80s.gif')} /></Pressable> : <View><Text style={{ alignSelf: "center" }}>{nextEvent + " dans :"}</Text><CountDown
                     style={{ color: "black" }}
                     digitStyle={{ backgroundColor: "#FF8484" }}
                     until={secondsleft}
-                    onFinish={() => {setSecondsleft(0); setTimeout(() => setSecondsleft(-1),1000 * 5 * 60 * 60)}}
+                    onFinish={() => { setSecondsleft(0); setTimeout(() => setSecondsleft(-1), 1000 * 5 * 60 * 60) }}
                     onPress={() => navigation.navigate('Planning')}
                     size={20}
                 /></View>}
@@ -262,12 +263,20 @@ function PlanningScreen({ route, navigation }) {
 function Login({ route, navigation }) {
     const [userName, setuserName] = React.useState("username");
     const [password, setpassword] = React.useState("password");
+    const [scep, setScep] = React.useState(false)
     const controller = new AbortController()
     // 5 second timeout:
     const timeoutId = setTimeout(() => controller.abort(), 5000)
     if (username == "") {
         return (
             <View style={{ flexDirection: "column", flex: 1 }}>
+                <Modal style={{ alignSelf: "center" }}
+                    visible={scep}>
+                    <Pressable onPress={() => setScep(false)}>
+
+                        <Image style={{ width: Dimensions.get("window").width, height: Dimensions.get("window").height }} source={require("./assets/scep.gif")}></Image>
+                    </Pressable>
+                </Modal>
                 <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
                     <View style={{ flexDirection: "row", margin: 15 }}>
                         {/* <Text style={{ textAlign: "center", borderWidth: 1, borderRadius:15, borderRightWidth: 0, height: 20 }}> Username:</Text> */}
@@ -311,22 +320,30 @@ function Login({ route, navigation }) {
                     </View>
 
                 </View >
+                <View style={{flex:1, justifyContent:"center"}}>
+                <View style={{ alignItems: "center" }}><Text style={styles.medailleText}>Brought to you by </Text></View>
+                <View style={{ alignItems: "center" }}><TouchableOpacity onPress={() => setScep(true)}>
+                        <Image style={styles.logosah} source={require('./assets/logoSCEP.png')} />
+                    </TouchableOpacity></View>
+                </View>
                 <View style={{ flex: 1 }}>
                     <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Nos partenaires </Text></View>
                     {/* <View style={{ flexDirection: "row", justifyContent: "center" }}>
                     </View> */}
                     <View style={{ flexDirection: "row", justifyContent: "center" }}>
                         <Image style={styles.logosah} source={require('./assets/sah.png')} />
-                <TouchableOpacity style={styles.logosah}
-                    onPress={() => { { username = "" }; navigation.navigate('VanRommel', { refresh: "refresh" }) }}
-                >
-                    <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => Linking.openURL('https://www.biere-amsterdam.com/la-gamme/maximator/#')}>
-                        <Image style={styles.logomaximator} source={require('./assets/maximator.png')} />
-                </TouchableOpacity>
+                        <TouchableOpacity style={styles.logosah}
+                            onPress={() => { { username = "" }; navigation.navigate('VanRommel', { refresh: "refresh" }) }}
+                        >
+                            <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => Linking.openURL('https://www.biere-amsterdam.com/la-gamme/maximator/#')}>
+                            <Image style={styles.logomaximator} source={require('./assets/maximator.png')} />
+                        </TouchableOpacity>
+
                     </View>
                     <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+
                         <Image style={styles.logoalstom} source={require('./assets/alstom.png')} />
                     </View>
                 </View>
@@ -348,14 +365,14 @@ function Login({ route, navigation }) {
                 <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Nos partenaires </Text></View>
                 <View style={{ flexDirection: "row", justifyContent: "center" }}>
                     <Image style={styles.logosah} source={require('./assets/sah.png')} />
-                <TouchableOpacity style={styles.logosah}
-                    onPress={() => { { username = "" }; navigation.navigate('VanRommel', { refresh: "refresh" }) }}
-                >
-                    <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => Linking.openURL('https://www.biere-amsterdam.com/la-gamme/maximator/#')}>
-                    <Image style={styles.logomaximator} source={require('./assets/maximator.png')} />
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.logosah}
+                        onPress={() => { { username = "" }; navigation.navigate('VanRommel', { refresh: "refresh" }) }}
+                    >
+                        <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => Linking.openURL('https://www.biere-amsterdam.com/la-gamme/maximator/#')}>
+                        <Image style={styles.logomaximator} source={require('./assets/maximator.png')} />
+                    </TouchableOpacity>
                 </View>
                 <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
                     <Image style={styles.logoalstom} source={require('./assets/alstom.png')} />
@@ -501,43 +518,43 @@ function VanRommelScreen() {
             <View style={{ flex: 1, alignContent: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                 <View style={{ flex: 1 }}>
                     <View style={{ alignItems: "center" }}><Image style={styles.logosah} source={require('./assets/vanrommel.png')} /></View>
-                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
-                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
-                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
-                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16, textAlign: "center" }}>{text2}</Text></View>
-                
+                    <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}> </Text></View>
+                    <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}> </Text></View>
+                    <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}> </Text></View>
+                    <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16, textAlign: "center" }}>{text2}</Text></View>
+
                 </View>
                 <View style={{ flex: 1 }}>
-                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 12}}>{textPresentation}</Text></View>
-                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
+                    <View style={{ alignItems: "center" }}><Text style={{ fontSize: 12 }}>{textPresentation}</Text></View>
+                    <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}> </Text></View>
                     <View style={{ alignItems: "center" }}><Image style={styles.chicken} source={require('./assets/chicken.png')} /></View>
                 </View>
             </View>
-                <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
-                <View style={{ flex: 1, alignContent: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
-                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}>Des bons ingrédients mais aussi des bons outils.</Text></View>
-                </View>
-                <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
-                <View style={{ alignItems: "center" }}><Image style={{width: "90%", height: 160}} source={require('./assets/williwaller2006.jpg')} /></View>
+            <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}> </Text></View>
+            <View style={{ flex: 1, alignContent: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
+                <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}>Des bons ingrédients mais aussi des bons outils.</Text></View>
+            </View>
+            <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}> </Text></View>
+            <View style={{ alignItems: "center" }}><Image style={{ width: "90%", height: 160 }} source={require('./assets/williwaller2006.jpg')} /></View>
             <View style={{ flex: 1, alignContent: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                 <View style={{ flex: 1 }}>
-                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
-                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
-                <TouchableOpacity onPress={() => Linking.openURL('mailto:fritkotvanrommel@gmail.com')}>
-                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16, color :"blue", textDecorationLine: "underline" }}>Nous contacter</Text></View>
-                </TouchableOpacity>
-                
+                    <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}> </Text></View>
+                    <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}> </Text></View>
+                    <TouchableOpacity onPress={() => Linking.openURL('mailto:fritkotvanrommel@gmail.com')}>
+                        <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16, color: "blue", textDecorationLine: "underline" }}>Nous contacter</Text></View>
+                    </TouchableOpacity>
+
                 </View>
                 <View style={{ flex: 1 }}>
-                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
-                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
-                <TouchableOpacity onPress={() => Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfNP_1o3R7emNIM9B-JFRfge6lWQuD_0gyflO3xorB0MNUaVg/viewform')}>
-                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16, color :"blue", textDecorationLine: "underline" }}>Nous rejoindre</Text></View>
-                </TouchableOpacity>
+                    <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}> </Text></View>
+                    <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}> </Text></View>
+                    <TouchableOpacity onPress={() => Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfNP_1o3R7emNIM9B-JFRfge6lWQuD_0gyflO3xorB0MNUaVg/viewform')}>
+                        <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16, color: "blue", textDecorationLine: "underline" }}>Nous rejoindre</Text></View>
+                    </TouchableOpacity>
                 </View>
             </View>
         </ScrollView>
-        
+
     )
 
 }
@@ -860,8 +877,8 @@ function App() {
                                     <Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} />
                                 </TouchableOpacity>
                                 <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}>
-                                        <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
-                                    </TouchableOpacity></View>
+                                    <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
+                                </TouchableOpacity></View>
                             </View>)
                     })} initialParams={{ pushtoken: expoPushToken, setCurrentSport: setCurrentSport }} name="Home" component={HomeScreen} />
 
@@ -872,16 +889,16 @@ function App() {
 
                     <Stack.Screen options={({ navigation }) => ({
                         title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>
-                                <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}>
-                                        <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
-                                    </TouchableOpacity></View></View>
+                            <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}>
+                                <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
+                            </TouchableOpacity></View></View>
                     })} initialParams={{ setCurrentSport: setCurrentSport }} name="Planning" component={PlanningScreen} />
                     <Stack.Screen options={({ navigation }) => ({
                         title: currentSport, headerRight: () =>
                             <View style={{ flexDirection: "row", margin: 10 }}>
                                 <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}>
-                                        <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
-                                    </TouchableOpacity></View>
+                                    <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
+                                </TouchableOpacity></View>
                                 <TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 3000)}>
                                     <Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} />
                                 </TouchableOpacity>
