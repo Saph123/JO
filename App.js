@@ -710,7 +710,7 @@ function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentS
 
 function videoScep (setScep, scep, video) {
     return (
-        <Modal style={{ alignSelf: "center" }}
+        <Modal style={{ width:"100%", height:"100%", alignSelf: "center" }}
         visible={scep}
         
         onShow={() => video.current.playAsync()}>
