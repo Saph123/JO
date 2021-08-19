@@ -522,6 +522,7 @@ function fetch_clicker(setUserNames, setCount, setRanks, setMyIndex){
             ranks.push(data[i].rank)
             if (data[i].Players == username) {
                 setMyIndex(i);
+                test = data[i].rank;
             }
         }
         setUserNames(players);
@@ -558,7 +559,7 @@ function ClickerScreen() {
         var fetchok = false;
         // while(!fetchok){
         fetch_clicker(setUserNames, setCount, setRanks, setMyIndex);
-
+        
         setTimeout(() =>  pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex), 5000);
 
         // }
