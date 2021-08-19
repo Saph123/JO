@@ -712,13 +712,14 @@ function videoScep (setScep, scep, video) {
     return (
         <Modal style={{ alignSelf: "center" }}
         visible={scep}
+        
         onShow={() => video.current.playAsync()}>
 
             <Pressable onPress={() => {setScep(false);video.current.stopAsync()}}>
             <View>
                 <Video
                     ref={video}
-                    style={{width:Dimensions.get('window').width, height:Dimensions.get('window').height}}
+                    style={{width:"100%", height:"100%"}}
                     source={require("./assets/oss.mp4")}
                     resizeMode="contain"
                     isLooping={true}
