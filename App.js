@@ -520,6 +520,23 @@ function VanRommelScreen() {
                 </View>
                 <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
                 <View style={{ alignItems: "center" }}><Image style={{width: "90%", height: 160}} source={require('./assets/williwaller2006.jpg')} /></View>
+            <View style={{ flex: 1, alignContent: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
+                <View style={{ flex: 1 }}>
+                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
+                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
+                <TouchableOpacity onPress={() => Linking.openURL('mailto:fritkotvanrommel@gmail.com')}>
+                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16, color :"blue", textDecorationLine: "underline" }}>Nous contacter</Text></View>
+                </TouchableOpacity>
+                
+                </View>
+                <View style={{ flex: 1 }}>
+                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
+                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
+                <TouchableOpacity onPress={() => Linking.openURL('https://docs.google.com/forms/d/e/1FAIpQLSfNP_1o3R7emNIM9B-JFRfge6lWQuD_0gyflO3xorB0MNUaVg/viewform')}>
+                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16, color :"blue", textDecorationLine: "underline" }}>Nous rejoindre</Text></View>
+                </TouchableOpacity>
+                </View>
+            </View>
         </ScrollView>
         
     )
