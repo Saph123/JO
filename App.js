@@ -613,7 +613,7 @@ function UsernameScreen({ route, navigation }) {
                 currEvent.push(planning["listeevent"][event].eventname);
             }
         }
-        setEventsInProgess(currEvent)
+        setEventsInProgess([...currEvent])
     }, []);
 
 
