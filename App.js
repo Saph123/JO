@@ -279,24 +279,7 @@ function Login({ route, navigation }) {
     if (username == "") {
         return (
             <ScrollView style={{ flexDirection: "column", flex: 1 }}>
-                <Modal style={{ alignSelf: "center" }}
-                    visible={scep}
-                    onShow={() => video.current.playAsync()}>
-
-                        <Pressable onPress={() => {setScep(false);video.current.stopAsync()}}>
-                        <View>
-                            <Video
-                                ref={video}
-                                style={{width:Dimensions.get('window').width, height:Dimensions.get('window').height}}
-                                source={require("./assets/oss.mp4")}
-                                resizeMode="contain"
-                                isLooping={false}
-                                onPlaybackStatusUpdate={status => {if(status.durationMillis == status.positionMillis){ setScep(false)}}}
-                                
-                            />
-                        </View>
-                    </Pressable>
-                </Modal>
+                {videoScep(setScep, scep, video)}
                 <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
                     <View style={{ flexDirection: "row", margin: 15 }}>
                         {/* <Text style={{ textAlign: "center", borderWidth: 1, borderRadius:15, borderRightWidth: 0, height: 20 }}> Username:</Text> */}
@@ -347,7 +330,7 @@ function Login({ route, navigation }) {
                     </TouchableOpacity></View>
                 </View>
                 <View style={{ flex: 1 }}>
-                    <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Nos partenaires </Text></View>
+                    <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Sponsors </Text></View>
                     {/* <View style={{ flexDirection: "row", justifyContent: "center" }}>
                     </View> */}
                     <View style={{ flexDirection: "row", justifyContent: "center" }}>
@@ -371,23 +354,29 @@ function Login({ route, navigation }) {
         )
     }
     return (
+        <ScrollView>
+        {videoScep(setScep, scep, video)}
         <View style={{ flexDirection: "column", flex: 1, }}>
             <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
 
                 <Text style={styles.texthomebutton}>Currently logged in as {username}</Text>
                 <TouchableOpacity style={styles.logoutbutton}
                     onPress={() => { { username = "" }; navigation.navigate('Home', { refresh: "refresh" }) }}
-                >
+                    >
                     <Text style={styles.texthomebutton}>Log out!</Text>
                 </TouchableOpacity>
             </View>
             <View style={{ flex: 1 }}>
-                <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Nos partenaires </Text></View>
+                    <View style={{ alignItems: "center" }}><Text style={styles.medailleText}>Brought to you by </Text></View>
+                    <View style={{ alignItems: "center" }}><TouchableOpacity onPress={() => {setScep(true)}}>
+                        <Image style={styles.logosah} source={require('./assets/logoSCEP.png')} />
+                    </TouchableOpacity></View>
+                <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Sponsors </Text></View>
                 <View style={{ flexDirection: "row", justifyContent: "center" }}>
                     <Image style={styles.logosah} source={require('./assets/sah.png')} />
                     <TouchableOpacity style={styles.logosah}
                         onPress={() => { { username = "" }; navigation.navigate('VanRommel', { refresh: "refresh" }) }}
-                    >
+                        >
                         <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => Linking.openURL('https://www.biere-amsterdam.com/la-gamme/maximator/#')}>
@@ -399,6 +388,7 @@ function Login({ route, navigation }) {
                 </View>
             </View>
         </View>
+        </ScrollView>
     )
 };
 
@@ -555,7 +545,7 @@ function VanRommelScreen() {
                 <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}>Des bons ingrédients mais aussi des bons outils.</Text></View>
             </View>
             <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}> </Text></View>
-            <View style={{ alignItems: "center" }}><Image style={{ width: "90%", height: 160 }} source={require('./assets/williwaller2006.jpg')} /></View>
+            <View style={{ alignItems: "center" }}><Image style={{ width: "82%", height: 164 }} source={require('./assets/williwaller2006.png')} /></View>
             <View style={{ flex: 1, alignContent: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                 <View style={{ flex: 1 }}>
                     <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}> </Text></View>
@@ -718,6 +708,28 @@ function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentS
         </TouchableOpacity>)
 }
 
+function videoScep (setScep, scep, video) {
+    return (
+        <Modal style={{ alignSelf: "center" }}
+        visible={scep}
+        onShow={() => video.current.playAsync()}>
+
+            <Pressable onPress={() => {setScep(false);video.current.stopAsync()}}>
+            <View>
+                <Video
+                    ref={video}
+                    style={{width:Dimensions.get('window').width, height:Dimensions.get('window').height}}
+                    source={require("./assets/oss.mp4")}
+                    resizeMode="contain"
+                    isLooping={true}
+                    onPlaybackStatusUpdate={status => {if(status.durationMillis == status.positionMillis && status.durationMillis){ setScep(false)}}}
+                    
+                />
+            </View>
+        </Pressable>
+    </Modal>
+    )
+}
 function lutImg(sportname) {
     var lut = {
         Trail: require('./assets/sports/run.png'),
