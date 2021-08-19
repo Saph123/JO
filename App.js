@@ -537,7 +537,7 @@ function VanRommelScreen() {
                 <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}>Des bons ingrédients mais aussi des bons outils.</Text></View>
             </View>
             <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}> </Text></View>
-            <View style={{ alignItems: "center" }}><Image style={{ width: "90%", height: 160 }} source={require('./assets/williwaller2006.jpg')} /></View>
+            <View style={{ alignItems: "center" }}><Image style={{ width: "82%", height: 164 }} source={require('./assets/williwaller2006.png')} /></View>
             <View style={{ flex: 1, alignContent: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                 <View style={{ flex: 1 }}>
                     <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}> </Text></View>
