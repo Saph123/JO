@@ -522,7 +522,7 @@ function fetch_clicker(setUserNames, setCount, setRanks, setMyIndex){
             ranks.push(data[i].rank)
             if (data[i].Players == username) {
                 setMyIndex(i);
-                test = data[i].rank;
+                test = data[i].Clicks;
             }
         }
         setUserNames(players);
@@ -532,7 +532,7 @@ function fetch_clicker(setUserNames, setCount, setRanks, setMyIndex){
     }).catch(err => { alert(err); return [] });
 }
 function pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex) {
-    
+    console.log("pushing ", test)
     for (var i in navigation.getState().routes) {
         if (navigation.getState().routes[i].name == "ClickerScreen") { // on est tjs sur l'ecran on relance
             setTimeout(() => pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex), 5000);
@@ -568,7 +568,7 @@ function ClickerScreen() {
         <ScrollView>
 
             <Text style={{ alignSelf: "center" }}>Your clicks: {count[index]}</Text><Text>Your rank : {myRank[index]}</Text>
-            <Pressable onPressIn={() => { var tmp = count; tmp[index]=tmp[index]+1;test = count[index] + 1; console.log(tmp); setCount([...tmp]) }} style={styles.inProgress} >
+            <Pressable onPressIn={() => { var tmp = count; tmp[index]=tmp[index]+1;test = count[index] + 1; console.log("test in pressin:", test); setCount([...tmp]) }} style={styles.inProgress} >
                 <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
             </Pressable>
             <View style={{justifyContent:"space-between"}}>
