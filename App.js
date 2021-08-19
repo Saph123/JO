@@ -11,8 +11,9 @@ import { Planning, getNextEventseconds } from "./planning.js";
 import { Trace, fetch_results, fetch_activities } from "./trace.js";
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
+import { setEnabled } from 'react-native/Libraries/Performance/Systrace';
 
-let username = "";
+let username = "Max";
 const styles = require("./style.js");
 const ArbitreContext = React.createContext(false);
 export let version = 1
@@ -24,16 +25,35 @@ Notifications.setNotificationHandler({
     }),
 });
 
+function manageEvents(setEventsDone, setCurrentEvents){
+    var planning = new Planning();
+    var localnow = Date.now();
+    var eventDone = []
+    var currEvent = []
+    for (var event in planning["listeevent"]) {
+        if (localnow > planning["listeevent"][event].timeEnd) {
+            eventDone.push(planning["listeevent"][event].eventname);
+            
+        }
+    }
+    for (var event in planning["listeevent"]) {
+        if (localnow > planning["listeevent"][event].timeBegin && localnow < planning["listeevent"][event].timeEnd) {
+            currEvent.push(planning["listeevent"][event].eventname);
+        }
+    }
 
+    setTimeout(()=> manageEvents(setEventsDone, setCurrentEvents), 60000)
+
+    setEventsDone(eventDone);
+    setCurrentEvents(currEvent);
+}
 function HomeScreen({ route, navigation }) {
     const [loading, setLoading] = React.useState(1);
     const [secondsleft, setSecondsleft] = React.useState(1000);
     const [nextEvent, setNextEvent] = React.useState("");
-    const [soundstatus, setSound] = React.useState();
     const [currentEvents, setCurrentEvents] = React.useState([]);
     const [eventsDone, setEventsDone] = React.useState([]);
-    var planning = new Planning();
-    var now = Date.now();
+    const [soundstatus, setSound] = React.useState();
     async function playcluedo() {
         pushcluedo(route.params.pushtoken);
         if (soundstatus == undefined) {
@@ -60,24 +80,12 @@ function HomeScreen({ route, navigation }) {
 
     }
     React.useEffect(() => {
-        var dateJO = new Date('2021-08-26T20:00:00');
+        manageEvents(setEventsDone, setCurrentEvents)
+        console.log(route.params)
+        setTimeout(() => console.log(route.params), 5000);
         var test = getNextEventseconds();
-        var eventDone = []
-        var currEvent = []
         setSecondsleft(test.time);
         setNextEvent(test.name);
-        for (var event in planning["listeevent"]) {
-            if (now > planning["listeevent"][event].timeEnd) {
-                eventDone.push(planning["listeevent"][event].eventname);
-            }
-        }
-        for (var event in planning["listeevent"]) {
-            if (now > planning["listeevent"][event].timeBegin && now < planning["listeevent"][event].timeEnd) {
-                currEvent.push(planning["listeevent"][event].eventname);
-            }
-        }
-        setEventsDone(eventDone);
-        setCurrentEvents(currEvent);
         setLoading(0);
     }, []);
     if (loading) {
@@ -599,21 +607,7 @@ function UsernameScreen({ route, navigation }) {
     var planning = new Planning();
     var now = Date.now();
     React.useEffect(() => {
-        var eventDone = []
-        var currEvent = []
-        fetch_activities(username, setArbitre, setEvents)
-        for (var event in planning["listeevent"]) {
-            if (now > planning["listeevent"][event].timeEnd) {
-                eventDone.push(planning["listeevent"][event].eventname);
-            }
-        }
-        setEventsDone(eventDone)
-        for (var event in planning["listeevent"]) {
-            if (now > planning["listeevent"][event].timeBegin && now < planning["listeevent"][event].timeEnd) {
-                currEvent.push(planning["listeevent"][event].eventname);
-            }
-        }
-        setEventsInProgess([...currEvent])
+        manageEvents(setEventsDone, eventsInProgress)
     }, []);
 
 
@@ -812,13 +806,11 @@ async function askPushNotif(username, title, body, to) {
 
 const Stack = createStackNavigator();
 function App() {
-    // var test = new Planning();
-    var firsttime = 1;
     const [arbitre, setArbitre] = React.useState(false);
-    const [headerstatus, setstatus] = React.useState();
     const [soundstatus, setSound] = React.useState();
     const [expoPushToken, setExpoPushToken] = React.useState('');
     const [notification, setNotification] = React.useState(false);
+
     const notificationListener = React.useRef();
     const responseListener = React.useRef();
     const [currentSport, setCurrentSport] = React.useState("Sportname");
@@ -849,7 +841,10 @@ function App() {
         }
 
     }
+    
     React.useEffect(() => {
+
+        
         registerForPushNotificationsAsync().then(token => { setExpoPushToken(token); pushtoken(token, username) });
         // This listener is fired whenever a notification is received while the app is foregrounded
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
@@ -857,6 +852,14 @@ function App() {
             if (notification.request.content.title == "CLUEDO!") {
                 alert("Cluedo!!")
             }
+            // else{
+            //     if(notification.request.content.body.indexOf("Commence dans") != -1)
+            //     {
+                    
+
+
+            //     }
+            // }
         });
 
         // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
@@ -882,7 +885,7 @@ function App() {
                         fontWeight: 'bold',
                     },
                 }} initialRouteName="Home">
-                    <Stack.Screen options={({ navigation }) => ({
+                    <Stack.Screen options={({ navigation}) => ({
                         title: "Home", headerRight: () => (
                             <View style={{ flexDirection: "row", margin: 10 }}>
                                 <TouchableOpacity onPressIn={playmegaphone}>
@@ -892,7 +895,7 @@ function App() {
                                     <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
                                 </TouchableOpacity></View>
                             </View>)
-                    })} initialParams={{ pushtoken: expoPushToken, setCurrentSport: setCurrentSport }} name="Home" component={HomeScreen} />
+                    })} initialParams={{ pushtoken: expoPushToken, setCurrentSport: setCurrentSport}} name="Home" component={HomeScreen} />
 
                     <Stack.Screen options={{
                         title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text>

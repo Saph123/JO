@@ -12,7 +12,6 @@ export class Planning{
     
 }
 export function getNextEventseconds(){
-    var now = Date.now();
     var min = new Date(planning['Soirée d\'ouverture!'][0]) - Date.now(); // test
     if(min > 0)
     {
