@@ -509,52 +509,74 @@ function SummaryScreen() {
         </ScrollView>
     )
 }
-function pushClicker(navigation, ) {
-    console.log("pushing ", test)
+
+function fetch_clicker(setUserNames, setCount, setRanks, setMyIndex){
+    fetch("http://91.121.143.104:7070/teams/Clicker.json").then(response => response.json()).then(data => {
+
+        let clicks = [];
+        let players = [];
+        let ranks = [];
+        for (var i in data) {
+            clicks.push(data[i].Clicks);
+            players.push(data[i].Players)
+            ranks.push(data[i].rank)
+            if (data[i].Players == username) {
+                setMyIndex(i);
+            }
+        }
+        setUserNames(players);
+        setCount(clicks);
+        setRanks(ranks);
+        return data;
+    }).catch(err => { alert(err); return [] });
+}
+function pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex) {
+    
     for (var i in navigation.getState().routes) {
         if (navigation.getState().routes[i].name == "ClickerScreen") { // on est tjs sur l'ecran on relance
-            setTimeout(() => pushClicker(navigation, test, username), 5000);
+            setTimeout(() => pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex), 5000);
         }
     }
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
-    fetch("http://91.121.143.104:7070/clicker", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "count": test }) }).then(r => {
+    
+    fetch("http://91.121.143.104:7070/clicker", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "count": test }) }).then(r => {
         if (r.status == 200) {
             
             return;
         }
     }).catch((err) => { console.log(err, "Issue with server! Sorry friend") });
+    fetch_clicker(setUserNames, setCount, setRanks, setMyIndex);
 }
 
 let test = 0;
 function ClickerScreen() {
-    const [myRank, setMyRank] = React.useState("");
-    const [count, setCount] = React.useState(0);
+    const [myRank, setRanks] = React.useState([]);
+    const [count, setCount] = React.useState([]);
+    const [allUserNames, setUserNames] = React.useState([]);
+    const [index, setMyIndex] = React.useState(0);
     const navigation = useNavigation();
     React.useEffect(() => {
         var fetchok = false;
         // while(!fetchok){
+        fetch_clicker(setUserNames, setCount, setRanks, setMyIndex);
 
-        let status = fetch("http://91.121.143.104:7070/teams/Clicker.json").then(response => response.json()).then(data => {
-            for (var i in data) {
-                if (data[i].Players == username) {
-                    setMyRank(data[i].rank);
-                    setCount(data[i].Clicks);
-                }
-            }
-            return data;
-        }).catch(err => { alert(err); return [] });
-        setTimeout(() => { pushClicker(navigation) }, 5000);
+        setTimeout(() =>  pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex), 5000);
 
         // }
     }, []);
     return (
-        <View>
-            <Text style={{ alignSelf: "center" }}>Your clicks: {count}</Text><Text>Your rank : {myRank}</Text>
-            <Pressable onPressIn={() => { test=count+1;setCount(count + 1) }} style={styles.inProgress} >
+        <ScrollView>
+
+            <Text style={{ alignSelf: "center" }}>Your clicks: {count[index]}</Text><Text>Your rank : {myRank[index]}</Text>
+            <Pressable onPressIn={() => { var tmp = count; tmp[index]=tmp[index]+1;test = count[index] + 1; console.log(tmp); setCount([...tmp]) }} style={styles.inProgress} >
                 <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
             </Pressable>
-        </View>
+            <View style={{justifyContent:"space-between"}}>
+
+            {allUserNames.map((r,index) => <View style={{flexDirection:"row", justifyContent:"space-around"}}><Text>{r}</Text><Text>{myRank[index]}</Text><Text>{count[index]}</Text></View>)}
+            {/* {myRank.map((r, index) => <Text>{r}</Text>)}
+            {count.map((r, index) => <Text>{r}</Text>)} */}
+            </View>
+        </ScrollView>
     )
 
 }
