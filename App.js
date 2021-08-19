@@ -658,7 +658,7 @@ function UsernameScreen({ route, navigation }) {
     var planning = new Planning();
     var now = Date.now();
     React.useEffect(() => {
-        manageEvents(setEventsDone, eventsInProgress)
+        manageEvents(setEventsDone, setEventsInProgess)
     }, []);
 
 
