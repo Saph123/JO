@@ -282,8 +282,8 @@ function Login({ route, navigation }) {
                                 style={{width:Dimensions.get('window').width, height:Dimensions.get('window').height}}
                                 source={require("./assets/oss.mp4")}
                                 resizeMode="contain"
-                                isLooping
-                                onPlaybackStatusUpdate={status => setStatus(() => status)}
+                                isLooping={false}
+                                onPlaybackStatusUpdate={status => {if(status.durationMillis == status.positionMillis){ setScep(false)}}}
                                 
                             />
                         </View>
