@@ -13,7 +13,7 @@ import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import { setEnabled } from 'react-native/Libraries/Performance/Systrace';
 
-let username = "Max";
+let username = "";
 const styles = require("./style.js");
 const ArbitreContext = React.createContext(false);
 export let version = 1
@@ -510,42 +510,48 @@ function SummaryScreen() {
     )
 }
 
-function fetch_clicker(setUserNames, setCount, setRanks, setMyIndex){
+function fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, firsttime) {
     fetch("http://91.121.143.104:7070/teams/Clicker.json").then(response => response.json()).then(data => {
 
         let clicks = [];
         let players = [];
         let ranks = [];
         for (var i in data) {
-            clicks.push(data[i].Clicks);
             players.push(data[i].Players)
             ranks.push(data[i].rank)
             if (data[i].Players == username) {
                 setMyIndex(i);
-                test = data[i].Clicks;
+                // if (data[i].Clicks > test) {
+                if (firsttime) {
+
+                    test = data[i].Clicks;
+                }
+                else {
+                    data[i].Clicks = test;
+                }
             }
+            clicks.push(data[i].Clicks);
         }
         setUserNames(players);
         setCount(clicks);
         setRanks(ranks);
         return data;
-    }).catch(err => { alert(err); return [] });
+    }).catch(err => { alert(err, "Reload the screen m8"); return [] });
 }
 function pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex) {
-    console.log("pushing ", test)
     for (var i in navigation.getState().routes) {
         if (navigation.getState().routes[i].name == "ClickerScreen") { // on est tjs sur l'ecran on relance
-            setTimeout(() => pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex), 1000);
+            setTimeout(() => pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex), 3000);
         }
     }
-    
+
     fetch("http://91.121.143.104:7070/clicker", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "count": test }) }).then(r => {
         if (r.status == 200) {
-            
+
+            fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, false);
             return;
         }
-    }).catch((err) => { console.log(err, "Issue with server! Sorry friend") });
-    fetch_clicker(setUserNames, setCount, setRanks, setMyIndex);
+    }).catch((err) => { alert(err, "Issue with server! Sorry friend, reload the screen") });
 }
 
 let test = 0;
@@ -558,26 +564,34 @@ function ClickerScreen() {
     React.useEffect(() => {
         var fetchok = false;
         // while(!fetchok){
-        fetch_clicker(setUserNames, setCount, setRanks, setMyIndex);
-        
-        setTimeout(() =>  pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex), 1000);
+        fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, true);
+
+        setTimeout(() => pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex), 3000);
 
         // }
     }, []);
     return (
-        <ScrollView>
+        <View style={{ flex: 1, flexDirection: 'row' }}>
+            <ScrollView style={{ flex: 4 }}>
 
-            <Text style={{ alignSelf: "center" }}>Your clicks: {count[index]}</Text><Text>Your rank : {myRank[index]}</Text>
-            <Pressable onPressIn={() => { var tmp = count; tmp[index]=tmp[index]+1;test = count[index] + 1; console.log("test in pressin:", test); setCount([...tmp]) }} style={styles.inProgress} >
-                <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
-            </Pressable>
-            <View style={{justifyContent:"space-between"}}>
-
-            {allUserNames.map((r,index) => <View style={{flexDirection:"row", justifyContent:"space-around"}}><Text>{r}</Text><Text>{myRank[index]}</Text><Text>{count[index]}</Text></View>)}
-            {/* {myRank.map((r, index) => <Text>{r}</Text>)}
+                <View style={{ justifyContent: "space-between", flex: 1 }}>
+                    <View style={{ flex: 3, flexDirection: 'row' }}><Text style={{ flex: 1, textAlign: 'center' }}>Rank</Text><Text style={{ flex: 3, textAlign: 'center' }}>Username</Text><Text style={{ flex: 1, textAlign: 'center' }}>Clicks</Text></View>
+                    {allUserNames.map((r, index) =>
+                        <View style={{ flexDirection: "row", justifyContent: "flex-start", borderColor: "grey", borderWidth: 1, flex: 1 }}>
+                            <View style={{ flex: 1 }}><Text style={{ textAlign: 'center' }}>{myRank[index]}</Text></View>
+                            <View style={{ flex: 3 }}><Text style={{ textAlign: 'center' }}>{r}</Text></View>
+                            <View style={{ flex: 1 }}><Text style={{ textAlign: 'center' }}>{count[index]}</Text></View>
+                        </View>)}
+                    {/* {myRank.map((r, index) => <Text>{r}</Text>)}
             {count.map((r, index) => <Text>{r}</Text>)} */}
+                </View>
+            </ScrollView>
+            <View style={{ flex: 1, justifyContent: 'center' }}>
+                <Pressable onPressIn={() => { var tmp = count; tmp[index] = tmp[index] + 1; test++; setCount([...tmp]) }} style={styles.inProgress} >
+                    <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
+                </Pressable>
             </View>
-        </ScrollView>
+        </View>
     )
 
 }
