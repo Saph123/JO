@@ -447,7 +447,8 @@ async function fetch_matches(fetchStatus, statusState, username, setAutho, setSt
         }
         if (status['states'].includes("final")) { // gestion listes (trail/tong)
             let liste = {};
-            liste = await fetch("http://91.121.143.104:7070/teams/" + sportname + ".json").then(response => response.json()).then(data => { allok = true; return data });
+            let filename = (sportname == "Pizza" ? sportname + "/" + username : sportname)
+            liste = await fetch("http://91.121.143.104:7070/teams/" + filename + ".json").then(response => response.json()).then(data => { allok = true; return data });
             let local_liste = [];
             let local_final = [];
             var levellist = 1;
