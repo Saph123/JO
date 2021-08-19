@@ -722,7 +722,7 @@ function videoScep (setScep, scep, video) {
                     style={{width:"100%", height:"100%"}}
                     source={require("./assets/oss.mp4")}
                     resizeMode="cover"
-                    isLooping={true}
+                    isLooping={false}
                     onPlaybackStatusUpdate={status => {if(status.durationMillis == status.positionMillis && status.durationMillis){ setScep(false)}}}
                     
                 />
