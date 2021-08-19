@@ -11,6 +11,7 @@ import { Planning, getNextEventseconds } from "./planning.js";
 import { Trace, fetch_results, fetch_activities } from "./trace.js";
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
+import { set } from 'react-native-reanimated';
 let username = "";
 const styles = require("./style.js");
 const ArbitreContext = React.createContext(false);
@@ -63,7 +64,6 @@ function HomeScreen({ route, navigation }) {
         var test = getNextEventseconds();
         var eventDone = []
         var currEvent = []
-        // setSecondsleft(Math.trunc((dateJO - Date.now())/1000));
         setSecondsleft(test.time);
         setNextEvent(test.name);
         for (var event in planning["listeevent"]) {
@@ -105,17 +105,16 @@ function HomeScreen({ route, navigation }) {
     return (
 
         <ScrollView>
-            <View>
-                <Text style={{ alignSelf: "center" }}>{nextEvent + " dans :"}</Text>
-                <CountDown
+                
+                {secondsleft < 0? <View><Pressable style={styles.loginbutton}><Text style={styles.texthomebutton}>Planning</Text></Pressable></View>:secondsleft == 0 ? <Pressable onPress={() => navigation.navigate('Planning')}>
+                    <Image style={{alignSelf:"center"}}  source={require('./assets/80s.gif')}/></Pressable>:<View><Text style={{ alignSelf: "center" }}>{nextEvent + " dans :"}</Text><CountDown
                     style={{ color: "black" }}
                     digitStyle={{ backgroundColor: "#FF8484" }}
                     until={secondsleft}
-                    onFinish={() => alert('finished')}
+                    onFinish={() => {setSecondsleft(0); setTimeout(() => setSecondsleft(-1),1000 * 5 * 60 * 60)}}
                     onPress={() => navigation.navigate('Planning')}
                     size={20}
-                />
-            </View>
+                /></View>}
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                 <View style={{ flex: 1 }}>
                     {eventView(currentEvents, eventsDone, "Trail", navigation, route.params.setCurrentSport)}
