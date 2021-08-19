@@ -799,9 +799,9 @@ function App() {
                                 <TouchableOpacity onPressIn={playmegaphone}>
                                     <Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} />
                                 </TouchableOpacity>
-                                <TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}>
-                                    <Text style={{ color: "white", marginTop: 32, marginRight: 40, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
-                                </TouchableOpacity>
+                                <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}>
+                                        <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
+                                    </TouchableOpacity></View>
                             </View>)
                     })} initialParams={{ pushtoken: expoPushToken, setCurrentSport: setCurrentSport }} name="Home" component={HomeScreen} />
 
@@ -810,15 +810,16 @@ function App() {
                         </View>
                     }} initialParams={{ pushtoken: expoPushToken }} name="Login" component={Login} />
 
-                    <Stack.Screen options={{
+                    <Stack.Screen options={({ navigation }) => ({
                         title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>
-                            <Text style={{ color: "white", marginRight: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text></View>
-                    }} initialParams={{ setCurrentSport: setCurrentSport }} name="Planning" component={PlanningScreen} />
+                                <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}>
+                                        <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
+                                    </TouchableOpacity></View></View>
+                    })} initialParams={{ setCurrentSport: setCurrentSport }} name="Planning" component={PlanningScreen} />
                     <Stack.Screen options={({ navigation }) => ({
                         title: currentSport, headerRight: () =>
                             <View style={{ flexDirection: "row", margin: 10 }}>
-                                <View>
-                                    <TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}>
+                                <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}>
                                         <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
                                     </TouchableOpacity></View>
                                 <TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 3000)}>
