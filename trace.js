@@ -116,7 +116,7 @@ export const Trace = (props) => {
 
         if (!autho) {
             return (
-                <View>
+                <View style={{position:'absolute', top:100, left:0}}>
 
                 <View styles={{width:70, height:70, alignSelf:"center"}}>
 
@@ -181,7 +181,7 @@ export const Trace = (props) => {
 
 
             return (
-                <View>
+                <View style={{position:'absolute', top:100, left:0}}>
                     <View style={{width:70, height:70, justifyContent:'flex-start'}}>
                     {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, 0) : <Text></Text>}
                     </View>
