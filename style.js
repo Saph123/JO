@@ -313,6 +313,14 @@ module.exports = StyleSheet.create({
         width: 108,
         height: 108,
     },
+    chicken: {
+        width: 158,
+        height: 126,
+    },
+    williwaller: {
+        width: 220,
+        height: 110,
+    },
     logomaximator: {
         width: 40,
         height: 108,

@@ -1,6 +1,6 @@
 // import styles from "./style";
 import * as React from 'react';
-import { Button, View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Platform, Pressable } from 'react-native';
+import { Button, View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Platform, Pressable, ImageBackground } from 'react-native';
 import { NavigationContainer, useNavigation, useTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import PinchZoomView from 'react-native-pinch-zoom-view';
@@ -318,7 +318,11 @@ function Login({ route, navigation }) {
                     </View> */}
                     <View style={{ flexDirection: "row", justifyContent: "center" }}>
                         <Image style={styles.logosah} source={require('./assets/sah.png')} />
-                        <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
+                <TouchableOpacity style={styles.logosah}
+                    onPress={() => { { username = "" }; navigation.navigate('VanRommel', { refresh: "refresh" }) }}
+                >
+                    <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
+                </TouchableOpacity>
                         <Image style={styles.logomaximator} source={require('./assets/maximator.png')} />
                     </View>
                     <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
@@ -343,7 +347,11 @@ function Login({ route, navigation }) {
                 <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Nos partenaires </Text></View>
                 <View style={{ flexDirection: "row", justifyContent: "center" }}>
                     <Image style={styles.logosah} source={require('./assets/sah.png')} />
+                <TouchableOpacity style={styles.logosah}
+                    onPress={() => { { username = "" }; navigation.navigate('VanRommel', { refresh: "refresh" }) }}
+                >
                     <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
+                </TouchableOpacity>
                     <Image style={styles.logomaximator} source={require('./assets/maximator.png')} />
                 </View>
                 <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
@@ -478,6 +486,38 @@ function ClickerScreen() {
         <Pressable style={styles.inProgress} >
             <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
         </Pressable>
+    )
+
+}
+
+function VanRommelScreen() {
+    let textPresentation = "La Friterie Van Rommel fondée en 2020 par Paul & Fritz Van Rommel père & fils.\nCes véritables spécialistes du poulycroc (maison) et de la friture en tout genre ont vu leur renommée dépasser les frontières du Brabant Wallon."
+    let text2 = "L'amour du poulet et des patates est dans notre ADN."
+    return (
+        <ScrollView>
+            <View style={{ flex: 1, alignContent: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
+                <View style={{ flex: 1 }}>
+                    <View style={{ alignItems: "center" }}><Image style={styles.logosah} source={require('./assets/vanrommel.png')} /></View>
+                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
+                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
+                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
+                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16, textAlign: "center" }}>{text2}</Text></View>
+                
+                </View>
+                <View style={{ flex: 1 }}>
+                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 12}}>{textPresentation}</Text></View>
+                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
+                    <View style={{ alignItems: "center" }}><Image style={styles.chicken} source={require('./assets/chicken.png')} /></View>
+                </View>
+            </View>
+                <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
+                <View style={{ flex: 1, alignContent: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
+                    <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}>Des bons ingrédients mais aussi des bons outils.</Text></View>
+                </View>
+                <View style={{ alignItems: "center" }}><Text style={{fontSize : 16 }}> </Text></View>
+                <View style={{ alignItems: "center" }}><Image style={{width: "90%", height: 160}} source={require('./assets/williwaller2006.jpg')} /></View>
+        </ScrollView>
+        
     )
 
 }
@@ -839,6 +879,9 @@ function App() {
                     <Stack.Screen options={() => ({
                         title: "Clicker!"
                     })} initialParams={{ username: username }} name="ClickerScreen" component={ClickerScreen} />
+                    <Stack.Screen options={() => ({
+                        title: "Van Rommel"
+                    })} name="VanRommel" component={VanRommelScreen} />
 
                 </Stack.Navigator>
             </ArbitreContext.Provider>
