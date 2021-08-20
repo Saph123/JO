@@ -698,8 +698,11 @@ function pushNotifScreen() {
     const [to, setTo] = React.useState("all");
     return (
         <View>
+            <Text style={{ textAlign: "center"}}>Titre de la notif: (Il faut qu'il soit court!)</Text>
             <TextInput onFocus={() => setTitle("")} style={{ textAlign: "center", borderRadius: 15, borderWidth: 1, height: 20, minWidth: 100, margin: 30 }} onChangeText={text => { setTitle(text); }} value={title}></TextInput>
+            <Text style={{ textAlign: "center"}}>Body de la notif</Text>
             <TextInput onFocus={() => setBody("")} style={{ textAlign: "center", borderRadius: 15, borderWidth: 1, height: 20, minWidth: 100, margin: 30 }} onChangeText={text => { setBody(text); }} value={body}></TextInput>
+            <Text style={{ textAlign: "center"}}>Destinataire(s):</Text>
             <TextInput onFocus={() => setTo("")} style={{ textAlign: "center", borderRadius: 15, borderWidth: 1, height: 20, minWidth: 100, margin: 30 }} onChangeText={text => { setTo(text); }} value={to}></TextInput>
             <Pressable style={styles.logoutbutton} onPress={() => askPushNotif(username, title, body, to)}><Text style={{ textAlign: "center" }}> Push!</Text></Pressable>
         </View>
