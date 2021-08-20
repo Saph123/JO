@@ -644,7 +644,7 @@ function VanRommelScreen() {
             <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}> </Text></View>
             <Image style={{ borderRadius: 40, width: 50, height: 50, marginLeft: 20 }} source={require('./assets/PaulB.jpg')} />
             <Text style={{ fontSize: 16, fontWeight: "bold", marginLeft: 80, marginTop: -33 }}> Paul B.:</Text>
-            <Text style={{ fontSize: 14, fontStyle: "italic", marginLeft: 150, marginTop: -25, color: "blue", textAlign: "center"}}> “Mon seul regret est de ne jamais avoir pu travailler avec les Van Rommel.”:</Text>
+            <Text style={{ fontSize: 14, fontStyle: "italic", marginLeft: 150, marginTop: -25, color: "blue", textAlign: "center"}}> “Mon seul regret est de ne jamais avoir pu travailler avec les Van Rommel.”</Text>
             <View style={{ flex: 1, alignContent: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                 <View style={{ flex: 1 }}>
                     <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}> </Text></View>
