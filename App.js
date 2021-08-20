@@ -218,7 +218,7 @@ function PlanningScreen({ route, navigation }) {
                             return (
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
-                                    <View><TouchableOpacity onPressIn={() => { route.params.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
+                                    <View><TouchableOpacity onPress={() => { route.params.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
                                 </View>)
                         }
                     })
@@ -237,7 +237,7 @@ function PlanningScreen({ route, navigation }) {
                             return (
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
-                                    <View><TouchableOpacity onPressIn={() => { route.params.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
+                                    <View><TouchableOpacity onPress={() => { route.params.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
                                 </View>)
                         }
                     })
@@ -256,7 +256,7 @@ function PlanningScreen({ route, navigation }) {
                             return (
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
-                                    <View><TouchableOpacity onPressIn={() => { if (r.timeBegin.getHours() < 12) { route.params.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) } }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
+                                    <View><TouchableOpacity onPress={() => { if (r.timeBegin.getHours() < 12) { route.params.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) } }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
                                 </View>)
                         }
                     })
@@ -280,11 +280,9 @@ function Login({ route, navigation }) {
                 {videoScep(setScep, scep, video)}
                 <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
                     <View style={{ flexDirection: "row", margin: 15 }}>
-                        {/* <Text style={{ textAlign: "center", borderWidth: 1, borderRadius:15, borderRightWidth: 0, height: 20 }}> Username:</Text> */}
                         <TextInput onFocus={() => { if (Platform.OS !== "ios") { setuserName("") } }} onTouchStart={() => { if (Platform.OS === "ios") { setuserName("") } }} autoCompleteType="username" style={{ textAlign: "center", borderRadius: 15, borderWidth: 1, height: 20, minWidth: 100 }} onChangeText={text => { setuserName(""); setuserName(text) }} value={userName}></TextInput>
                     </View>
                     <View style={{ flexDirection: "row", margin: 15 }}>
-                        {/* <Text style={{ textAlign: "center", borderWidth: 1, borderRadius:15, borderRightWidth: 0, height: 20 }}> Password:</Text> */}
                         <TextInput onFocus={() => setpassword("")} autoCompleteType="password" secureTextEntry={true} style={{ textAlign: "center", borderWidth: 1, borderRadius: 15, height: 20, minWidth: 100 }} onChangeText={text => setpassword(text)} value={password}></TextInput>
                     </View>
                     <View style={{ margin: 30, flexDirection: "row" }}>
@@ -587,7 +585,7 @@ function ClickerScreen() {
                 </View>
             </ScrollView>
             <View style={{ flex: 1, justifyContent: 'center' }}>
-                <Pressable onPressIn={() => { var tmp = count; tmp[index] = tmp[index] + 1; test++; setCount([...tmp]) }} style={styles.inProgress} >
+                <Pressable onPress={() => { var tmp = count; tmp[index] = tmp[index] + 1; test++; setCount([...tmp]) }} style={styles.inProgress} >
                     <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
                 </Pressable>
             </View>
@@ -653,7 +651,7 @@ function pushNotifScreen() {
             <TextInput onFocus={() => setTitle("")} style={{ textAlign: "center", borderRadius: 15, borderWidth: 1, height: 20, minWidth: 100, margin: 30 }} onChangeText={text => { setTitle(text); }} value={title}></TextInput>
             <TextInput onFocus={() => setBody("")} style={{ textAlign: "center", borderRadius: 15, borderWidth: 1, height: 20, minWidth: 100, margin: 30 }} onChangeText={text => { setBody(text); }} value={body}></TextInput>
             <TextInput onFocus={() => setTo("")} style={{ textAlign: "center", borderRadius: 15, borderWidth: 1, height: 20, minWidth: 100, margin: 30 }} onChangeText={text => { setTo(text); }} value={to}></TextInput>
-            <Pressable style={styles.logoutbutton} onPressIn={() => askPushNotif(username, title, body, to)}><Text style={{ textAlign: "center" }}> Push!</Text></Pressable>
+            <Pressable style={styles.logoutbutton} onPress={() => askPushNotif(username, title, body, to)}><Text style={{ textAlign: "center" }}> Push!</Text></Pressable>
         </View>
     )
 }
@@ -977,10 +975,10 @@ function App() {
                     <Stack.Screen options={({ navigation }) => ({
                         title: "Home", headerRight: () => (
                             <View style={{ flexDirection: "row", margin: 10 }}>
-                                <TouchableOpacity onPressIn={playmegaphone}>
+                                <TouchableOpacity onPress={playmegaphone}>
                                     <Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} />
                                 </TouchableOpacity>
-                                <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}>
+                                <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPress={() => { navigation.navigate('UsernameScreen') }}>
                                     <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
                                 </TouchableOpacity></View>
                             </View>)
@@ -993,17 +991,17 @@ function App() {
 
                     <Stack.Screen options={({ navigation }) => ({
                         title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>
-                            <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}>
+                            <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPress={() => { navigation.navigate('UsernameScreen') }}>
                                 <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
                             </TouchableOpacity></View></View>
                     })} initialParams={{ setCurrentSport: setCurrentSport }} name="Planning" component={PlanningScreen} />
                     <Stack.Screen options={({ navigation }) => ({
                         title: currentSport, headerRight: () =>
                             <View style={{ flexDirection: "row", margin: 10 }}>
-                                <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPressIn={() => { navigation.navigate('UsernameScreen') }}>
+                                <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPress={() => { navigation.navigate('UsernameScreen') }}>
                                     <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
                                 </TouchableOpacity></View>
-                                <TouchableOpacity onPressIn={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 3000)}>
+                                <TouchableOpacity onPress={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 3000)}>
                                     <Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} />
                                 </TouchableOpacity>
                             </View>
