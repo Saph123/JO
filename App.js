@@ -697,12 +697,12 @@ function UsernameScreen({ route, navigation }) {
     const [eventsInProgress, setEventsInProgess] = React.useState([]);
     var planning = new Planning();
     var now = Date.now();
+
+
     React.useEffect(() => {
+        getValueFor("username").then(r => username=r)
         manageEvents(setEventsDone, setEventsInProgess)
-    }, []);
-
-
-    React.useEffect(() => {
+        fetch_activities(username, setArbitre, setEvents);
         fetch_results().then(r => {
 
             for (var player_data in r) {
@@ -726,6 +726,7 @@ function UsernameScreen({ route, navigation }) {
         }
         );
         setLoading(false);
+        
 
     }, []);
     if (loading) {
