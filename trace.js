@@ -29,6 +29,38 @@ let displayed_state = {
     "Petanque": "",
     "Molky": ""
 };
+
+const MedailleView = (props) => {
+    const rank = props.rank;
+    const r = props.r;
+    return (
+        <View style={r.rank == rank ? styles.medailleopaque : styles.medailletransparent}>
+            <TouchableOpacity
+                onPress={() => {
+                    props.setloading(true);
+                    var count = 0;
+                    for (var i = 0; i < props.liste.length; ++i) {
+                        if (props.liste[i].rank == rank)
+                            count++;
+                    }
+                    if (r.rank == rank) {
+                        r.rank = 0
+                    }
+                    else if (count < 2) {
+                        r.rank = rank;
+                    }
+                    // uncomment if you want only one medal
+                    // props.liste.map((q, index2) => { if (r != q && q.rank == rank) { q.rank = 0 } }); 
+                    props.setRealListe([...props.liste]);
+                    props.setloading(false)
+                }}
+            >
+                <Image resizeMode="cover" resizeMethod="resize" source={props.metal} />
+            </TouchableOpacity>
+        </View>
+    )
+
+}
 export const Trace = (props) => {
     const sport = props.sport;
     const username = props.username;
@@ -41,25 +73,31 @@ export const Trace = (props) => {
     const [levels, setlevels] = React.useState([]);
     const [liste, setListe] = React.useState([]);
     const [final, setFinal] = React.useState([])
+    const [realListe, setRealListe] = React.useState([])
+    const [seriesLevel, setSeriesLevel] = React.useState([0])
     const [groups, setGroups] = React.useState([]);
     const [groupmatches, setmatchesgroup] = React.useState([]);
     const navigation = useNavigation();
     React.useEffect(() => {
-        fetch_matches(true, null, username, setAutho, setStatus, props.setArbitreRule, props.sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, props.setWidth, props.setHeight).then(r => {
-
+        console.log("useeffect")
+        fetch_matches(true, null, username, setAutho, setStatus, props.setArbitreRule, props.sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, props.setWidth, props.setHeight, setRealListe, setSeriesLevel).then(r => {
+            
             props.traceload(false);
-            setloading(false);
+            setTimeout(() => setloading(false), 1000);
         }).catch(err => { alert(err); navigation.navigate('Home') });
 
 
     }, []);
     if (loading) {
-        return (<Modal
-            // animationType=""
-            transparent={false}
-            visible={loading}
-            supportedOrientations={['portrait', 'landscape']}
-        ><View><ActivityIndicator size="large" color="black" /></View></Modal>);
+        return (
+
+            // <Modal
+            //     // animationType=""
+            //     transparent={false}
+            //     visible={loading}
+            //     supportedOrientations={['portrait', 'landscape']}
+            // >
+            <View><ActivityIndicator size="large" color="black" /></View>);
     }
     if (status.status == "playoff") {
         return (
@@ -104,42 +142,33 @@ export const Trace = (props) => {
 
     }
     else { // Other (list like trail etc.)
-        if (status.status == "final") {
-
-            var local_liste = final;
-        }
-        else {
-            var local_liste = liste;
-        }
-        var temp_level_series = local_liste.map(r => r.level);
-        var series_level = [...new Set(temp_level_series)]; // unique levels
 
         if (!autho) {
             return (
-                <View style={{position:'absolute', top:100, left:0}}>
+                <View style={{ position: 'absolute', top: 100, left: 0 }}>
 
-                <View styles={{width:70, height:70, alignSelf:"center"}}>
+                    <View styles={{ width: 70, height: 70, alignSelf: "center" }}>
 
-                    {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, 0) : <Text></Text>}
-                </View>
+                        {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, 0, setListe, setFinal, username, setSeriesLevel, setRealListe) : <Text></Text>}
+                    </View>
                     <View style={{ flexDirection: "row" }}>
                         <View>
                             <Text style={styles.showPlayers}>Athlete</Text>
-                            {local_liste.map(r =>
+                            {realListe.map(r =>
                                 <Text style={r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers}>{r.username}</Text>
                             )
                             }
                         </View>
                         <View>
                             <Text style={styles.inputScore}>Score/Temps</Text>
-                            {local_liste.map(r =>
+                            {realListe.map(r =>
                                 <Text style={styles.inputScore}>{r.score}</Text>
                             )
                             }
                         </View>
                         <View>
                             <View style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
-                            {local_liste.map((r, index) => {
+                            {realListe.map((r, index) => {
                                 if (r.rank == 1) {
                                     return (
                                         <View style={{ flexDirection: "row" }} >
@@ -181,23 +210,24 @@ export const Trace = (props) => {
 
 
             return (
-                <View style={{position:'absolute', top:100, left:0}}>
-                    <View style={{width:70, height:70, justifyContent:'flex-start'}}>
-                    {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, 0) : <Text></Text>}
+                <View style={{ position: 'absolute', top: 100, left: 0 }}>
+                    <View style={{ width: 70, height: 70, justifyContent: 'flex-start' }}>
+                        {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, 0, setListe, setFinal, username,setSeriesLevel, setRealListe) : <Text></Text>}
                     </View>
-                    {series_level.map(cur_level =>
-                        <View key={cur_level}>
+                    {seriesLevel.map(cur_level =>
+                        <View>
                             <View>
                                 <Text style={{ marginLeft: 175, fontSize: 20, fontWeight: "bold" }}>{cur_level == 0 ? "Final" : ("Serie" + cur_level)}</Text>
                             </View>
                             <View style={{ flexDirection: "row" }}>
                                 <View>
                                     <Text style={styles.showPlayers}>Athlete</Text>
-                                    {local_liste.map((r, index) => {
+                                    {realListe.map((r, index) => {
+                                       
                                         if (cur_level == r.level) {
                                             return (
 
-                                                <View key={r.username}>
+                                                <View >
                                                     <Text style={r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers}>{r.username}</Text>
                                                 </View>
                                             )
@@ -208,10 +238,10 @@ export const Trace = (props) => {
                                 </View>
                                 <View>
                                     <Text style={styles.inputScore}>Score/Temps</Text>
-                                    {local_liste.map((r, index) => {
+                                    {realListe.map((r, index) => {
                                         if (cur_level == r.level) {
                                             return (
-                                                <TextInput key={r.username} onChangeText={(text) => { r.score = text; }} style={styles.inputScore}>{r.score}</TextInput>
+                                                <TextInput onChangeText={(text) => { r.score = text; }} style={styles.inputScore}>{r.score}</TextInput>
                                             )
                                         }
                                     }
@@ -221,93 +251,21 @@ export const Trace = (props) => {
                                 <View>
                                     <View style={{ width: 60, height: 30, backgroundColor: "lightgrey" }}>
                                         <Pressable style={{ alignSelf: "center" }} onPress={() => { // Function to save only the results!
-                                            setListe([...local_liste]);
-                                            pushmatch(username, sport, local_liste, "liste", 0);
+                                            setListe([...realListe]);
+                                            pushmatch(username, sport, realListe, "liste", 0);
                                         }
                                         }>
                                             <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/save.png')}></Image>
                                         </Pressable>
 
                                     </View>
-                                    {local_liste.map((r, index) => {
+                                    {realListe.map((r, index) => {
                                         if (cur_level == r.level) {
                                             return (
-
-
-                                                <View key={r.username} style={{ flexDirection: "row" }} >
-                                                    <View style={r.rank == 3 ? styles.medailleopaque : styles.medailletransparent}>
-                                                        <TouchableOpacity
-                                                            onPress={() => {
-                                                                setloading(true);
-                                                                var count = 0;
-                                                                for (var i = 0; i < local_liste.length; ++i) {
-                                                                    if (local_liste[i].rank == 3)
-                                                                        count++;
-                                                                }
-                                                                if (r.rank == 3) {
-                                                                    r.rank = 0
-                                                                }
-                                                                else if (count < 2) {
-                                                                    r.rank = 3;
-                                                                }
-                                                                // uncomment if you want only one medal
-                                                                // local_liste.map((q, index2) => { if (r != q && q.rank == 3) { q.rank = 0 } }); 
-                                                                setListe([...local_liste]);
-                                                                setloading(false)
-                                                            }}
-                                                        >
-                                                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
-                                                        </TouchableOpacity>
-                                                    </View>
-                                                    <View style={r.rank == 2 ? styles.medailleopaque : styles.medailletransparent}>
-                                                        <TouchableOpacity
-                                                            onPress={() => {
-                                                                setloading(true);
-                                                                var count = 0;
-                                                                for (var i = 0; i < local_liste.length; ++i) {
-                                                                    if (local_liste[i].rank == 2)
-                                                                        count++;
-                                                                }
-                                                                if (r.rank == 2) {
-                                                                    r.rank = 0
-                                                                }
-                                                                else if (count < 2) {
-                                                                    r.rank = 2;
-                                                                }
-                                                                // uncomment if you want only one medal
-                                                                // local_liste.map((q, index2) => { if (r != q && q.rank == 2) { q.rank = 0 } });
-                                                                setListe([...local_liste]);
-                                                                setloading(false)
-                                                            }}
-                                                        >
-                                                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
-                                                        </TouchableOpacity>
-                                                    </View>
-                                                    <View style={r.rank == 1 ? styles.medailleopaque : styles.medailletransparent}>
-                                                        <TouchableOpacity
-                                                            onPress={() => {
-                                                                setloading(true);
-
-                                                                var count = 0;
-                                                                for (var i = 0; i < local_liste.length; ++i) {
-                                                                    if (local_liste[i].rank == 1)
-                                                                        count++;
-                                                                }
-                                                                if (r.rank == 1) {
-                                                                    r.rank = 0
-                                                                }
-                                                                else if (count < 2) {
-                                                                    r.rank = 1;
-                                                                }
-                                                                // uncomment if you want only one medal
-                                                                // local_liste.map((q, index2) => { if (r != q && q.rank == 1) { q.rank = 0 } });
-                                                                setListe([...local_liste]);
-                                                                setloading(false)
-                                                            }}
-                                                        >
-                                                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
-                                                        </TouchableOpacity>
-                                                    </View>
+                                                <View style={{ flexDirection: "row" }} >
+                                                    <MedailleView r={r} liste={realListe} setRealListe={setRealListe} setloading={setloading} metal={require('./assets/bronze.png')} rank={3}></MedailleView>
+                                                    <MedailleView r={r} liste={realListe} setRealListe={setRealListe} setloading={setloading} metal={require('./assets/argent.png')} rank={2}></MedailleView>
+                                                    <MedailleView r={r} liste={realListe} setRealListe={setRealListe} setloading={setloading} metal={require('./assets/or.png')} rank={1}></MedailleView>
                                                 </View>
                                             )
                                         }
@@ -326,7 +284,7 @@ export const Trace = (props) => {
 
 
 }
-function button_switch(status, setStatus, sport, otherState, setloading, setWidth, setHeight, team_number) {
+function button_switch(status, setStatus, sport, otherState, setloading, setWidth, setHeight, team_number, setListe, setFinal, username, setSeriesLevel, setRealListe) {
     if (otherState == "playoff") { // so we will be in groups
         setWidth(400 * (team_number.length + 1));
         setHeight(400 * (team_number.length + 1) * 4); // poule de 4 en dur
@@ -341,24 +299,25 @@ function button_switch(status, setStatus, sport, otherState, setloading, setWidt
             setHeight(1000);
         }
     }
+
     return (
         <Pressable style={styles.inProgress}
-            onPress={() => { toggle_status(status, setStatus, sport, setloading) }}
+            onPress={() => { setloading(true); toggle_status(status, setStatus, sport, setloading); if (status.status == "series" || status.status == "final") { fetch_matches(false, status, username, null, null, null, sport, null, null, null, null, setListe, setFinal, setWidth, setHeight, setRealListe, setSeriesLevel) }; }}
         >
             <Text alignSelf="center">Switch to {otherState}</Text>
         </Pressable>)
 }
 
-async function fetch_matches(fetchStatus, statusState, username, setAutho, setStatus, setArbitreRule, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setWidth, setHeight) {
+async function fetch_matches(fetchStatus, statusState, username, setAutho, setStatus, setArbitreRule, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setWidth, setHeight, setRealListe, setSeriesLevel) {
 
     let matches = {};
+    let matches_group = {};
 
 
     let status = { arbitre: "error", status: "error" }
     if (fetchStatus) {
 
 
-        let matches_group = {};
         while (status['status'] == 'error') {
 
 
@@ -382,6 +341,7 @@ async function fetch_matches(fetchStatus, statusState, username, setAutho, setSt
     else {
         status = statusState;
     }
+    console.log("fetch_match")
     let allok = false;
     while (!allok) {
         if (status['states'].includes("poules")) {
@@ -446,32 +406,48 @@ async function fetch_matches(fetchStatus, statusState, username, setAutho, setSt
             setmatches(JSON.parse(JSON.stringify(local_array_match)));
         }
         if (status['states'].includes("final")) { // gestion listes (trail/tong)
+
+
             let liste = {};
             let filename = (sportname == "Pizza" ? sportname + "/" + username : sportname)
             liste = await fetch("http://91.121.143.104:7070/teams/" + filename + ".json").then(response => response.json()).then(data => { allok = true; return data });
             let local_liste = [];
             let local_final = [];
             var levellist = 1;
-            for (var series in liste["Series"]) {
+            for (var series in await liste["Series"]) {
                 if (liste["Series"][series]["Name"] == "Final") {
                     var templist = liste["Series"][series]["Teams"];
                     for (var i in liste["Series"][series]["Teams"]) {
                         local_final.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], 0));
                     }
-                    setFinal(local_final)
+                    setFinal([...local_final])
+
                 }
                 else { // consolidation des series avant la finale
                     var templist = liste["Series"][series]["Teams"];
                     for (var i in liste["Series"][series]["Teams"]) {
                         local_liste.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], levellist));
                     }
-                    setListe(local_liste);
                     levellist += 1;
                 }
+                setListe([...local_liste]);
+
+                
             }
-            setListe(local_liste);
+            if (status.status == "final") {
+
+                var temp_level_series = local_final.map(r => r.level);
+                setSeriesLevel([...new Set(temp_level_series)]); // unique levels
+                setRealListe(local_final);
+            }
+            else if (status.status == "series") {
+                var temp_level_series = local_liste.map(r => r.level);
+                setSeriesLevel([...new Set(temp_level_series)]); // unique levels
+                setRealListe(local_liste);
+            }
         }
     }
+
     if (displayed_state[sportname] == 'series' || displayed_state[sportname] == "final") {
 
         setWidth(1500);

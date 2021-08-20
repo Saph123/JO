@@ -498,7 +498,7 @@ function SummaryScreen() {
         return (<ActivityIndicator size="large" color="#000000" />)
     }
     return (
-        <ScrollView>
+        <ScrollView style={{width:"100%"}}>
             {tableauMedaille.map(r => {
 
 
