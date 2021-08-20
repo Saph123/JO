@@ -71,7 +71,6 @@ function HomeScreen({ route, navigation }) {
     const [expoPushToken, setExpoPushToken] = React.useState('');
     const responseListener = React.useRef();
     async function playcluedo() {
-        pushcluedo(route.params.pushtoken);
         if (soundstatus == undefined) {
 
 
@@ -113,7 +112,6 @@ function HomeScreen({ route, navigation }) {
         // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
             if (response.notification.request.content.body.indexOf("PUSH") != -1) {
-                alert("KEK")
                 navigation.navigate('pushNotifScreen');
 
             }
