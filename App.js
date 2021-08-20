@@ -14,16 +14,16 @@ import * as Notifications from 'expo-notifications';
 import * as SecureStore from 'expo-secure-store';
 
 async function save(key, value) {
-  await SecureStore.setItemAsync(key, value);
+    await SecureStore.setItemAsync(key, value);
 }
 
 async function getValueFor(key) {
-  let result = await SecureStore.getItemAsync(key);
-  if (result) {
-      return result;
+    let result = await SecureStore.getItemAsync(key);
+    if (result) {
+        return result;
     } else {
-      return "";
-  }
+        return "";
+    }
 }
 let username = "";
 const styles = require("./style.js");
@@ -66,6 +66,10 @@ function HomeScreen({ route, navigation }) {
     const [currentEvents, setCurrentEvents] = React.useState([]);
     const [eventsDone, setEventsDone] = React.useState([]);
     const [soundstatus, setSound] = React.useState();
+    const notificationListener = React.useRef();
+    const [notification, setNotification] = React.useState(false);
+    const [expoPushToken, setExpoPushToken] = React.useState('');
+    const responseListener = React.useRef();
     async function playcluedo() {
         pushcluedo(route.params.pushtoken);
         if (soundstatus == undefined) {
@@ -92,11 +96,32 @@ function HomeScreen({ route, navigation }) {
 
     }
     React.useEffect(() => {
-        getValueFor("username").then(r => {username=r;setLoading(0);});
+        getValueFor("username").then(r => { username = r; setLoading(0); });
         manageEvents(setEventsDone, setCurrentEvents)
         var test = getNextEventseconds();
         setSecondsleft(test.time);
         setNextEvent(test.name);
+        registerForPushNotificationsAsync().then(token => { setExpoPushToken(token); pushtoken(token, username) });
+        // This listener is fired whenever a notification is received while the app is foregrounded
+        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+            setNotification(notification);
+            if (notification.request.content.title == "CLUEDO!") {
+                alert("Cluedo!!")
+            }
+        });
+
+        // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+            if (response.notification.request.content.body.indexOf("PUSH") != -1) {
+                alert("KEK")
+                navigation.navigate('pushNotifScreen');
+
+            }
+        });
+        return () => {
+            Notifications.removeNotificationSubscription(notificationListener.current);
+            Notifications.removeNotificationSubscription(responseListener.current);
+        };
 
     }, []);
     if (loading) {
@@ -173,7 +198,7 @@ function HomeScreen({ route, navigation }) {
                     <Image style={{ borderRadius: 15, borderWidth: 1, borderColor: "black" }} source={require('./assets/summary.png')} />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.loginbutton}
-                    onPress={() => { navigation.navigate('Login') }}
+                    onPress={() => { navigation.navigate('Login', {pushtoken:expoPushToken}) }}
                 >
 
                     <Text style={styles.texthomebutton}>Login</Text>
@@ -498,7 +523,7 @@ function SummaryScreen() {
         return (<ActivityIndicator size="large" color="#000000" />)
     }
     return (
-        <ScrollView style={{width:"100%"}}>
+        <ScrollView style={{ width: "100%" }}>
             {tableauMedaille.map(r => {
 
 
@@ -644,7 +669,7 @@ function VanRommelScreen() {
             <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}> </Text></View>
             <Image style={{ borderRadius: 40, width: 50, height: 50, marginLeft: 20 }} source={require('./assets/PaulB.jpg')} />
             <Text style={{ fontSize: 16, fontWeight: "bold", marginLeft: 80, marginTop: -33 }}> Paul B.:</Text>
-            <Text style={{ fontSize: 14, fontStyle: "italic", marginLeft: 150, marginTop: -25, color: "blue", textAlign: "center"}}> “Mon seul regret est de ne jamais avoir pu travailler avec les Van Rommel.”</Text>
+            <Text style={{ fontSize: 14, fontStyle: "italic", marginLeft: 150, marginTop: -25, color: "blue", textAlign: "center" }}> “Mon seul regret est de ne jamais avoir pu travailler avec les Van Rommel.”</Text>
             <View style={{ flex: 1, alignContent: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                 <View style={{ flex: 1 }}>
                     <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}> </Text></View>
@@ -700,7 +725,7 @@ function UsernameScreen({ route, navigation }) {
 
 
     React.useEffect(() => {
-        getValueFor("username").then(r => username=r)
+        getValueFor("username").then(r => username = r)
         manageEvents(setEventsDone, setEventsInProgess)
         fetch_activities(username, setArbitre, setEvents);
         fetch_results().then(r => {
@@ -726,7 +751,7 @@ function UsernameScreen({ route, navigation }) {
         }
         );
         setLoading(false);
-        
+
 
     }, []);
     if (loading) {
@@ -923,11 +948,10 @@ const Stack = createStackNavigator();
 function App() {
     const [arbitre, setArbitre] = React.useState(false);
     const [soundstatus, setSound] = React.useState();
-    const [expoPushToken, setExpoPushToken] = React.useState('');
-    const [notification, setNotification] = React.useState(false);
+
+
     const [load, setLoad] = React.useState(true);
-    const notificationListener = React.useRef();
-    const responseListener = React.useRef();
+
     const [currentSport, setCurrentSport] = React.useState("Sportname");
     // username = getValueFor("username");
     async function playmegaphone() {
@@ -960,37 +984,15 @@ function App() {
 
     React.useEffect(() => {
 
-        getValueFor("username").then(r => username=r);
+        getValueFor("username").then(r => username = r);
         setLoad(false);
-        registerForPushNotificationsAsync().then(token => { setExpoPushToken(token); pushtoken(token, username) });
-        // This listener is fired whenever a notification is received while the app is foregrounded
-        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-            setNotification(notification);
-            if (notification.request.content.title == "CLUEDO!") {
-                alert("Cluedo!!")
-            }
-            // else{
-            //     if(notification.request.content.body.indexOf("Commence dans") != -1)
-            //     {
 
 
 
-            //     }
-            // }
-        });
 
-        // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
-        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-
-        });
-
-        return () => {
-            Notifications.removeNotificationSubscription(notificationListener.current);
-            Notifications.removeNotificationSubscription(responseListener.current);
-        };
     }, []);
-    if(load){
-        return(
+    if (load) {
+        return (
             <View></View>
         )
     }
@@ -1017,12 +1019,12 @@ function App() {
                                     <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
                                 </TouchableOpacity></View>
                             </View>)
-                    })} initialParams={{ pushtoken: expoPushToken, setCurrentSport: setCurrentSport }} name="Home" component={HomeScreen} />
+                    })} initialParams={{setCurrentSport: setCurrentSport }} name="Home" component={HomeScreen} />
 
                     <Stack.Screen options={{
                         title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text>
                         </View>
-                    }} initialParams={{ pushtoken: expoPushToken }} name="Login" component={Login} />
+                    }} initialParams={{ pushtoken: "" }} name="Login" component={Login} />
 
                     <Stack.Screen options={({ navigation }) => ({
                         title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>
