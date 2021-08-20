@@ -79,7 +79,6 @@ export const Trace = (props) => {
     const [groupmatches, setmatchesgroup] = React.useState([]);
     const navigation = useNavigation();
     React.useEffect(() => {
-        console.log("useeffect")
         fetch_matches(true, null, username, setAutho, setStatus, props.setArbitreRule, props.sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, props.setWidth, props.setHeight, setRealListe, setSeriesLevel).then(r => {
             setloading(false)
             props.traceload(false);
@@ -116,14 +115,14 @@ export const Trace = (props) => {
                         style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-between" }}>
                         <Matchcomp status={status} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={props.setWidth} setHeight={props.setHeight} setloading={setloading} username={username} loading={loading} matches={matches} level={r} sport={sport} autho={autho}></Matchcomp>
                     </View>)}
-                {(status.states.length > 1) ? button_switch(status, setStatus, sport, "poules", setloading, props.setWidth, props.setHeight, groups) : <Text></Text>}
+                {(status.states.length > 1) ? button_switch(status, setStatus, sport, "poules", props.traceload, props.setWidth, props.setHeight, groups, null, null, null, null, null, props.pinchReset) : <Text></Text>}
             </View>
         );
     }
     if (status.status == "poules") {
         return (
             <View style={{ flexDirection: "row", flex: 1, position: "absolute", top: 0, left: 0 }}>
-                {(status.states.length > 1) ? button_switch(status, setStatus, sport, "playoff", setloading, props.setWidth, props.setHeight, levels) : <Text></Text>}
+                {(status.states.length > 1) ? button_switch(status, setStatus, sport, "playoff", props.traceload, props.setWidth, props.setHeight, levels, null, null, null, null, null, props.pinchReset) : <Text></Text>}
                 {groups.map((r, index) =>
                     <View key={r.name} style={styles.tablecontainer}>
                         <Text style={{ textAlign: "center" }}>{r.name}</Text>
@@ -148,7 +147,7 @@ export const Trace = (props) => {
 
                     <View styles={{ width: 70, height: 70, alignSelf: "center" }}>
 
-                        {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, 0, setListe, setFinal, username, setSeriesLevel, setRealListe) : <Text></Text>}
+                        {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, 0, setListe, setFinal, username, setSeriesLevel, setRealListe, props.pinchReset) : <Text></Text>}
                     </View>
                     <View style={{ flexDirection: "row" }}>
                         <View>
@@ -283,7 +282,7 @@ export const Trace = (props) => {
 
 
 }
-function button_switch(status, setStatus, sport, otherState, setloading, setWidth, setHeight, team_number, setListe, setFinal, username, setSeriesLevel, setRealListe) {
+function button_switch(status, setStatus, sport, otherState, setloading, setWidth, setHeight, team_number, setListe, setFinal, username, setSeriesLevel, setRealListe, pinchReset) {
     if (otherState == "playoff") { // so we will be in groups
         setWidth(400 * (team_number.length + 1));
         setHeight(400 * (team_number.length + 1) * 4); // poule de 4 en dur
@@ -301,7 +300,7 @@ function button_switch(status, setStatus, sport, otherState, setloading, setWidt
 
     return (
         <Pressable style={styles.inProgress}
-            onPress={() => { setloading(true); toggle_status(status, setStatus, sport, setloading); if (status.status == "series" || status.status == "final") { fetch_matches(false, status, username, null, null, null, sport, null, null, null, null, setListe, setFinal, setWidth, setHeight, setRealListe, setSeriesLevel) }; }}
+            onPress={() => { setloading(true); pinchReset(true); toggle_status(status, setStatus, sport, setloading); if (status.status == "series" || status.status == "final") { fetch_matches(false, status, username, null, null, null, sport, null, null, null, null, setListe, setFinal, setWidth, setHeight, setRealListe, setSeriesLevel) }; }}
         >
             <Text alignSelf="center">Switch to {otherState}</Text>
         </Pressable>)
@@ -340,7 +339,6 @@ async function fetch_matches(fetchStatus, statusState, username, setAutho, setSt
     else {
         status = statusState;
     }
-    console.log("fetch_match")
     let allok = false;
     while (!allok) {
         if (status['states'].includes("poules")) {

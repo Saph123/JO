@@ -22,7 +22,6 @@ async function getValueFor(key) {
   if (result) {
       return result;
     } else {
-      console.log("unkown")
       return "";
   }
 }
@@ -415,6 +414,7 @@ function SportDetailsScreen({ route }) {
     const [loadingmain, setloading] = React.useState(true);
     const [status, setArbitreRule] = React.useState({ arbitre: "error", status: "error" });
     const [regle, setRegle] = React.useState(false);
+    const [toupdate, setToUpdate] = React.useState(false);
     React.useEffect(() => {
 
         setloading(false);
@@ -425,7 +425,7 @@ function SportDetailsScreen({ route }) {
         return (<ActivityIndicator size="large" color="#000000" />)
     }
     return (
-        <PinchZoomView style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, width: window_width, height: window_height }} maxScale={1} minScale={0.5} >
+        <PinchZoomView style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, width: window_width, height: window_height }} setToUpdate={setToUpdate} toupdate={toupdate} maxScale={1} minScale={0.5} >
             <ArbitreContext.Consumer>
                 {value => {
                     return (
@@ -454,7 +454,7 @@ function SportDetailsScreen({ route }) {
                 }
             </ArbitreContext.Consumer>
 
-            <Trace status={status} username={username} sport={route.params.sportname} width={window_width} height={window_height} setHeight={setHeight} setWidth={setWidth} setArbitreRule={setArbitreRule} traceload={setloading} />
+            <Trace status={status} username={username} sport={route.params.sportname} width={window_width} height={window_height} setHeight={setHeight} setWidth={setWidth} setArbitreRule={setArbitreRule} traceload={setloading} pinchReset={setToUpdate} />
         </PinchZoomView>
 
     )
