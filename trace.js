@@ -210,7 +210,7 @@ export const Trace = (props) => {
             return (
                 <View style={{ position: 'absolute', top: 100, left: 0 }}>
                     <View style={{ width: 70, height: 70, justifyContent: 'flex-start' }}>
-                        {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, 0, setListe, setFinal, username,setSeriesLevel, setRealListe) : <Text></Text>}
+                        {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, 0, setListe, setFinal, username,setSeriesLevel, setRealListe, props.pinchReset) : <Text></Text>}
                     </View>
                     {seriesLevel.map(cur_level =>
                         <View>
