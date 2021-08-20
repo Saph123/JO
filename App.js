@@ -11,8 +11,21 @@ import { Planning, getNextEventseconds } from "./planning.js";
 import { Trace, fetch_results, fetch_activities } from "./trace.js";
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
-import { setEnabled } from 'react-native/Libraries/Performance/Systrace';
+import * as SecureStore from 'expo-secure-store';
 
+async function save(key, value) {
+  await SecureStore.setItemAsync(key, value);
+}
+
+async function getValueFor(key) {
+  let result = await SecureStore.getItemAsync(key);
+  if (result) {
+      return result;
+    } else {
+      console.log("unkown")
+      return "";
+  }
+}
 let username = "";
 const styles = require("./style.js");
 const ArbitreContext = React.createContext(false);
@@ -80,11 +93,12 @@ function HomeScreen({ route, navigation }) {
 
     }
     React.useEffect(() => {
+        getValueFor("username").then(r => {username=r;setLoading(0);});
         manageEvents(setEventsDone, setCurrentEvents)
         var test = getNextEventseconds();
         setSecondsleft(test.time);
         setNextEvent(test.name);
-        setLoading(0);
+
     }, []);
     if (loading) {
         return (<ActivityIndicator size="large" color="#000000" />)
@@ -273,6 +287,10 @@ function Login({ route, navigation }) {
     const [status, setStatus] = React.useState({});
     const controller = new AbortController()
     // 5 second timeout:
+    React.useEffect(() => {
+        getValueFor("username").then(r => setuserName(r));
+        getValueFor("password").then(r => setpassword(r));
+    }, []);
     const timeoutId = setTimeout(() => controller.abort(), 5000)
     if (username == "") {
         return (
@@ -280,18 +298,20 @@ function Login({ route, navigation }) {
                 {videoScep(setScep, scep, video)}
                 <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
                     <View style={{ flexDirection: "row", margin: 15 }}>
-                        <TextInput onFocus={() => { if (Platform.OS !== "ios") { setuserName("") } }} onTouchStart={() => { if (Platform.OS === "ios") { setuserName("") } }} autoCompleteType="username" style={{ textAlign: "center", borderRadius: 15, borderWidth: 1, height: 20, minWidth: 100 }} onChangeText={text => { setuserName(""); setuserName(text) }} value={userName}></TextInput>
+                        <TextInput autoCompleteType="username" style={{ textAlign: "center", borderRadius: 15, borderWidth: 1, height: 20, minWidth: 100 }} onChangeText={text => { setuserName(text) }} value={userName}></TextInput>
                     </View>
                     <View style={{ flexDirection: "row", margin: 15 }}>
                         <TextInput onFocus={() => setpassword("")} autoCompleteType="password" secureTextEntry={true} style={{ textAlign: "center", borderWidth: 1, borderRadius: 15, height: 20, minWidth: 100 }} onChangeText={text => setpassword(text)} value={password}></TextInput>
                     </View>
                     <View style={{ margin: 30, flexDirection: "row" }}>
-                        <Pressable style={{ width: 60, height: 30, borderRadius: 15, backgroundColor: "#ff8484", justifyContent: "center" }} title="Log in" onPress={() =>
+                        <TouchableOpacity style={{ width: 60, height: 30, borderRadius: 15, backgroundColor: "#ff8484", justifyContent: "center" }} title="Log in" onPress={() =>
 
                             fetch("http://91.121.143.104:7070/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": userName, "password": password }) }).then(r => {
                                 if (r.status == 200) {
                                     username = userName;
                                     pushtoken(route.params.pushtoken, userName);
+                                    save("username", userName);
+                                    save("password", password);
                                     navigation.navigate('Home', { refresh: "refresh" });
                                     return;
                                 }
@@ -301,7 +321,7 @@ function Login({ route, navigation }) {
                                 }
                             }).catch((err) => { alert(err, "Issue with server!"); return })}>
                             <Text style={{ textAlign: "center", textAlignVertical: "center" }}>Login</Text>
-                        </Pressable>
+                        </TouchableOpacity>
                         {/* <Button style={{ margin: 30 }} color='grey' title="Register" onPress={() =>
 
                         fetch("http://91.121.143.104:7070/register", { method: "POST", body: JSON.stringify({"version":version, "username": userName, "password": password }) }).then(r => {
@@ -396,8 +416,8 @@ function SportDetailsScreen({ route }) {
     const [status, setArbitreRule] = React.useState({ arbitre: "error", status: "error" });
     const [regle, setRegle] = React.useState(false);
     React.useEffect(() => {
-        setloading(false);
 
+        setloading(false);
 
     }, []);
 
@@ -897,10 +917,11 @@ function App() {
     const [soundstatus, setSound] = React.useState();
     const [expoPushToken, setExpoPushToken] = React.useState('');
     const [notification, setNotification] = React.useState(false);
-
+    const [load, setLoad] = React.useState(true);
     const notificationListener = React.useRef();
     const responseListener = React.useRef();
     const [currentSport, setCurrentSport] = React.useState("Sportname");
+    // username = getValueFor("username");
     async function playmegaphone() {
         if (soundstatus == undefined) {
 
@@ -931,7 +952,8 @@ function App() {
 
     React.useEffect(() => {
 
-
+        getValueFor("username").then(r => username=r);
+        setLoad(false);
         registerForPushNotificationsAsync().then(token => { setExpoPushToken(token); pushtoken(token, username) });
         // This listener is fired whenever a notification is received while the app is foregrounded
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
@@ -959,6 +981,11 @@ function App() {
             Notifications.removeNotificationSubscription(responseListener.current);
         };
     }, []);
+    if(load){
+        return(
+            <View></View>
+        )
+    }
     return (
         <NavigationContainer>
             <ArbitreContext.Provider value={arbitre}>

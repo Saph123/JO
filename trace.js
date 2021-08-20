@@ -237,7 +237,7 @@ export const Trace = (props) => {
                                                 <View key={r.username} style={{ flexDirection: "row" }} >
                                                     <View style={r.rank == 3 ? styles.medailleopaque : styles.medailletransparent}>
                                                         <TouchableOpacity
-                                                            onPressIn={() => {
+                                                            onPress={() => {
                                                                 setloading(true);
                                                                 var count = 0;
                                                                 for (var i = 0; i < local_liste.length; ++i) {
@@ -261,7 +261,7 @@ export const Trace = (props) => {
                                                     </View>
                                                     <View style={r.rank == 2 ? styles.medailleopaque : styles.medailletransparent}>
                                                         <TouchableOpacity
-                                                            onPressIn={() => {
+                                                            onPress={() => {
                                                                 setloading(true);
                                                                 var count = 0;
                                                                 for (var i = 0; i < local_liste.length; ++i) {
@@ -285,7 +285,7 @@ export const Trace = (props) => {
                                                     </View>
                                                     <View style={r.rank == 1 ? styles.medailleopaque : styles.medailletransparent}>
                                                         <TouchableOpacity
-                                                            onPressIn={() => {
+                                                            onPress={() => {
                                                                 setloading(true);
 
                                                                 var count = 0;
@@ -584,23 +584,23 @@ function modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_a
             supportedOrientations={['portrait', 'landscape']}
         >
             <View style={styles.matchZoomView}>
-                <Pressable style={styles.closeButton} onPressIn={() => { curMatchZoom.score = initScore; updateMatchArray(curMatchZoom, match_array, set_match_array); setMatchZoom(false) }}><Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} /></Pressable>
+                <Pressable style={styles.closeButton} onPress={() => { curMatchZoom.score = initScore; updateMatchArray(curMatchZoom, match_array, set_match_array); setMatchZoom(false) }}><Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} /></Pressable>
                 <View style={{ flexDirection: "column", flex: 1, justifyContent: "space-evenly" }}>
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                         <View style={{ width: 200, justifyContent: "center" }}><Text style={{ textAlignVertical: "center" }}>{curMatchZoom.team1}</Text></View>
                         <View style={{ marginLeft: 30, justifyContent: "center" }}>
-                            <Pressable onPressIn={() => { crement_score_team(1, curMatchZoom, match_array, set_match_array, 0) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/plus.png')} /></Pressable>
+                            <Pressable onPress={() => { crement_score_team(1, curMatchZoom, match_array, set_match_array, 0) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/plus.png')} /></Pressable>
                             <Text style={{ textAlign: "center" }}>{curMatchZoom.score == undefined ? "0" : curMatchZoom.score.split(":")[0]}</Text>
-                            <Pressable onPressIn={() => { crement_score_team(1, curMatchZoom, match_array, set_match_array, 1) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/moins.png')} /></Pressable>
+                            <Pressable onPress={() => { crement_score_team(1, curMatchZoom, match_array, set_match_array, 1) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/moins.png')} /></Pressable>
                         </View>
                     </View>
                     <View><Text style={{ textAlign: "center" }}>VS</Text></View>
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                         <View style={{ width: 200, justifyContent: "center" }}><Text style={{ textAlignVertical: "center" }}>{curMatchZoom.team2}</Text></View>
                         <View style={{ marginLeft: 30, justifyContent: "center" }}>
-                            <Pressable onPressIn={() => { crement_score_team(2, curMatchZoom, match_array, set_match_array, 0) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/plus.png')} /></Pressable>
+                            <Pressable onPress={() => { crement_score_team(2, curMatchZoom, match_array, set_match_array, 0) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/plus.png')} /></Pressable>
                             <Text style={{ textAlign: "center" }}>{curMatchZoom.score == undefined ? "0" : curMatchZoom.score.split(":")[1]}</Text>
-                            <Pressable onPressIn={() => { crement_score_team(2, curMatchZoom, match_array, set_match_array, 1) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/moins.png')} /></Pressable>
+                            <Pressable onPress={() => { crement_score_team(2, curMatchZoom, match_array, set_match_array, 1) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/moins.png')} /></Pressable>
                         </View>
                     </View>
                     <View style={{ flexDirection: "row", justifyContent: "center" }}>
