@@ -1,7 +1,7 @@
 // import styles from "./style";
 import * as React from 'react';
 import { View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Platform, Pressable, Linking, Button } from 'react-native';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { Link, NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import PinchZoomView from 'react-native-pinch-zoom-view';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
@@ -113,9 +113,13 @@ function HomeScreen({ route, navigation }) {
 
         // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+            console.log(response.notification.request.content.title);
+            console.log(response.notification.request.content.title.indexOf("Easter Egg"))
             if (response.notification.request.content.body.indexOf("PUSH") != -1) {
                 navigation.navigate('pushNotifScreen');
-
+            }
+            else if(response.notification.request.content.title.indexOf("Easter Egg!") != -1){
+                Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
             }
         });
         return () => {
