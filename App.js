@@ -191,7 +191,7 @@ function HomeScreen({ route, navigation }) {
                 <TouchableOpacity style={{ alignSelf: "center", backgroundColor: "lightgrey", borderRadius: 30 }} onPress={playcluedo}>
                     <Image style={{ borderRadius: 30, borderWidth: 1, borderColor: "black" }} source={require('./assets/cluedo.png')} />
                 </TouchableOpacity>
-                <Pressable style={styles.inProgress} onPress={() => { navigation.navigate('ClickerScreen') }} >
+                <Pressable style={({pressed}) => [{opacity: pressed? 0.2: 1},styles.inProgress]} onPress={() => { navigation.navigate('ClickerScreen') }} >
                     <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
                 </Pressable>
                 <TouchableOpacity style={{ alignSelf: "center", width: 65, height: 85, margin: 10 }} onPress={() => { navigation.navigate('SummaryScreen') }}>
