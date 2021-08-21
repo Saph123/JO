@@ -116,7 +116,7 @@ function HomeScreen({ route, navigation }) {
             if (response.notification.request.content.body.indexOf("PUSH") != -1) {
                 navigation.navigate('pushNotifScreen');
             }
-            else if(response.notification.request.content.title.indexOf("Easter Egg!") != -1){
+            else if (response.notification.request.content.title.indexOf("Easter Egg!") != -1) {
 
                 Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
             }
@@ -194,7 +194,7 @@ function HomeScreen({ route, navigation }) {
                 <TouchableOpacity style={{ alignSelf: "center", backgroundColor: "lightgrey", borderRadius: 30 }} onPress={playcluedo}>
                     <Image style={{ borderRadius: 30, borderWidth: 1, borderColor: "black" }} source={require('./assets/cluedo.png')} />
                 </TouchableOpacity>
-                <Pressable style={({pressed}) => [{opacity: pressed? 0.2: 1},styles.inProgress]} onPress={() => { navigation.navigate('ClickerScreen') }} >
+                <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, styles.inProgress]} onPress={() => { navigation.navigate('ClickerScreen') }} >
                     <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
                 </Pressable>
                 <TouchableOpacity style={{ alignSelf: "center", width: 65, height: 85, margin: 10 }} onPress={() => { navigation.navigate('SummaryScreen') }}>
@@ -584,16 +584,22 @@ function fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, firsttime) 
         return data;
     }).catch(err => { alert(err, "Reload the screen m8"); return [] });
 }
-function pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex) {
+function pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex, previousValue, setSpeed) {
+    var prev = test;
     for (var i in navigation.getState().routes) {
         if (navigation.getState().routes[i].name == "ClickerScreen") { // on est tjs sur l'ecran on relance
-            setTimeout(() => pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex), 3000);
+            setTimeout(() => pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex, prev, setSpeed), 3000);
         }
     }
+    if((test - previousValue)/3 < 80){
 
+        setSpeed(Math.round((test - previousValue)/3));
+    }
+    else{
+        setSpeed(0);
+    }
     fetch("http://91.121.143.104:7070/clicker", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "count": test }) }).then(r => {
         if (r.status == 200) {
-
             fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, false);
             return;
         }
@@ -606,13 +612,15 @@ function ClickerScreen() {
     const [count, setCount] = React.useState([]);
     const [allUserNames, setUserNames] = React.useState([]);
     const [index, setMyIndex] = React.useState(0);
+    const [speed, setSpeed] = React.useState(0);
     const navigation = useNavigation();
+    var prev = test;
     React.useEffect(() => {
         var fetchok = false;
         // while(!fetchok){
         fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, true);
 
-        setTimeout(() => pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex), 3000);
+        setTimeout(() => pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex, prev, setSpeed), 3000);
 
         // }
     }, []);
@@ -649,11 +657,12 @@ function ClickerScreen() {
                 </ScrollView>
             </View>
             <View style={{ flex: 1, justifyContent: 'center' }}>
-                <Pressable onPress={() => { var tmp = count; tmp[index] = tmp[index] + 1; test++; setCount([...tmp]) }} style={styles.inProgress} >
-                    <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
+                <Text>{speed} C/s</Text>
+                <Pressable onPress={() => { var tmp = count; tmp[index] = tmp[index] + 1; test++; setCount([...tmp]) }} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, styles.inProgress]} >
+                <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
                 </Pressable>
-            </View>
         </View>
+        </View >
     )
 
 }
@@ -723,7 +732,7 @@ function pushNotifScreen() {
             <TextInput onFocus={() => setTitle("")} style={{ textAlign: "center", borderRadius: 15, borderWidth: 1, height: 20, minWidth: 100, margin: 30 }} onChangeText={text => { setTitle(text); }} value={title}></TextInput>
             <TextInput onFocus={() => setBody("")} style={{ textAlign: "center", borderRadius: 15, borderWidth: 1, height: 20, minWidth: 100, margin: 30 }} onChangeText={text => { setBody(text); }} value={body}></TextInput>
             <TextInput onFocus={() => setTo("")} style={{ textAlign: "center", borderRadius: 15, borderWidth: 1, height: 20, minWidth: 100, margin: 30 }} onChangeText={text => { setTo(text); }} value={to}></TextInput>
-            <Pressable style={styles.logoutbutton} onPress={() => {askPushNotif(username, title, body, to); navigation.reset({ routes: [{ name: "Home" }]}) }} ><Text style={{ textAlign: "center" }}> Push!</Text></Pressable>
+            <Pressable style={styles.logoutbutton} onPress={() => { askPushNotif(username, title, body, to); navigation.reset({ routes: [{ name: "Home" }] }) }} ><Text style={{ textAlign: "center" }}> Push!</Text></Pressable>
         </View>
     )
 }
@@ -849,8 +858,8 @@ function UsernameScreen({ route, navigation }) {
 function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentSport, setfun) {
 
     return (
-        <Pressable delayLongPress={5000} style={({pressed}) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
-            onPress={() => { setCurrentSport(sportname), navigation.navigate('SportDetails', { sportname: sportname }) }} onLongPress={() => { if (sportname == 'Petanque') { setfun(true)}}}
+        <Pressable delayLongPress={5000} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
+            onPress={() => { setCurrentSport(sportname), navigation.navigate('SportDetails', { sportname: sportname }) }} onLongPress={() => { if (sportname == 'Petanque') { setfun(true) } }}
         >
             <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
         </Pressable>)
@@ -871,7 +880,7 @@ function videoHandler(setVideoVisible, videoVisible, video, videoSource, eastere
                         source={videoSource}
                         resizeMode={Platform.OS === "ios" ? "contain" : "cover"}
                         isLooping={false}
-                        onPlaybackStatusUpdate={status => { if (status.durationMillis == status.positionMillis && status.durationMillis) { setVideoVisible(false); if(easteregg){Linking.openURL('tel:+33 6 84 09 57 16')} } }}
+                        onPlaybackStatusUpdate={status => { if (status.durationMillis == status.positionMillis && status.durationMillis) { setVideoVisible(false); if (easteregg) { Linking.openURL('tel:+33 6 84 09 57 16') } } }}
 
                     />
                 </View>
@@ -962,7 +971,8 @@ async function askPushNotif(username, title, body, to) {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     // // push to server
     fetch("http://91.121.143.104:7070/pushnotif", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "title": title, "body": body, "to": to }) }).then(r => {
-    return}).catch((err) => { alert(err, "May be it's normal") });
+        return
+    }).catch((err) => { alert(err, "May be it's normal") });
 }
 
 const Stack = createStackNavigator();
