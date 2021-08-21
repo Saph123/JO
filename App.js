@@ -66,7 +66,9 @@ function HomeScreen({ route, navigation }) {
     const [currentEvents, setCurrentEvents] = React.useState([]);
     const [eventsDone, setEventsDone] = React.useState([]);
     const [soundstatus, setSound] = React.useState();
+    const [boules, setBoules] = React.useState(false);
     const notificationListener = React.useRef();
+    const videoBoule = React.useRef();
     const [notification, setNotification] = React.useState(false);
     const [expoPushToken, setExpoPushToken] = React.useState('');
     const responseListener = React.useRef();
@@ -147,7 +149,7 @@ function HomeScreen({ route, navigation }) {
     return (
 
         <ScrollView>
-
+            {videoHandler(setBoules, boules, videoBoule, require('./assets/boules.mp4'))}
             {secondsleft < 0 ? <View><Pressable style={styles.loginbutton}><Text style={styles.texthomebutton}>Planning</Text></Pressable></View> : secondsleft == 0 ? <Pressable onPress={() => navigation.navigate('Planning')}>
                 <Image style={{ alignSelf: "center" }} source={require('./assets/80s.gif')} /></Pressable> : <View><Text style={{ alignSelf: "center" }}>{nextEvent + " dans :"}</Text><CountDown
                     style={{ color: "black" }}
@@ -179,7 +181,7 @@ function HomeScreen({ route, navigation }) {
                     {eventView(currentEvents, eventsDone, "SpikeBall", navigation, route.params.setCurrentSport)}
                     {eventView(currentEvents, eventsDone, "Ventriglisse", navigation, route.params.setCurrentSport)}
                     {eventView(currentEvents, eventsDone, "100mRicard", navigation, route.params.setCurrentSport)}
-                    {eventView(currentEvents, eventsDone, "Petanque", navigation, route.params.setCurrentSport)}
+                    {eventView(currentEvents, eventsDone, "Petanque", navigation, route.params.setCurrentSport, setBoules)}
                     {eventView(currentEvents, eventsDone, "Molky", navigation, route.params.setCurrentSport)}
                 </View>
 
@@ -304,7 +306,7 @@ function PlanningScreen({ route, navigation }) {
 function Login({ route, navigation }) {
     const [userName, setuserName] = React.useState("username");
     const [password, setpassword] = React.useState("password");
-    const [scep, setScep] = React.useState(false);
+    const [videoVisible, setVideoVisible] = React.useState(false);
     const video = React.useRef(null);
     const [status, setStatus] = React.useState({});
     const controller = new AbortController()
@@ -317,7 +319,7 @@ function Login({ route, navigation }) {
     if (username == "") {
         return (
             <ScrollView style={{ flexDirection: "column", flex: 1 }}>
-                {videoScep(setScep, scep, video)}
+                {videoHandler(setVideoVisible, videoVisible, video, require('./assets/scep.mp4'))}
                 <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
                     <View style={{ flexDirection: "row", margin: 15 }}>
                         <TextInput autoCompleteType="username" style={{ textAlign: "center", borderRadius: 15, borderWidth: 1, height: 20, minWidth: 100 }} onChangeText={text => { setuserName(text) }} value={userName}></TextInput>
@@ -363,7 +365,7 @@ function Login({ route, navigation }) {
                 </View >
                 <View style={{ flex: 1, justifyContent: "center" }}>
                     <View style={{ alignItems: "center" }}><Text style={styles.medailleText}>Brought to you by </Text></View>
-                    <View style={{ alignItems: "center" }}><TouchableOpacity onPress={() => { setScep(true) }}>
+                    <View style={{ alignItems: "center" }}><TouchableOpacity onPress={() => { setVideoVisible(true) }}>
                         <Image style={styles.logosah} source={require('./assets/logoSCEP.png')} />
                     </TouchableOpacity></View>
                 </View>
@@ -393,7 +395,7 @@ function Login({ route, navigation }) {
     }
     return (
         <ScrollView>
-            {videoScep(setScep, scep, video)}
+            {videoHandler(setVideoVisible, videoVisible, video, require('./assets/scep.mp4'))}
             <View style={{ flexDirection: "column", flex: 1, }}>
                 <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
 
@@ -406,7 +408,7 @@ function Login({ route, navigation }) {
                 </View>
                 <View style={{ flex: 1 }}>
                     <View style={{ alignItems: "center" }}><Text style={styles.medailleText}>Brought to you by </Text></View>
-                    <View style={{ alignItems: "center" }}><TouchableOpacity onPress={() => { setScep(true) }}>
+                    <View style={{ alignItems: "center" }}><TouchableOpacity onPress={() => { setVideoVisible(true) }}>
                         <Image style={styles.logosah} source={require('./assets/logoSCEP.png')} />
                     </TouchableOpacity></View>
                     <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Sponsors </Text></View>
@@ -824,31 +826,31 @@ function UsernameScreen({ route, navigation }) {
     );
 }
 
-function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentSport) {
+function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentSport, setfun) {
     return (
-        <TouchableOpacity style={currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)}
-            onPress={() => { setCurrentSport(sportname), navigation.navigate('SportDetails', { sportname: sportname }) }}
+        <Pressable delayLongPress={5000} style={currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)}
+            onPress={() => { setCurrentSport(sportname), navigation.navigate('SportDetails', { sportname: sportname }) }} onLongPress={() => {if(sportname == 'Petanque'){setfun(true)}}}
         >
             <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
-        </TouchableOpacity>)
+        </Pressable>)
 }
 
-function videoScep(setScep, scep, video) {
+function videoHandler(setVideoVisible, videoVisible, video, videoSource) {
     return (
         <Modal style={{ width: "100%", height: "100%", alignSelf: "center" }}
-            visible={scep}
+            visible={videoVisible}
 
             onShow={() => video.current.playAsync()}>
 
-            <Pressable onPress={() => { setScep(false); video.current.stopAsync() }}>
+            <Pressable onPress={() => { setVideoVisible(false); video.current.stopAsync() }}>
                 <View>
                     <Video
                         ref={video}
                         style={{ width: "100%", height: "100%" }}
-                        source={require("./assets/oss.mp4")}
+                        source={videoSource}
                         resizeMode={Platform.OS === "ios" ? "contain" : "cover"}
                         isLooping={false}
-                        onPlaybackStatusUpdate={status => { if (status.durationMillis == status.positionMillis && status.durationMillis) { setScep(false) } }}
+                        onPlaybackStatusUpdate={status => { if (status.durationMillis == status.positionMillis && status.durationMillis) { setVideoVisible(false) } }}
 
                     />
                 </View>
