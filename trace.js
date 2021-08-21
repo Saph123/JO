@@ -33,6 +33,7 @@ let displayed_state = {
 const MedailleView = (props) => {
     const rank = props.rank;
     const r = props.r;
+    const maxMedals = props.maxMedals
     return (
         <View style={r.rank == rank ? styles.medailleopaque : styles.medailletransparent}>
             <TouchableOpacity
@@ -46,7 +47,7 @@ const MedailleView = (props) => {
                     if (r.rank == rank) {
                         r.rank = 0
                     }
-                    else if (count < 2) {
+                    else if (count < maxMedals) {
                         r.rank = rank;
                     }
                     // uncomment if you want only one medal
@@ -259,11 +260,18 @@ export const Trace = (props) => {
                                     </View>
                                     {realListe.map((r, index) => {
                                         if (cur_level == r.level) {
+                                            if(sport == 'Pizza')
                                             return (
                                                 <View style={{ flexDirection: "row" }} >
-                                                    <MedailleView r={r} liste={realListe} setRealListe={setRealListe} setloading={setloading} metal={require('./assets/bronze.png')} rank={3}></MedailleView>
-                                                    <MedailleView r={r} liste={realListe} setRealListe={setRealListe} setloading={setloading} metal={require('./assets/argent.png')} rank={2}></MedailleView>
-                                                    <MedailleView r={r} liste={realListe} setRealListe={setRealListe} setloading={setloading} metal={require('./assets/or.png')} rank={1}></MedailleView>
+                                                    <MedailleView maxMedals={1} r={r} liste={realListe} setRealListe={setRealListe} setloading={setloading} metal={require('./assets/or.png')} rank={1}></MedailleView>
+                                                </View>
+                                            )
+                                            
+                                            return (
+                                                <View style={{ flexDirection: "row" }} >
+                                                    <MedailleView maxMedals={2} r={r} liste={realListe} setRealListe={setRealListe} setloading={setloading} metal={require('./assets/bronze.png')} rank={3}></MedailleView>
+                                                    <MedailleView maxMedals={2} r={r} liste={realListe} setRealListe={setRealListe} setloading={setloading} metal={require('./assets/argent.png')} rank={2}></MedailleView>
+                                                    <MedailleView maxMedals={2} r={r} liste={realListe} setRealListe={setRealListe} setloading={setloading} metal={require('./assets/or.png')} rank={1}></MedailleView>
                                                 </View>
                                             )
                                         }
@@ -741,11 +749,11 @@ function over_text(match, index) {
     }
     if (match[index].over != 0) {
         return (
-            <Image style={{ borderRadius: 5, borderWidth: 2, borderColor: "black", width: 24, height: 26, alignSelf: "center" }} source={require('./assets/goback.png')} />
+            <Image style={{ borderRadius: 5, borderWidth: 2, borderColor: "black", width: 60, height: 67, alignSelf: "center" }} source={require('./assets/goback.png')} />
         )
     }
     return (
-        <Image style={{ borderRadius: 5, borderWidth: 2, borderColor: "black", width: 24, height: 26 }} source={require('./assets/finish.png')} />
+        <Image style={{ borderRadius: 5, borderWidth: 2, borderColor: "black", width: 60, height: 67 }} source={require('./assets/finish.png')} />
 
     )
 

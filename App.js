@@ -191,14 +191,14 @@ function HomeScreen({ route, navigation }) {
                 <TouchableOpacity style={{ alignSelf: "center", backgroundColor: "lightgrey", borderRadius: 30 }} onPress={playcluedo}>
                     <Image style={{ borderRadius: 30, borderWidth: 1, borderColor: "black" }} source={require('./assets/cluedo.png')} />
                 </TouchableOpacity>
-                <Pressable style={styles.inProgress} onPress={() => { navigation.navigate('ClickerScreen') }} >
+                <Pressable style={({pressed}) => [{opacity: pressed? 0.2: 1},styles.inProgress]} onPress={() => { navigation.navigate('ClickerScreen') }} >
                     <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
                 </Pressable>
                 <TouchableOpacity style={{ alignSelf: "center", width: 65, height: 85, margin: 10 }} onPress={() => { navigation.navigate('SummaryScreen') }}>
                     <Image style={{ borderRadius: 15, borderWidth: 1, borderColor: "black" }} source={require('./assets/summary.png')} />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.loginbutton}
-                    onPress={() => { navigation.navigate('Login', {pushtoken:expoPushToken}) }}
+                    onPress={() => { navigation.navigate('Login', { pushtoken: expoPushToken }) }}
                 >
 
                     <Text style={styles.texthomebutton}>Login</Text>
@@ -615,20 +615,36 @@ function ClickerScreen() {
     }, []);
     return (
         <View style={{ flex: 1, flexDirection: 'row' }}>
-            <ScrollView style={{ flex: 4 }}>
+            <View style={{ flex: 5 }}>
+                <ScrollView >
 
-                <View style={{ justifyContent: "space-between", flex: 1 }}>
-                    <View style={{ flex: 3, flexDirection: 'row' }}><Text style={{ flex: 1, textAlign: 'center' }}>Rank</Text><Text style={{ flex: 3, textAlign: 'center' }}>Username</Text><Text style={{ flex: 1, textAlign: 'center' }}>Clicks</Text></View>
-                    {allUserNames.map((r, index) =>
-                        <View style={{ flexDirection: "row", justifyContent: "flex-start", borderColor: "grey", borderWidth: 1, flex: 1 }}>
-                            <View style={{ flex: 1 }}><Text style={{ textAlign: 'center' }}>{myRank[index]}</Text></View>
-                            <View style={{ flex: 3 }}><Text style={{ textAlign: 'center' }}>{r}</Text></View>
-                            <View style={{ flex: 1 }}><Text style={{ textAlign: 'center' }}>{count[index]}</Text></View>
-                        </View>)}
-                    {/* {myRank.map((r, index) => <Text>{r}</Text>)}
+                    <View style={{ justifyContent: "space-between", flex: 6 }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', borderColor: "grey", borderWidth: 1 }}>
+                            <Text style={{ flex: 1, textAlign: 'center' }}>Rank</Text>
+                            <Text style={{ flex: 3, textAlign: 'center' }}>User</Text>
+                            <Text style={{ flex: 3, textAlign: 'center' }}>Clicks</Text>
+                            <View style={styles.medailleopaque}></View>
+                        </View>
+                        {allUserNames.map((r, index) =>
+                            <View style={{ flexDirection: "row", justifyContent: "flex-start", borderColor: "grey", borderWidth: 1 }}>
+                                <View style={{ flex: 1 }}><Text style={{ textAlign: 'center' }}>{myRank[index]}</Text></View>
+                                <View style={{ flex: 3 }}><Text style={{ textAlign: 'center' }}>{r}</Text></View>
+                                <View style={{ flex: 3 }}><Text style={{ textAlign: 'center' }}>{count[index]}</Text></View>
+                                {myRank[index] == 3 ?
+                                    <View style={styles.medailleopaque}>
+                                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
+                                    </View> : myRank[index] == 2 ? <View style={styles.medailleopaque}>
+                                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
+                                    </View> : myRank[index] == 1 ? <View style={styles.medailleopaque}>
+                                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
+                                    </View> : <View style={styles.medailleopaque}></View>
+                                }
+                            </View>)}
+                        {/* {myRank.map((r, index) => <Text>{r}</Text>)}
             {count.map((r, index) => <Text>{r}</Text>)} */}
-                </View>
-            </ScrollView>
+                    </View>
+                </ScrollView>
+            </View>
             <View style={{ flex: 1, justifyContent: 'center' }}>
                 <Pressable onPress={() => { var tmp = count; tmp[index] = tmp[index] + 1; test++; setCount([...tmp]) }} style={styles.inProgress} >
                     <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
@@ -827,9 +843,10 @@ function UsernameScreen({ route, navigation }) {
 }
 
 function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentSport, setfun) {
+
     return (
-        <Pressable delayLongPress={5000} style={currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)}
-            onPress={() => { setCurrentSport(sportname), navigation.navigate('SportDetails', { sportname: sportname }) }} onLongPress={() => {if(sportname == 'Petanque'){setfun(true)}}}
+        <Pressable delayLongPress={5000} style={({pressed}) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
+            onPress={() => { setCurrentSport(sportname), navigation.navigate('SportDetails', { sportname: sportname }) }} onLongPress={() => { if (sportname == 'Petanque') { setfun(true) } }}
         >
             <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
         </Pressable>)
@@ -1019,7 +1036,7 @@ function App() {
                                     <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
                                 </TouchableOpacity></View>
                             </View>)
-                    })} initialParams={{setCurrentSport: setCurrentSport }} name="Home" component={HomeScreen} />
+                    })} initialParams={{ setCurrentSport: setCurrentSport }} name="Home" component={HomeScreen} />
 
                     <Stack.Screen options={{
                         title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text>
