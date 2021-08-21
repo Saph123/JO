@@ -152,7 +152,7 @@ function HomeScreen({ route, navigation }) {
     return (
 
         <ScrollView>
-            {videoHandler(setBoules, boules, videoBoule, require('./assets/boules.mp4'))}
+            {videoHandler(setBoules, boules, videoBoule, require('./assets/boules.mp4'), true)}
             {secondsleft < 0 ? <View><Pressable style={styles.loginbutton}><Text style={styles.texthomebutton}>Planning</Text></Pressable></View> : secondsleft == 0 ? <Pressable onPress={() => navigation.navigate('Planning')}>
                 <Image style={{ alignSelf: "center" }} source={require('./assets/80s.gif')} /></Pressable> : <View><Text style={{ alignSelf: "center" }}>{nextEvent + " dans :"}</Text><CountDown
                     style={{ color: "black" }}
@@ -322,7 +322,7 @@ function Login({ route, navigation }) {
     if (username == "") {
         return (
             <ScrollView style={{ flexDirection: "column", flex: 1 }}>
-                {videoHandler(setVideoVisible, videoVisible, video, require('./assets/scep.mp4'))}
+                {videoHandler(setVideoVisible, videoVisible, video, require('./assets/scep.mp4'), false)}
                 <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
                     <View style={{ flexDirection: "row", margin: 15 }}>
                         <TextInput autoCompleteType="username" style={{ textAlign: "center", borderRadius: 15, borderWidth: 1, height: 20, minWidth: 100 }} onChangeText={text => { setuserName(text) }} value={userName}></TextInput>
@@ -398,7 +398,7 @@ function Login({ route, navigation }) {
     }
     return (
         <ScrollView>
-            {videoHandler(setVideoVisible, videoVisible, video, require('./assets/scep.mp4'))}
+            {videoHandler(setVideoVisible, videoVisible, video, require('./assets/scep.mp4'), false)}
             <View style={{ flexDirection: "column", flex: 1, }}>
                 <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
 
@@ -850,13 +850,13 @@ function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentS
 
     return (
         <Pressable delayLongPress={5000} style={({pressed}) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
-            onPress={() => { setCurrentSport(sportname), navigation.navigate('SportDetails', { sportname: sportname }) }} onLongPress={() => { if (sportname == 'Petanque') { setfun(true); setTimeout(() => Linking.openURL('tel:+33 6 84 09 57 16'), 26000) } }}
+            onPress={() => { setCurrentSport(sportname), navigation.navigate('SportDetails', { sportname: sportname }) }} onLongPress={() => { if (sportname == 'Petanque') { setfun(true)}}}
         >
             <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
         </Pressable>)
 }
 
-function videoHandler(setVideoVisible, videoVisible, video, videoSource) {
+function videoHandler(setVideoVisible, videoVisible, video, videoSource, easteregg) {
     return (
         <Modal style={{ width: "100%", height: "100%", alignSelf: "center" }}
             visible={videoVisible}
@@ -871,7 +871,7 @@ function videoHandler(setVideoVisible, videoVisible, video, videoSource) {
                         source={videoSource}
                         resizeMode={Platform.OS === "ios" ? "contain" : "cover"}
                         isLooping={false}
-                        onPlaybackStatusUpdate={status => { if (status.durationMillis == status.positionMillis && status.durationMillis) { setVideoVisible(false) } }}
+                        onPlaybackStatusUpdate={status => { if (status.durationMillis == status.positionMillis && status.durationMillis) { setVideoVisible(false); if(easteregg){Linking.openURL('tel:+33 6 84 09 57 16')} } }}
 
                     />
                 </View>
