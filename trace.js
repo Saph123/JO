@@ -211,7 +211,7 @@ export const Trace = (props) => {
             return (
                 <View style={{ position: 'absolute', top: 100, left: 0 }}>
                     <View style={{ width: 70, height: 70, justifyContent: 'flex-start' }}>
-                        {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, 0, setListe, setFinal, username,setSeriesLevel, setRealListe, props.pinchReset) : <Text></Text>}
+                        {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, 0, setListe, setFinal, username, setSeriesLevel, setRealListe, props.pinchReset) : <Text></Text>}
                     </View>
                     {seriesLevel.map(cur_level =>
                         <View>
@@ -220,9 +220,9 @@ export const Trace = (props) => {
                             </View>
                             <View style={{ flexDirection: "row" }}>
                                 <View>
-                                    <Text style={styles.showPlayers}>Athlete</Text>
+                                    <Text style={[styles.showPlayers, {height:60}]}>Athlete</Text>
                                     {realListe.map((r, index) => {
-                                       
+
                                         if (cur_level == r.level) {
                                             return (
 
@@ -236,7 +236,7 @@ export const Trace = (props) => {
                                     }
                                 </View>
                                 <View>
-                                    <Text style={styles.inputScore}>Score/Temps</Text>
+                                    <Text style={[styles.inputScore, {height:60}]}>Score/Temps</Text>
                                     {realListe.map((r, index) => {
                                         if (cur_level == r.level) {
                                             return (
@@ -248,25 +248,25 @@ export const Trace = (props) => {
                                     }
                                 </View>
                                 <View>
-                                    <View style={{ width: 60, height: 30, backgroundColor: "lightgrey" }}>
-                                        <Pressable style={{ alignSelf: "center" }} onPress={() => { // Function to save only the results!
+                                    <View style={{ width: 60, height: 60, backgroundColor: "lightgrey", justifyContent:"center" }}>
+                                        <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => { // Function to save only the results!
                                             setListe([...realListe]);
                                             pushmatch(username, sport, realListe, "liste", 0);
                                         }
                                         }>
-                                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/save.png')}></Image>
+                                            <Image resizeMode="cover" resizeMethod="resize" style={{alignSelf:"center"}} source={require('./assets/save.png')}></Image>
                                         </Pressable>
 
                                     </View>
                                     {realListe.map((r, index) => {
                                         if (cur_level == r.level) {
-                                            if(sport == 'Pizza')
-                                            return (
-                                                <View style={{ flexDirection: "row" }} >
-                                                    <MedailleView maxMedals={1} r={r} liste={realListe} setRealListe={setRealListe} setloading={setloading} metal={require('./assets/or.png')} rank={1}></MedailleView>
-                                                </View>
-                                            )
-                                            
+                                            if (sport == 'Pizza')
+                                                return (
+                                                    <View style={{ flexDirection: "row" }} >
+                                                        <MedailleView maxMedals={1} r={r} liste={realListe} setRealListe={setRealListe} setloading={setloading} metal={require('./assets/or.png')} rank={1}></MedailleView>
+                                                    </View>
+                                                )
+
                                             return (
                                                 <View style={{ flexDirection: "row" }} >
                                                     <MedailleView maxMedals={2} r={r} liste={realListe} setRealListe={setRealListe} setloading={setloading} metal={require('./assets/bronze.png')} rank={3}></MedailleView>
@@ -437,7 +437,7 @@ async function fetch_matches(fetchStatus, statusState, username, setAutho, setSt
                 }
                 setListe([...local_liste]);
 
-                
+
             }
             if (status.status == "final") {
 
