@@ -614,36 +614,36 @@ function ClickerScreen() {
         // }
     }, []);
     return (
-        <View style={{ flex:1, flexDirection: 'row' }}>
+        <View style={{ flex: 1, flexDirection: 'row' }}>
             <View style={{ flex: 5 }}>
-            <ScrollView >
+                <ScrollView >
 
-                <View style={{ justifyContent: "space-between", flex: 6 }}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start',borderColor: "grey", borderWidth: 1 }}>
-                        <Text style={{ flex: 1, textAlign: 'center' }}>Rank</Text>
-                        <Text style={{ flex: 3, textAlign: 'center' }}>User</Text>
-                        <Text style={{ flex: 3, textAlign: 'center' }}>Clicks</Text>
-                        <View style={styles.medailleopaque}></View>
-                    </View>
-                    {allUserNames.map((r, index) =>
-                        <View style={{ flexDirection: "row", justifyContent: "flex-start", borderColor: "grey", borderWidth: 1}}>
-                            <View style={{ flex: 1 }}><Text style={{ textAlign: 'center' }}>{myRank[index]}</Text></View>
-                            <View style={{ flex: 3 }}><Text style={{ textAlign: 'center' }}>{r}</Text></View>
-                            <View style={{ flex: 3 }}><Text style={{ textAlign: 'center' }}>{count[index]}</Text></View>
-                            {myRank[index] == 3 ?
-                                <View style={styles.medailleopaque}>
-                                    <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
-                                </View> : myRank[index] == 2 ? <View style={styles.medailleopaque}>
-                                    <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
-                                </View> : myRank[index] == 1 ? <View style={styles.medailleopaque}>
-                                    <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
-                                </View> : <View style={styles.medailleopaque}></View>
-                            }
-                        </View>)}
-                    {/* {myRank.map((r, index) => <Text>{r}</Text>)}
+                    <View style={{ justifyContent: "space-between", flex: 6 }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', borderColor: "grey", borderWidth: 1 }}>
+                            <Text style={{ flex: 1, textAlign: 'center' }}>Rank</Text>
+                            <Text style={{ flex: 3, textAlign: 'center' }}>User</Text>
+                            <Text style={{ flex: 3, textAlign: 'center' }}>Clicks</Text>
+                            <View style={styles.medailleopaque}></View>
+                        </View>
+                        {allUserNames.map((r, index) =>
+                            <View style={{ flexDirection: "row", justifyContent: "flex-start", borderColor: "grey", borderWidth: 1 }}>
+                                <View style={{ flex: 1 }}><Text style={{ textAlign: 'center' }}>{myRank[index]}</Text></View>
+                                <View style={{ flex: 3 }}><Text style={{ textAlign: 'center' }}>{r}</Text></View>
+                                <View style={{ flex: 3 }}><Text style={{ textAlign: 'center' }}>{count[index]}</Text></View>
+                                {myRank[index] == 3 ?
+                                    <View style={styles.medailleopaque}>
+                                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
+                                    </View> : myRank[index] == 2 ? <View style={styles.medailleopaque}>
+                                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
+                                    </View> : myRank[index] == 1 ? <View style={styles.medailleopaque}>
+                                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
+                                    </View> : <View style={styles.medailleopaque}></View>
+                                }
+                            </View>)}
+                        {/* {myRank.map((r, index) => <Text>{r}</Text>)}
             {count.map((r, index) => <Text>{r}</Text>)} */}
-                </View>
-            </ScrollView>
+                    </View>
+                </ScrollView>
             </View>
             <View style={{ flex: 1, justifyContent: 'center' }}>
                 <Pressable onPress={() => { var tmp = count; tmp[index] = tmp[index] + 1; test++; setCount([...tmp]) }} style={styles.inProgress} >
@@ -843,8 +843,9 @@ function UsernameScreen({ route, navigation }) {
 }
 
 function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentSport, setfun) {
+
     return (
-        <Pressable delayLongPress={5000} style={currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)}
+        <Pressable delayLongPress={5000} style={({pressed}) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
             onPress={() => { setCurrentSport(sportname), navigation.navigate('SportDetails', { sportname: sportname }) }} onLongPress={() => { if (sportname == 'Petanque') { setfun(true) } }}
         >
             <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />

@@ -749,11 +749,11 @@ function over_text(match, index) {
     }
     if (match[index].over != 0) {
         return (
-            <Image style={{ borderRadius: 5, borderWidth: 2, borderColor: "black", width: 24, height: 26, alignSelf: "center" }} source={require('./assets/goback.png')} />
+            <Image style={{ borderRadius: 5, borderWidth: 2, borderColor: "black", width: 60, height: 67, alignSelf: "center" }} source={require('./assets/goback.png')} />
         )
     }
     return (
-        <Image style={{ borderRadius: 5, borderWidth: 2, borderColor: "black", width: 24, height: 26 }} source={require('./assets/finish.png')} />
+        <Image style={{ borderRadius: 5, borderWidth: 2, borderColor: "black", width: 60, height: 67 }} source={require('./assets/finish.png')} />
 
     )
 
