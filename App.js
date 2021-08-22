@@ -252,11 +252,11 @@ function PlanningScreen({ route, navigation }) {
         <Modal style={{ width: "100%", height: "100%", alignSelf: "center" }}
             visible={gifVisible}>
 
-            <Pressable onPress={() => { setGifVisible(false); setClicks(0) }}>
+            <Pressable onPress={() => { setTimeout(()=> setGifVisible(false), 3000) }}>
                 <View>
                     <Text></Text>
                     <Image style={{ width: "100%", height: "70%", alignSelf: "center", marginTop :"30%" }} source={require('./assets/searching.gif')}/>
-                    <Text style={{ fontSize: 40, alignSelf: "center", marginTop : -100, color: "white", textAlign: "center", textShadowColor : "black", textShadowRadius: 4}}>{username} looking for easter eggs</Text>
+                    <Text style={{ fontSize: 40, alignSelf: "center", marginTop : "-30%", color: "white", textAlign: "center", textShadowColor : "black", textShadowRadius: 4}}>{username} looking for easter eggs</Text>
                 </View>
             </Pressable>
         </Modal>
@@ -339,6 +339,7 @@ function PlanningScreen({ route, navigation }) {
                                             }
                                             else {
                                                 setGifVisible(true)
+                                                setClicks(0)
                                             }
                                         }
                                     }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
