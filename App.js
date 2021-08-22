@@ -327,14 +327,14 @@ function PlanningScreen({ route, navigation }) {
                         }
                         if (r.timeBegin < samedi && r.timeBegin > vendredi) {
                             return (
-                                <SportContext>
+                                <SportContext.Consumer>
                                         {value =>
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
                                     <View><TouchableOpacity onPress={() => { value.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
                                 </View>
                         }
-                        </SportContext>)
+                        </SportContext.Consumer>)
                         }
                     })
                 }
@@ -352,7 +352,7 @@ function PlanningScreen({ route, navigation }) {
                             return (
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
-                                    <SportContext>
+                                    <SportContext.Consumer>
                                         {value =>
                                     <View><TouchableOpacity onPress={() => {
                                         if (r.timeBegin.getHours() < 12) {
@@ -369,7 +369,7 @@ function PlanningScreen({ route, navigation }) {
                                         }
                                     }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
                                      }
-                                </SportContext>
+                                </SportContext.Consumer>
                                 </View>)
                         }
                     })
@@ -963,13 +963,13 @@ function UsernameScreen({ route, navigation }) {
                         <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Mes activités </Text></View>
                         {events.map(r => {
                             return (
-                                <SportContext>
+                                <SportContext.Consumer>
                                     {value =>
                                 <View key={r}>
                                     {eventView(eventsInProgress, eventsDone, r, navigation, value.setCurrentSport)}
                                 </View>
                                  }
-                                 </SportContext>
+                                 </SportContext.Consumer>
                             )
                         })}
                     </View>
@@ -977,13 +977,13 @@ function UsernameScreen({ route, navigation }) {
                         <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> J'arbitre </Text></View>
                         {arbitre.map(r => {
                             return (
-                                <SportContext>
+                                <SportContext.Consumer>
                                     {value =>
                                 <View key={r}>
                                     {eventView(eventsInProgress, eventsDone, r, navigation, value.setCurrentSport)}
                                 </View>
                                 }
-                                </SportContext>
+                                </SportContext.Consumer>
                             )
                         })}
                     </View>
