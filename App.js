@@ -28,6 +28,7 @@ async function getValueFor(key) {
 let username = "";
 const styles = require("./style.js");
 const ArbitreContext = React.createContext(false);
+const ChatContext = React.createContext(false);
 export let version = 1
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -453,7 +454,46 @@ function Login({ route, navigation }) {
         </ScrollView>
     )
 };
+function fetchChat(sportname, setChatText) {
+    fetch("http://91.121.143.104:7070/chat/" + sportname + "_chat.txt").then(response => response.text()).then(r => { console.log(r); setChatText(r) });
+    
+}
+function pushChat(version, sportname, username, text) {
+    fetch("http://91.121.143.104:7070/chat", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "text": text, "sportname": sportname }) }).then(res => {
+        if (res.status == 200) {
+            return;
 
+        }
+    }).catch(err => console.log(err, "in push chat"));
+    
+
+}
+function modalChat(value, text, setChatText, localText, setLocalText, sportname) {
+    return (
+        <Modal
+            animationType="slide"
+            transparent={false}
+            visible={value.chat}
+            supportedOrientations={['portrait', 'landscape']}
+        >
+            <View>
+                <Text>{text}</Text>
+                <View style={{ flexDirection: "row" }}>
+
+                    <TextInput style={{ borderWidth: 1, flex:1 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
+                    <Pressable onPress={() => { pushChat(version, sportname, username, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText("") }}>
+                        <Image style={{ width: 20, height: 20 }} source={require('./assets/sendmessage.png')} />
+                    </Pressable>
+                </View>
+                <Button title='Exit' onPress={() => value.setChat(false)}>
+                </Button>
+            </View>
+
+        </Modal>
+
+    )
+
+}
 function SportDetailsScreen({ route }) {
 
     const [window_width, setWidth] = React.useState(Dimensions.get("window").width);
@@ -462,8 +502,10 @@ function SportDetailsScreen({ route }) {
     const [status, setArbitreRule] = React.useState({ arbitre: "error", status: "error" });
     const [regle, setRegle] = React.useState(false);
     const [toupdate, setToUpdate] = React.useState(false);
+    const [chatText, setChatText] = React.useState("");
+    const [localText, setLocalText] = React.useState("");
     React.useEffect(() => {
-
+        fetchChat(route.params.sportname, setChatText)
         setloading(false);
 
     }, []);
@@ -473,6 +515,10 @@ function SportDetailsScreen({ route }) {
     }
     return (
         <PinchZoomView style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, width: window_width, height: window_height }} setToUpdate={setToUpdate} toupdate={toupdate} maxScale={1} minScale={0.5} >
+            <ChatContext.Consumer>
+                {value => modalChat(value, chatText, setChatText, localText, setLocalText, route.params.sportname)}
+
+            </ChatContext.Consumer>
             <ArbitreContext.Consumer>
                 {value => {
                     return (
@@ -712,7 +758,7 @@ function VanRommelScreen() {
             </View>
             <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}> </Text></View>
             <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}> </Text></View>
-                <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}>Des bons ingrédients mais aussi des bons outils.</Text></View>
+            <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}>Des bons ingrédients mais aussi des bons outils.</Text></View>
             <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}> </Text></View>
             <View style={{ alignItems: "center" }}><Image style={{ width: 310, height: 164 }} source={require('./assets/williwaller2006.png')} /></View>
             <View style={{ alignItems: "center" }}><Text style={{ fontSize: 16 }}> </Text></View>
@@ -1000,6 +1046,7 @@ async function askPushNotif(username, title, body, to) {
 const Stack = createStackNavigator();
 function App() {
     const [arbitre, setArbitre] = React.useState(false);
+    const [chat, setChat] = React.useState(false);
     const [soundstatus, setSound] = React.useState();
 
 
@@ -1052,67 +1099,72 @@ function App() {
     return (
         <NavigationContainer>
             <ArbitreContext.Provider value={arbitre}>
-                <Stack.Navigator screenOptions={{
-                    headerStyle: {
-                        backgroundColor: '#000',
-                        height: 100
-                    },
-                    headerTintColor: '#fff',
-                    headerTitleStyle: {
-                        fontWeight: 'bold',
-                    },
-                }} initialRouteName="Home">
-                    <Stack.Screen options={({ navigation }) => ({
-                        title: "Home", headerRight: () => (
-                            <View style={{ flexDirection: "row", margin: 10 }}>
-                                <TouchableOpacity onPress={playmegaphone}>
-                                    <Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} />
-                                </TouchableOpacity>
-                                <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPress={() => { navigation.navigate('UsernameScreen') }}>
-                                    <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
-                                </TouchableOpacity></View>
-                            </View>)
-                    })} initialParams={{ setCurrentSport: setCurrentSport }} name="Home" component={HomeScreen} />
+                <ChatContext.Provider value={{ chat: chat, setChat: setChat }}>
+                    <Stack.Navigator screenOptions={{
+                        headerStyle: {
+                            backgroundColor: '#000',
+                            height: 100
+                        },
+                        headerTintColor: '#fff',
+                        headerTitleStyle: {
+                            fontWeight: 'bold',
+                        },
+                    }} initialRouteName="Home">
+                        <Stack.Screen options={({ navigation }) => ({
+                            title: "Home", headerRight: () => (
+                                <View style={{ flexDirection: "row", margin: 10 }}>
+                                    <TouchableOpacity onPress={playmegaphone}>
+                                        <Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} />
+                                    </TouchableOpacity>
+                                    <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPress={() => { navigation.navigate('UsernameScreen') }}>
+                                        <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
+                                    </TouchableOpacity></View>
+                                </View>)
+                        })} initialParams={{ setCurrentSport: setCurrentSport }} name="Home" component={HomeScreen} />
 
-                    <Stack.Screen options={{
-                        title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text>
-                        </View>
-                    }} initialParams={{ pushtoken: "" }} name="Login" component={Login} />
-
-                    <Stack.Screen options={({ navigation }) => ({
-                        title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>
-                            <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPress={() => { navigation.navigate('UsernameScreen') }}>
-                                <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
-                            </TouchableOpacity></View></View>
-                    })} initialParams={{ setCurrentSport: setCurrentSport }} name="Planning" component={PlanningScreen} />
-                    <Stack.Screen options={({ navigation }) => ({
-                        title: currentSport, headerRight: () =>
-                            <View style={{ flexDirection: "row", margin: 10 }}>
-                                <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPress={() => { navigation.navigate('UsernameScreen') }}>
-                                    <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
-                                </TouchableOpacity></View>
-                                <TouchableOpacity onPress={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 3000)}>
-                                    <Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} />
-                                </TouchableOpacity>
+                        <Stack.Screen options={{
+                            title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text>
                             </View>
-                    })} initialParams={{ sportname: currentSport }} name="SportDetails" component={SportDetailsScreen} />
-                    <Stack.Screen options={() => ({ title: "Tableau des médailles" })} name="SummaryScreen" component={SummaryScreen} />
-                    <Stack.Screen options={() => ({
-                        title: username
-                    })} initialParams={{ setCurrentSport: setCurrentSport }} name="UsernameScreen" component={UsernameScreen} />
+                        }} initialParams={{ pushtoken: "" }} name="Login" component={Login} />
 
-                    <Stack.Screen options={() => ({
-                        title: "Notif tool"
-                    })} initialParams={{ username: username }} name="pushNotifScreen" component={pushNotifScreen} />
+                        <Stack.Screen options={({ navigation }) => ({
+                            title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>
+                                <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPress={() => { navigation.navigate('UsernameScreen') }}>
+                                    <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
+                                </TouchableOpacity></View></View>
+                        })} initialParams={{ setCurrentSport: setCurrentSport }} name="Planning" component={PlanningScreen} />
+                        <Stack.Screen options={({ navigation }) => ({
+                            title: currentSport, headerRight: () =>
+                                <View style={{ flexDirection: "row", margin: 10 }}>
+                                    <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPress={() => { navigation.navigate('UsernameScreen') }}>
+                                        <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
+                                    </TouchableOpacity></View>
+                                    <Pressable onPress={() => { setChat(true) }}>
+                                        <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", marginRight: 10 }} source={require('./assets/chat.png')} />
+                                    </Pressable>
+                                    <TouchableOpacity onPress={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 3000)}>
+                                        <Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} />
+                                    </TouchableOpacity>
+                                </View>
+                        })} initialParams={{ sportname: currentSport }} name="SportDetails" component={SportDetailsScreen} />
+                        <Stack.Screen options={() => ({ title: "Tableau des médailles" })} name="SummaryScreen" component={SummaryScreen} />
+                        <Stack.Screen options={() => ({
+                            title: username
+                        })} initialParams={{ setCurrentSport: setCurrentSport }} name="UsernameScreen" component={UsernameScreen} />
 
-                    <Stack.Screen options={() => ({
-                        title: "Clicker!"
-                    })} initialParams={{ username: username }} name="ClickerScreen" component={ClickerScreen} />
-                    <Stack.Screen options={() => ({
-                        title: "Van Rommel"
-                    })} name="VanRommel" component={VanRommelScreen} />
+                        <Stack.Screen options={() => ({
+                            title: "Notif tool"
+                        })} initialParams={{ username: username }} name="pushNotifScreen" component={pushNotifScreen} />
 
-                </Stack.Navigator>
+                        <Stack.Screen options={() => ({
+                            title: "Clicker!"
+                        })} initialParams={{ username: username }} name="ClickerScreen" component={ClickerScreen} />
+                        <Stack.Screen options={() => ({
+                            title: "Van Rommel"
+                        })} name="VanRommel" component={VanRommelScreen} />
+
+                    </Stack.Navigator>
+                </ChatContext.Provider>
             </ArbitreContext.Provider>
         </NavigationContainer>
     );
