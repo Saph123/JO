@@ -509,9 +509,9 @@ function modalChat(value, text, setChatText, localText, setLocalText, sportname)
 
                         <Text style={{ flex: 10 }}>{text}</Text>
                     </ScrollView>
-                    {/* <Pressable style={{ flex: 1 }} onPress={() => value.setChat(false)}>
-                        <Image style={{ alignSelf: "flex-end", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} />
-                    </Pressable> */}
+                    <Pressable style={{ flex: 1 }} onPress={() => value.setChat(false)}>
+                        <Image style={{ alignSelf: "flex-end",margin:10 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} />
+                    </Pressable>
                 </View>
                 <View style={{ flexDirection: "row", flex: 1 }}>
 
