@@ -500,17 +500,20 @@ function modalChat(value, text, setChatText, localText, setLocalText, sportname)
             visible={value.chat}
             supportedOrientations={['portrait', 'landscape']}
         >
-            <View>
-                <Text>{text}</Text>
-                <View style={{ flexDirection: "row" }}>
+            <View style={{flex:1}}>
+                <View style={{flex:10, flexDirection:'row'}}>
 
-                    <TextInput style={{ borderWidth: 1, flex:1 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
-                    <Pressable onPress={() => { pushChat(version, sportname, username, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText("") }}>
-                        <Image style={{ width: 20, height: 20 }} source={require('./assets/sendmessage.png')} />
-                    </Pressable>
+                <Text>{text}</Text>
+                <Button style={{height:30}} title='Exit' onPress={() => value.setChat(false)}/>
                 </View>
-                <Button title='Exit' onPress={() => value.setChat(false)}>
-                </Button>
+                <View style={{ flexDirection: "row", flex:1 }}>
+
+                    <TextInput onSubmitEditing={() => { pushChat(version, sportname, username, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText("") }} style={{ borderWidth: 1, flex:1 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
+                    <Pressable onPress={() => { pushChat(version, sportname, username, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText("") }}>
+                        <Image style={{ width: 50, height: 20 }} source={require('./assets/sendmessage.png')} />
+                    </Pressable>
+            
+                </View>
             </View>
 
         </Modal>
