@@ -249,17 +249,17 @@ function PlanningScreen({ route, navigation }) {
 
     return (
         <PinchZoomView style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, flexDirection: "row", width: 1000, height: 1000 }} maxScale={1} minScale={0.5} >
-        <Modal style={{ width: "100%", height: "100%", alignSelf: "center" }}
-            visible={gifVisible}>
+            <Modal style={{ width: "100%", height: "100%", alignSelf: "center" }}
+                visible={gifVisible}>
 
-            <Pressable onPress={() => { setGifVisible(false); setClicks(0) }}>
-                <View>
-                    <Text></Text>
-                    <Image style={{ width: "100%", height: "70%", alignSelf: "center", marginTop :"30%" }} source={require('./assets/searching.gif')}/>
-                    <Text style={{ fontSize: 40, alignSelf: "center", marginTop : -100, color: "white", textAlign: "center", textShadowColor : "black", textShadowRadius: 4}}>{username} looking for easter eggs</Text>
-                </View>
-            </Pressable>
-        </Modal>
+                <Pressable onPress={() => { setGifVisible(false); setClicks(0) }}>
+                    <View>
+                        <Text></Text>
+                        <Image style={{ width: "100%", height: "70%", alignSelf: "center", marginTop: "30%" }} source={require('./assets/searching.gif')} />
+                        <Text style={{ fontSize: 40, alignSelf: "center", marginTop: -100, color: "white", textAlign: "center", textShadowColor: "black", textShadowRadius: 4 }}>{username} looking for easter eggs</Text>
+                    </View>
+                </Pressable>
+            </Modal>
             <View style={styles.calendar}>
                 <View><Text style={styles.textday}>Jeudi</Text></View>
                 {
@@ -329,7 +329,7 @@ function PlanningScreen({ route, navigation }) {
                             return (
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
-                                    <View><TouchableOpacity onPress={() => { 
+                                    <View><TouchableOpacity onPress={() => {
                                         if (r.timeBegin.getHours() < 12) {
                                             route.params.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname })
                                         }
@@ -480,7 +480,7 @@ function Login({ route, navigation }) {
 };
 function fetchChat(sportname, setChatText) {
     fetch("http://91.121.143.104:7070/chat/" + sportname + "_chat.txt").then(response => response.text()).then(r => { console.log(r); setChatText(r) });
-    
+
 }
 function pushChat(version, sportname, username, text) {
     fetch("http://91.121.143.104:7070/chat", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "text": text, "sportname": sportname }) }).then(res => {
@@ -489,7 +489,7 @@ function pushChat(version, sportname, username, text) {
 
         }
     }).catch(err => console.log(err, "in push chat"));
-    
+
 
 }
 function modalChat(value, text, setChatText, localText, setLocalText, sportname) {
@@ -500,19 +500,23 @@ function modalChat(value, text, setChatText, localText, setLocalText, sportname)
             visible={value.chat}
             supportedOrientations={['portrait', 'landscape']}
         >
-            <View style={{flex:1}}>
-                <View style={{flex:10, flexDirection:'row'}}>
+            <View style={{ flex: 1 }}>
+                <View style={{ flex: 10, flexDirection: 'row' }}>
+                <ScrollView >
 
-                <Text>{text}</Text>
-                <Button style={{height:30}} title='Exit' onPress={() => value.setChat(false)}/>
-                </View>
-                <View style={{ flexDirection: "row", flex:1 }}>
-
-                    <TextInput onSubmitEditing={() => { pushChat(version, sportname, username, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText("") }} style={{ borderWidth: 1, flex:1 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
-                    <Pressable onPress={() => { pushChat(version, sportname, username, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText("") }}>
-                        <Image style={{ width: 50, height: 20 }} source={require('./assets/sendmessage.png')} />
+                    <Text style={{flex:10}}>{text}</Text>
+                </ScrollView>
+                    <Pressable  style={{flex:1}}onPress={() => value.setChat(false)}>
+                        <Image style={{ alignSelf: "flex-end", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} />
                     </Pressable>
-            
+                </View>
+                <View style={{ flexDirection: "row", flex: 1 }}>
+
+                    <TextInput onSubmitEditing={() => { pushChat(version, sportname, username, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText("") }} style={{ borderWidth: 1, flex: 1 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
+                    <Pressable onPress={() => { pushChat(version, sportname, username, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText("") }}>
+                        <Image style={{ width: 50, height: 50 }} source={require('./assets/sendmessage.png')} />
+                    </Pressable>
+
                 </View>
             </View>
 
