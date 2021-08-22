@@ -109,9 +109,15 @@ function HomeScreen({ route, navigation }) {
             if (notification.request.content.title == "CLUEDO!") {
                 alert("Cluedo!!")
             }
-            else if(notification.request.content.title == "Clicker: Happy Hour!"){
-                alert("Vite! c'est l'happy hour clicker!");
-                navigation.navigate('ClickerScreen');
+            else if (notification.request.content.title == "Clicker: Happy Hour!") {
+                if (notification.request.content.body.indexOf("fin") != -1) {
+                    alert("Fin de l'happy hour!")
+                }
+                else {
+
+                    alert("Vite! c'est l'happy hour clicker!");
+                    navigation.navigate('ClickerScreen');
+                }
             }
         });
 
@@ -125,11 +131,13 @@ function HomeScreen({ route, navigation }) {
 
                 Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
             }
-            else if(response.notification.request.content.title == "Clicker: Happy Hour!"){
+            else if (response.notification.request.content.title == "Clicker: Happy Hour!") {
                 // alert("kekw");
-                navigation.navigate('ClickerScreen');
+                if (response.notification.request.content.body.indexOf("fin") == -1) {
+                    navigation.navigate('ClickerScreen');
+                }
             }
-            
+
         });
         return () => {
             Notifications.removeNotificationSubscription(notificationListener.current);
@@ -639,7 +647,7 @@ function ClickerScreen() {
     }, []);
     return (
         <View style={{ flex: 1, flexDirection: 'row', backgroundColor: HH == 2 ? 'black' : 'lightgrey' }}>
-            <Image style={{ position: 'absolute', top: 0, left: 0, width:'100%', height:'100%'}} source={require("./assets/HH.gif")} />
+            <Image style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: HH == 2 ? 1 : 0 }} source={require("./assets/HH.gif")} />
             <View style={{ flex: 5 }}>
                 <ScrollView >
 
