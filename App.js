@@ -495,7 +495,7 @@ function pushChat(version, sportname, username, text) {
 
 
 }
-function modalChat(value, text, setChatText, localText, setLocalText, sportname, setNewMessage) {
+function modalChat(value, text, setChatText, localText, setLocalText, sportname) {
     return (
         <Modal
             animationType="slide"
@@ -558,7 +558,7 @@ function SportDetailsScreen({ route }) {
     return (
         <PinchZoomView style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, width: window_width, height: window_height }} setToUpdate={setToUpdate} toupdate={toupdate} maxScale={1} minScale={0.5} >
             <ChatContext.Consumer>
-                {value => modalChat(value, chatText, setChatText, localText, setLocalText, route.params.sportname, value.setNewMessage)}
+                {value => modalChat(value, chatText, setChatText, localText, setLocalText, route.params.sportname)}
 
             </ChatContext.Consumer>
             <ArbitreContext.Consumer>
@@ -721,13 +721,11 @@ function ClickerScreen() {
     const [speed, setSpeed] = React.useState(0);
     const [HH, setHH] = React.useState(1);
     React.useEffect(() => {
-        // while(!fetchok){
         fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, true, setHH);
         previousValueClicker = newvalueclicker;
 
         let intervalClicker = setInterval(() => pushClicker( setUserNames, setCount, setRanks, setMyIndex, setSpeed, setHH), 3000);
 
-        // }
         return () => {
             clearInterval(intervalClicker);
         }
@@ -760,8 +758,6 @@ function ClickerScreen() {
                                     </View> : <View style={styles.medailleopaque}></View>
                                 }
                             </View>)}
-                        {/* {myRank.map((r, index) => <Text>{r}</Text>)}
-            {count.map((r, index) => <Text>{r}</Text>)} */}
                     </View>
                 </ScrollView>
             </View>
@@ -1093,7 +1089,6 @@ function App() {
     const [load, setLoad] = React.useState(true);
 
     const [currentSport, setCurrentSport] = React.useState("Sportname");
-    // username = getValueFor("username");
     async function playmegaphone() {
         if (soundstatus == undefined) {
 
