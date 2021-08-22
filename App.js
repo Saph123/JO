@@ -73,6 +73,7 @@ function HomeScreen({ route, navigation }) {
     const [expoPushToken, setExpoPushToken] = React.useState('');
     const responseListener = React.useRef();
     async function playcluedo() {
+        pushcluedo()
         if (soundstatus == undefined) {
 
 
