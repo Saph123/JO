@@ -88,8 +88,8 @@ function HomeScreen({ route, navigation }) {
         }
         if (soundstatus != undefined) {
 
-            var test = await soundstatus.getStatusAsync();
-            if (test.isPlaying == true) {
+            var soundlocal = await soundstatus.getStatusAsync();
+            if (soundlocal.isPlaying == true) {
                 await soundstatus.stopAsync();
 
             }
@@ -103,9 +103,9 @@ function HomeScreen({ route, navigation }) {
     React.useEffect(() => {
         getValueFor("username").then(r => { username = r; setLoading(0); });
         manageEvents(setEventsDone, setCurrentEvents)
-        var test = getNextEventseconds();
-        setSecondsleft(test.time);
-        setNextEvent(test.name);
+        var startEvent = getNextEventseconds();
+        setSecondsleft(startEvent.time);
+        setNextEvent(startEvent.name);
         registerForPushNotificationsAsync().then(token => { setExpoPushToken(token); pushtoken(token, username) });
         // This listener is fired whenever a notification is received while the app is foregrounded
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
@@ -543,7 +543,6 @@ function SportDetailsScreen({ route }) {
     const [localText, setLocalText] = React.useState("");
     const chatcontext = React.useContext(ChatContext);
     React.useEffect(() => {
-        console.log("useeffect")
         var charInterval = setInterval(() => fetchChat(route.params.sportname, setChatText, chatcontext.setNewMessage), 1000);
         setloading(false);
 
@@ -665,7 +664,7 @@ function SummaryScreen() {
 }
 
 function fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, firsttime, setHH) {
-    fetch("http://91.121.143.104:7070/teams/Clicker_HH.json").then(response => response.json()).then(data => { console.log(data.HH); if (data.HH) { setHH(2) } else { setHH(1) } }).catch(err => console.log(err, " in HH"));
+    fetch("http://91.121.143.104:7070/teams/Clicker_HH.json").then(response => response.json()).then(data => { if (data.HH) { setHH(2) } else { setHH(1) } }).catch(err => console.log(err, " in HH"));
     fetch("http://91.121.143.104:7070/teams/Clicker.json").then(response => response.json()).then(data => {
 
         let clicks = [];
@@ -676,13 +675,12 @@ function fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, firsttime, 
             ranks.push(data[i].rank)
             if (data[i].Players == username) {
                 setMyIndex(i);
-                // if (data[i].Clicks > test) {
                 if (firsttime) {
 
-                    test = data[i].Clicks;
+                    newvalueclicker = data[i].Clicks;
                 }
                 else {
-                    data[i].Clicks = test;
+                    data[i].Clicks = newvalueclicker;
                 }
             }
             clicks.push(data[i].Clicks);
@@ -693,27 +691,28 @@ function fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, firsttime, 
         return data;
     }).catch(err => console.log(err, " in fetch clicker"));;
 }
-function pushClicker(setUserNames, setCount, setRanks, setMyIndex, previousValue, setSpeed, setHH) {
-    prev = newvalueclicker;
-    if ((newvalueclicker - previousValue) / 3 < 80) {
-
-        setSpeed(Math.round((newvalueclicker - previousValue) / 3));
+function pushClicker(setUserNames, setCount, setRanks, setMyIndex, setSpeed, setHH) {
+    console.log(previousValueClicker, newvalueclicker)
+    if ((newvalueclicker - previousValueClicker) / 3 < 80) {
+        
+        setSpeed(Math.round((newvalueclicker - previousValueClicker) / 3));
     }
     else {
         setSpeed(0);
     }
-    fetch("http://91.121.143.104:7070/clicker", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "count": newvalueclicker }) }).then(r => {
-        console.log(r.status);
-        if (r.status == 200) {
+    previousValueClicker = newvalueclicker;
+    fetch("http://91.121.143.104:7070/clicker", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "count": newvalueclicker })}).then((answer) => {
+        if (answer.status == 200) {
             fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, false, setHH);
             return;
 
         }
-    }).catch(err => console.log(err, "in push"));
+        return;
+    }).catch(err => console.log(err, "in push clicker"));
 }
 
 let newvalueclicker = 0;
-let prev = 0;
+let previousValueClicker = 0;
 function ClickerScreen() {
     const [myRank, setRanks] = React.useState([]);
     const [count, setCount] = React.useState([]);
@@ -721,12 +720,12 @@ function ClickerScreen() {
     const [index, setMyIndex] = React.useState(0);
     const [speed, setSpeed] = React.useState(0);
     const [HH, setHH] = React.useState(1);
-    prev = newvalueclicker;
     React.useEffect(() => {
         // while(!fetchok){
         fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, true, setHH);
+        previousValueClicker = newvalueclicker;
 
-        let intervalClicker = setInterval(() => pushClicker( setUserNames, setCount, setRanks, setMyIndex, prev, setSpeed, setHH), 1000);
+        let intervalClicker = setInterval(() => pushClicker( setUserNames, setCount, setRanks, setMyIndex, setSpeed, setHH), 3000);
 
         // }
         return () => {
@@ -768,7 +767,7 @@ function ClickerScreen() {
             </View>
             <View style={{ flex: 1, justifyContent: 'center' }}>
                 <Text>{speed} C/s</Text>
-                <Pressable onPress={() => { var tmp = count; tmp[index] = tmp[index] + HH; test = test + HH; tmp[index] = Math.max(tmp[index], test); setCount([...tmp]); console.log("test:", test, "count:", count, "tmp:", tmp) }} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, styles.inProgress]} >
+                <Pressable onPress={() => { var tmp = count; tmp[index] = tmp[index] + HH; newvalueclicker = newvalueclicker + HH; tmp[index] = Math.max(tmp[index], newvalueclicker); setCount([...tmp]); }} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, styles.inProgress]} >
                     <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
                 </Pressable>
             </View>
@@ -1109,9 +1108,9 @@ function App() {
 
         }
         if (soundstatus != undefined) {
-            var test = await soundstatus.getStatusAsync();
+            var soundlocal = await soundstatus.getStatusAsync();
 
-            if (test.isPlaying == true) {
+            if (soundlocal.isPlaying == true) {
                 await soundstatus.stopAsync();
 
             }
