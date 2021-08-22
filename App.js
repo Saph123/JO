@@ -249,17 +249,17 @@ function PlanningScreen({ route, navigation }) {
 
     return (
         <PinchZoomView style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, flexDirection: "row", width: 1000, height: 1000 }} maxScale={1} minScale={0.5} >
-            <Modal style={{ width: "100%", height: "100%", alignSelf: "center" }}
-                visible={gifVisible}>
+        <Modal style={{ width: "100%", height: "100%", alignSelf: "center" }}
+            visible={gifVisible}>
 
-                <Pressable onPress={() => { setGifVisible(false); setClicks(0) }}>
-                    <View>
-                        <Text></Text>
-                        <Image style={{ width: "100%", height: "70%", alignSelf: "center", marginTop: "30%" }} source={require('./assets/searching.gif')} />
-                        <Text style={{ fontSize: 40, alignSelf: "center", marginTop: -100, color: "white", textAlign: "center", textShadowColor: "black", textShadowRadius: 4 }}>{username} looking for easter eggs</Text>
-                    </View>
-                </Pressable>
-            </Modal>
+            <Pressable onPress={() => { setTimeout(()=> setGifVisible(false), 3000) }}>
+                <View>
+                    <Text></Text>
+                    <Image style={{ width: "100%", height: "70%", alignSelf: "center", marginTop :"30%" }} source={require('./assets/searching.gif')}/>
+                    <Text style={{ fontSize: 40, alignSelf: "center", marginTop : "-30%", color: "white", textAlign: "center", textShadowColor : "black", textShadowRadius: 4}}>{username} looking for easter eggs</Text>
+                </View>
+            </Pressable>
+        </Modal>
             <View style={styles.calendar}>
                 <View><Text style={styles.textday}>Jeudi</Text></View>
                 {
@@ -339,6 +339,7 @@ function PlanningScreen({ route, navigation }) {
                                             }
                                             else {
                                                 setGifVisible(true)
+                                                setClicks(0)
                                             }
                                         }
                                     }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
