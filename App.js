@@ -480,6 +480,7 @@ function Login({ route, navigation }) {
 };
 function fetchChat(sportname, setChatText) {
     fetch("http://91.121.143.104:7070/chat/" + sportname + "_chat.txt").then(response => response.text()).then(r => { console.log(r); setChatText(r) });
+    setTimeout(() => fetchChat(sportname, setChatText), 1000);
 
 }
 function pushChat(version, sportname, username, text) {
@@ -502,7 +503,7 @@ function modalChat(value, text, setChatText, localText, setLocalText, sportname)
         >
             <View style={{ flex: 1 }}>
                 <View style={{ flex: 10, flexDirection: 'row' }}>
-                <ScrollView >
+                <ScrollView ref={ref => {this.scrollView = ref}}onContentSizeChange={() => this.scrollView.scrollToEnd({animated:true})}>
 
                     <Text style={{flex:10}}>{text}</Text>
                 </ScrollView>
@@ -538,6 +539,7 @@ function SportDetailsScreen({ route }) {
     React.useEffect(() => {
         fetchChat(route.params.sportname, setChatText)
         setloading(false);
+
 
     }, []);
 
