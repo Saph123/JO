@@ -329,7 +329,7 @@ function PlanningScreen({ route, navigation }) {
                             return (
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
-                                    <View><TouchableOpacity onPress={() => { 
+                                    <View><TouchableOpacity onPress={() => {
                                         if (r.timeBegin.getHours() < 12) {
                                             route.params.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname })
                                         }
@@ -481,7 +481,8 @@ function Login({ route, navigation }) {
 };
 function fetchChat(sportname, setChatText) {
     fetch("http://91.121.143.104:7070/chat/" + sportname + "_chat.txt").then(response => response.text()).then(r => { console.log(r); setChatText(r) });
-    
+    setTimeout(() => fetchChat(sportname, setChatText), 1000);
+
 }
 function pushChat(version, sportname, username, text) {
     fetch("http://91.121.143.104:7070/chat", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "text": text, "sportname": sportname }) }).then(res => {
@@ -490,7 +491,7 @@ function pushChat(version, sportname, username, text) {
 
         }
     }).catch(err => console.log(err, "in push chat"));
-    
+
 
 }
 function modalChat(value, text, setChatText, localText, setLocalText, sportname) {
@@ -501,17 +502,24 @@ function modalChat(value, text, setChatText, localText, setLocalText, sportname)
             visible={value.chat}
             supportedOrientations={['portrait', 'landscape']}
         >
-            <View>
-                <Text>{text}</Text>
-                <View style={{ flexDirection: "row" }}>
+            <View style={{ flex: 1 }}>
+                <View style={{ flex: 10, flexDirection: 'row' }}>
+                <ScrollView ref={ref => {this.scrollView = ref}}onContentSizeChange={() => this.scrollView.scrollToEnd({animated:true})}>
 
-                    <TextInput style={{ borderWidth: 1, flex:1 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
-                    <Pressable onPress={() => { pushChat(version, sportname, username, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText("") }}>
-                        <Image style={{ width: 20, height: 20 }} source={require('./assets/sendmessage.png')} />
+                    <Text style={{flex:10}}>{text}</Text>
+                </ScrollView>
+                    <Pressable  style={{flex:1}}onPress={() => value.setChat(false)}>
+                        <Image style={{ alignSelf: "flex-end", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} />
                     </Pressable>
                 </View>
-                <Button title='Exit' onPress={() => value.setChat(false)}>
-                </Button>
+                <View style={{ flexDirection: "row", flex: 1 }}>
+
+                    <TextInput onSubmitEditing={() => { pushChat(version, sportname, username, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText("") }} style={{ borderWidth: 1, flex: 1 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
+                    <Pressable onPress={() => { pushChat(version, sportname, username, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText("") }}>
+                        <Image style={{ width: 50, height: 50 }} source={require('./assets/sendmessage.png')} />
+                    </Pressable>
+
+                </View>
             </View>
 
         </Modal>
@@ -532,6 +540,7 @@ function SportDetailsScreen({ route }) {
     React.useEffect(() => {
         fetchChat(route.params.sportname, setChatText)
         setloading(false);
+
 
     }, []);
 
