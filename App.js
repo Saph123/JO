@@ -137,9 +137,16 @@ function HomeScreen({ route, navigation }) {
 
                 Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
             }
-            else if (response.notification.request.content.title == "Clicker: Happy Hour!") {
-                // alert("kekw");
-                if (response.notification.request.content.body.indexOf("fin") == -1) {
+            else if (notification.request.content.title == "Clicker: Happy Hour!") {
+                if (notification.request.content.body.indexOf("fin") != -1) {
+                    alert("Fin de l'happy hour!")
+                }
+                else if (notification.request.content.body.indexOf("T'es mauvais") != -1) {
+                    alert("T'es mauvais!")
+                    Linking.openURL('https://www.youtube.com/watch?v=J1-JmvaT2WU');
+                }
+                else if (notification.request.content.body.indexOf("C'est parti") != -1) {
+                    alert("Vite! c'est l'happy hour clicker!");
                     navigation.navigate('ClickerScreen');
                 }
             }
@@ -228,7 +235,7 @@ function HomeScreen({ route, navigation }) {
                     onPress={() => { navigation.navigate('Login', { pushtoken: expoPushToken }) }}
                 >
 
-                    <Text style={styles.texthomebutton}>Login</Text>
+                    <Text style={styles.texthomebutton}>Logout</Text>
                 </TouchableOpacity>
                 {username == "Max" || username == "Ugo" || username == "Antoine" ? <TouchableOpacity style={styles.logoutbutton}
                     onPress={() => { navigation.navigate('pushNotifScreen') }}
