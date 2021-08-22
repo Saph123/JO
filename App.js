@@ -109,10 +109,21 @@ function HomeScreen({ route, navigation }) {
             if (notification.request.content.title == "CLUEDO!") {
                 alert("Cluedo!!")
             }
+            else if (notification.request.content.title == "Clicker: Happy Hour!") {
+                if (notification.request.content.body.indexOf("fin") != -1) {
+                    alert("Fin de l'happy hour!")
+                }
+                else {
+
+                    alert("Vite! c'est l'happy hour clicker!");
+                    navigation.navigate('ClickerScreen');
+                }
+            }
         });
 
         // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+
             if (response.notification.request.content.body.indexOf("PUSH") != -1) {
                 navigation.navigate('pushNotifScreen');
             }
@@ -120,6 +131,13 @@ function HomeScreen({ route, navigation }) {
 
                 Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
             }
+            else if (response.notification.request.content.title == "Clicker: Happy Hour!") {
+                // alert("kekw");
+                if (response.notification.request.content.body.indexOf("fin") == -1) {
+                    navigation.navigate('ClickerScreen');
+                }
+            }
+
         });
         return () => {
             Notifications.removeNotificationSubscription(notificationListener.current);
@@ -556,7 +574,8 @@ function SummaryScreen() {
     )
 }
 
-function fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, firsttime) {
+function fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, firsttime, setHH) {
+    fetch("http://91.121.143.104:7070/teams/Clicker_HH.json").then(response => response.json()).then(data => { console.log(data.HH); if (data.HH) { setHH(2) } else { setHH(1) } }).catch(err => console.log(err, " in HH"));
     fetch("http://91.121.143.104:7070/teams/Clicker.json").then(response => response.json()).then(data => {
 
         let clicks = [];
@@ -582,28 +601,30 @@ function fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, firsttime) 
         setCount(clicks);
         setRanks(ranks);
         return data;
-    }).catch(err => { alert(err, "Reload the screen m8"); return [] });
+    }).catch(err => console.log(err, " in fetch clicker"));;
 }
-function pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex, previousValue, setSpeed) {
+function pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex, previousValue, setSpeed, setHH) {
     var prev = test;
     for (var i in navigation.getState().routes) {
         if (navigation.getState().routes[i].name == "ClickerScreen") { // on est tjs sur l'ecran on relance
-            setTimeout(() => pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex, prev, setSpeed), 3000);
+            setTimeout(() => pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex, prev, setSpeed, setHH), 3000);
         }
     }
-    if((test - previousValue)/3 < 80){
+    if ((test - previousValue) / 3 < 80) {
 
-        setSpeed(Math.round((test - previousValue)/3));
+        setSpeed(Math.round((test - previousValue) / 3));
     }
-    else{
+    else {
         setSpeed(0);
     }
-    fetch("http://91.121.143.104:7070/clicker", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "count": test }) }).then(r => {
-        if (r.status == 200) {
-            fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, false);
+    fetch("http://91.121.143.104:7070/clicker", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "count": test }) }).then(res => {
+        console.log(res.status);
+        if (res.status == 200) {
+            fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, false, setHH);
             return;
+
         }
-    }).catch((err) => { alert(err, "Issue with server! Sorry friend, reload the screen") });
+    }).catch(err => console.log(err, "in push"));
 }
 
 let test = 0;
@@ -613,34 +634,35 @@ function ClickerScreen() {
     const [allUserNames, setUserNames] = React.useState([]);
     const [index, setMyIndex] = React.useState(0);
     const [speed, setSpeed] = React.useState(0);
+    const [HH, setHH] = React.useState(1);
     const navigation = useNavigation();
     var prev = test;
     React.useEffect(() => {
-        var fetchok = false;
         // while(!fetchok){
-        fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, true);
+        fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, true, setHH);
 
-        setTimeout(() => pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex, prev, setSpeed), 3000);
+        setTimeout(() => pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex, prev, setSpeed, setHH), 3000);
 
         // }
     }, []);
     return (
-        <View style={{ flex: 1, flexDirection: 'row' }}>
+        <View style={{ flex: 1, flexDirection: 'row', backgroundColor: HH == 2 ? 'black' : 'lightgrey' }}>
+            <Image style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: HH == 2 ? 1 : 0 }} source={require("./assets/HH.gif")} />
             <View style={{ flex: 5 }}>
                 <ScrollView >
 
                     <View style={{ justifyContent: "space-between", flex: 6 }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-start', borderColor: "grey", borderWidth: 1 }}>
-                            <Text style={{ flex: 1, textAlign: 'center' }}>Rank</Text>
-                            <Text style={{ flex: 3, textAlign: 'center' }}>User</Text>
-                            <Text style={{ flex: 3, textAlign: 'center' }}>Clicks</Text>
+                            <Text style={{ flex: 1, textAlign: 'center', color: HH == 2 ? 'white' : 'black' }}>Rank</Text>
+                            <Text style={{ flex: 3, textAlign: 'center', color: HH == 2 ? 'white' : 'black' }}>User</Text>
+                            <Text style={{ flex: 3, textAlign: 'center', color: HH == 2 ? 'white' : 'black' }}>Clicks</Text>
                             <View style={styles.medailleopaque}></View>
                         </View>
                         {allUserNames.map((r, index) =>
                             <View style={{ flexDirection: "row", justifyContent: "flex-start", borderColor: "grey", borderWidth: 1 }}>
-                                <View style={{ flex: 1 }}><Text style={{ textAlign: 'center' }}>{myRank[index]}</Text></View>
-                                <View style={{ flex: 3 }}><Text style={{ textAlign: 'center' }}>{r}</Text></View>
-                                <View style={{ flex: 3 }}><Text style={{ textAlign: 'center' }}>{count[index]}</Text></View>
+                                <View style={{ flex: 1 }}><Text style={{ textAlign: 'center', color: HH == 2 ? 'white' : 'black' }}>{myRank[index]}</Text></View>
+                                <View style={{ flex: 3 }}><Text style={{ textAlign: 'center', color: HH == 2 ? 'white' : 'black' }}>{r}</Text></View>
+                                <View style={{ flex: 3 }}><Text style={{ textAlign: 'center', color: HH == 2 ? 'white' : 'black' }}>{count[index]}</Text></View>
                                 {myRank[index] == 3 ?
                                     <View style={styles.medailleopaque}>
                                         <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
@@ -658,10 +680,10 @@ function ClickerScreen() {
             </View>
             <View style={{ flex: 1, justifyContent: 'center' }}>
                 <Text>{speed} C/s</Text>
-                <Pressable onPress={() => { var tmp = count; tmp[index] = tmp[index] + 1; test++; setCount([...tmp]) }} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, styles.inProgress]} >
-                <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
+                <Pressable onPress={() => { var tmp = count; tmp[index] = tmp[index] + HH; test = test + HH; tmp[index] = Math.max(tmp[index], test); setCount([...tmp]); console.log("test:", test, "count:", count, "tmp:", tmp) }} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, styles.inProgress]} >
+                    <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
                 </Pressable>
-        </View>
+            </View>
         </View >
     )
 
