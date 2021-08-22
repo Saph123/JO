@@ -307,7 +307,10 @@ function PlanningScreen({ route, navigation }) {
                             return (
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
-                                    <View><TouchableOpacity onPress={() => { route.params.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
+                                    <SportContext>{value =>
+                                        <View><TouchableOpacity onPress={() => { value.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
+                                    }
+                                    </SportContext>
                                 </View>)
                         }
                     })
@@ -324,10 +327,14 @@ function PlanningScreen({ route, navigation }) {
                         }
                         if (r.timeBegin < samedi && r.timeBegin > vendredi) {
                             return (
+                                <SportContext>
+                                        {value =>
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
-                                    <View><TouchableOpacity onPress={() => { route.params.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
-                                </View>)
+                                    <View><TouchableOpacity onPress={() => { value.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
+                                </View>
+                        }
+                        </SportContext>)
                         }
                     })
                 }
@@ -345,9 +352,11 @@ function PlanningScreen({ route, navigation }) {
                             return (
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
+                                    <SportContext>
+                                        {value =>
                                     <View><TouchableOpacity onPress={() => {
                                         if (r.timeBegin.getHours() < 12) {
-                                            route.params.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname })
+                                            value.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname })
                                         }
                                         else if (r.eventname == "Remiseprix") {
                                             if (clicks < 9) {
@@ -359,6 +368,8 @@ function PlanningScreen({ route, navigation }) {
                                             }
                                         }
                                     }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
+                                     }
+                                </SportContext>
                                 </View>)
                         }
                     })
@@ -392,6 +403,7 @@ function Login({ route, navigation }) {
                         <TextInput onFocus={() => setpassword("")} autoCompleteType="password" secureTextEntry={true} style={{ textAlign: "center", borderWidth: 1, borderRadius: 15, height: 20, minWidth: 100 }} onChangeText={text => setpassword(text)} value={password}></TextInput>
                     </View>
                     <View style={{ margin: 30, flexDirection: "row" }}>
+                        
                         <TouchableOpacity style={{ width: 60, height: 30, borderRadius: 15, backgroundColor: "#ff8484", justifyContent: "center" }} title="Log in" onPress={() =>
 
                             fetch("http://91.121.143.104:7070/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": userName, "password": password }) }).then(r => {
@@ -951,9 +963,13 @@ function UsernameScreen({ route, navigation }) {
                         <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Mes activités </Text></View>
                         {events.map(r => {
                             return (
+                                <SportContext>
+                                    {value =>
                                 <View key={r}>
-                                    {eventView(eventsInProgress, eventsDone, r, navigation, route.params.setCurrentSport)}
+                                    {eventView(eventsInProgress, eventsDone, r, navigation, value.setCurrentSport)}
                                 </View>
+                                 }
+                                 </SportContext>
                             )
                         })}
                     </View>
@@ -961,9 +977,13 @@ function UsernameScreen({ route, navigation }) {
                         <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> J'arbitre </Text></View>
                         {arbitre.map(r => {
                             return (
+                                <SportContext>
+                                    {value =>
                                 <View key={r}>
-                                    {eventView(eventsInProgress, eventsDone, r, navigation, route.params.setCurrentSport)}
+                                    {eventView(eventsInProgress, eventsDone, r, navigation, value.setCurrentSport)}
                                 </View>
+                                }
+                                </SportContext>
                             )
                         })}
                     </View>
@@ -1170,7 +1190,7 @@ function App() {
                                             <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
                                         </TouchableOpacity></View>
                                     </View>)
-                            })} initialParams={{ setCurrentSport: setCurrentSport }} name="Home" component={HomeScreen} />
+                            })} name="Home" component={HomeScreen} />
 
                             <Stack.Screen options={{
                                 title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text>
