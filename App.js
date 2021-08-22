@@ -543,8 +543,8 @@ function modalChat(value, text, setChatText, localText, setLocalText, sportname)
                 </View>
                 <View style={{ flexDirection: "row", flex: 1 }}>
 
-                    <TextInput onSubmitEditing={() => { pushChat(version, sportname, username, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText(""); initialText= text + "\n" + username + ":" + localText }} style={{ borderWidth: 1, flex: 1 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
-                    <Pressable onPress={() => { pushChat(version, sportname, username, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText(""); text + "\n" + username + ":" + localText }}>
+                    <TextInput onSubmitEditing={() => { pushChat(version, sportname, username, localText); initialText= text + "\n" + username + ":" + localText; setChatText(text + "\n" + username + ":" + localText); setLocalText(""); }} style={{ borderWidth: 1, flex: 1 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
+                    <Pressable onPress={() => { pushChat(version, sportname, username, localText);initialText= text + "\n" + username + ":" + localText; setChatText(text + "\n" + username + ":" + localText); setLocalText("");  }}>
                         <Image style={{ width: 50, height: 50 }} source={require('./assets/sendmessage.png')} />
                     </Pressable>
 
