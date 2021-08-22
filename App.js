@@ -68,6 +68,7 @@ function HomeScreen({ route, navigation }) {
     const [eventsDone, setEventsDone] = React.useState([]);
     const [soundstatus, setSound] = React.useState();
     const [boules, setBoules] = React.useState(false);
+
     const notificationListener = React.useRef();
     const videoBoule = React.useRef();
     const [notification, setNotification] = React.useState(false);
@@ -394,20 +395,6 @@ function Login({ route, navigation }) {
                             }).catch((err) => { alert(err, "Issue with server!"); return })}>
                             <Text style={{ textAlign: "center", textAlignVertical: "center" }}>Login</Text>
                         </TouchableOpacity>
-                        {/* <Button style={{ margin: 30 }} color='grey' title="Register" onPress={() =>
-
-                        fetch("http://91.121.143.104:7070/register", { method: "POST", body: JSON.stringify({"version":version, "username": userName, "password": password }) }).then(r => {
-                            if (r.status == 200) {
-                                username = userName; navigation.navigate('Home', { refresh: "refresh" })
-                            }
-                            else if (r.status == 403) {
-                                alert("This login already exists! Please use the login button");
-                            }
-                            else {
-                                alert("Issue with yourlogin");
-                            }
-                        })}>
-                    </Button> */}
                     </View>
 
                 </View >
@@ -479,9 +466,22 @@ function Login({ route, navigation }) {
         </ScrollView>
     )
 };
-function fetchChat(sportname, setChatText) {
-    fetch("http://91.121.143.104:7070/chat/" + sportname + "_chat.txt").then(response => response.text()).then(r => { console.log(r); setChatText(r) });
-    setTimeout(() => fetchChat(sportname, setChatText), 1000);
+function fetchChat(sportname, setChatText, setNewMessage) {
+
+
+    fetch("http://91.121.143.104:7070/chat/" + sportname + "_chat.txt").then(response => response.text()).then(r => {
+        if (initialText == "") {
+            initialText = r;
+        }
+        else {
+            if (initialText != r) {
+                setNewMessage(true);
+            }
+        }
+        setChatText(r)
+    });
+
+
 
 }
 function pushChat(version, sportname, username, text) {
@@ -494,7 +494,7 @@ function pushChat(version, sportname, username, text) {
 
 
 }
-function modalChat(value, text, setChatText, localText, setLocalText, sportname) {
+function modalChat(value, text, setChatText, localText, setLocalText, sportname, setNewMessage) {
     return (
         <Modal
             animationType="slide"
@@ -502,6 +502,7 @@ function modalChat(value, text, setChatText, localText, setLocalText, sportname)
             visible={value.chat}
             supportedOrientations={['portrait', 'landscape']}
             onRequestClose={() => value.setChat(false)}
+            onShow={() => value.setNewMessage(false)}
         >
             <View style={{ flex: 1 }}>
                 <View style={{ flex: 10, flexDirection: 'row' }}>
@@ -510,7 +511,7 @@ function modalChat(value, text, setChatText, localText, setLocalText, sportname)
                         <Text style={{ flex: 10 }}>{text}</Text>
                     </ScrollView>
                     <Pressable style={{ flex: 1 }} onPress={() => value.setChat(false)}>
-                        <Image style={{ alignSelf: "flex-end",margin:10 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} />
+                        <Image style={{ alignSelf: "flex-end", margin: 10 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} />
                     </Pressable>
                 </View>
                 <View style={{ flexDirection: "row", flex: 1 }}>
@@ -528,6 +529,7 @@ function modalChat(value, text, setChatText, localText, setLocalText, sportname)
     )
 
 }
+let initialText = "";
 function SportDetailsScreen({ route }) {
 
     const [window_width, setWidth] = React.useState(Dimensions.get("window").width);
@@ -538,12 +540,17 @@ function SportDetailsScreen({ route }) {
     const [toupdate, setToUpdate] = React.useState(false);
     const [chatText, setChatText] = React.useState("");
     const [localText, setLocalText] = React.useState("");
+    const chatcontext = React.useContext(ChatContext);
     React.useEffect(() => {
-        fetchChat(route.params.sportname, setChatText)
+        console.log("useeffect")
+        var charInterval = setInterval(() => fetchChat(route.params.sportname, setChatText, chatcontext.setNewMessage), 1000);
         setloading(false);
 
-
-    }, []);
+        return () => {
+            clearInterval(charInterval);
+            initialText = "";
+        }
+    }, [chatcontext]);
 
     if (loadingmain) {
         return (<ActivityIndicator size="large" color="#000000" />)
@@ -551,7 +558,7 @@ function SportDetailsScreen({ route }) {
     return (
         <PinchZoomView style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, width: window_width, height: window_height }} setToUpdate={setToUpdate} toupdate={toupdate} maxScale={1} minScale={0.5} >
             <ChatContext.Consumer>
-                {value => modalChat(value, chatText, setChatText, localText, setLocalText, route.params.sportname)}
+                {value => modalChat(value, chatText, setChatText, localText, setLocalText, route.params.sportname, value.setNewMessage)}
 
             </ChatContext.Consumer>
             <ArbitreContext.Consumer>
@@ -1083,7 +1090,7 @@ function App() {
     const [arbitre, setArbitre] = React.useState(false);
     const [chat, setChat] = React.useState(false);
     const [soundstatus, setSound] = React.useState();
-
+    const [newMessage, setNewMessage] = React.useState(false);
 
     const [load, setLoad] = React.useState(true);
 
@@ -1134,7 +1141,7 @@ function App() {
     return (
         <NavigationContainer>
             <ArbitreContext.Provider value={arbitre}>
-                <ChatContext.Provider value={{ chat: chat, setChat: setChat }}>
+                <ChatContext.Provider value={{ chat: chat, setChat: setChat, setNewMessage: setNewMessage }}>
                     <Stack.Navigator screenOptions={{
                         headerStyle: {
                             backgroundColor: '#000',
@@ -1175,7 +1182,7 @@ function App() {
                                         <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
                                     </TouchableOpacity></View>
                                     <Pressable onPress={() => { setChat(true) }}>
-                                        <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", marginRight: 10 }} source={require('./assets/chat.png')} />
+                                        <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", marginRight: 10 }} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
                                     </Pressable>
                                     <TouchableOpacity onPress={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 3000)}>
                                         <Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} />
