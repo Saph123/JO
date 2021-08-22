@@ -12,6 +12,7 @@ import { Trace, fetch_results, fetch_activities } from "./trace.js";
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import * as SecureStore from 'expo-secure-store';
+import { clearUpdateCacheExperimentalAsync } from 'expo-updates';
 
 async function save(key, value) {
     await SecureStore.setItemAsync(key, value);
@@ -694,23 +695,18 @@ function fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, firsttime, 
         return data;
     }).catch(err => console.log(err, " in fetch clicker"));;
 }
-function pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex, previousValue, setSpeed, setHH) {
-    var prev = test;
-    for (var i in navigation.getState().routes) {
-        if (navigation.getState().routes[i].name == "ClickerScreen") { // on est tjs sur l'ecran on relance
-            setTimeout(() => pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex, prev, setSpeed, setHH), 3000);
-        }
-    }
-    if ((test - previousValue) / 3 < 80) {
+function pushClicker(setUserNames, setCount, setRanks, setMyIndex, previousValue, setSpeed, setHH) {
+    prev = newvalueclicker;
+    if ((newvalueclicker - previousValue) / 3 < 80) {
 
-        setSpeed(Math.round((test - previousValue) / 3));
+        setSpeed(Math.round((newvalueclicker - previousValue) / 3));
     }
     else {
         setSpeed(0);
     }
-    fetch("http://91.121.143.104:7070/clicker", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "count": test }) }).then(res => {
-        console.log(res.status);
-        if (res.status == 200) {
+    fetch("http://91.121.143.104:7070/clicker", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "count": newvalueclicker }) }).then(r => {
+        console.log(r.status);
+        if (r.status == 200) {
             fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, false, setHH);
             return;
 
@@ -718,7 +714,8 @@ function pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex, p
     }).catch(err => console.log(err, "in push"));
 }
 
-let test = 0;
+let newvalueclicker = 0;
+let prev = 0;
 function ClickerScreen() {
     const [myRank, setRanks] = React.useState([]);
     const [count, setCount] = React.useState([]);
@@ -726,15 +723,17 @@ function ClickerScreen() {
     const [index, setMyIndex] = React.useState(0);
     const [speed, setSpeed] = React.useState(0);
     const [HH, setHH] = React.useState(1);
-    const navigation = useNavigation();
-    var prev = test;
+    prev = newvalueclicker;
     React.useEffect(() => {
         // while(!fetchok){
         fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, true, setHH);
 
-        setTimeout(() => pushClicker(navigation, setUserNames, setCount, setRanks, setMyIndex, prev, setSpeed, setHH), 3000);
+        let intervalClicker = setInterval(() => pushClicker( setUserNames, setCount, setRanks, setMyIndex, prev, setSpeed, setHH), 1000);
 
         // }
+        return () => {
+            clearInterval(intervalClicker);
+        }
     }, []);
     return (
         <View style={{ flex: 1, flexDirection: 'row', backgroundColor: HH == 2 ? 'black' : 'lightgrey' }}>
