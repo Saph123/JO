@@ -239,7 +239,8 @@ function HomeScreen({ route, navigation }) {
 }
 
 function PlanningScreen({ route, navigation }) {
-
+    const [clicks, setClicks] = React.useState(0)
+    const [gifVisible, setGifVisible] = React.useState(false)
     var planning = new Planning();
     var jeudi = new Date('2021-08-27T00:00:00+02:00');
     var vendredi = new Date('2021-08-28T00:00:00+02:00');
@@ -248,6 +249,17 @@ function PlanningScreen({ route, navigation }) {
 
     return (
         <PinchZoomView style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, flexDirection: "row", width: 1000, height: 1000 }} maxScale={1} minScale={0.5} >
+        <Modal style={{ width: "100%", height: "100%", alignSelf: "center" }}
+            visible={gifVisible}>
+
+            <Pressable onPress={() => { setGifVisible(false); setClicks(0) }}>
+                <View>
+                    <Text></Text>
+                    <Image style={{ width: "100%", height: "70%", alignSelf: "center", marginTop :"30%" }} source={require('./assets/searching.gif')}/>
+                    <Text style={{ fontSize: 40, alignSelf: "center", marginTop : -100, color: "white", textAlign: "center", textShadowColor : "black", textShadowRadius: 4}}>{username} looking for easter eggs</Text>
+                </View>
+            </Pressable>
+        </Modal>
             <View style={styles.calendar}>
                 <View><Text style={styles.textday}>Jeudi</Text></View>
                 {
@@ -317,7 +329,19 @@ function PlanningScreen({ route, navigation }) {
                             return (
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
-                                    <View><TouchableOpacity onPress={() => { if (r.timeBegin.getHours() < 12) { route.params.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) } }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
+                                    <View><TouchableOpacity onPress={() => { 
+                                        if (r.timeBegin.getHours() < 12) {
+                                            route.params.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname })
+                                        }
+                                        else if (r.eventname == "Remiseprix") {
+                                            if (clicks < 9) {
+                                                setClicks(clicks + 1)
+                                            }
+                                            else {
+                                                setGifVisible(true)
+                                            }
+                                        }
+                                    }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
                                 </View>)
                         }
                     })
