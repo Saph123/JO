@@ -500,6 +500,7 @@ function modalChat(value, text, setChatText, localText, setLocalText, sportname)
             transparent={false}
             visible={value.chat}
             supportedOrientations={['portrait', 'landscape']}
+            onRequestClose={() => value.setChat(false)}
         >
             <View style={{ flex: 1 }}>
                 <View style={{ flex: 10, flexDirection: 'row' }}>
