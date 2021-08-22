@@ -116,8 +116,10 @@ function HomeScreen({ route, navigation }) {
                 if (notification.request.content.body.indexOf("fin") != -1) {
                     alert("Fin de l'happy hour!")
                 }
-                else {
-
+                else if (notification.request.content.body.indexOf("T'es mauvais") != -1) {
+                    Linking.openURL('https://www.youtube.com/watch?v=J1-JmvaT2WU');
+                }
+                else if (notification.request.content.body.indexOf("C'est parti") != -1) {
                     alert("Vite! c'est l'happy hour clicker!");
                     navigation.navigate('ClickerScreen');
                 }
