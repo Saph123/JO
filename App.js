@@ -679,6 +679,9 @@ function SummaryScreen() {
     const [tableauMedaille, setTableauMedaille] = React.useState([{}]);
     const [chatText, setChatText] = React.useState("");
     const [localText, setLocalText] = React.useState("");
+    const [medailleSport, setMedailleSport] = React.useState(false);
+    const [winSport, setWinSport] = React.useState(false);
+    const [modalMedaille, setModaleMedaille] = React.useState(false);
     const chatcontext = React.useContext(ChatContext);
     React.useEffect(() => {
         fetch_results().then(r => {
@@ -688,7 +691,7 @@ function SummaryScreen() {
 
                 for (var j = 0; j < 50; j++) {
                     if (r[i].rank == j) {
-                        let tmp = { name: r[i].name, rank: r[i].rank, or: r[i].gold.number, bronze: r[i].bronze.number, argent: r[i].silver.number };
+                        let tmp = { name: r[i].name, rank: r[i].rank, or: r[i].gold.number, bronze: r[i].bronze.number, argent: r[i].silver.number, sportsgold: r[i].gold.sports, sportssilver: r[i].silver.sports, sportsbronze: r[i].bronze.sports };
                         tempArray.push(tmp);
                     }
                 }
@@ -711,6 +714,17 @@ function SummaryScreen() {
                 {value => modalChat(value, chatText, setChatText, localText, setLocalText, "Summary")}
 
             </ChatContext.Consumer>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={medailleSport}
+                supportedOrientations={['portrait', 'landscape']}
+            >
+                <View style={styles.modalView}>
+                    <Image source={modalMedaille == 1 ? require("./assets/or.png") : modalMedaille == 2 ? require("./assets/argent.png") : require("./assets/bronze.png")} />
+                    <Text>{winSport}</Text>
+                </View>
+            </Modal>
             {tableauMedaille.map(r => {
 
 
@@ -724,11 +738,17 @@ function SummaryScreen() {
                         </View>
                         <View style={{ flexDirection: "row", width: "38%" }}>
                             <Text style={styles.medailleNumber}>{r.or}</Text>
-                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
+                            <Pressable onPress={() => { if (r.sportsgold != "") { setModaleMedaille(1); setWinSport(r.name + "\n\n" + r.sportsgold); setMedailleSport(true); setTimeout(() => setMedailleSport(false), 2000) } }}>
+                                <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
+                            </Pressable>
                             <Text style={styles.medailleNumber}>{r.argent}</Text>
-                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
+                            <Pressable onPress={() => { if (r.sportssilver != "") { setModaleMedaille(2); setWinSport(r.name + "\n\n" + r.sportssilver); setMedailleSport(true); setTimeout(() => setMedailleSport(false), 2000) } }}>
+                                <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
+                            </Pressable>
                             <Text style={styles.medailleNumber}>{r.bronze}</Text>
-                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
+                            <Pressable onPress={() => { if (r.sportsbronze != "") { setModaleMedaille(3); setWinSport(r.name + "\n\n" + r.sportsbronze); setMedailleSport(true); setTimeout(() => setMedailleSport(false), 2000) } }}>
+                                <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
+                            </Pressable>
                         </View>
 
                     </View>
@@ -736,7 +756,7 @@ function SummaryScreen() {
             }
             )
             }
-        </ScrollView>
+        </ScrollView >
     )
 }
 
