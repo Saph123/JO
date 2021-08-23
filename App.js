@@ -33,7 +33,8 @@ let initialLineNumber = {
     "100mRicard": 0,
     "Petanque": 0,
     "Molky": 0,
-    "Clicker": 0
+    "Clicker": 0,
+    "Home": 0
 };
 
 async function save(key, value) {
