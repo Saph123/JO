@@ -167,15 +167,15 @@ function HomeScreen({ route, navigation }) {
 
                 Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
             }
-            else if (notification.request.content.title == "Clicker: Happy Hour!") {
-                if (notification.request.content.body.indexOf("fin") != -1) {
+            else if (response.notification.request.content.title == "Clicker: Happy Hour!") {
+                if (response.notification.request.content.body.indexOf("fin") != -1) {
                     alert("Fin de l'happy hour!")
                 }
-                else if (notification.request.content.body.indexOf("T'es mauvais") != -1) {
+                else if (response.notification.request.content.body.indexOf("T'es mauvais") != -1) {
                     alert("T'es mauvais!")
                     Linking.openURL('https://www.youtube.com/watch?v=J1-JmvaT2WU');
                 }
-                else if (notification.request.content.body.indexOf("C'est parti") != -1) {
+                else if (response.notification.request.content.body.indexOf("C'est parti") != -1) {
                     alert("Vite! c'est l'happy hour clicker!");
                     navigation.navigate('ClickerScreen');
                 }
