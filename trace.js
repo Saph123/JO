@@ -331,7 +331,10 @@ async function fetch_matches(fetchStatus, statusState, username, setAutho, setSt
                 displayed_state[sportname] = data['status'];
                 setStatus(data);
                 for (var authouser in data['arbitre']) {
-                    if (data['arbitre'][authouser] == "None") {
+                    if (data['arbitre'][authouser] == "All") {
+                        setAutho(true);
+                    }
+                    else if (data['arbitre'][authouser] == "None") {
                         setAutho(false);
                     }
                     else if (data['arbitre'][authouser] == username) {

@@ -290,13 +290,11 @@ function PlanningScreen({ route, navigation }) {
             <Modal style={{ width: "100%", height: "100%", alignSelf: "center" }}
                 visible={gifVisible}>
 
-                <Pressable onPress={() => { setTimeout(() => setGifVisible(false), 3000) }}>
                     <View>
                         <Text></Text>
                         <Image style={{ width: "100%", height: "70%", alignSelf: "center", marginTop: "30%" }} source={require('./assets/searching.gif')} />
                         <Text style={{ fontSize: 40, alignSelf: "center", marginTop: "-30%", color: "white", textAlign: "center", textShadowColor: "black", textShadowRadius: 4 }}>{username} looking for easter eggs</Text>
                     </View>
-                </Pressable>
             </Modal>
             <View style={styles.calendar}>
                 <View><Text style={styles.textday}>Jeudi</Text></View>
@@ -387,6 +385,7 @@ function PlanningScreen({ route, navigation }) {
                                             else {
                                                 setGifVisible(true)
                                                 setClicks(0)
+                                                setTimeout(() => setGifVisible(false), 5000);
                                             }
                                         }
                                     }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
@@ -569,12 +568,12 @@ function modalChat(value, text, setChatText, localText, setLocalText, sportname)
             <View style={{ flex: 1 }}>
                 <View style={{ flex: 6, flexDirection: 'row' }}>
                     <View style={{ flex: 5 }}>
-                    <ScrollView ref={ref => { this.scrollView = ref }} onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
+                    <ScrollView style={{marginTop: 20}} ref={ref => { this.scrollView = ref }} onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
 
                         <Text >{text}</Text>
                     </ScrollView>
                     </View>
-                    <Pressable style={{ flex: 1, justifyContent:"center"}} onPress={() => value.setChat(false)}>
+                    <Pressable style={{ flex: 1, marginTop: 30, marginLeft: 20}} onPress={() => value.setChat(false)}>
                         <Image style={{ width: 23, height:19 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} />
                     </Pressable>
                 </View>
@@ -700,13 +699,13 @@ function SummaryScreen() {
 
                 return (
                     <View key={r.name} style={{ flexDirection: "row", justifyContent: "flex-start", borderBottomWidth: 1, borderColor: "lightgrey" }}>
-                        <View style={{ flexDirection: "row", width: 100 }}>
+                        <View style={{ flexDirection: "row", width: "28%" }}>
                             <Text style={styles.medailleNumber}>{r.rank + addth(r.rank)}</Text>
                         </View>
-                        <View style={{ flexDirection: "row", width: 130 }}>
+                        <View style={{ flexDirection: "row", width: "34%" }}>
                             <Text style={{ fontSize: 18 }}>{r.name}</Text>
                         </View>
-                        <View style={{ flexDirection: "row", width: 130 }}>
+                        <View style={{ flexDirection: "row", width: "38%" }}>
                             <Text style={styles.medailleNumber}>{r.or}</Text>
                             <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
                             <Text style={styles.medailleNumber}>{r.argent}</Text>
@@ -753,15 +752,16 @@ function fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, firsttime, 
     }).catch(err => console.log(err, " in fetch clicker"));;
 }
 function pushClicker(setUserNames, setCount, setRanks, setMyIndex, setSpeed, setHH) {
-    if ((newvalueclicker - previousValueClicker) / 3 < 80) {
+    let speed =  (newvalueclicker - previousValueClicker) / 3
+    if (speed < 80) {
 
-        setSpeed(Math.round((newvalueclicker - previousValueClicker) / 3));
+        setSpeed(Math.round(speed));
     }
     else {
         setSpeed(0);
     }
     previousValueClicker = newvalueclicker;
-    fetch("http://91.121.143.104:7070/clicker", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "count": newvalueclicker }) }).then((answer) => {
+    fetch("http://91.121.143.104:7070/clicker", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "count": newvalueclicker, "speed": speed }) }).then((answer) => {
         if (answer.status == 200) {
             fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, false, setHH);
             return;
