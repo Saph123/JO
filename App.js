@@ -14,6 +14,28 @@ import * as Notifications from 'expo-notifications';
 import * as SecureStore from 'expo-secure-store';
 import { clearUpdateCacheExperimentalAsync } from 'expo-updates';
 
+let initialLineNumber = {
+    "Trail": 0,
+    "Dodgeball": 0,
+    "Pizza": 0,
+    "Tong": 0,
+    "Babyfoot": 0,
+    "Flechette": 0,
+    "PingPong": 0,
+    "Orientation": 0,
+    "Beerpong": 0,
+    "Volley": 0,
+    "Waterpolo": 0,
+    "Larmina": 0,
+    "Natation": 0,
+    "SpikeBall": 0,
+    "Ventriglisse": 0,
+    "100mRicard": 0,
+    "Petanque": 0,
+    "Molky": 0,
+    "Clicker" : 0
+};
+
 async function save(key, value) {
     await SecureStore.setItemAsync(key, value);
 }
@@ -493,18 +515,25 @@ function Login({ route, navigation }) {
         </ScrollView>
     )
 };
+function countLines(str){
+    return (str.match(/\n/g) || '').length + 1;
+}
 function fetchChat(sportname, setChatText, setNewMessage) {
 
 
     fetch("http://91.121.143.104:7070/chat/" + sportname + "_chat.txt").then(response => response.text()).then(r => {
-        if (initialText == "") {
-            initialText = r;
-        }
-        else {
-            if (initialText != r) {
+        // if (initialLineNumber[sportname] == 0) {
+            console.log("initial lines: ",initialLineNumber[sportname], countLines(r))
+        //     initialLineNumber[sportname] = countLines(r);
+        //     // save("initialLineNumber" + sportname, initialLineNumber[sportname])
+        //     // save("initialLineNumber", JSON.stringify(initialLineNumber));
+        // }
+        // else {
+            if (initialLineNumber[sportname] != countLines(r) && countLines(r) > 1) {
+                
                 setNewMessage(true);
             }
-        }
+        // }
         setChatText(r)
     });
 
@@ -514,6 +543,8 @@ function fetchChat(sportname, setChatText, setNewMessage) {
 function pushChat(version, sportname, username, text) {
     fetch("http://91.121.143.104:7070/chat", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "text": text, "sportname": sportname }) }).then(res => {
         if (res.status == 200) {
+            initialLineNumber[sportname]++;
+            save("initialLineNumber", JSON.stringify(initialLineNumber));
             return;
 
         }
@@ -528,8 +559,8 @@ function modalChat(value, text, setChatText, localText, setLocalText, sportname)
             transparent={false}
             visible={value.chat}
             supportedOrientations={['portrait', 'landscape']}
-            onRequestClose={() => value.setChat(false)}
-            onShow={() => value.setNewMessage(false)}
+            onRequestClose={() => {value.setChat(false)}}
+            onShow={() => {value.setNewMessage(false);initialLineNumber[sportname] = countLines(text);save("initialLineNumber", JSON.stringify(initialLineNumber));}}
         >
             <View style={{ flex: 1 }}>
                 <View style={{ flex: 10, flexDirection: 'row' }}>
@@ -543,8 +574,8 @@ function modalChat(value, text, setChatText, localText, setLocalText, sportname)
                 </View>
                 <View style={{ flexDirection: "row", flex: 1 }}>
 
-                    <TextInput onSubmitEditing={() => { pushChat(version, sportname, username, localText); initialText= text + "\n" + username + ":" + localText; setChatText(text + "\n" + username + ":" + localText); setLocalText(""); }} style={{ borderWidth: 1, flex: 1 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
-                    <Pressable onPress={() => { pushChat(version, sportname, username, localText);initialText= text + "\n" + username + ":" + localText; setChatText(text + "\n" + username + ":" + localText); setLocalText("");  }}>
+                    <TextInput onSubmitEditing={() => { pushChat(version, sportname, username, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText(""); }} style={{ borderWidth: 1, flex: 1 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
+                    <Pressable onPress={() => { pushChat(version, sportname, username, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText("");  }}>
                         <Image style={{ width: 50, height: 50 }} source={require('./assets/sendmessage.png')} />
                     </Pressable>
 
@@ -556,7 +587,6 @@ function modalChat(value, text, setChatText, localText, setLocalText, sportname)
     )
 
 }
-let initialText = "";
 function SportDetailsScreen({ route }) {
 
     const [window_width, setWidth] = React.useState(Dimensions.get("window").width);
@@ -574,7 +604,6 @@ function SportDetailsScreen({ route }) {
 
         return () => {
             clearInterval(charInterval);
-            initialText = "";
         }
     }, [chatcontext]);
 
@@ -718,7 +747,6 @@ function fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, firsttime, 
     }).catch(err => console.log(err, " in fetch clicker"));;
 }
 function pushClicker(setUserNames, setCount, setRanks, setMyIndex, setSpeed, setHH) {
-    console.log(previousValueClicker, newvalueclicker)
     if ((newvalueclicker - previousValueClicker) / 3 < 80) {
 
         setSpeed(Math.round((newvalueclicker - previousValueClicker) / 3));
@@ -1154,6 +1182,11 @@ function App() {
     React.useEffect(() => {
 
         getValueFor("username").then(r => username = r);
+        for(sport in initialLineNumber){
+            console.log(sport)
+            console.log(initialLineNumber[sport])
+        }
+        getValueFor("initialLineNumber").then(r => {if(r!=""){initialLineNumber =JSON.parse(r)}; console.log("getvaluefor:",initialLineNumber)});
         setLoad(false);
 
 

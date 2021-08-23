@@ -1,8 +1,8 @@
 // import styles from "./style";
 import { useNavigation } from '@react-navigation/native';
-import { Platform, Button, View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Pressable } from 'react-native';
+import { View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Pressable } from 'react-native';
 import * as React from 'react';
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import {  TouchableOpacity } from 'react-native-gesture-handler';
 import { Svg, Polyline } from 'react-native-svg';
 import { Table, Row } from 'react-native-table-component';
 import 'react-native-url-polyfill/auto';
