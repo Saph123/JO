@@ -98,6 +98,9 @@ function HomeScreen({ route, navigation }) {
     const [notification, setNotification] = React.useState(false);
     const [expoPushToken, setExpoPushToken] = React.useState('');
     const responseListener = React.useRef();
+    const [chatText, setChatText] = React.useState("");
+    const [localText, setLocalText] = React.useState("");
+    const chatcontext = React.useContext(ChatContext);
     async function playcluedo() {
         pushcluedo()
         if (soundstatus == undefined) {
@@ -148,7 +151,10 @@ function HomeScreen({ route, navigation }) {
                     navigation.navigate('ClickerScreen');
                 }
             }
+
+
         });
+        var chatInterval = setInterval(() => fetchChat("Home", setChatText, chatcontext.setNewMessage), 1000);
 
         // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
@@ -178,9 +184,10 @@ function HomeScreen({ route, navigation }) {
         return () => {
             Notifications.removeNotificationSubscription(notificationListener.current);
             Notifications.removeNotificationSubscription(responseListener.current);
+            clearInterval(chatInterval);
         };
 
-    }, []);
+    }, [chatcontext]);
     if (loading) {
         return (<ActivityIndicator size="large" color="#000000" />)
 
@@ -188,6 +195,8 @@ function HomeScreen({ route, navigation }) {
     if (username == "") {
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
+
+
                 <View style={{
                     borderBottomColor: 'black',
                     borderBottomWidth: 1,
@@ -206,6 +215,10 @@ function HomeScreen({ route, navigation }) {
     return (
 
         <ScrollView>
+            <ChatContext.Consumer>
+                {value => modalChat(value, chatText, setChatText, localText, setLocalText, "Home")}
+
+            </ChatContext.Consumer>
             {videoHandler(setBoules, boules, videoBoule, require('./assets/boules.mp4'), true)}
             {secondsleft < 0 ? <View><Pressable style={styles.loginbutton}><Text style={styles.texthomebutton}>Planning</Text></Pressable></View> : secondsleft == 0 ? <Pressable onPress={() => navigation.navigate('Planning')}>
                 <Image style={{ alignSelf: "center" }} source={require('./assets/80s.gif')} /></Pressable> : <View><Text style={{ alignSelf: "center" }}>{nextEvent + " dans :"}</Text><CountDown
@@ -1225,6 +1238,9 @@ function App() {
                             <Stack.Screen options={({ navigation }) => ({
                                 title: "Home", headerRight: () => (
                                     <View style={{ flexDirection: "row", margin: 10 }}>
+                                        <Pressable onPress={() => { setChat(true) }}>
+                                            <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", marginRight: 10 }} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
+                                        </Pressable>
                                         <TouchableOpacity onPress={playmegaphone}>
                                             <Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} />
                                         </TouchableOpacity>
