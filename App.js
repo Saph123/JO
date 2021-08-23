@@ -568,12 +568,12 @@ function modalChat(value, text, setChatText, localText, setLocalText, sportname)
             <View style={{ flex: 1 }}>
                 <View style={{ flex: 6, flexDirection: 'row' }}>
                     <View style={{ flex: 5 }}>
-                    <ScrollView ref={ref => { this.scrollView = ref }} onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
+                    <ScrollView style={{marginTop: 20}} ref={ref => { this.scrollView = ref }} onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
 
                         <Text >{text}</Text>
                     </ScrollView>
                     </View>
-                    <Pressable style={{ flex: 1, justifyContent:"center"}} onPress={() => value.setChat(false)}>
+                    <Pressable style={{ flex: 1, marginTop: 30, marginLeft: 20}} onPress={() => value.setChat(false)}>
                         <Image style={{ width: 23, height:19 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} />
                     </Pressable>
                 </View>
@@ -699,13 +699,13 @@ function SummaryScreen() {
 
                 return (
                     <View key={r.name} style={{ flexDirection: "row", justifyContent: "flex-start", borderBottomWidth: 1, borderColor: "lightgrey" }}>
-                        <View style={{ flexDirection: "row", width: 100 }}>
+                        <View style={{ flexDirection: "row", width: "28%" }}>
                             <Text style={styles.medailleNumber}>{r.rank + addth(r.rank)}</Text>
                         </View>
-                        <View style={{ flexDirection: "row", width: 130 }}>
+                        <View style={{ flexDirection: "row", width: "34%" }}>
                             <Text style={{ fontSize: 18 }}>{r.name}</Text>
                         </View>
-                        <View style={{ flexDirection: "row", width: 130 }}>
+                        <View style={{ flexDirection: "row", width: "38%" }}>
                             <Text style={styles.medailleNumber}>{r.or}</Text>
                             <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
                             <Text style={styles.medailleNumber}>{r.argent}</Text>
