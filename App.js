@@ -1,6 +1,6 @@
 // import styles from "./style";
 import * as React from 'react';
-import { View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Platform, Pressable, Linking, Button } from 'react-native';
+import { View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Platform, Pressable, Linking, Button, KeyboardAvoidingView } from 'react-native';
 import { Link, NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import PinchZoomView from 'react-native-pinch-zoom-view';
@@ -13,6 +13,28 @@ import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import * as SecureStore from 'expo-secure-store';
 import { clearUpdateCacheExperimentalAsync } from 'expo-updates';
+
+let initialLineNumber = {
+    "Trail": 0,
+    "Dodgeball": 0,
+    "Pizza": 0,
+    "Tong": 0,
+    "Babyfoot": 0,
+    "Flechette": 0,
+    "PingPong": 0,
+    "Orientation": 0,
+    "Beerpong": 0,
+    "Volley": 0,
+    "Waterpolo": 0,
+    "Larmina": 0,
+    "Natation": 0,
+    "SpikeBall": 0,
+    "Ventriglisse": 0,
+    "100mRicard": 0,
+    "Petanque": 0,
+    "Molky": 0,
+    "Clicker" : 0
+};
 
 async function save(key, value) {
     await SecureStore.setItemAsync(key, value);
@@ -305,7 +327,10 @@ function PlanningScreen({ route, navigation }) {
                             return (
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
-                                    <View><TouchableOpacity onPress={() => { route.params.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
+                                    <SportContext>{value =>
+                                        <View><TouchableOpacity onPress={() => { value.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
+                                    }
+                                    </SportContext>
                                 </View>)
                         }
                     })
@@ -322,10 +347,14 @@ function PlanningScreen({ route, navigation }) {
                         }
                         if (r.timeBegin < samedi && r.timeBegin > vendredi) {
                             return (
+                                <SportContext.Consumer>
+                                        {value =>
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
-                                    <View><TouchableOpacity onPress={() => { route.params.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
-                                </View>)
+                                    <View><TouchableOpacity onPress={() => { value.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
+                                </View>
+                        }
+                        </SportContext.Consumer>)
                         }
                     })
                 }
@@ -343,9 +372,11 @@ function PlanningScreen({ route, navigation }) {
                             return (
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
+                                    <SportContext.Consumer>
+                                        {value =>
                                     <View><TouchableOpacity onPress={() => {
                                         if (r.timeBegin.getHours() < 12) {
-                                            route.params.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname })
+                                            value.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname })
                                         }
                                         else if (r.eventname == "Remiseprix") {
                                             if (clicks < 9) {
@@ -358,6 +389,8 @@ function PlanningScreen({ route, navigation }) {
                                             }
                                         }
                                     }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
+                                     }
+                                </SportContext.Consumer>
                                 </View>)
                         }
                     })
@@ -391,6 +424,7 @@ function Login({ route, navigation }) {
                         <TextInput onFocus={() => setpassword("")} autoCompleteType="password" secureTextEntry={true} style={{ textAlign: "center", borderWidth: 1, borderRadius: 15, height: 20, minWidth: 100 }} onChangeText={text => setpassword(text)} value={password}></TextInput>
                     </View>
                     <View style={{ margin: 30, flexDirection: "row" }}>
+                        
                         <TouchableOpacity style={{ width: 60, height: 30, borderRadius: 15, backgroundColor: "#ff8484", justifyContent: "center" }} title="Log in" onPress={() =>
 
                             fetch("http://91.121.143.104:7070/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": userName, "password": password }) }).then(r => {
@@ -480,18 +514,25 @@ function Login({ route, navigation }) {
         </ScrollView>
     )
 };
+function countLines(str){
+    return (str.match(/\n/g) || '').length + 1;
+}
 function fetchChat(sportname, setChatText, setNewMessage) {
 
 
     fetch("http://91.121.143.104:7070/chat/" + sportname + "_chat.txt").then(response => response.text()).then(r => {
-        if (initialText == "") {
-            initialText = r;
-        }
-        else {
-            if (initialText != r) {
+        // if (initialLineNumber[sportname] == 0) {
+            console.log("initial lines: ",initialLineNumber[sportname], countLines(r))
+        //     initialLineNumber[sportname] = countLines(r);
+        //     // save("initialLineNumber" + sportname, initialLineNumber[sportname])
+        //     // save("initialLineNumber", JSON.stringify(initialLineNumber));
+        // }
+        // else {
+            if (initialLineNumber[sportname] != countLines(r) && countLines(r) > 1) {
+                
                 setNewMessage(true);
             }
-        }
+        // }
         setChatText(r)
     });
 
@@ -501,6 +542,8 @@ function fetchChat(sportname, setChatText, setNewMessage) {
 function pushChat(version, sportname, username, text) {
     fetch("http://91.121.143.104:7070/chat", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "text": text, "sportname": sportname }) }).then(res => {
         if (res.status == 200) {
+            initialLineNumber[sportname]++;
+            save("initialLineNumber", JSON.stringify(initialLineNumber));
             return;
 
         }
@@ -515,35 +558,40 @@ function modalChat(value, text, setChatText, localText, setLocalText, sportname)
             transparent={false}
             visible={value.chat}
             supportedOrientations={['portrait', 'landscape']}
-            onRequestClose={() => value.setChat(false)}
-            onShow={() => value.setNewMessage(false)}
+            onRequestClose={() => {value.setChat(false)}}
+            onShow={() => {value.setNewMessage(false);initialLineNumber[sportname] = countLines(text);save("initialLineNumber", JSON.stringify(initialLineNumber));}}
         >
+                <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{flex:1}}
+    >
             <View style={{ flex: 1 }}>
-                <View style={{ flex: 10, flexDirection: 'row' }}>
+                <View style={{ flex: 6, flexDirection: 'row' }}>
+                    <View style={{ flex: 5 }}>
                     <ScrollView ref={ref => { this.scrollView = ref }} onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
 
-                        <Text style={{ flex: 10 }}>{text}</Text>
+                        <Text >{text}</Text>
                     </ScrollView>
-                    <Pressable style={{ flex: 1 }} onPress={() => value.setChat(false)}>
-                        <Image style={{ alignSelf: "flex-end", margin: 10 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} />
+                    </View>
+                    <Pressable style={{ flex: 1, justifyContent:"center"}} onPress={() => value.setChat(false)}>
+                        <Image style={{ width: 23, height:19 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} />
                     </Pressable>
                 </View>
                 <View style={{ flexDirection: "row", flex: 1 }}>
-
-                    <TextInput onSubmitEditing={() => { pushChat(version, sportname, username, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText("") }} style={{ borderWidth: 1, flex: 1 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
-                    <Pressable onPress={() => { pushChat(version, sportname, username, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText("") }}>
+                    <TextInput onSubmitEditing={() => { pushChat(version, sportname, username, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText(""); }} style={{ borderWidth: 1, flex: 1 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
+                    <Pressable onPress={() => { pushChat(version, sportname, username, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText("");  }}>
                         <Image style={{ width: 50, height: 50 }} source={require('./assets/sendmessage.png')} />
                     </Pressable>
 
                 </View>
             </View>
+                    </KeyboardAvoidingView>
 
         </Modal>
 
     )
 
 }
-let initialText = "";
 function SportDetailsScreen({ route }) {
 
     const [window_width, setWidth] = React.useState(Dimensions.get("window").width);
@@ -561,7 +609,6 @@ function SportDetailsScreen({ route }) {
 
         return () => {
             clearInterval(charInterval);
-            initialText = "";
         }
     }, [chatcontext]);
 
@@ -705,7 +752,6 @@ function fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, firsttime, 
     }).catch(err => console.log(err, " in fetch clicker"));;
 }
 function pushClicker(setUserNames, setCount, setRanks, setMyIndex, setSpeed, setHH) {
-    console.log(previousValueClicker, newvalueclicker)
     if ((newvalueclicker - previousValueClicker) / 3 < 80) {
 
         setSpeed(Math.round((newvalueclicker - previousValueClicker) / 3));
@@ -950,9 +996,13 @@ function UsernameScreen({ route, navigation }) {
                         <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Mes activités </Text></View>
                         {events.map(r => {
                             return (
+                                <SportContext.Consumer>
+                                    {value =>
                                 <View key={r}>
-                                    {eventView(eventsInProgress, eventsDone, r, navigation, route.params.setCurrentSport)}
+                                    {eventView(eventsInProgress, eventsDone, r, navigation, value.setCurrentSport)}
                                 </View>
+                                 }
+                                 </SportContext.Consumer>
                             )
                         })}
                     </View>
@@ -960,9 +1010,13 @@ function UsernameScreen({ route, navigation }) {
                         <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> J'arbitre </Text></View>
                         {arbitre.map(r => {
                             return (
+                                <SportContext.Consumer>
+                                    {value =>
                                 <View key={r}>
-                                    {eventView(eventsInProgress, eventsDone, r, navigation, route.params.setCurrentSport)}
+                                    {eventView(eventsInProgress, eventsDone, r, navigation, value.setCurrentSport)}
                                 </View>
+                                }
+                                </SportContext.Consumer>
                             )
                         })}
                     </View>
@@ -1133,6 +1187,11 @@ function App() {
     React.useEffect(() => {
 
         getValueFor("username").then(r => username = r);
+        for(sport in initialLineNumber){
+            console.log(sport)
+            console.log(initialLineNumber[sport])
+        }
+        getValueFor("initialLineNumber").then(r => {if(r!=""){initialLineNumber =JSON.parse(r)}; console.log("getvaluefor:",initialLineNumber)});
         setLoad(false);
 
 
@@ -1169,7 +1228,7 @@ function App() {
                                             <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
                                         </TouchableOpacity></View>
                                     </View>)
-                            })} initialParams={{ setCurrentSport: setCurrentSport }} name="Home" component={HomeScreen} />
+                            })} name="Home" component={HomeScreen} />
 
                             <Stack.Screen options={{
                                 title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text>
