@@ -1,6 +1,6 @@
 // import styles from "./style";
 import * as React from 'react';
-import { View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Platform, Pressable, Linking, Button } from 'react-native';
+import { View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Platform, Pressable, Linking, Button, KeyboardAvoidingView } from 'react-native';
 import { Link, NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import PinchZoomView from 'react-native-pinch-zoom-view';
@@ -562,18 +562,23 @@ function modalChat(value, text, setChatText, localText, setLocalText, sportname)
             onRequestClose={() => {value.setChat(false)}}
             onShow={() => {value.setNewMessage(false);initialLineNumber[sportname] = countLines(text);save("initialLineNumber", JSON.stringify(initialLineNumber));}}
         >
+                <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{flex:1}}
+    >
             <View style={{ flex: 1 }}>
-                <View style={{ flex: 10, flexDirection: 'row' }}>
+                <View style={{ flex: 6, flexDirection: 'row' }}>
+                    <View style={{ flex: 5 }}>
                     <ScrollView ref={ref => { this.scrollView = ref }} onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
 
-                        <Text style={{ flex: 10 }}>{text}</Text>
+                        <Text >{text}</Text>
                     </ScrollView>
-                    <Pressable style={{ flex: 1 }} onPress={() => value.setChat(false)}>
-                        <Image style={{ alignSelf: "flex-end", margin: 10 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} />
+                    </View>
+                    <Pressable style={{ flex: 1, justifyContent:"center"}} onPress={() => value.setChat(false)}>
+                        <Image style={{ width: 23, height:19 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} />
                     </Pressable>
                 </View>
                 <View style={{ flexDirection: "row", flex: 1 }}>
-
                     <TextInput onSubmitEditing={() => { pushChat(version, sportname, username, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText(""); }} style={{ borderWidth: 1, flex: 1 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
                     <Pressable onPress={() => { pushChat(version, sportname, username, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText("");  }}>
                         <Image style={{ width: 50, height: 50 }} source={require('./assets/sendmessage.png')} />
@@ -581,6 +586,7 @@ function modalChat(value, text, setChatText, localText, setLocalText, sportname)
 
                 </View>
             </View>
+                    </KeyboardAvoidingView>
 
         </Modal>
 
