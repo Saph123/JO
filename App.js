@@ -752,16 +752,16 @@ function fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, firsttime, 
     }).catch(err => console.log(err, " in fetch clicker"));;
 }
 function pushClicker(setUserNames, setCount, setRanks, setMyIndex, setSpeed, setHH) {
-    let speed =  (newvalueclicker - previousValueClicker) / 3
-    if (speed < 80) {
+    let recentClicks = newvalueclicker - previousValueClicker;
+    if (recentClicks / 3 < 80) {
 
-        setSpeed(Math.round(speed));
+        setSpeed(Math.round(recentClicks / 3));
     }
     else {
         setSpeed(0);
     }
     previousValueClicker = newvalueclicker;
-    fetch("http://91.121.143.104:7070/clicker", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "count": newvalueclicker, "speed": speed }) }).then((answer) => {
+    fetch("http://91.121.143.104:7070/clicker", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "count": newvalueclicker, "recent_clicks": recentClicks }) }).then((answer) => {
         if (answer.status == 200) {
             fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, false, setHH);
             return;
