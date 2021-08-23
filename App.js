@@ -761,7 +761,7 @@ function pushClicker(setUserNames, setCount, setRanks, setMyIndex, setSpeed, set
         setSpeed(0);
     }
     previousValueClicker = newvalueclicker;
-    fetch("http://91.121.143.104:7070/clicker", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "count": newvalueclicker, "recent_clicks": recentClicks }) }).then((answer) => {
+    fetch("http://91.121.143.104:7070/clicker", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "count": newvalueclicker, "recent_clicks": recentClicks, "seedA": locationX, "seedB": locationY }) }).then((answer) => {
         if (answer.status == 200) {
             fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, false, setHH);
             return;
@@ -773,6 +773,8 @@ function pushClicker(setUserNames, setCount, setRanks, setMyIndex, setSpeed, set
 
 let newvalueclicker = 0;
 let previousValueClicker = 0;
+let locationX = 0
+let locationY = 0;
 function ClickerScreen() {
     const [myRank, setRanks] = React.useState([]);
     const [count, setCount] = React.useState([]);
@@ -823,7 +825,7 @@ function ClickerScreen() {
             </View>
             <View style={{ flex: 1, justifyContent: 'center' }}>
                 <Text>{speed} C/s</Text>
-                <Pressable onPress={(pressEvent) => { console.log(pressEvent.locationX);var tmp = count; tmp[index] = tmp[index] + HH; newvalueclicker = newvalueclicker + HH; tmp[index] = Math.max(tmp[index], newvalueclicker); setCount([...tmp]); }} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, styles.inProgress]} >
+                <Pressable onPress={(pressEvent) => { locationX = pressEvent.nativeEvent.locationX; locationY = pressEvent.nativeEvent.locationY;var tmp = count; tmp[index] = tmp[index] + HH; newvalueclicker = newvalueclicker + HH; tmp[index] = Math.max(tmp[index], newvalueclicker); setCount([...tmp]); }} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, styles.inProgress]} >
                     <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
                 </Pressable>
             </View>
