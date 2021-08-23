@@ -539,7 +539,7 @@ function fetchChat(sportname, setChatText, setNewMessage) {
 
 
 }
-function pushChat(version, sportname, username, text) {
+function pushChat(sportname, text) {
     fetch("http://91.121.143.104:7070/chat", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "text": text, "sportname": sportname }) }).then(res => {
         if (res.status == 200) {
             initialLineNumber[sportname]++;
@@ -578,8 +578,8 @@ function modalChat(value, text, setChatText, localText, setLocalText, sportname)
                     </Pressable>
                 </View>
                 <View style={{ flexDirection: "row", flex: 1 }}>
-                    <TextInput onSubmitEditing={() => { pushChat(version, sportname, username, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText(""); }} style={{ borderWidth: 1, flex: 1 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
-                    <Pressable onPress={() => { pushChat(version, sportname, username, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText("");  }}>
+                    <TextInput onSubmitEditing={() => { pushChat(sportname, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText(""); }} style={{ borderWidth: 1, flex: 1 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
+                    <Pressable onPress={() => { pushChat(sportname, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText("");  }}>
                         <Image style={{ width: 50, height: 50 }} source={require('./assets/sendmessage.png')} />
                     </Pressable>
 
