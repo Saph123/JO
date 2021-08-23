@@ -54,7 +54,7 @@ const styles = require("./style.js");
 const ArbitreContext = React.createContext(false);
 const ChatContext = React.createContext(false);
 const SportContext = React.createContext(false);
-export let version = 1
+export let version = 2
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
         shouldShowAlert: true,
