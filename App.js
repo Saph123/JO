@@ -33,7 +33,7 @@ let initialLineNumber = {
     "100mRicard": 0,
     "Petanque": 0,
     "Molky": 0,
-    "Clicker" : 0
+    "Clicker": 0
 };
 
 async function save(key, value) {
@@ -290,11 +290,11 @@ function PlanningScreen({ route, navigation }) {
             <Modal style={{ width: "100%", height: "100%", alignSelf: "center" }}
                 visible={gifVisible}>
 
-                    <View>
-                        <Text></Text>
-                        <Image style={{ width: "100%", height: "70%", alignSelf: "center", marginTop: "30%" }} source={require('./assets/searching.gif')} />
-                        <Text style={{ fontSize: 40, alignSelf: "center", marginTop: "-30%", color: "white", textAlign: "center", textShadowColor: "black", textShadowRadius: 4 }}>{username} looking for easter eggs</Text>
-                    </View>
+                <View>
+                    <Text></Text>
+                    <Image style={{ width: "100%", height: "70%", alignSelf: "center", marginTop: "30%" }} source={require('./assets/searching.gif')} />
+                    <Text style={{ fontSize: 40, alignSelf: "center", marginTop: "-30%", color: "white", textAlign: "center", textShadowColor: "black", textShadowRadius: 4 }}>{username} looking for easter eggs</Text>
+                </View>
             </Modal>
             <View style={styles.calendar}>
                 <View><Text style={styles.textday}>Jeudi</Text></View>
@@ -348,13 +348,13 @@ function PlanningScreen({ route, navigation }) {
                         if (r.timeBegin < samedi && r.timeBegin > vendredi) {
                             return (
                                 <SportContext.Consumer>
-                                        {value =>
-                                <View>
-                                    <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
-                                    <View><TouchableOpacity onPress={() => { value.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
-                                </View>
-                        }
-                        </SportContext.Consumer>)
+                                    {value =>
+                                        <View>
+                                            <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
+                                            <View><TouchableOpacity onPress={() => { value.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
+                                        </View>
+                                    }
+                                </SportContext.Consumer>)
                         }
                     })
                 }
@@ -374,23 +374,23 @@ function PlanningScreen({ route, navigation }) {
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
                                     <SportContext.Consumer>
                                         {value =>
-                                    <View><TouchableOpacity onPress={() => {
-                                        if (r.timeBegin.getHours() < 12) {
-                                            value.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname })
+                                            <View><TouchableOpacity onPress={() => {
+                                                if (r.timeBegin.getHours() < 12) {
+                                                    value.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname })
+                                                }
+                                                else if (r.eventname == "Remiseprix") {
+                                                    if (clicks < 9) {
+                                                        setClicks(clicks + 1)
+                                                    }
+                                                    else {
+                                                        setGifVisible(true)
+                                                        setClicks(0)
+                                                        setTimeout(() => setGifVisible(false), 5000);
+                                                    }
+                                                }
+                                            }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
                                         }
-                                        else if (r.eventname == "Remiseprix") {
-                                            if (clicks < 9) {
-                                                setClicks(clicks + 1)
-                                            }
-                                            else {
-                                                setGifVisible(true)
-                                                setClicks(0)
-                                                setTimeout(() => setGifVisible(false), 5000);
-                                            }
-                                        }
-                                    }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
-                                     }
-                                </SportContext.Consumer>
+                                    </SportContext.Consumer>
                                 </View>)
                         }
                     })
@@ -424,7 +424,7 @@ function Login({ route, navigation }) {
                         <TextInput onFocus={() => setpassword("")} autoCompleteType="password" secureTextEntry={true} style={{ textAlign: "center", borderWidth: 1, borderRadius: 15, height: 20, minWidth: 100 }} onChangeText={text => setpassword(text)} value={password}></TextInput>
                     </View>
                     <View style={{ margin: 30, flexDirection: "row" }}>
-                        
+
                         <TouchableOpacity style={{ width: 60, height: 30, borderRadius: 15, backgroundColor: "#ff8484", justifyContent: "center" }} title="Log in" onPress={() =>
 
                             fetch("http://91.121.143.104:7070/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": userName, "password": password }) }).then(r => {
@@ -514,25 +514,17 @@ function Login({ route, navigation }) {
         </ScrollView>
     )
 };
-function countLines(str){
+function countLines(str) {
     return (str.match(/\n/g) || '').length + 1;
 }
 function fetchChat(sportname, setChatText, setNewMessage) {
 
 
     fetch("http://91.121.143.104:7070/chat/" + sportname + "_chat.txt").then(response => response.text()).then(r => {
-        // if (initialLineNumber[sportname] == 0) {
-            console.log("initial lines: ",initialLineNumber[sportname], countLines(r))
-        //     initialLineNumber[sportname] = countLines(r);
-        //     // save("initialLineNumber" + sportname, initialLineNumber[sportname])
-        //     // save("initialLineNumber", JSON.stringify(initialLineNumber));
-        // }
-        // else {
-            if (initialLineNumber[sportname] != countLines(r) && countLines(r) > 1) {
-                
-                setNewMessage(true);
-            }
-        // }
+        if (initialLineNumber[sportname] != countLines(r) && countLines(r) > 1) {
+
+            setNewMessage(true);
+        }
         setChatText(r)
     });
 
@@ -558,34 +550,34 @@ function modalChat(value, text, setChatText, localText, setLocalText, sportname)
             transparent={false}
             visible={value.chat}
             supportedOrientations={['portrait', 'landscape']}
-            onRequestClose={() => {value.setChat(false)}}
-            onShow={() => {value.setNewMessage(false);initialLineNumber[sportname] = countLines(text);save("initialLineNumber", JSON.stringify(initialLineNumber));}}
+            onRequestClose={() => { value.setChat(false) }}
+            onShow={() => { value.setNewMessage(false); initialLineNumber[sportname] = countLines(text); save("initialLineNumber", JSON.stringify(initialLineNumber)); }}
         >
-                <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{flex:1}}
-    >
-            <View style={{ flex: 1 }}>
-                <View style={{ flex: 6, flexDirection: 'row' }}>
-                    <View style={{ flex: 5 }}>
-                    <ScrollView style={{marginTop: 20}} ref={ref => { this.scrollView = ref }} onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={{ flex: 1 }}
+            >
+                <View style={{ flex: 1 }}>
+                    <View style={{ flex: 6, flexDirection: 'row' }}>
+                        <View style={{ flex: 5 }}>
+                            <ScrollView style={{ marginTop: 20 }} ref={ref => { this.scrollView = ref }} onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
 
-                        <Text >{text}</Text>
-                    </ScrollView>
+                                <Text >{text}</Text>
+                            </ScrollView>
+                        </View>
+                        <Pressable style={{ flex: 1, marginTop: 30, marginLeft: 20 }} onPress={() => value.setChat(false)}>
+                            <Image style={{ width: 23, height: 19 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} />
+                        </Pressable>
                     </View>
-                    <Pressable style={{ flex: 1, marginTop: 30, marginLeft: 20}} onPress={() => value.setChat(false)}>
-                        <Image style={{ width: 23, height:19 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} />
-                    </Pressable>
-                </View>
-                <View style={{ flexDirection: "row", flex: 1 }}>
-                    <TextInput onSubmitEditing={() => { pushChat(sportname, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText(""); }} style={{ borderWidth: 1, flex: 1 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
-                    <Pressable onPress={() => { pushChat(sportname, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText("");  }}>
-                        <Image style={{ width: 50, height: 50 }} source={require('./assets/sendmessage.png')} />
-                    </Pressable>
+                    <View style={{ flexDirection: "row", flex: 1 }}>
+                        <TextInput onSubmitEditing={() => { pushChat(sportname, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText(""); }} style={{ borderWidth: 1, flex: 1 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
+                        <Pressable onPress={() => { pushChat(sportname, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText(""); }}>
+                            <Image style={{ width: 50, height: 50 }} source={require('./assets/sendmessage.png')} />
+                        </Pressable>
 
+                    </View>
                 </View>
-            </View>
-                    </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
 
         </Modal>
 
@@ -604,11 +596,11 @@ function SportDetailsScreen({ route }) {
     const [localText, setLocalText] = React.useState("");
     const chatcontext = React.useContext(ChatContext);
     React.useEffect(() => {
-        var charInterval = setInterval(() => fetchChat(route.params.sportname, setChatText, chatcontext.setNewMessage), 1000);
+        var chatInterval = setInterval(() => fetchChat(route.params.sportname, setChatText, chatcontext.setNewMessage), 1000);
         setloading(false);
 
         return () => {
-            clearInterval(charInterval);
+            clearInterval(chatInterval);
         }
     }, [chatcontext]);
 
@@ -761,7 +753,7 @@ function pushClicker(setUserNames, setCount, setRanks, setMyIndex, setSpeed, set
         setSpeed(0);
     }
     previousValueClicker = newvalueclicker;
-    fetch("http://91.121.143.104:7070/clicker", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "count": newvalueclicker, "recent_clicks": recentClicks, "seedA": locationX, "seedB": locationY }) }).then((answer) => {
+    fetch("http://91.121.143.104:7070/clicker", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "bosondehiggz": newvalueclicker, "kekw_alpha": recentClicks, "seedA": locationX, "seedB": locationY, "anticheatsystem": Math.random() * 200, "antirejeu": Math.random() * 1000000, "1million": "larmina" + String(Math.random()) }) }).then((answer) => {
         if (answer.status == 200) {
             fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, false, setHH);
             return;
@@ -775,6 +767,8 @@ let newvalueclicker = 0;
 let previousValueClicker = 0;
 let locationX = 0
 let locationY = 0;
+
+
 function ClickerScreen() {
     const [myRank, setRanks] = React.useState([]);
     const [count, setCount] = React.useState([]);
@@ -782,18 +776,27 @@ function ClickerScreen() {
     const [index, setMyIndex] = React.useState(0);
     const [speed, setSpeed] = React.useState(0);
     const [HH, setHH] = React.useState(1);
+    const [chatText, setChatText] = React.useState("");
+    const [localText, setLocalText] = React.useState("");
+    const chatcontext = React.useContext(ChatContext);
     React.useEffect(() => {
         fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, true, setHH);
         previousValueClicker = newvalueclicker;
 
         let intervalClicker = setInterval(() => pushClicker(setUserNames, setCount, setRanks, setMyIndex, setSpeed, setHH), 3000);
+        var chatInterval = setInterval(() => fetchChat("Clicker", setChatText, chatcontext.setNewMessage), 1000);
 
         return () => {
             clearInterval(intervalClicker);
+            clearInterval(chatInterval);
         }
-    }, []);
+    }, [chatcontext]);
     return (
         <View style={{ flex: 1, flexDirection: 'row', backgroundColor: HH == 2 ? 'black' : 'lightgrey' }}>
+            <ChatContext.Consumer>
+                {value => modalChat(value, chatText, setChatText, localText, setLocalText, "Clicker")}
+
+            </ChatContext.Consumer>
             <Image style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: HH == 2 ? 1 : 0 }} source={require("./assets/HH.gif")} />
             <View style={{ flex: 5 }}>
                 <ScrollView >
@@ -825,7 +828,7 @@ function ClickerScreen() {
             </View>
             <View style={{ flex: 1, justifyContent: 'center' }}>
                 <Text>{speed} C/s</Text>
-                <Pressable onPress={(pressEvent) => { locationX = pressEvent.nativeEvent.locationX; locationY = pressEvent.nativeEvent.locationY;var tmp = count; tmp[index] = tmp[index] + HH; newvalueclicker = newvalueclicker + HH; tmp[index] = Math.max(tmp[index], newvalueclicker); setCount([...tmp]); }} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, styles.inProgress]} >
+                <Pressable onPress={(pressEvent) => { locationX = pressEvent.nativeEvent.locationX; locationY = pressEvent.nativeEvent.locationY; var tmp = count; tmp[index] = tmp[index] + HH; newvalueclicker = newvalueclicker + HH; tmp[index] = Math.max(tmp[index], newvalueclicker); setCount([...tmp]); }} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, styles.inProgress]} >
                     <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
                 </Pressable>
             </View>
@@ -1001,11 +1004,11 @@ function UsernameScreen({ route, navigation }) {
                             return (
                                 <SportContext.Consumer>
                                     {value =>
-                                <View key={r}>
-                                    {eventView(eventsInProgress, eventsDone, r, navigation, value.setCurrentSport)}
-                                </View>
-                                 }
-                                 </SportContext.Consumer>
+                                        <View key={r}>
+                                            {eventView(eventsInProgress, eventsDone, r, navigation, value.setCurrentSport)}
+                                        </View>
+                                    }
+                                </SportContext.Consumer>
                             )
                         })}
                     </View>
@@ -1015,10 +1018,10 @@ function UsernameScreen({ route, navigation }) {
                             return (
                                 <SportContext.Consumer>
                                     {value =>
-                                <View key={r}>
-                                    {eventView(eventsInProgress, eventsDone, r, navigation, value.setCurrentSport)}
-                                </View>
-                                }
+                                        <View key={r}>
+                                            {eventView(eventsInProgress, eventsDone, r, navigation, value.setCurrentSport)}
+                                        </View>
+                                    }
                                 </SportContext.Consumer>
                             )
                         })}
@@ -1190,11 +1193,9 @@ function App() {
     React.useEffect(() => {
 
         getValueFor("username").then(r => username = r);
-        for(sport in initialLineNumber){
-            console.log(sport)
-            console.log(initialLineNumber[sport])
+        for (sport in initialLineNumber) {
         }
-        getValueFor("initialLineNumber").then(r => {if(r!=""){initialLineNumber =JSON.parse(r)}; console.log("getvaluefor:",initialLineNumber)});
+        getValueFor("initialLineNumber").then(r => { if (r != "") { initialLineNumber = JSON.parse(r) }; });
         setLoad(false);
 
 
@@ -1267,8 +1268,12 @@ function App() {
                                 title: "Notif tool"
                             })} initialParams={{ username: username }} name="pushNotifScreen" component={pushNotifScreen} />
 
-                            <Stack.Screen options={() => ({
-                                title: "Clicker!"
+                            <Stack.Screen options={({ navigation }) => ({
+                                title: "Clicker!", headerRight: () => <View>
+                                    <Pressable onPress={() => { setChat(true) }}>
+                                        <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", marginRight: 10 }} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
+                                    </Pressable>
+                                </View>
                             })} initialParams={{ username: username }} name="ClickerScreen" component={ClickerScreen} />
                             <Stack.Screen options={() => ({
                                 title: "Van Rommel"
