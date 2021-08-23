@@ -677,6 +677,9 @@ function addth(rank) {
 function SummaryScreen() {
     const [loading, setLoading] = React.useState(true);
     const [tableauMedaille, setTableauMedaille] = React.useState([{}]);
+    const [chatText, setChatText] = React.useState("");
+    const [localText, setLocalText] = React.useState("");
+    const chatcontext = React.useContext(ChatContext);
     React.useEffect(() => {
         fetch_results().then(r => {
             let tempArray = []
@@ -693,13 +696,21 @@ function SummaryScreen() {
             setTableauMedaille(tempArray)
             setLoading(false);
         })
+        var chatInterval = setInterval(() => fetchChat("Summary", setChatText, chatcontext.setNewMessage), 1000);
+        return () => {
+            clearInterval(chatInterval);
+        }
 
-    }, []);
+    }, [chatcontext]);
     if (loading) {
         return (<ActivityIndicator size="large" color="#000000" />)
     }
     return (
         <ScrollView style={{ width: "100%" }}>
+            <ChatContext.Consumer>
+                {value => modalChat(value, chatText, setChatText, localText, setLocalText, "Summary")}
+
+            </ChatContext.Consumer>
             {tableauMedaille.map(r => {
 
 
@@ -1276,7 +1287,13 @@ function App() {
                                         </TouchableOpacity>
                                     </View>
                             })} initialParams={{ sportname: currentSport }} name="SportDetails" component={SportDetailsScreen} />
-                            <Stack.Screen options={() => ({ title: "Tableau des médailles" })} name="SummaryScreen" component={SummaryScreen} />
+                            <Stack.Screen options={() => ({
+                                title: "Tableau des médailles", headerRight: () => <View>
+                                    <Pressable onPress={() => { setChat(true) }}>
+                                        <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", marginRight: 10 }} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
+                                    </Pressable>
+                                </View>
+                            })} name="SummaryScreen" component={SummaryScreen} />
                             <Stack.Screen options={() => ({
                                 title: username
                             })} initialParams={{ setCurrentSport: setCurrentSport }} name="UsernameScreen" component={UsernameScreen} />
