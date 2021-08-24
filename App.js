@@ -1332,10 +1332,11 @@ function App() {
                                         <Pressable onPress={() => { setChat(true) }}>
                                             <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", marginRight: 110, marginTop: 25, alignSelf:"center" }} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
                                         </Pressable>
+                                        <TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPress={() => { navigation.navigate('UsernameScreen') }}>
+                                            <Text style={{ color: "white", marginTop: 30, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
+                                        </TouchableOpacity>
                                         <TouchableOpacity onPress={playmegaphone}>
                                             <Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} />
-                                        </TouchableOpacity><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPress={() => { navigation.navigate('UsernameScreen') }}>
-                                            <Text style={{ color: "white", marginTop: 30, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
                                         </TouchableOpacity>
                                     </View>)
                             })} name="Home" component={HomeScreen} />
