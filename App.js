@@ -727,8 +727,8 @@ function SummaryScreen() {
                 supportedOrientations={['portrait', 'landscape']}
             >
                 <View style={styles.modalView}>
-                    <Image source={modalMedaille == 1 ? require("./assets/or.png") : modalMedaille == 2 ? require("./assets/argent.png") : require("./assets/bronze.png")} />
-                    <Text>{winSport}</Text>
+                        <Image source={modalMedaille == 1 ? require("./assets/or.png") : modalMedaille == 2 ? require("./assets/argent.png") : require("./assets/bronze.png")} />
+                    {winSport}
                 </View>
             </Modal>
             {tableauMedaille.map(r => {
@@ -744,15 +744,38 @@ function SummaryScreen() {
                         </View>
                         <View style={{ flexDirection: "row", width: "38%" }}>
                             <Text style={styles.medailleNumber}>{r.or}</Text>
-                            <Pressable onPress={() => { if (r.sportsgold != "") { setModaleMedaille(1); setWinSport(r.name + "\n\n" + r.sportsgold); setMedailleSport(true); setTimeout(() => setMedailleSport(false), 2000) } }}>
+                            <Pressable onPress={() => { if (r.sportsgold != "") { setModaleMedaille(1); setWinSport(
+                                    <View>
+                                        <Text style={styles.modalText}>{r.name}</Text>
+                                        <Text></Text>
+                                        <View>
+                                         {r.sportsgold.map(r2 => <Text key={r2} style={styles.modalText} >{r2}</Text>)}
+                                        </View>
+                                    </View>); setMedailleSport(true); setTimeout(() => setMedailleSport(false), 2000) } }}>
                                 <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
                             </Pressable>
                             <Text style={styles.medailleNumber}>{r.argent}</Text>
-                            <Pressable onPress={() => { if (r.sportssilver != "") { setModaleMedaille(2); setWinSport(r.name + "\n\n" + r.sportssilver); setMedailleSport(true); setTimeout(() => setMedailleSport(false), 2000) } }}>
+                            <Pressable onPress={() => { if (r.sportssilver != "") { setModaleMedaille(2); setWinSport(
+                                    <View>
+                                        <Text style={styles.modalText}>{r.name}</Text>
+                                        <Text></Text>
+                                        <View>
+                                         {r.sportssilver.map(r2 => <Text key={r2} style={styles.modalText} >{r2}</Text>)}
+                                        </View>
+                                    </View>);
+                                    setMedailleSport(true);
+                                    setTimeout(() => setMedailleSport(false), 2000)  }}}>
                                 <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
                             </Pressable>
                             <Text style={styles.medailleNumber}>{r.bronze}</Text>
-                            <Pressable onPress={() => { if (r.sportsbronze != "") { setModaleMedaille(3); setWinSport(r.name + "\n\n" + r.sportsbronze); setMedailleSport(true); setTimeout(() => setMedailleSport(false), 2000) } }}>
+                            <Pressable onPress={() => { if (r.sportsbronze != "") { setModaleMedaille(3); setWinSport(
+                                    <View>
+                                        <Text style={styles.modalText}>{r.name}</Text>
+                                        <Text></Text>
+                                        <View>
+                                         {r.sportsbronze.map(r2 => <Text key={r2} style={styles.modalText} >{r2}</Text>)}
+                                        </View>
+                                    </View>); setMedailleSport(true); setTimeout(() => setMedailleSport(false), 2000) } }}>
                                 <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
                             </Pressable>
                         </View>
