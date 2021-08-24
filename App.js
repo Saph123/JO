@@ -13,7 +13,7 @@ import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import * as SecureStore from 'expo-secure-store';
 import { clearUpdateCacheExperimentalAsync } from 'expo-updates';
-
+import { Accelerometer } from 'expo-sensors';
 let initialLineNumber = {
     "Trail": 0,
     "Dodgeball": 0,
@@ -798,7 +798,7 @@ function pushClicker(setUserNames, setCount, setRanks, setMyIndex, setSpeed, set
         setSpeed(0);
     }
     previousValueClicker = newvalueclicker;
-    fetch("http://91.121.143.104:7070/clicker", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "bosondehiggz": newvalueclicker, "kekw_alpha": recentClicks, "seedA": locationX, "seedB": locationY, "anticheatsystem": Math.random() * 200, "antirejeu": Math.random() * 1000000, "1million": "larmina" + String(Math.random()) }) }).then((answer) => {
+    fetch("http://91.121.143.104:7070/clicker", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "bosondehiggz": newvalueclicker, "kekw_alpha": recentClicks, "seedA": locationX, "seedB": locationY, "anticheatsystem": Math.random() * 200, "antirejeu": Math.random() * 1000000, "1million": "larmina" + String(Math.random()), "tabloid": globalX, "KEKW": globalY, "NAAB": globalZ }) }).then((answer) => {
         if (answer.status == 200) {
             fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, false, setHH);
             return;
@@ -812,6 +812,9 @@ let newvalueclicker = 0;
 let previousValueClicker = 0;
 let locationX = 0
 let locationY = 0;
+let globalX = 0;
+let globalY = 0;
+let globalZ = 0;
 
 
 function ClickerScreen() {
@@ -824,16 +827,43 @@ function ClickerScreen() {
     const [chatText, setChatText] = React.useState("");
     const [localText, setLocalText] = React.useState("");
     const chatcontext = React.useContext(ChatContext);
+    const [data, setData] = React.useState({
+        x: 0,
+        y: 0,
+        z: 0,
+      });
+      const [subscription, setSubscription] = React.useState(null);
+    
+      const _slow = () => {
+        Accelerometer.setUpdateInterval(1000);
+      };
+    
+    
+      const _subscribe = () => {
+        setSubscription(
+          Accelerometer.addListener(accelerometerData => {
+            setData(accelerometerData);
+          })
+        );
+      };
+    
+      const _unsubscribe = () => {
+        subscription && subscription.remove();
+        setSubscription(null);
+      };
+    
+      const { x, y, z } = data;
     React.useEffect(() => {
         fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, true, setHH);
         previousValueClicker = newvalueclicker;
-
         let intervalClicker = setInterval(() => pushClicker(setUserNames, setCount, setRanks, setMyIndex, setSpeed, setHH), 3000);
         var chatInterval = setInterval(() => fetchChat("Clicker", setChatText, chatcontext.setNewMessage), 1000);
-
+        _subscribe();
+        _slow();
         return () => {
             clearInterval(intervalClicker);
             clearInterval(chatInterval);
+           _unsubscribe();
         }
     }, [chatcontext]);
     return (
@@ -873,7 +903,7 @@ function ClickerScreen() {
             </View>
             <View style={{ flex: 1, justifyContent: 'center' }}>
                 <Text>{speed} C/s</Text>
-                <Pressable onPress={(pressEvent) => { locationX = pressEvent.nativeEvent.locationX; locationY = pressEvent.nativeEvent.locationY; var tmp = count; tmp[index] = tmp[index] + HH; newvalueclicker = newvalueclicker + HH; tmp[index] = Math.max(tmp[index], newvalueclicker); setCount([...tmp]); }} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, styles.inProgress]} >
+                <Pressable onPress={(pressEvent) => {globalX =x; globalY=y; globalZ=z; locationX = pressEvent.nativeEvent.locationX; locationY = pressEvent.nativeEvent.locationY; var tmp = count; tmp[index] = tmp[index] + HH; newvalueclicker = newvalueclicker + HH; tmp[index] = Math.max(tmp[index], newvalueclicker); setCount([...tmp]); }} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, styles.inProgress]} >
                     <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
                 </Pressable>
             </View>
@@ -1271,7 +1301,7 @@ function App() {
                                 title: "Home", headerRight: () => (
                                     <View style={{ flexDirection: "row", margin: 10 }}>
                                         <Pressable onPress={() => { setChat(true) }}>
-                                            <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", marginRight: 10 }} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
+                                            <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", marginRight: 10, alignSelf:"center" }} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
                                         </Pressable>
                                         <TouchableOpacity onPress={playmegaphone}>
                                             <Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} />
