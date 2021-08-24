@@ -486,6 +486,9 @@ function Login({ route, navigation }) {
 
                         <Image style={styles.logoalstom} source={require('./assets/alstom.png')} />
                     </View>
+                    <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                        <Image style={styles.logogaec} source={require('./assets/gaec.png')} />
+                    </View>
                 </View>
             </ScrollView >
         )
@@ -522,6 +525,9 @@ function Login({ route, navigation }) {
                     </View>
                     <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
                         <Image style={styles.logoalstom} source={require('./assets/alstom.png')} />
+                    </View>
+                    <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                        <Image style={styles.logogaec} source={require('./assets/gaec.png')} />
                     </View>
                 </View>
             </View>

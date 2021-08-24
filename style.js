@@ -329,6 +329,10 @@ module.exports = StyleSheet.create({
         width: 220,
         height: 68,
     },
+    logogaec: {
+        width: 220,
+        height: 125,
+    },
     medailletransparent: {
         width: 20,
         height: 30,
