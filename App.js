@@ -586,7 +586,7 @@ function modalChat(value, text, setChatText, localText, setLocalText, sportname)
                             </ScrollView>
                         </View>
                         <Pressable style={{ flex: 1, marginTop: 30, marginLeft: 20 }} onPress={() => value.setChat(false)}>
-                            <Image style={{ width: 23, height: 19 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} />
+                            <Image style={{ width: 28, height: 23}} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} />
                         </Pressable>
                     </View>
                     <View style={{ flexDirection: "row", flex: 1 }}>
