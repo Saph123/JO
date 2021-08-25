@@ -1,6 +1,6 @@
 // import styles from "./style";
 import { useNavigation } from '@react-navigation/native';
-import { View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Pressable } from 'react-native';
+import { View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Pressable, Alert } from 'react-native';
 import * as React from 'react';
 import {  TouchableOpacity } from 'react-native-gesture-handler';
 import { Svg, Polyline } from 'react-native-svg';
@@ -671,7 +671,7 @@ function pushmatch(username, sport, match, type, uniqueId) {
     // // push to server
     fetch("http://91.121.143.104:7070/pushmatch", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sport, "username": username, "type": type, "match": match, uniqueId: uniqueId }) }).then(r => {
         if (r.status == 200) {
-            alert("Saved to server!")
+            Alert.alert("Saved","Saved to server!", ["Ok"])
         }
         else {
             alert("Wrong login or password!");

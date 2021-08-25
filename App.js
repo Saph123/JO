@@ -1,6 +1,6 @@
 // import styles from "./style";
 import * as React from 'react';
-import { View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Platform, Pressable, Linking, Button, KeyboardAvoidingView } from 'react-native';
+import { View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Platform, Pressable, Linking, Button, KeyboardAvoidingView, Alert } from 'react-native';
 import { Link, NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import PinchZoomView from 'react-native-pinch-zoom-view';
@@ -137,20 +137,24 @@ function HomeScreen({ route, navigation }) {
         // This listener is fired whenever a notification is received while the app is foregrounded
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
             setNotification(notification);
-            if (notification.request.content.title == "CLUEDO!") {
-                alert("Cluedo!!")
+            let message = notification.request.content
+            if (message.title == "CLUEDO!") {
+                Alert.alert(message.title, message.body, [{text : "Say no more"}, {text : "Hold my beer"}])
             }
-            else if (notification.request.content.title == "Clicker: Happy Hour!") {
-                if (notification.request.content.body.indexOf("fin") != -1) {
+            else if (message.title == "Clicker: Happy Hour!") {
+                if (message.body.indexOf("fin") != -1) {
                     alert("Fin de l'happy hour!")
                 }
-                else if (notification.request.content.body.indexOf("T'es mauvais") != -1) {
+                else if (message.body.indexOf("T'es mauvais") != -1) {
                     Linking.openURL('https://www.youtube.com/watch?v=J1-JmvaT2WU');
                 }
-                else if (notification.request.content.body.indexOf("C'est parti") != -1) {
+                else if (message.body.indexOf("C'est parti") != -1) {
                     alert("Vite! c'est l'happy hour clicker!");
                     navigation.navigate('ClickerScreen');
                 }
+            }
+            else {
+                Alert.alert(message.title, message.body, [{text : "Ok"}])
             }
 
 
@@ -159,26 +163,35 @@ function HomeScreen({ route, navigation }) {
 
         // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+            
+            let message = response.notification.request.content
 
-            if (response.notification.request.content.body.indexOf("PUSH") != -1) {
+            
+            if (message.title == "CLUEDO!") {
+                Alert.alert(message.title, message.body, [{text : "Say no more"}, {text : "Hold my beer"}])
+            }
+            else if (message.body.indexOf("PUSH") != -1) {
                 navigation.navigate('pushNotifScreen');
             }
-            else if (response.notification.request.content.title.indexOf("Easter Egg!") != -1) {
+            else if (message.title.indexOf("Easter Egg!") != -1) {
 
                 Linking.openURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
             }
-            else if (response.notification.request.content.title == "Clicker: Happy Hour!") {
-                if (response.notification.request.content.body.indexOf("fin") != -1) {
+            else if (message.title == "Clicker: Happy Hour!") {
+                if (message.body.indexOf("fin") != -1) {
                     alert("Fin de l'happy hour!")
                 }
-                else if (response.notification.request.content.body.indexOf("T'es mauvais") != -1) {
+                else if (message.body.indexOf("T'es mauvais") != -1) {
                     alert("T'es mauvais!")
                     Linking.openURL('https://www.youtube.com/watch?v=J1-JmvaT2WU');
                 }
-                else if (response.notification.request.content.body.indexOf("C'est parti") != -1) {
+                else if (message.body.indexOf("C'est parti") != -1) {
                     alert("Vite! c'est l'happy hour clicker!");
                     navigation.navigate('ClickerScreen');
                 }
+            }
+            else {
+                Alert.alert(message.title, message.body, [{text : "Ok"}])
             }
 
         });
@@ -1236,7 +1249,7 @@ async function pushtoken(token, username) {
     // // push to server
     fetch("http://91.121.143.104:7070/pushtoken", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "token": token, "username": username }) }).then(r => {
         return;
-    }).catch((err) => { alert("May be it's normal") });
+    }).catch((err) => { alert("Maybe it's normal") });
 }
 async function pushcluedo() {
     // 5 second timeout:
@@ -1246,7 +1259,7 @@ async function pushcluedo() {
     fetch("http://91.121.143.104:7070/cluedo", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "cluedo": username }) }).then(r => {
 
 
-    }).catch((err) => { alert("May be it's normal") });
+    }).catch((err) => { alert("Maybe it's normal") });
 }
 
 async function askPushNotif(username, title, body, to) {
@@ -1256,7 +1269,7 @@ async function askPushNotif(username, title, body, to) {
     // // push to server
     fetch("http://91.121.143.104:7070/pushnotif", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "title": title, "body": body, "to": to }) }).then(r => {
         return
-    }).catch((err) => { alert(err, "May be it's normal") });
+    }).catch((err) => { alert(err, "Maybe it's normal") });
 }
 
 const Stack = createStackNavigator();
