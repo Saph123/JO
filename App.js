@@ -54,7 +54,7 @@ const styles = require("./style.js");
 const ArbitreContext = React.createContext(false);
 const ChatContext = React.createContext(false);
 const SportContext = React.createContext(false);
-export let version = 2
+export let version = 3
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
         shouldShowAlert: true,
@@ -827,8 +827,9 @@ function pushClicker(setUserNames, setCount, setRanks, setMyIndex, setSpeed, set
         setSpeed(0);
     }
     previousValueClicker = newvalueclicker;
-    fetch("http://91.121.143.104:7070/clicker", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "bosondehiggz": newvalueclicker, "kekw_alpha": recentClicks, "seedA": locationX, "seedB": locationY, "anticheatsystem": Math.random() * 200, "antirejeu": Math.random() * 1000000, "1million": "larmina" + String(Math.random()), "tabloid": globalX, "KEKW": globalY, "NAAB": globalZ }) }).then((answer) => {
+    fetch("http://91.121.143.104:7070/clicker", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "bosondehiggz": newvalueclicker, "kekw_alpha": recentClicks, "seedA": locationX, "seedB": locationY, "anticheatsystem": Math.random() * 200, "antirejeu": Math.random() * 1000000, "1million": "larmina" + String(Math.random()), "tabloid": globalX, "KEKW": globalY, "NAAB": globalZ, "woot": presses }) }).then((answer) => {
         if (answer.status == 200) {
+            presses = []
             fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, false, setHH);
             return;
 
@@ -844,7 +845,9 @@ let locationY = 0;
 let globalX = 0;
 let globalY = 0;
 let globalZ = 0;
-
+let start_press = 0;
+let time_press = 0;
+let presses = [];
 
 function ClickerScreen() {
     const [myRank, setRanks] = React.useState([]);
@@ -932,7 +935,7 @@ function ClickerScreen() {
             </View>
             <View style={{ flex: 1, justifyContent: 'center' }}>
                 <Text>{speed} C/s</Text>
-                <Pressable onPress={(pressEvent) => {globalX =x; globalY=y; globalZ=z; locationX = pressEvent.nativeEvent.locationX; locationY = pressEvent.nativeEvent.locationY; var tmp = count; tmp[index] = tmp[index] + HH; newvalueclicker = newvalueclicker + HH; tmp[index] = Math.max(tmp[index], newvalueclicker); setCount([...tmp]); }} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, styles.inProgress]} >
+                <Pressable onPressIn={(pressEvent) => {if(start_press==0){start_press=pressEvent?.nativeEvent.timestamp}else{time_press =(pressEvent?.nativeEvent.timestamp - start_press);start_press =pressEvent?.nativeEvent.timestamp}}} onPress={(pressEvent) => {globalX =x; globalY=y; globalZ=z;locationX = pressEvent.nativeEvent.locationX; locationY = pressEvent.nativeEvent.locationY;presses.push(time_press,locationX, locationY);  var tmp = count; tmp[index] = tmp[index] + HH; newvalueclicker = newvalueclicker + HH; tmp[index] = Math.max(tmp[index], newvalueclicker); setCount([...tmp]); }} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, styles.inProgress]} >
                     <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
                 </Pressable>
             </View>
