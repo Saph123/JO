@@ -83,7 +83,7 @@ export const Trace = (props) => {
         fetch_matches(true, null, username, setAutho, setStatus, props.setArbitreRule, props.sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, props.setWidth, props.setHeight, setRealListe, setSeriesLevel).then(r => {
             setloading(false)
             props.traceload(false);
-        }).catch(err => { alert(err); navigation.navigate('Home') });
+        }).catch(err => { console.log(err); navigation.navigate('Home') });
 
 
     }, []);
@@ -347,7 +347,7 @@ async function fetch_matches(fetchStatus, statusState, username, setAutho, setSt
                 setArbitreRule(data);
 
                 return data;
-            }).catch(err => { alert(err); setArbitreRule({ status: "error", arbitre: "error", rules: "error" }); return { status: "error", arbitre: "error", rules: "error" } });
+            }).catch(err => { console.log(err); setArbitreRule({ status: "error", arbitre: "error", rules: "error" }); return { status: "error", arbitre: "error", rules: "error" } });
         }
     }
     else {
@@ -493,7 +493,7 @@ export async function fetch_results() {
 
     fetch_results = await fetch("http://91.121.143.104:7070/results/global.json").then(response => response.json()).then(data => {
         return data;
-    }).catch(err => alert(err));
+    }).catch(err => console.log(err));
     return fetch_results;
 }
 
@@ -502,7 +502,7 @@ export async function fetch_activities(username, setArbitre, setEvents) {
         setArbitre(data["arbitre"])
         setEvents(data["activities"])
         return;
-    }).catch(err => alert(err));
+    }).catch(err => console.log(err));
     return;
 }
 
