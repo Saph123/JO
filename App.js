@@ -234,7 +234,7 @@ function HomeScreen({ route, navigation }) {
 
             </ChatContext.Consumer>
             {videoHandler(setBoules, boules, videoBoule, require('./assets/boules.mp4'), true)}
-            {secondsleft < 0 ? <View><Pressable style={styles.loginbutton}><Text style={styles.texthomebutton}>Planning</Text></Pressable></View> : secondsleft == 0 ? <Pressable onPress={() => navigation.navigate('Planning')}>
+            {secondsleft < 0 ? <View><Pressable onPress={() => navigation.navigate('Planning')} style={styles.loginbutton}><Text style={styles.texthomebutton}>Planning</Text></Pressable></View> : secondsleft == 0 ? <Pressable onPress={() => navigation.navigate('Planning')}>
                 <Image style={{ alignSelf: "center" }} source={require('./assets/80s.gif')} /></Pressable> : <View><Text style={{ alignSelf: "center" }}>{nextEvent + " dans :"}</Text><CountDown
                     style={{ color: "black" }}
                     digitStyle={{ backgroundColor: "#FF8484" }}
