@@ -12,6 +12,7 @@ import { Trace, fetch_results, fetch_activities } from "./trace.js";
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import * as SecureStore from 'expo-secure-store';
+import { StatusBar } from 'expo-status-bar';
 import { clearUpdateCacheExperimentalAsync } from 'expo-updates';
 import { Accelerometer } from 'expo-sensors';
 let initialLineNumber = {
@@ -54,7 +55,7 @@ const styles = require("./style.js");
 const ArbitreContext = React.createContext(false);
 const ChatContext = React.createContext(false);
 const SportContext = React.createContext(false);
-export let version = 3
+export let version = 4
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
         shouldShowAlert: true,
@@ -159,7 +160,7 @@ function HomeScreen({ route, navigation }) {
 
 
         });
-        var chatInterval = setInterval(() => fetchChat("Home", setChatText, chatcontext.setNewMessage), 1000);
+        var chatInterval = setInterval(() => fetchChat("Home", setChatText, chatcontext.setNewMessage), 3000);
 
         // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
@@ -223,6 +224,7 @@ function HomeScreen({ route, navigation }) {
                 >
                     <Text style={styles.texthomebutton}>Login</Text>
                 </TouchableOpacity>
+                <StatusBar style="light" />
             </View>
         )
     }
@@ -298,6 +300,7 @@ function HomeScreen({ route, navigation }) {
                     <Text style={styles.texthomebutton}>Push Notif!</Text>
                 </TouchableOpacity> : <View></View>}
             </View>
+            <StatusBar style="light" />
         </ScrollView>
 
     );
@@ -629,7 +632,7 @@ function SportDetailsScreen({ route }) {
     const [localText, setLocalText] = React.useState("");
     const chatcontext = React.useContext(ChatContext);
     React.useEffect(() => {
-        var chatInterval = setInterval(() => fetchChat(route.params.sportname, setChatText, chatcontext.setNewMessage), 1000);
+        var chatInterval = setInterval(() => fetchChat(route.params.sportname, setChatText, chatcontext.setNewMessage), 3000);
         setloading(false);
 
         return () => {
@@ -718,7 +721,7 @@ function SummaryScreen() {
             setTableauMedaille(tempArray)
             setLoading(false);
         })
-        var chatInterval = setInterval(() => fetchChat("Summary", setChatText, chatcontext.setNewMessage), 1000);
+        var chatInterval = setInterval(() => fetchChat("Summary", setChatText, chatcontext.setNewMessage), 3000);
         return () => {
             clearInterval(chatInterval);
         }
@@ -841,8 +844,8 @@ function pushClicker(setUserNames, setCount, setRanks, setMyIndex, setSpeed, set
     }
     previousValueClicker = newvalueclicker;
     fetch("http://91.121.143.104:7070/clicker", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "bosondehiggz": newvalueclicker, "kekw_alpha": recentClicks, "seedA": locationX, "seedB": locationY, "anticheatsystem": Math.random() * 200, "antirejeu": Math.random() * 1000000, "1million": "larmina" + String(Math.random()), "tabloid": globalX, "KEKW": globalY, "NAAB": globalZ, "woot": presses }) }).then((answer) => {
+        presses = []
         if (answer.status == 200) {
-            presses = []
             fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, false, setHH);
             return;
 
@@ -902,7 +905,7 @@ function ClickerScreen() {
         fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, true, setHH);
         previousValueClicker = newvalueclicker;
         let intervalClicker = setInterval(() => pushClicker(setUserNames, setCount, setRanks, setMyIndex, setSpeed, setHH), 3000);
-        var chatInterval = setInterval(() => fetchChat("Clicker", setChatText, chatcontext.setNewMessage), 1000);
+        var chatInterval = setInterval(() => fetchChat("Clicker", setChatText, chatcontext.setNewMessage), 3000);
         _subscribe();
         _slow();
         return () => {
@@ -1249,7 +1252,7 @@ async function pushtoken(token, username) {
     // // push to server
     fetch("http://91.121.143.104:7070/pushtoken", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "token": token, "username": username }) }).then(r => {
         return;
-    }).catch((err) => { alert("Maybe it's normal") });
+    }).catch((err) => { console.log("Maybe it's normal") });
 }
 async function pushcluedo() {
     // 5 second timeout:
@@ -1259,7 +1262,7 @@ async function pushcluedo() {
     fetch("http://91.121.143.104:7070/cluedo", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "cluedo": username }) }).then(r => {
 
 
-    }).catch((err) => { alert("Maybe it's normal") });
+    }).catch((err) => { console.log("Maybe it's normal") });
 }
 
 async function askPushNotif(username, title, body, to) {
@@ -1269,7 +1272,7 @@ async function askPushNotif(username, title, body, to) {
     // // push to server
     fetch("http://91.121.143.104:7070/pushnotif", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "title": title, "body": body, "to": to }) }).then(r => {
         return
-    }).catch((err) => { alert(err, "Maybe it's normal") });
+    }).catch((err) => { console.log(err, "Maybe it's normal") });
 }
 
 const Stack = createStackNavigator();
