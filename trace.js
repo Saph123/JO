@@ -83,7 +83,7 @@ export const Trace = (props) => {
         fetch_matches(true, null, username, setAutho, setStatus, props.setArbitreRule, props.sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, props.setWidth, props.setHeight, setRealListe, setSeriesLevel).then(r => {
             setloading(false)
             props.traceload(false);
-        }).catch(err => { console.log(err); navigation.navigate('Home') });
+        }).catch(err => { console.log(err); navigation.navigate('HomeScreen') });
 
 
     }, []);
