@@ -212,6 +212,12 @@ export function HomeScreen({ route, navigation }) {
                     <Image style={{ borderRadius: 15, borderWidth: 1, borderColor: "black" }} source={require('./assets/summary.png')} />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.loginbutton}
+                    onPress={() => { navigation.navigate('2021') }}
+                >
+
+                    <Text style={styles.texthomebutton}>2021</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.loginbutton}
                     onPress={() => { navigation.navigate('LoginScreen', { pushtoken: expoPushToken }) }}
                 >
 

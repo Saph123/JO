@@ -13,6 +13,7 @@ import { PlanningScreen } from "./PlanningScreen.js";
 import { SummaryScreen } from "./SummaryScreen.js";
 import { ClickerScreen } from "./ClickerScreen.js";
 import { UsernameScreen } from "./UsernameScreen.js";
+import { LastYearsResultsScreen } from "./LastYearsResultsScreen.js";
 import { SportDetailsScreen } from "./SportDetailsScreen.js";
 import { VanRommelScreen } from "./VanRommelScreen.js";
 import { pushNotifScreen } from "./PushNotifScreen.js";
@@ -174,6 +175,9 @@ function App() {
                             <Stack.Screen options={() => ({
                                 title: username
                             })} initialParams={{ setCurrentSport: setCurrentSport }} name="UsernameScreen" component={UsernameScreen} />
+                            <Stack.Screen options={() => ({
+                                title: username
+                            })} initialParams={{ setCurrentSport: setCurrentSport }} name="2021" component={LastYearsResultsScreen} />
 
                             <Stack.Screen options={() => ({
                                 title: "Notif tool"
