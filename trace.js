@@ -154,14 +154,14 @@ export const Trace = (props) => {
                         <View>
                             <Text style={styles.showPlayers}>Athlete</Text>
                             {realListe.map(r =>
-                                <Text style={r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers}>{r.username}</Text>
+                                <Text key={r.username} style={r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers}>{r.username}</Text>
                             )
                             }
                         </View>
                         <View>
                             <Text style={styles.inputScore}>Score/Temps</Text>
                             {realListe.map(r =>
-                                <Text style={styles.inputScore}>{r.score}</Text>
+                                <Text key={r.username} style={styles.inputScore}>{r.score}</Text>
                             )
                             }
                         </View>
@@ -170,7 +170,7 @@ export const Trace = (props) => {
                             {realListe.map((r, index) => {
                                 if (r.rank == 1) {
                                     return (
-                                        <View style={{ flexDirection: "row" }} >
+                                        <View key = {index} style={{ flexDirection: "row" }} >
                                             <View style={styles.medailleopaque}>
                                                 <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
                                             </View>
@@ -179,20 +179,20 @@ export const Trace = (props) => {
                                 }
                                 else if (r.rank == 2) {
                                     return (
-                                        <View style={styles.medailleopaque}>
+                                        <View key = {index} style={styles.medailleopaque}>
                                             <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
                                         </View>)
                                 }
                                 else if (r.rank == 3) {
                                     return (
-                                        <View style={styles.medailleopaque}>
+                                        <View key = {index} style={styles.medailleopaque}>
                                             <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
                                         </View>
                                     )
                                 }
                                 else {
                                     return (
-                                        <View style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
+                                        <View key = {index} style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
                                     )
                                 }
                             }
@@ -214,7 +214,7 @@ export const Trace = (props) => {
                         {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, 0, setListe, setFinal, username, setSeriesLevel, setRealListe, props.pinchReset) : <Text></Text>}
                     </View>
                     {seriesLevel.map(cur_level =>
-                        <View>
+                        <View key={cur_level}>
                             <View>
                                 <Text style={{ marginLeft: 175, fontSize: 20, fontWeight: "bold" }}>{cur_level == 0 ? "Final" : ("Serie" + cur_level)}</Text>
                             </View>
@@ -226,7 +226,7 @@ export const Trace = (props) => {
                                         if (cur_level == r.level) {
                                             return (
 
-                                                <View >
+                                                <View key={index}>
                                                     <Text style={r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers}>{r.username}</Text>
                                                 </View>
                                             )
@@ -240,7 +240,7 @@ export const Trace = (props) => {
                                     {realListe.map((r, index) => {
                                         if (cur_level == r.level) {
                                             return (
-                                                <TextInput onChangeText={(text) => { r.score = text; }} style={styles.inputScore}>{r.score}</TextInput>
+                                                <TextInput key={index} onChangeText={(text) => { r.score = text; }} style={styles.inputScore}>{r.score}</TextInput>
                                             )
                                         }
                                     }
@@ -262,13 +262,13 @@ export const Trace = (props) => {
                                         if (cur_level == r.level) {
                                             if (sport == 'Pizza')
                                                 return (
-                                                    <View style={{ flexDirection: "row" }} >
+                                                    <View key={index} style={{ flexDirection: "row" }} >
                                                         <MedailleView maxMedals={1} r={r} liste={realListe} setRealListe={setRealListe} setloading={setloading} metal={require('./assets/or.png')} rank={1}></MedailleView>
                                                     </View>
                                                 )
 
                                             return (
-                                                <View style={{ flexDirection: "row" }} >
+                                                <View key={index} style={{ flexDirection: "row" }} >
                                                     <MedailleView maxMedals={2} r={r} liste={realListe} setRealListe={setRealListe} setloading={setloading} metal={require('./assets/bronze.png')} rank={3}></MedailleView>
                                                     <MedailleView maxMedals={2} r={r} liste={realListe} setRealListe={setRealListe} setloading={setloading} metal={require('./assets/argent.png')} rank={2}></MedailleView>
                                                     <MedailleView maxMedals={2} r={r} liste={realListe} setRealListe={setRealListe} setloading={setloading} metal={require('./assets/or.png')} rank={1}></MedailleView>
