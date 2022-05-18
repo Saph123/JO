@@ -497,6 +497,20 @@ export async function fetch_results() {
     return fetch_results;
 }
 
+export async function fetch_teams(sportname) {
+    let fetch_teams = {}
+    
+    fetch_teams = await fetch("http://91.121.143.104:7070/teams/" + sportname + ".json").then(response => response.json()).then(data => {
+        let local_liste = [];
+        for (var i in data["Teams"]) {
+            local_liste.push(new Liste(data["Teams"][i]["Players"], data["Teams"][i]["Players"], 0, 0));
+        }
+        local_liste.push(new Liste("", "", 0, 0));
+        return local_liste;
+    }).catch(err => console.log(err));
+    return fetch_teams;
+}
+
 export async function fetch_activities(username, setArbitre, setEvents) {
     await fetch("http://91.121.143.104:7070/athletes/" + username + ".json").then(response => response.json()).then(data => {
         setArbitre(data["arbitre"])
@@ -662,6 +676,7 @@ const Matchcomp = (props) => {
     );
 
 }
+
 function pushmatch(username, sport, match, type, uniqueId) {
 
     // 5 second timeout:
@@ -679,6 +694,25 @@ function pushmatch(username, sport, match, type, uniqueId) {
 
     }).catch((err) => { alert("Issue with server!") });
 }
+
+export function updateTeams(username, sport, teams) {
+
+    // 5 second timeout:
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+    // // push to server
+    fetch("http://91.121.143.104:7070/updateTeams", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sport, "username": username, "teams": teams }) }).then(r => {
+        if (r.status == 200) {
+            Alert.alert("Saved","Saved to server!", ["Ok"])
+        }
+        else {
+            alert("Wrong login or password!");
+        }
+
+    }).catch((err) => { alert("Issue with server!") });
+}
+
 function determine_winner(curMatch) {
 
     if (curMatch.over != 0) {

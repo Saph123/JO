@@ -157,11 +157,11 @@ export function addth(rank) {
 }
 
 
-export function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentSport, setfun) {
+export function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentSport, navigateTo, setfun) {
 
     return (
         <Pressable delayLongPress={5000} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
-            onPress={() => { setCurrentSport(sportname), navigation.navigate('SportDetails', { sportname: sportname }) }} onLongPress={() => { if (sportname == 'Petanque') { setfun(true) } }}
+            onPress={() => { setCurrentSport(sportname), navigation.navigate(navigateTo, { sportname: sportname }) }} onLongPress={() => { if (sportname == 'Petanque') { setfun(true) } }}
         >
             <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
         </Pressable>)
