@@ -7,6 +7,7 @@ import { Svg, Polyline } from 'react-native-svg';
 import { Table, Row } from 'react-native-table-component';
 import 'react-native-url-polyfill/auto';
 import { version } from "./App"
+import { ScrollView } from 'react-native-gesture-handler';
 const styles = require("./style.js");
 
 let displayed_state = {
@@ -100,7 +101,7 @@ export const Trace = (props) => {
     }
     if (status.status == "playoff") {
         return (
-            <View>
+            <ScrollView horizontal={true}>
 
                 <Svg style={styles.svg}>
                     {levels.slice(1).reverse().map((r, index) => matches[r].map((m, index2) =>
@@ -117,7 +118,7 @@ export const Trace = (props) => {
                         <Matchcomp status={status} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={props.setWidth} setHeight={props.setHeight} setloading={setloading} username={username} loading={loading} matches={matches} level={r} sport={sport} autho={autho}></Matchcomp>
                     </View>)}
                 {(status.states.length > 1) ? button_switch(status, setStatus, sport, "poules", props.traceload, props.setWidth, props.setHeight, groups, null, null, null, null, null, props.pinchReset) : <Text></Text>}
-            </View>
+            </ScrollView>
         );
     }
     if (status.status == "poules") {
@@ -144,9 +145,9 @@ export const Trace = (props) => {
 
         if (!autho) {
             return (
-                <View style={{ position: 'absolute', top: 100, left: 0 }}>
+                <ScrollView styles={{flex:1}} horizontal={true}>
 
-                    <View styles={{ width: 70, height: 70, alignSelf: "center" }}>
+                    <View styles={{ width: 30, height: 70, alignSelf: "center" }}>
 
                         {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, 0, setListe, setFinal, username, setSeriesLevel, setRealListe, props.pinchReset) : <Text></Text>}
                     </View>
@@ -200,7 +201,7 @@ export const Trace = (props) => {
                         </View>
 
                     </View>
-                </View>
+                </ScrollView>
 
 
             )
@@ -209,14 +210,14 @@ export const Trace = (props) => {
 
 
             return (
-                <View style={{ position: 'absolute', top: 100, left: 0 }}>
-                    <View style={{ width: 70, height: 70, justifyContent: 'flex-start' }}>
-                        {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, 0, setListe, setFinal, username, setSeriesLevel, setRealListe, props.pinchReset) : <Text></Text>}
-                    </View>
+                    // <View style={{ width: 20, height: 70, justifyContent: 'flex-start' }}>
+                    //     {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, 0, setListe, setFinal, username, setSeriesLevel, setRealListe, props.pinchReset) : <Text></Text>}
+                    // </View>
+                <ScrollView  styles={{height:"100%", flex:1}} horizontal={true} >
                     {seriesLevel.map(cur_level =>
                         <View key={cur_level}>
                             <View>
-                                <Text style={{ marginLeft: 175, fontSize: 20, fontWeight: "bold" }}>{cur_level == 0 ? "Final" : ("Serie" + cur_level)}</Text>
+                                <Text style={{fontSize: 20, fontWeight: "bold" }}>{cur_level == 0 ? "Final" : ("Serie" + cur_level)}</Text>
                             </View>
                             <View style={{ flexDirection: "row" }}>
                                 <View>
@@ -280,7 +281,7 @@ export const Trace = (props) => {
                                 </View>
                             </View>
                         </View>)}
-                </View >
+                </ScrollView >
             )
 
 
@@ -421,7 +422,7 @@ async function fetch_matches(fetchStatus, statusState, username, setAutho, setSt
 
             let liste = {};
             let filename = (sportname == "Pizza" ? sportname + "/" + username : sportname)
-            liste = await fetch("http://91.121.143.104:7070/teams/" + filename + ".json").then(response => response.json()).then(data => { allok = true; return data });
+            liste = await fetch("http://91.121.143.104:7070/teams/" + filename + "_series.json").then(response => response.json()).then(data => { allok = true; return data });
             let local_liste = [];
             let local_final = [];
             var levellist = 1;
