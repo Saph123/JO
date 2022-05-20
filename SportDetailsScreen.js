@@ -1,7 +1,7 @@
 import styles from "./style";
 import * as React from 'react';
 import { View, Dimensions, ActivityIndicator, Text, Modal } from 'react-native';
-import PinchZoomView from 'react-native-pinch-zoom-view';
+// import PinchZoomView from 'react-native-pinch-zoom-view';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Trace } from "./trace.js";
 import { modalChat, fetchChat } from './utils.js';

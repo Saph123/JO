@@ -38,9 +38,10 @@ module.exports = StyleSheet.create({
         justifyContent: "space-evenly",
         borderWidth: 1,
         alignItems: "center",
-        marginLeft: 30,
-        marginRight: 30,
-        width: 100,
+        marginTop: 30,
+        marginBottom: 30,
+        // marginRight: 30,
+        width: 250,
         minHeight:130
     },
     matchpouleover: {
@@ -108,16 +109,23 @@ module.exports = StyleSheet.create({
     line: {
         flex: 1,
         flexDirection: "row",
-        justifyContent: "space-around",
+        // justifyContent: "space-around",
         marginBottom: 30,
-        marginRight: 0,
-        marginLeft: 0
+
+    },
+    bracket: {
+        flex: 1,
+        flexDirection: "column",
+        justifyContent: "space-evenly",
+        marginTop: 30,
+        marginBottom: 30
     },
     column: {
         flex: 1,
         flexDirection: "column",
-        justifyContent: "space-between",
-        margin: 30
+        justifyContent: "space-evenly",
+        backgroundColor:"green"
+        // margin: 30
     },
     bottom: {
         flex: 0.3,
