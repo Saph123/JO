@@ -527,25 +527,25 @@ function updateMatchArray(curMatch, matchArray, setMatchArray) {
 }
 
 
-function crement_score_team(teamnumber, curMatch, matchArray, setMatchArray, incrementorDecrement) { // 0 to increment, 1 to decrement
+function crement_score_team(teamnumber, curMatch, matchArray, setMatchArray, incrementorDecrement, count=1) { // 0 to increment, 1 to decrement
     let scoreteam1 = Number(curMatch.score.split(":")[0]);
     let scoreteam2 = Number(curMatch.score.split(":")[1]);
     if (teamnumber == 1) {
         if (incrementorDecrement == 0) {
 
-            scoreteam1 += 1;
+            scoreteam1 += count;
         }
         else if (scoreteam1 > 0) {
-            scoreteam1 -= 1;
+            scoreteam1 -= count;
         }
     }
     else {
         if (incrementorDecrement == 0) {
 
-            scoreteam2 += 1;
+            scoreteam2 += count;
         }
         else if (scoreteam2 > 0) {
-            scoreteam2 -= 1;
+            scoreteam2 -= count;
         }
     }
     let finalscore = scoreteam1 + ":" + scoreteam2;
@@ -587,18 +587,22 @@ function modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_a
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                         <View style={{ width: 200, justifyContent: "center" }}><Text style={{ textAlignVertical: "center" }}>{curMatchZoom.team1}</Text></View>
                         <View style={{ marginLeft: 30, justifyContent: "center" }}>
-                            <Pressable onPress={() => { crement_score_team(1, curMatchZoom, match_array, set_match_array, 0) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/plus.png')} /></Pressable>
+                            <Pressable onPress={() => { crement_score_team(1, curMatchZoom, match_array, set_match_array, 0, 10) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/doubleplus.png')} /></Pressable>
+                            <Pressable onPress={() => { crement_score_team(1, curMatchZoom, match_array, set_match_array, 0) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/simpleplus.png')} /></Pressable>
                             <Text style={{ textAlign: "center" }}>{curMatchZoom.score == undefined ? "0" : curMatchZoom.score.split(":")[0]}</Text>
-                            <Pressable onPress={() => { crement_score_team(1, curMatchZoom, match_array, set_match_array, 1) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/moins.png')} /></Pressable>
+                            <Pressable onPress={() => { crement_score_team(1, curMatchZoom, match_array, set_match_array, 1) }}><Image resizeMode="cover" resizeMethod="resize" style={{transform:[{ rotate: '180deg' }]}}  source={require('./assets/simpleplus.png')} /></Pressable>
+                            <Pressable onPress={() => { crement_score_team(1, curMatchZoom, match_array, set_match_array, 1, 10) }}><Image resizeMode="cover" resizeMethod="resize" style={{transform:[{ rotate: '180deg' }]}} source={require('./assets/doubleplus.png')} /></Pressable>
                         </View>
                     </View>
-                    <View><Text style={{ textAlign: "center" }}>VS</Text></View>
+                    <View><Text style={{ textAlign: "center", fontSize:24, fontWeight:"bold" }}>VS</Text></View>
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                         <View style={{ width: 200, justifyContent: "center" }}><Text style={{ textAlignVertical: "center" }}>{curMatchZoom.team2}</Text></View>
                         <View style={{ marginLeft: 30, justifyContent: "center" }}>
-                            <Pressable onPress={() => { crement_score_team(2, curMatchZoom, match_array, set_match_array, 0) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/plus.png')} /></Pressable>
+                            <Pressable onPress={() => { crement_score_team(2, curMatchZoom, match_array, set_match_array, 0, 10) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/doubleplus.png')} /></Pressable>
+                            <Pressable onPress={() => { crement_score_team(2, curMatchZoom, match_array, set_match_array, 0) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/simpleplus.png')} /></Pressable>
                             <Text style={{ textAlign: "center" }}>{curMatchZoom.score == undefined ? "0" : curMatchZoom.score.split(":")[1]}</Text>
-                            <Pressable onPress={() => { crement_score_team(2, curMatchZoom, match_array, set_match_array, 1) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/moins.png')} /></Pressable>
+                            <Pressable onPress={() => { crement_score_team(2, curMatchZoom, match_array, set_match_array, 1) }}><Image resizeMode="cover" resizeMethod="resize" style={{transform:[{ rotate: '180deg' }]}} source={require('./assets/simpleplus.png')} /></Pressable>
+                            <Pressable onPress={() => { crement_score_team(2, curMatchZoom, match_array, set_match_array, 1, 10) }}><Image resizeMode="cover" resizeMethod="resize" style={{transform:[{ rotate: '180deg' }]}} source={require('./assets/doubleplus.png')} /></Pressable>
                         </View>
                     </View>
                     <View style={{ flexDirection: "row", justifyContent: "center" }}>

@@ -35,7 +35,7 @@ module.exports = StyleSheet.create({
     match: {
         backgroundColor: "#A8DADC",
         flexDirection: 'column',
-        justifyContent: "space-evenly",
+        justifyContent: "center",
         borderWidth: 1,
         alignItems: "center",
         marginTop: 30,
@@ -123,9 +123,8 @@ module.exports = StyleSheet.create({
     column: {
         flex: 1,
         flexDirection: "column",
-        justifyContent: "space-evenly",
-        backgroundColor:"green"
-        // margin: 30
+        justifyContent: "space-between",
+        margin: 30
     },
     bottom: {
         flex: 0.3,
