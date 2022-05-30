@@ -8,9 +8,9 @@ import { getNextEventseconds } from "./planning.js";
 import * as Notifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
 import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo } from './utils.js';
-import { ChatContext, SportContext } from "./App";
+import { ChatContext, SportContext } from "./App.js";
 
-export function HomeScreen({ route, navigation }) {
+export function HomeScreen({ navigation }) {
     const [loading, setLoading] = React.useState(1);
     const [secondsleft, setSecondsleft] = React.useState(1000);
     const [nextEvent, setNextEvent] = React.useState("");
@@ -53,6 +53,9 @@ export function HomeScreen({ route, navigation }) {
 
     }
     React.useEffect(() => {
+        console.log("useeffect home");
+        chatcontext.setChatName("Home");
+        console.log(chatcontext.chatName, "chatname kek")
         getValueFor("username").then(r => { username = r; setLoading(0); });
         manageEvents(setEventsDone, setCurrentEvents)
         var startEvent = getNextEventseconds();
@@ -84,7 +87,9 @@ export function HomeScreen({ route, navigation }) {
 
 
         });
-        var chatInterval = setInterval(() => fetchChat("Home", setChatText, chatcontext.setNewMessage), 3000);
+        if(chatcontext.chatName == "Home"){
+            var chatInterval = setInterval(() => fetchChat("Home", setChatText, chatcontext.setNewMessage), 3000);
+        }
 
         // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
@@ -121,12 +126,12 @@ export function HomeScreen({ route, navigation }) {
 
         });
         return () => {
+            console.log("clear");
+            clearInterval(chatInterval);
             Notifications.removeNotificationSubscription(notificationListener.current);
             Notifications.removeNotificationSubscription(responseListener.current);
-            clearInterval(chatInterval);
         };
-
-    }, [chatcontext]);
+    }, [chatcontext.chatName]);
     if (loading) {
         return (<ActivityIndicator size="large" color="#000000" />)
 

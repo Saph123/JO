@@ -59,6 +59,7 @@ const Stack = createStackNavigator();
 function App() {
     const [arbitre, setArbitre] = React.useState(false);
     const [chat, setChat] = React.useState(false);
+    const [chatName, setChatName] = React.useState("");
     const [soundstatus, setSound] = React.useState();
     const [newMessage, setNewMessage] = React.useState(false);
 
@@ -113,7 +114,7 @@ function App() {
     return (
         <NavigationContainer>
             <ArbitreContext.Provider value={arbitre}>
-                <ChatContext.Provider value={{ chat: chat, setChat: setChat, setNewMessage: setNewMessage }}>
+                <ChatContext.Provider value={{ chat: chat, setChat: setChat, chatName:chatName, setChatName:setChatName, setNewMessage: setNewMessage }}>
                     <SportContext.Provider value={{ setCurrentSport: setCurrentSport }}>
                         <Stack.Navigator screenOptions={{
                             headerStyle: {
@@ -157,7 +158,7 @@ function App() {
                                         <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPress={() => { navigation.navigate('UsernameScreen') }}>
                                             <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
                                         </TouchableOpacity></View>
-                                        <Pressable onPress={() => { setChat(true) }}>
+                                        <Pressable onPress={() => { setChat(true)}}>
                                             <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", marginRight: 10 }} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
                                         </Pressable>
                                         <TouchableOpacity onPress={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 3000)}>
@@ -167,7 +168,7 @@ function App() {
                             })} initialParams={{ sportname: currentSport }} name="SportDetails" component={SportDetailsScreen} />
                             <Stack.Screen options={() => ({
                                 title: "Tableau des médailles", headerRight: () => <View>
-                                    <Pressable onPress={() => { setChat(true) }}>
+                                    <Pressable onPress={() => { setChat(true)}}>
                                         <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", marginRight: 20 }} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
                                     </Pressable>
                                 </View>
@@ -185,7 +186,7 @@ function App() {
 
                             <Stack.Screen options={({ navigation }) => ({
                                 title: "Clicker!", headerRight: () => <View>
-                                    <Pressable onPress={() => { setChat(true) }}>
+                                    <Pressable onPress={() => { setChat(true)}}>
                                         <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", marginRight: 20 }} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
                                     </Pressable>
                                 </View>

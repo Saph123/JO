@@ -1,33 +1,31 @@
 import styles from "./style";
 import * as React from 'react';
 import { View, Dimensions, ActivityIndicator, Text, Modal } from 'react-native';
-// import PinchZoomView from 'react-native-pinch-zoom-view';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Trace } from "./trace.js";
 import { modalChat, fetchChat } from './utils.js';
 import { ChatContext, ArbitreContext } from "./App.js";
-import { NavigationContainer } from '@react-navigation/native';
-import { UsernameScreen } from "./UsernameScreen";
 
 export function SportDetailsScreen({ route }) {
 
-    const [window_width, setWidth] = React.useState(Dimensions.get("window").width);
-    const [window_height, setHeight] = React.useState(Dimensions.get("window").height);
     const [loadingmain, setloading] = React.useState(true);
     const [status, setArbitreRule] = React.useState({ arbitre: "error", status: "error" });
     const [regle, setRegle] = React.useState(false);
-    const [toupdate, setToUpdate] = React.useState(false);
     const [chatText, setChatText] = React.useState("");
     const [localText, setLocalText] = React.useState("");
     const chatcontext = React.useContext(ChatContext);
     React.useEffect(() => {
+        chatcontext.setChatName(route.params.sportname);
+        console.log(chatcontext.chatName, "chatname kek")
+        // if(chatcontext.chatName == "")
         var chatInterval = setInterval(() => fetchChat(route.params.sportname, setChatText, chatcontext.setNewMessage), 3000);
         setloading(false);
 
         return () => {
+            chatcontext.setChatName("");
             clearInterval(chatInterval);
         }
-    }, [chatcontext]);
+    }, [chatcontext.chatName]);
 
     if (loadingmain) {
         return (<ActivityIndicator size="large" color="#000000" />)

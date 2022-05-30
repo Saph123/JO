@@ -193,17 +193,12 @@ function lutImg(sportname) {
 }
 
 export function fetchChat(sportname, setChatText, setNewMessage) {
-
-
     fetch("http://91.121.143.104:7070/chat/" + sportname + "_chat.txt").then(response => response.text()).then(r => {
         if (initialLineNumber[sportname] != countLines(r) && countLines(r) > 1) {
-
             setNewMessage(true);
         }
-        setChatText(r)
+        setChatText(r);
     });
-
-
 
 }
 

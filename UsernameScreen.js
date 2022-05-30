@@ -5,7 +5,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Planning } from "./planning.js";
 import { fetch_results, fetch_activities } from "./trace.js";
 import { getValueFor, manageEvents, eventView, addth } from './utils.js';
-import { SportContext } from "./App";
+import { SportContext } from "./App.js";
 
 export function UsernameScreen({ route, navigation }) {
     const [loading, setLoading] = React.useState(true);
