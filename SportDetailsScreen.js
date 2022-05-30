@@ -16,8 +16,6 @@ export function SportDetailsScreen({ route }) {
     const chatcontext = React.useContext(ChatContext);
     React.useEffect(() => {
         chatcontext.setChatName(route.params.sportname);
-        console.log(chatcontext.chatName, "chatname kek")
-        // if(chatcontext.chatName == "")
         var chatInterval = setInterval(() => fetchChat(route.params.sportname, setChatText, chatcontext.setNewMessage), 3000);
         setloading(false);
 
