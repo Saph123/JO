@@ -1,7 +1,7 @@
 import styles from "./style";
 import * as React from 'react';
 import { View, Dimensions, ActivityIndicator, Text, Modal } from 'react-native';
-import PinchZoomView from 'react-native-pinch-zoom-view';
+// import PinchZoomView from 'react-native-pinch-zoom-view';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Trace } from "./trace.js";
 import { modalChat, fetchChat } from './utils.js';
@@ -32,7 +32,7 @@ export function SportDetailsScreen({ route }) {
         return (<ActivityIndicator size="large" color="#000000" />)
     }
     return (
-        <PinchZoomView style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, width: window_width, height: window_height }} setToUpdate={setToUpdate} toupdate={toupdate} maxScale={1} minScale={0.5} >
+        <ScrollView style={{flex:1}}>
             <ChatContext.Consumer>
                 {value => modalChat(value, chatText, setChatText, localText, setLocalText, route.params.sportname)}
 
@@ -66,7 +66,7 @@ export function SportDetailsScreen({ route }) {
             </ArbitreContext.Consumer>
 
             <Trace status={status} username={username} sport={route.params.sportname} width={window_width} height={window_height} setHeight={setHeight} setWidth={setWidth} setArbitreRule={setArbitreRule} traceload={setloading} pinchReset={setToUpdate} />
-        </PinchZoomView>
+        </ScrollView>
 
     )
 };

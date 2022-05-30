@@ -1,8 +1,8 @@
 import styles from "./style";
 import * as React from 'react';
 import { View, Text, Image, Modal } from 'react-native';
-import PinchZoomView from 'react-native-pinch-zoom-view';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+// import PinchZoomView from 'react-native-pinch-zoom-view';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { Planning } from "./planning.js";
 import { SportContext } from "./App";
 
@@ -16,7 +16,7 @@ export function PlanningScreen({ route, navigation }) {
     var dimanche = new Date('2021-08-30T00:00:00+02:00');
 
     return (
-        <PinchZoomView style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, flexDirection: "row", width: 1000, height: 1000 }} maxScale={1} minScale={0.5} >
+        <ScrollView style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, flexDirection: "row", width: 1000, height: 1000 }} maxScale={1} minScale={0.5} >
             <Modal style={{ width: "100%", height: "100%", alignSelf: "center" }}
                 visible={gifVisible}>
 
@@ -126,6 +126,6 @@ export function PlanningScreen({ route, navigation }) {
                     })
                 }
             </View>
-        </PinchZoomView>)
+        </ScrollView>)
 
 };

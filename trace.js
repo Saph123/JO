@@ -2,11 +2,12 @@
 import { useNavigation } from '@react-navigation/native';
 import { View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Pressable, Alert } from 'react-native';
 import * as React from 'react';
-import {  TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Svg, Polyline } from 'react-native-svg';
 import { Table, Row } from 'react-native-table-component';
 import 'react-native-url-polyfill/auto';
 import { version } from "./App"
+import { ScrollView } from 'react-native-gesture-handler';
 const styles = require("./style.js");
 
 let displayed_state = {
@@ -100,24 +101,34 @@ export const Trace = (props) => {
     }
     if (status.status == "playoff") {
         return (
-            <View>
+            <ScrollView horizontal={true}>
 
-                <Svg style={styles.svg}>
-                    {levels.slice(1).reverse().map((r, index) => matches[r].map((m, index2) =>
-                        <Polyline key={index * 100 + index2} style={styles.svg}
-                            points={(index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height)) + " " + (index2 * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 1) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((index2 * 4 + 3) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2))}
-                            fill="none"
-                            stroke="black"
-                            strokeWidth="2"
-                        />))}
-                </Svg>
-                {levels.slice(0).reverse().map(r =>
+                {/* <Svg test={console.log(levels.reverse(), matches)} style={styles.svg}>
+                    {levels.slice(1).reverse().map((r, index) => {
+                        for (let i = 0; i < Math.pow(2, index); i++) {
+
+                            <Polyline key={index * 100 + i} style={styles.svg}
+                                // points={(250*index) + "," + ((i * height)) + " " + (i * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((i * 4 + 1) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((i * 4 + 3) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2))}
+                                points={(250+index) + "," + ((i * height)) + " " + (350+index) + "," + i*height}
+                                fill="none"
+                                kek={console.log((250+index) + "," + ((i * height)) + " " + (350+index) + "," + i*height)}
+                                stroke="black"
+                                strokeWidth="2"
+                            />
+                        }
+
+
+                    }
+                    )}
+                        </Svg> */}
+
+                {levels.slice(0).map(r =>
                     <View key={r}
                         style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-between" }}>
                         <Matchcomp status={status} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={props.setWidth} setHeight={props.setHeight} setloading={setloading} username={username} loading={loading} matches={matches} level={r} sport={sport} autho={autho}></Matchcomp>
                     </View>)}
                 {(status.states.length > 1) ? button_switch(status, setStatus, sport, "poules", props.traceload, props.setWidth, props.setHeight, groups, null, null, null, null, null, props.pinchReset) : <Text></Text>}
-            </View>
+            </ScrollView>
         );
     }
     if (status.status == "poules") {
@@ -144,9 +155,9 @@ export const Trace = (props) => {
 
         if (!autho) {
             return (
-                <View style={{ position: 'absolute', top: 100, left: 0 }}>
+                <ScrollView styles={{ flex: 1 }} horizontal={true}>
 
-                    <View styles={{ width: 70, height: 70, alignSelf: "center" }}>
+                    <View styles={{ width: 30, height: 70, alignSelf: "center" }}>
 
                         {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, 0, setListe, setFinal, username, setSeriesLevel, setRealListe, props.pinchReset) : <Text></Text>}
                     </View>
@@ -170,7 +181,7 @@ export const Trace = (props) => {
                             {realListe.map((r, index) => {
                                 if (r.rank == 1) {
                                     return (
-                                        <View key = {index} style={{ flexDirection: "row" }} >
+                                        <View key={index} style={{ flexDirection: "row" }} >
                                             <View style={styles.medailleopaque}>
                                                 <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
                                             </View>
@@ -179,20 +190,20 @@ export const Trace = (props) => {
                                 }
                                 else if (r.rank == 2) {
                                     return (
-                                        <View key = {index} style={styles.medailleopaque}>
+                                        <View key={index} style={styles.medailleopaque}>
                                             <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
                                         </View>)
                                 }
                                 else if (r.rank == 3) {
                                     return (
-                                        <View key = {index} style={styles.medailleopaque}>
+                                        <View key={index} style={styles.medailleopaque}>
                                             <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
                                         </View>
                                     )
                                 }
                                 else {
                                     return (
-                                        <View key = {index} style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
+                                        <View key={index} style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
                                     )
                                 }
                             }
@@ -200,7 +211,7 @@ export const Trace = (props) => {
                         </View>
 
                     </View>
-                </View>
+                </ScrollView>
 
 
             )
@@ -209,18 +220,18 @@ export const Trace = (props) => {
 
 
             return (
-                <View style={{ position: 'absolute', top: 100, left: 0 }}>
-                    <View style={{ width: 70, height: 70, justifyContent: 'flex-start' }}>
-                        {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, 0, setListe, setFinal, username, setSeriesLevel, setRealListe, props.pinchReset) : <Text></Text>}
-                    </View>
+                // <View style={{ width: 20, height: 70, justifyContent: 'flex-start' }}>
+                //     {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, 0, setListe, setFinal, username, setSeriesLevel, setRealListe, props.pinchReset) : <Text></Text>}
+                // </View>
+                <ScrollView styles={{ height: "100%", flex: 1 }} horizontal={true} >
                     {seriesLevel.map(cur_level =>
                         <View key={cur_level}>
                             <View>
-                                <Text style={{ marginLeft: 175, fontSize: 20, fontWeight: "bold" }}>{cur_level == 0 ? "Final" : ("Serie" + cur_level)}</Text>
+                                <Text style={{ fontSize: 20, fontWeight: "bold" }}>{cur_level == 0 ? "Final" : ("Serie" + cur_level)}</Text>
                             </View>
                             <View style={{ flexDirection: "row" }}>
                                 <View>
-                                    <Text style={[styles.showPlayers, {height:60}]}>Athlete</Text>
+                                    <Text style={[styles.showPlayers, { height: 60 }]}>Athlete</Text>
                                     {realListe.map((r, index) => {
 
                                         if (cur_level == r.level) {
@@ -236,7 +247,7 @@ export const Trace = (props) => {
                                     }
                                 </View>
                                 <View>
-                                    <Text style={[styles.inputScore, {height:60}]}>Score/Temps</Text>
+                                    <Text style={[styles.inputScore, { height: 60 }]}>Score/Temps</Text>
                                     {realListe.map((r, index) => {
                                         if (cur_level == r.level) {
                                             return (
@@ -248,13 +259,13 @@ export const Trace = (props) => {
                                     }
                                 </View>
                                 <View>
-                                    <View style={{ width: 60, height: 60, backgroundColor: "lightgrey", justifyContent:"center" }}>
+                                    <View style={{ width: 60, height: 60, backgroundColor: "lightgrey", justifyContent: "center" }}>
                                         <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => { // Function to save only the results!
                                             setListe([...realListe]);
                                             pushmatch(username, sport, realListe, "liste", 0);
                                         }
                                         }>
-                                            <Image resizeMode="cover" resizeMethod="resize" style={{alignSelf:"center"}} source={require('./assets/save.png')}></Image>
+                                            <Image resizeMode="cover" resizeMethod="resize" style={{ alignSelf: "center" }} source={require('./assets/save.png')}></Image>
                                         </Pressable>
 
                                     </View>
@@ -280,7 +291,7 @@ export const Trace = (props) => {
                                 </View>
                             </View>
                         </View>)}
-                </View >
+                </ScrollView >
             )
 
 
@@ -421,7 +432,7 @@ async function fetch_matches(fetchStatus, statusState, username, setAutho, setSt
 
             let liste = {};
             let filename = (sportname == "Pizza" ? sportname + "/" + username : sportname)
-            liste = await fetch("http://91.121.143.104:7070/teams/" + filename + ".json").then(response => response.json()).then(data => { allok = true; return data });
+            liste = await fetch("http://91.121.143.104:7070/teams/" + filename + "_series.json").then(response => response.json()).then(data => { allok = true; return data });
             let local_liste = [];
             let local_final = [];
             var levellist = 1;
@@ -516,25 +527,25 @@ function updateMatchArray(curMatch, matchArray, setMatchArray) {
 }
 
 
-function crement_score_team(teamnumber, curMatch, matchArray, setMatchArray, incrementorDecrement) { // 0 to increment, 1 to decrement
+function crement_score_team(teamnumber, curMatch, matchArray, setMatchArray, incrementorDecrement, count=1) { // 0 to increment, 1 to decrement
     let scoreteam1 = Number(curMatch.score.split(":")[0]);
     let scoreteam2 = Number(curMatch.score.split(":")[1]);
     if (teamnumber == 1) {
         if (incrementorDecrement == 0) {
 
-            scoreteam1 += 1;
+            scoreteam1 += count;
         }
         else if (scoreteam1 > 0) {
-            scoreteam1 -= 1;
+            scoreteam1 -= count;
         }
     }
     else {
         if (incrementorDecrement == 0) {
 
-            scoreteam2 += 1;
+            scoreteam2 += count;
         }
         else if (scoreteam2 > 0) {
-            scoreteam2 -= 1;
+            scoreteam2 -= count;
         }
     }
     let finalscore = scoreteam1 + ":" + scoreteam2;
@@ -576,18 +587,22 @@ function modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_a
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                         <View style={{ width: 200, justifyContent: "center" }}><Text style={{ textAlignVertical: "center" }}>{curMatchZoom.team1}</Text></View>
                         <View style={{ marginLeft: 30, justifyContent: "center" }}>
-                            <Pressable onPress={() => { crement_score_team(1, curMatchZoom, match_array, set_match_array, 0) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/plus.png')} /></Pressable>
+                            <Pressable onPress={() => { crement_score_team(1, curMatchZoom, match_array, set_match_array, 0, 10) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/doubleplus.png')} /></Pressable>
+                            <Pressable onPress={() => { crement_score_team(1, curMatchZoom, match_array, set_match_array, 0) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/simpleplus.png')} /></Pressable>
                             <Text style={{ textAlign: "center" }}>{curMatchZoom.score == undefined ? "0" : curMatchZoom.score.split(":")[0]}</Text>
-                            <Pressable onPress={() => { crement_score_team(1, curMatchZoom, match_array, set_match_array, 1) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/moins.png')} /></Pressable>
+                            <Pressable onPress={() => { crement_score_team(1, curMatchZoom, match_array, set_match_array, 1) }}><Image resizeMode="cover" resizeMethod="resize" style={{transform:[{ rotate: '180deg' }]}}  source={require('./assets/simpleplus.png')} /></Pressable>
+                            <Pressable onPress={() => { crement_score_team(1, curMatchZoom, match_array, set_match_array, 1, 10) }}><Image resizeMode="cover" resizeMethod="resize" style={{transform:[{ rotate: '180deg' }]}} source={require('./assets/doubleplus.png')} /></Pressable>
                         </View>
                     </View>
-                    <View><Text style={{ textAlign: "center" }}>VS</Text></View>
+                    <View><Text style={{ textAlign: "center", fontSize:24, fontWeight:"bold" }}>VS</Text></View>
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                         <View style={{ width: 200, justifyContent: "center" }}><Text style={{ textAlignVertical: "center" }}>{curMatchZoom.team2}</Text></View>
                         <View style={{ marginLeft: 30, justifyContent: "center" }}>
-                            <Pressable onPress={() => { crement_score_team(2, curMatchZoom, match_array, set_match_array, 0) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/plus.png')} /></Pressable>
+                            <Pressable onPress={() => { crement_score_team(2, curMatchZoom, match_array, set_match_array, 0, 10) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/doubleplus.png')} /></Pressable>
+                            <Pressable onPress={() => { crement_score_team(2, curMatchZoom, match_array, set_match_array, 0) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/simpleplus.png')} /></Pressable>
                             <Text style={{ textAlign: "center" }}>{curMatchZoom.score == undefined ? "0" : curMatchZoom.score.split(":")[1]}</Text>
-                            <Pressable onPress={() => { crement_score_team(2, curMatchZoom, match_array, set_match_array, 1) }}><Image resizeMode="cover" resizeMethod="resize" source={require('./assets/moins.png')} /></Pressable>
+                            <Pressable onPress={() => { crement_score_team(2, curMatchZoom, match_array, set_match_array, 1) }}><Image resizeMode="cover" resizeMethod="resize" style={{transform:[{ rotate: '180deg' }]}} source={require('./assets/simpleplus.png')} /></Pressable>
+                            <Pressable onPress={() => { crement_score_team(2, curMatchZoom, match_array, set_match_array, 1, 10) }}><Image resizeMode="cover" resizeMethod="resize" style={{transform:[{ rotate: '180deg' }]}} source={require('./assets/doubleplus.png')} /></Pressable>
                         </View>
                     </View>
                     <View style={{ flexDirection: "row", justifyContent: "center" }}>
@@ -655,12 +670,41 @@ const Matchcomp = (props) => {
     }
 
     return (
-        <View style={styles.line}>
+        <View style={styles.bracket}>
             {modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_array, set_match_array, matchZoom, setMatchZoom, props.status, type, initScore, props)}
-            {match_array.map((r, index) => matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type, username, index))}
+            <View style={styles.line}>
+                <View style={styles.bracket}>
+                    {match_array.map((r, index) => matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type, username, index))}
+
+                </View>
+                <View style={styles.bracket}>
+                    {match_array.map((r, index) => {
+                        if (index % 2) {
+                            return (draw_svg());
+                        }
+                    })
+                    }
+                </View>
+            </View>
         </View>
     );
 
+}
+function draw_svg() {
+    return (
+        <View onLayout={(event) => {
+            var {x, y, width, height} = event.nativeEvent.layout; console.log(width, height)}} style={{flex:1, marginTop:30, marginBottom:30, minWidth:100}}>
+            {/* <Text>kek</Text> */}
+            <Svg   height="100%" width="100%" viewBox="0 0 100 1000">
+                <Polyline 
+                    points="0,250 50,250 50,750 0,750 50,750 50,500 100,500"
+                    fill="none"
+                    stroke="black"
+                    strokeWidth="5"
+                />
+            </Svg>
+        </View>
+    )
 }
 function pushmatch(username, sport, match, type, uniqueId) {
 
@@ -671,7 +715,7 @@ function pushmatch(username, sport, match, type, uniqueId) {
     // // push to server
     fetch("http://91.121.143.104:7070/pushmatch", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sport, "username": username, "type": type, "match": match, uniqueId: uniqueId }) }).then(r => {
         if (r.status == 200) {
-            Alert.alert("Saved","Saved to server!", ["Ok"])
+            Alert.alert("Saved", "Saved to server!", ["Ok"])
         }
         else {
             alert("Wrong login or password!");

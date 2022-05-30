@@ -35,12 +35,13 @@ module.exports = StyleSheet.create({
     match: {
         backgroundColor: "#A8DADC",
         flexDirection: 'column',
-        justifyContent: "space-evenly",
+        justifyContent: "center",
         borderWidth: 1,
         alignItems: "center",
-        marginLeft: 30,
-        marginRight: 30,
-        width: 100,
+        marginTop: 30,
+        marginBottom: 30,
+        // marginRight: 30,
+        width: 250,
         minHeight:130
     },
     matchpouleover: {
@@ -108,10 +109,16 @@ module.exports = StyleSheet.create({
     line: {
         flex: 1,
         flexDirection: "row",
-        justifyContent: "space-around",
+        // justifyContent: "space-around",
         marginBottom: 30,
-        marginRight: 0,
-        marginLeft: 0
+
+    },
+    bracket: {
+        flex: 1,
+        flexDirection: "column",
+        justifyContent: "space-evenly",
+        marginTop: 30,
+        marginBottom: 30
     },
     column: {
         flex: 1,
@@ -132,7 +139,7 @@ module.exports = StyleSheet.create({
     },
     showPlayers: {
         borderWidth: 1,
-        width: 400,
+        width: 200,
         height: 30,
         textAlign: "center",
         textAlignVertical: "center"
