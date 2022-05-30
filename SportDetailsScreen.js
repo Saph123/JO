@@ -6,7 +6,8 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Trace } from "./trace.js";
 import { modalChat, fetchChat } from './utils.js';
 import { ChatContext, ArbitreContext } from "./App.js";
-
+import { NavigationContainer } from '@react-navigation/native';
+import { UsernameScreen } from "./UsernameScreen";
 
 export function SportDetailsScreen({ route }) {
 
@@ -32,7 +33,13 @@ export function SportDetailsScreen({ route }) {
         return (<ActivityIndicator size="large" color="#000000" />)
     }
     return (
-        <ScrollView style={{flex:1}}>
+        <View style={{flex:1, flexDirection:"column"}}>
+            <View style={{flex:1, flexDirection:"row"}}>
+                <Text style={{flex:1, textAlign:"center", backgroundColor:"black", color:"white", borderColor:"white", borderWidth:1}}>kek</Text>
+                <Text style={{flex:1, textAlign:"center", backgroundColor:"black", color:"white", borderColor:"white", borderWidth:1}}>kek2</Text>
+            </View>
+        <View  style={{flex:10}}>
+        <ScrollView>
             <ChatContext.Consumer>
                 {value => modalChat(value, chatText, setChatText, localText, setLocalText, route.params.sportname)}
 
@@ -65,8 +72,10 @@ export function SportDetailsScreen({ route }) {
                 }
             </ArbitreContext.Consumer>
 
-            <Trace status={status} username={username} sport={route.params.sportname} width={window_width} height={window_height} setHeight={setHeight} setWidth={setWidth} setArbitreRule={setArbitreRule} traceload={setloading} pinchReset={setToUpdate} />
+            <Trace status={status} username={username} sport={route.params.sportname} setArbitreRule={setArbitreRule} traceload={setloading} />
         </ScrollView>
+        </View>
+        </View>
 
     )
 };

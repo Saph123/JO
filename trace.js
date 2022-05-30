@@ -8,6 +8,9 @@ import { Table, Row } from 'react-native-table-component';
 import 'react-native-url-polyfill/auto';
 import { version } from "./App"
 import { ScrollView } from 'react-native-gesture-handler';
+import { UsernameScreen } from './UsernameScreen';
+import { SportDetailsScreen } from './SportDetailsScreen';
+
 const styles = require("./style.js");
 
 let displayed_state = {
@@ -66,8 +69,8 @@ const MedailleView = (props) => {
 export const Trace = (props) => {
     const sport = props.sport;
     const username = props.username;
-    const width = props.width;
-    const height = 170;
+    // const width = props.width;
+    // const height = 170;
     const [status, setStatus] = React.useState({ status: "error", states: "error" }); // this is only poule/playoff not arbitre and the rest mofo your mom blyat
     const [autho, setAutho] = React.useState(false);
     const [loading, setloading] = React.useState(true);
@@ -81,7 +84,7 @@ export const Trace = (props) => {
     const [groupmatches, setmatchesgroup] = React.useState([]);
     const navigation = useNavigation();
     React.useEffect(() => {
-        fetch_matches(true, null, username, setAutho, setStatus, props.setArbitreRule, props.sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, props.setWidth, props.setHeight, setRealListe, setSeriesLevel).then(r => {
+        fetch_matches(true, null, username, setAutho, setStatus, props.setArbitreRule, props.sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal,null, null, setRealListe, setSeriesLevel).then(r => {
             setloading(false)
             props.traceload(false);
         }).catch(err => { console.log(err); navigation.navigate('HomeScreen') });
@@ -91,50 +94,26 @@ export const Trace = (props) => {
     if (loading) {
         return (
 
-            // <Modal
-            //     // animationType=""
-            //     transparent={false}
-            //     visible={loading}
-            //     supportedOrientations={['portrait', 'landscape']}
-            // >
             <View><ActivityIndicator size="large" color="black" /></View>);
     }
     if (status.status == "playoff") {
         return (
+
             <ScrollView horizontal={true}>
-
-                {/* <Svg test={console.log(levels.reverse(), matches)} style={styles.svg}>
-                    {levels.slice(1).reverse().map((r, index) => {
-                        for (let i = 0; i < Math.pow(2, index); i++) {
-
-                            <Polyline key={index * 100 + i} style={styles.svg}
-                                // points={(250*index) + "," + ((i * height)) + " " + (i * 2 + 1) * width / (matches[r].length * 2) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((i * 4 + 1) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2)) + " " + ((i * 4 + 3) * width / ((matches[r].length) * 4)) + "," + ((index * height) + (height + (height - 30) / 2))}
-                                points={(250+index) + "," + ((i * height)) + " " + (350+index) + "," + i*height}
-                                fill="none"
-                                kek={console.log((250+index) + "," + ((i * height)) + " " + (350+index) + "," + i*height)}
-                                stroke="black"
-                                strokeWidth="2"
-                            />
-                        }
-
-
-                    }
-                    )}
-                        </Svg> */}
 
                 {levels.slice(0).map(r =>
                     <View key={r}
                         style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-between" }}>
-                        <Matchcomp status={status} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={props.setWidth} setHeight={props.setHeight} setloading={setloading} username={username} loading={loading} matches={matches} level={r} sport={sport} autho={autho}></Matchcomp>
+                        <Matchcomp status={status} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup}  setloading={setloading} username={username} loading={loading} matches={matches} level={r} sport={sport} autho={autho}></Matchcomp>
                     </View>)}
-                {(status.states.length > 1) ? button_switch(status, setStatus, sport, "poules", props.traceload, props.setWidth, props.setHeight, groups, null, null, null, null, null, props.pinchReset) : <Text></Text>}
+                {(status.states.length > 1) ? button_switch(status, setStatus, sport, "poules", props.traceload, groups, null, null, null, null, null) : <Text></Text>}
             </ScrollView>
         );
     }
     if (status.status == "poules") {
         return (
             <View style={{ flexDirection: "row", flex: 1, position: "absolute", top: 0, left: 0 }}>
-                {(status.states.length > 1) ? button_switch(status, setStatus, sport, "playoff", props.traceload, props.setWidth, props.setHeight, levels, null, null, null, null, null, props.pinchReset) : <Text></Text>}
+                {(status.states.length > 1) ? button_switch(status, setStatus, sport, "playoff", props.traceload, levels, null, null, null, null, null) : <Text></Text>}
                 {groups.map((r, index) =>
                     <View key={r.name} style={styles.tablecontainer}>
                         <Text style={{ textAlign: "center" }}>{r.name}</Text>
@@ -144,7 +123,7 @@ export const Trace = (props) => {
                                 <Row key={q.name} data={[q.name, q.played, q.wins, q.loses, q.points, q.diff]} widthArr={[180, 35, 35, 35, 60, 50]} textStyle={{ margin: 6, fontSize: 16, fontWeight: (q.name.includes(username) ? "bold" : "normal") }}></Row>)}
                         </Table>
                         <View style={{ flexDirection: "column", justifyContent: "space-around" }}>
-                            <Matchpoule status={status} key={index} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setWidth={props.setWidth} setHeight={props.setHeight} username={username} setloading={setloading} loading={loading} poule={r.name} matches={groupmatches[index]} level={0} sport={sport} autho={autho}></Matchpoule>
+                            <Matchpoule status={status} key={index} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} username={username} setloading={setloading} loading={loading} poule={r.name} matches={groupmatches[index]} level={0} sport={sport} autho={autho}></Matchpoule>
                         </View>
                     </View>)}
             </View>
@@ -159,7 +138,7 @@ export const Trace = (props) => {
 
                     <View styles={{ width: 30, height: 70, alignSelf: "center" }}>
 
-                        {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, 0, setListe, setFinal, username, setSeriesLevel, setRealListe, props.pinchReset) : <Text></Text>}
+                        {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, 0, setListe, setFinal, username, setSeriesLevel, setRealListe) : <Text></Text>}
                     </View>
                     <View style={{ flexDirection: "row" }}>
                         <View>
@@ -220,9 +199,6 @@ export const Trace = (props) => {
 
 
             return (
-                // <View style={{ width: 20, height: 70, justifyContent: 'flex-start' }}>
-                //     {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, props.setWidth, props.setHeight, 0, setListe, setFinal, username, setSeriesLevel, setRealListe, props.pinchReset) : <Text></Text>}
-                // </View>
                 <ScrollView styles={{ height: "100%", flex: 1 }} horizontal={true} >
                     {seriesLevel.map(cur_level =>
                         <View key={cur_level}>
@@ -301,31 +277,31 @@ export const Trace = (props) => {
 
 
 }
-function button_switch(status, setStatus, sport, otherState, setloading, setWidth, setHeight, team_number, setListe, setFinal, username, setSeriesLevel, setRealListe, pinchReset) {
-    if (otherState == "playoff") { // so we will be in groups
-        setWidth(400 * (team_number.length + 1));
-        setHeight(400 * (team_number.length + 1) * 4); // poule de 4 en dur
-    }
-    else if (otherState == "poules") {
-        if (team_number.length > 1) {
-            setWidth(Math.min(400 * ((team_number.length - 1) * (team_number.length - 1)), 3500));
-            setHeight(Math.max(200 * (team_number.length + 1), Dimensions.get("window").height + 100));
-        }
-        else {
-            setWidth(1000);
-            setHeight(1000);
-        }
-    }
+function button_switch(status, setStatus, sport, otherState, setloading, team_number, setListe, setFinal, username, setSeriesLevel, setRealListe) {
+    // if (otherState == "playoff") { // so we will be in groups
+    //     setWidth(400 * (team_number.length + 1));
+    //     setHeight(400 * (team_number.length + 1) * 4); // poule de 4 en dur
+    // }
+    // else if (otherState == "poules") {
+    //     if (team_number.length > 1) {
+    //         setWidth(Math.min(400 * ((team_number.length - 1) * (team_number.length - 1)), 3500));
+    //         setHeight(Math.max(200 * (team_number.length + 1), Dimensions.get("window").height + 100));
+    //     }
+    //     else {
+    //         setWidth(1000);
+    //         setHeight(1000);
+    //     }
+    // }
 
     return (
         <Pressable style={styles.inProgress}
-            onPress={() => { setloading(true); pinchReset(true); toggle_status(status, setStatus, sport, setloading); if (status.status == "series" || status.status == "final") { fetch_matches(false, status, username, null, null, null, sport, null, null, null, null, setListe, setFinal, setWidth, setHeight, setRealListe, setSeriesLevel) }; }}
+            onPress={() => { setloading(true); toggle_status(status, setStatus, sport, setloading); if (status.status == "series" || status.status == "final") { fetch_matches(false, status, username, null, null, null, sport, null, null, null, null, setListe, setFinal, setRealListe, setSeriesLevel) }; }}
         >
             <Text alignSelf="center">Switch to {otherState}</Text>
         </Pressable>)
 }
 
-async function fetch_matches(fetchStatus, statusState, username, setAutho, setStatus, setArbitreRule, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setWidth, setHeight, setRealListe, setSeriesLevel) {
+async function fetch_matches(fetchStatus, statusState, username, setAutho, setStatus, setArbitreRule, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel) {
 
     let matches = {};
     let matches_group = {};
@@ -390,10 +366,10 @@ async function fetch_matches(fetchStatus, statusState, username, setAutho, setSt
             setgroups(JSON.parse(JSON.stringify(array_groups)));
             setmatchesgroup(JSON.parse(JSON.stringify(array_matches_groups)));
             // gestion taille fenetre
-            if (displayed_state[sportname] == "poules") {
-                setWidth(400 * (array_groups.length + 1));
-                setHeight(400 * (array_groups.length + 1) * 4);
-            }
+            // if (displayed_state[sportname] == "poules") {
+            //     setWidth(400 * (array_groups.length + 1));
+            //     setHeight(400 * (array_groups.length + 1) * 4);
+            // }
 
         }
         if (status['states'].includes("playoff")) {
@@ -414,17 +390,17 @@ async function fetch_matches(fetchStatus, statusState, username, setAutho, setSt
             }
             setlevel(JSON.parse(JSON.stringify(level)));
             // gestion taille fenetre: affichage un peu plus large :)
-            if (displayed_state[sportname] == "playoff") {
+            // if (displayed_state[sportname] == "playoff") {
 
-                if (level.length > 1) {
-                    setWidth(Math.min(400 * ((level.length - 1) * (level.length - 1)), 3500));
-                    setHeight(Math.max(200 * (level.length + 1), Dimensions.get("window").height + 100));
-                }
-                else {
-                    setWidth(1000);
-                    setHeight(1000);
-                }
-            }
+            //     if (level.length > 1) {
+            //         setWidth(Math.min(400 * ((level.length - 1) * (level.length - 1)), 3500));
+            //         setHeight(Math.max(200 * (level.length + 1), Dimensions.get("window").height + 100));
+            //     }
+            //     else {
+            //         setWidth(1000);
+            //         setHeight(1000);
+            //     }
+            // }
             setmatches(JSON.parse(JSON.stringify(local_array_match)));
         }
         if (status['states'].includes("final")) { // gestion listes (trail/tong)
@@ -470,11 +446,11 @@ async function fetch_matches(fetchStatus, statusState, username, setAutho, setSt
         }
     }
 
-    if (displayed_state[sportname] == 'series' || displayed_state[sportname] == "final") {
+    // if (displayed_state[sportname] == 'series' || displayed_state[sportname] == "final") {
 
-        setWidth(1500);
-        setHeight(1500);
-    }
+    //     setWidth(1500);
+    //     setHeight(1500);
+    // }
 
 }
 
@@ -612,7 +588,7 @@ function modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_a
                             updateMatchArray(curMatchZoom, match_array, set_match_array);
                             pushmatch(username, sport, curMatchZoom, type, curMatchZoom.uniqueId);
                             setMatchZoom(false);
-                            fetch_matches(false, status, username, null, null, null, sport, props.setmatches, props.setGroups, props.setlevel, props.setmatchesgroup, null, null, props.setWidth, props.setHeight).then(r => props.setloading(false))
+                            fetch_matches(false, status, username, null, null, null, sport, props.setmatches, props.setGroups, props.setlevel, props.setmatchesgroup, null, null).then(r => props.setloading(false))
 
                         }}>
                             <View>{over_text(match_array, match_array.indexOf(curMatchZoom))}</View>
@@ -694,7 +670,6 @@ function draw_svg() {
     return (
         <View onLayout={(event) => {
             var {x, y, width, height} = event.nativeEvent.layout; console.log(width, height)}} style={{flex:1, marginTop:30, marginBottom:30, minWidth:100}}>
-            {/* <Text>kek</Text> */}
             <Svg   height="100%" width="100%" viewBox="0 0 100 1000">
                 <Polyline 
                     points="0,250 50,250 50,750 0,750 50,750 50,500 100,500"
