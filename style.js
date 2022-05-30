@@ -10,8 +10,8 @@ module.exports = StyleSheet.create({
         margin: 10,
     },
     tablecontainer: {
-        // flex: 1,
-        alignSelf: "flex-start",
+        flex: 1,
+        // alignSelf: "flex-start",
         margin: 30,
         width: 400,
         backgroundColor: "#EFF8FF"
@@ -45,6 +45,7 @@ module.exports = StyleSheet.create({
         minHeight:130
     },
     matchpouleover: {
+        flex:1,
         backgroundColor: "#D62628",
         flexDirection: 'column',
         alignItems: "center",
@@ -52,10 +53,11 @@ module.exports = StyleSheet.create({
         justifyContent: "space-between",
         borderWidth: 1,
         margin: 30,
-        width: 200,
+        minWidth: 200,
         borderRadius: 15
     },
     matchpoule: {
+        flex:1,
         backgroundColor: "#A8DADC",
         flexDirection: 'column',
         alignItems: "center",
@@ -63,7 +65,7 @@ module.exports = StyleSheet.create({
         justifyContent: "space-between",
         borderWidth: 1,
         margin: 30,
-        width: 200,
+        minWidth: 200,
         borderRadius: 15
     },
     textmatch: {

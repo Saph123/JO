@@ -1,7 +1,7 @@
 import styles from "./style";
 import * as React from 'react';
-import { View, ActivityIndicator, Text, Image, Pressable, Linking, Alert } from 'react-native';
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import { View, ScrollView, ActivityIndicator, Text, Image, Pressable, Linking, Alert } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Audio } from 'expo-av';
 import CountDown from 'react-native-countdown-component';
 import { getNextEventseconds } from "./planning.js";
@@ -53,9 +53,7 @@ export function HomeScreen({ navigation }) {
 
     }
     React.useEffect(() => {
-        console.log("useeffect home");
         chatcontext.setChatName("Home");
-        console.log(chatcontext.chatName, "chatname kek")
         getValueFor("username").then(r => { username = r; setLoading(0); });
         manageEvents(setEventsDone, setCurrentEvents)
         var startEvent = getNextEventseconds();
@@ -126,7 +124,6 @@ export function HomeScreen({ navigation }) {
 
         });
         return () => {
-            console.log("clear");
             clearInterval(chatInterval);
             Notifications.removeNotificationSubscription(notificationListener.current);
             Notifications.removeNotificationSubscription(responseListener.current);

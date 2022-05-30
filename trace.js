@@ -82,7 +82,7 @@ export const Trace = (props) => {
     const [groupmatches, setmatchesgroup] = React.useState([]);
     const navigation = useNavigation();
     React.useEffect(() => {
-        fetch_matches(true, null, username, setAutho, setStatus, props.setArbitreRule, props.sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, null, null, setRealListe, setSeriesLevel).then(r => {
+        fetch_matches(true, null, username, setAutho, setStatus, props.setArbitreRule, props.sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel).then(r => {
             setloading(false)
             props.traceload(false);
         }).catch(err => { console.log(err); navigation.navigate('HomeScreen') });
@@ -109,20 +109,22 @@ export const Trace = (props) => {
     }
     if (status.status == "poules") {
         return (
-            <View style={{ flexDirection: "row", flex: 1 }}>
+            <ScrollView horizontal={true}>
                 {groups.map((r, index) =>
                     <View key={r.name} style={styles.tablecontainer}>
-                        <Text style={{ textAlign: "center" }}>{r.name}</Text>
-                        <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
-                            <Row data={["Team", "P", "W", "L", "Points", "Diff"]} widthArr={[180, 35, 35, 35, 60, 50]} style={{ width: "100%", height: 40, backgroundColor: '#f1f8ff' }} textStyle={{ margin: 6, fontSize: 16 }}></Row>
-                            {r.teams.sort((a, b) => a.points > b.points ? 1 : (a.points == b.points ? (a.diff > b.diff ? 1 : -1) : -1)).reverse().map(q =>
-                                <Row key={q.name} data={[q.name, q.played, q.wins, q.loses, q.points, q.diff]} widthArr={[180, 35, 35, 35, 60, 50]} textStyle={{ margin: 6, fontSize: 16, fontWeight: (q.name.includes(username) ? "bold" : "normal") }}></Row>)}
-                        </Table>
-                        <View style={{ flexDirection: "column", justifyContent: "space-around" }}>
+                        <View style={{ flex: 3 }}>
+                            <Text style={{ textAlign: "center" }}>{r.name}</Text>
+                            <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
+                                <Row data={["Team", "P", "W", "L", "Points", "Diff"]} widthArr={[180, 35, 35, 35, 60, 50]} style={{ width: "100%", height: 40, backgroundColor: '#f1f8ff', margin: 6, fontSize: 16 }}></Row>
+                                {r.teams.sort((a, b) => a.points > b.points ? 1 : (a.points == b.points ? (a.diff > b.diff ? 1 : -1) : -1)).reverse().map(q =>
+                                    <Row key={q.name} data={[q.name, q.played, q.wins, q.loses, q.points, q.diff]} widthArr={[180, 35, 35, 35, 60, 50]} style={{ margin: 6, fontSize: 16, fontWeight: (q.name.includes(username) ? "bold" : "normal") }}></Row>)}
+                            </Table>
+                        </View>
+                        <View style={{ flex: 1, flexDirection: "column", justifyContent: "space-around" }}>
                             <Matchpoule status={status} key={index} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} username={username} setloading={setloading} loading={loading} poule={r.name} matches={groupmatches[index]} level={0} sport={sport} autho={autho}></Matchpoule>
                         </View>
                     </View>)}
-            </View>
+            </ScrollView>
         )
 
     }
@@ -328,7 +330,7 @@ async function fetch_matches(fetchStatus, statusState, username, setAutho, setSt
                     }
                 }
                 setArbitreRule(data);
-
+                console.log("status retrieved success");
                 return data;
             }).catch(err => { console.log("ici", err); setArbitreRule({ status: "error", arbitre: "error", rules: "error" }); return { status: "error", arbitre: "error", rules: "error" } });
         }
@@ -338,6 +340,7 @@ async function fetch_matches(fetchStatus, statusState, username, setAutho, setSt
     }
     let allok = false;
     while (!allok) {
+        console.log("retrieve");
         if (status['states'].includes("poules")) {
 
             await fetch("http://91.121.143.104:7070/teams/" + sportname + "_poules.json").then(response => response.json()).then(data => {
@@ -345,6 +348,7 @@ async function fetch_matches(fetchStatus, statusState, username, setAutho, setSt
                 let array_groups = [];
                 let array_matches_groups = [];
                 let local_array_groupmatch = [];
+                var matches_group = data;
                 for (var groupname in matches_group["groups"]) {
                     let local_group = matches_group["groups"][groupname];
                     array_groups.push(new Group(sportname, local_group.name, local_group.teams, i, false));
@@ -361,67 +365,74 @@ async function fetch_matches(fetchStatus, statusState, username, setAutho, setSt
                 }
                 setgroups(JSON.parse(JSON.stringify(array_groups)));
                 setmatchesgroup(JSON.parse(JSON.stringify(array_matches_groups)));
-            }).catch((err => console.log(err)));
+            }).catch((err => console.log("oui", err)));
             allok = true;
-
-
         }
         if (status['states'].includes("playoff")) {
-            matches = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => { allok = true; return data });
+            await fetch("http://91.121.143.104:7070/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => {
 
-            let level = [];
-            let local_array_match = [[]];
-            for (let j = 0; j < await matches['levels']; j++) {
-                level.push(j);
+                matches = data;
 
-                local_array_match.push([]); // need to be initiliazed or doesnt work ffs...
+                let level = [];
+                let local_array_match = [[]];
+                for (let j = 0; j < matches['levels']; j++) {
+                    level.push(j);
 
-            }
-            for (const prop in await matches) {
-                for (const match_iter in await matches[prop]) {
-                    local_array_match[matches[prop][match_iter]["level"]].push(new Match(sportname, matches[prop][match_iter]["team1"], matches[prop][match_iter]["team2"], matches[prop][match_iter]["uniqueId"], matches[prop][match_iter]["score"], matches[prop][match_iter]["over"], matches[prop][match_iter]["level"], "", matches[prop][match_iter]["nextmatch"]));
+                    local_array_match.push([]); // need to be initiliazed or doesnt work ffs...
+
                 }
-            }
-            setlevel(JSON.parse(JSON.stringify(level)));
-            setmatches(JSON.parse(JSON.stringify(local_array_match)));
+                for (const prop in matches) {
+                    for (const match_iter in matches[prop]) {
+                        local_array_match[matches[prop][match_iter]["level"]].push(new Match(sportname, matches[prop][match_iter]["team1"], matches[prop][match_iter]["team2"], matches[prop][match_iter]["uniqueId"], matches[prop][match_iter]["score"], matches[prop][match_iter]["over"], matches[prop][match_iter]["level"], "", matches[prop][match_iter]["nextmatch"]));
+                    }
+                }
+                setlevel(JSON.parse(JSON.stringify(level)));
+                setmatches(JSON.parse(JSON.stringify(local_array_match)));
+                allok = true;
+            });
         }
         if (status['states'].includes("final")) { // gestion listes (trail/tong)
 
             let liste = {};
             let filename = (sportname == "Pizza" ? sportname + "/" + username : sportname)
-            liste = await fetch("http://91.121.143.104:7070/teams/" + filename + "_series.json").then(response => response.json()).then(data => { allok = true; return data });
-            let local_liste = [];
-            let local_final = [];
-            var levellist = 1;
-            for (var series in await liste["Series"]) {
-                if (liste["Series"][series]["Name"] == "Final") {
-                    var templist = liste["Series"][series]["Teams"];
-                    for (var i in liste["Series"][series]["Teams"]) {
-                        local_final.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], 0));
-                    }
-                    setFinal([...local_final])
+            await fetch("http://91.121.143.104:7070/teams/" + filename + "_series.json").then(response => response.json()).then(data => {
+                liste = data;
+                let local_liste = [];
+                let local_final = [];
+                var levellist = 1;
+                for (var series in liste["Series"]) {
+                    if (liste["Series"][series]["Name"] == "Final") {
+                        var templist = liste["Series"][series]["Teams"];
+                        for (var i in liste["Series"][series]["Teams"]) {
+                            local_final.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], 0));
+                        }
+                        setFinal([...local_final])
 
-                }
-                else { // consolidation des series avant la finale
-                    var templist = liste["Series"][series]["Teams"];
-                    for (var i in liste["Series"][series]["Teams"]) {
-                        local_liste.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], levellist));
                     }
-                    levellist += 1;
+                    else { // consolidation des series avant la finale
+                        var templist = liste["Series"][series]["Teams"];
+                        for (var i in liste["Series"][series]["Teams"]) {
+                            local_liste.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], levellist));
+                        }
+                        levellist += 1;
+                    }
+                    setListe([...local_liste]);
                 }
-                setListe([...local_liste]);
-            }
-            if (status.status == "final") {
+                if (status.status == "final") {
 
-                var temp_level_series = local_final.map(r => r.level);
-                setSeriesLevel([...new Set(temp_level_series)]); // unique levels
-                setRealListe(local_final);
-            }
-            else if (status.status == "series") {
-                var temp_level_series = local_liste.map(r => r.level);
-                setSeriesLevel([...new Set(temp_level_series)]); // unique levels
-                setRealListe(local_liste);
-            }
+                    var temp_level_series = local_final.map(r => r.level);
+                    setSeriesLevel([...new Set(temp_level_series)]); // unique levels
+                    setRealListe(local_final);
+                }
+                else if (status.status == "series") {
+                    var temp_level_series = local_liste.map(r => r.level);
+                    setSeriesLevel([...new Set(temp_level_series)]); // unique levels
+                    setRealListe(local_liste);
+                }
+                allok = true;
+
+            });
+
         }
     }
 }
@@ -560,7 +571,7 @@ function modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_a
                             updateMatchArray(curMatchZoom, match_array, set_match_array);
                             pushmatch(username, sport, curMatchZoom, type, curMatchZoom.uniqueId);
                             setMatchZoom(false);
-                            fetch_matches(false, status, username, null, null, null, sport, props.setmatches, props.setGroups, props.setlevel, props.setmatchesgroup, null, null).then(r => props.setloading(false))
+                            fetch_matches(false, status, username, null, null, null, sport, props.setmatches, props.setGroups, props.setlevel, props.setmatchesgroup, null, null, null, null).then(r => props.setloading(false))
 
                         }}>
                             <View>{over_text(match_array, match_array.indexOf(curMatchZoom))}</View>
