@@ -17,6 +17,7 @@ export function SummaryScreen() {
     const [modalMedaille, setModaleMedaille] = React.useState(false);
     const chatcontext = React.useContext(ChatContext);
     React.useEffect(() => {
+        chatcontext.setChatName(route.params.sportname);
         fetch_results().then(r => {
             let tempArray = []
             for (var i in r) {
@@ -34,10 +35,11 @@ export function SummaryScreen() {
         })
         var chatInterval = setInterval(() => fetchChat("Summary", setChatText, chatcontext.setNewMessage), 3000);
         return () => {
+            chatcontext.setChatName("");
             clearInterval(chatInterval);
         }
 
-    }, [chatcontext]);
+    }, [chatcontext.chatName]);
     if (loading) {
         return (<ActivityIndicator size="large" color="#000000" />)
     }

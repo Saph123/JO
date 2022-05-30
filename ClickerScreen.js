@@ -66,7 +66,7 @@ export function ClickerScreen() {
             clearInterval(chatInterval);
            _unsubscribe();
         }
-    }, [chatcontext]);
+    }, [chatcontext.chatName]);
     return (
         <View style={{ flex: 1, flexDirection: 'row', backgroundColor: HH == 2 ? 'black' : 'lightgrey' }}>
             <ChatContext.Consumer>
