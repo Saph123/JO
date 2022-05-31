@@ -1,17 +1,12 @@
-// import styles from "./style";
+import styles from "./style";
 import { useNavigation } from '@react-navigation/native';
-import { View, Dimensions, ActivityIndicator, TextInput, Text, Image, Modal, Pressable, Alert } from 'react-native';
+import { View, ActivityIndicator, ScrollView, TextInput, Text, Image, Modal, Pressable, Alert } from 'react-native';
 import * as React from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Svg, Polyline } from 'react-native-svg';
 import { Table, Row } from 'react-native-table-component';
 import 'react-native-url-polyfill/auto';
 import { version } from "./App"
-import { ScrollView } from 'react-native-gesture-handler';
-import { UsernameScreen } from './UsernameScreen';
-import { SportDetailsScreen } from './SportDetailsScreen';
-
-const styles = require("./style.js");
 
 
 const MedailleView = (props) => {
@@ -49,14 +44,13 @@ const MedailleView = (props) => {
 export const Trace = (props) => {
     const sport = props.sport;
     const username = props.username;
-    const [autho, setAutho] = React.useState(false);
     const [loading, setloading] = React.useState(true);
     const navigation = useNavigation();
     React.useEffect(() => {
             setloading(false)
 
 
-    }, []);
+    }, [props.all_teams.status.status]);
     if (loading) {
         return (
 
@@ -68,7 +62,7 @@ export const Trace = (props) => {
             <ScrollView horizontal={true}>
 
                 {props.all_teams.levels.slice(0).map(r =>
-                    <View key={r}
+                    <View kek={console.log("pourtan", r)} key={r}
                         style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-between" }}>
                         <Matchcomp status={props.all_teams.status} sportname={sport} setGroups={props.all_teams.setGroups} setmatches={props.all_teams.setmatches} setlevel={props.all_teams.setlevels} setmatchesgroup={props.all_teams.setmatchesgroup} setloading={props.all_teams.setloading} username={username} loading={loading} matches={props.all_teams.matches} level={r} sport={sport} autho={props.all_teams.autho}></Matchcomp>
                     </View>)}
@@ -77,8 +71,8 @@ export const Trace = (props) => {
     }
     if (props.all_teams.status.status == "poules") {
         return (
-            <ScrollView test={console.log("trace group", props.groups)} horizontal={true}>
-                {props.groups.map((r, index) =>
+            <ScrollView horizontal={true}>
+                {props.all_teams.groups.map((r, index) =>
                     <View key={r.name} style={styles.tablecontainer}>
                         <View style={{ flex: 3 }}>
                             <Text style={{ textAlign: "center" }}>{r.name}</Text>
@@ -89,7 +83,7 @@ export const Trace = (props) => {
                             </Table>
                         </View>
                         <View style={{ flex: 1, flexDirection: "column", justifyContent: "space-around" }}>
-                            <Matchpoule status={props.all_teams.status} key={index} sportname={sport} setGroups={props.all_teams.setGroups} setmatches={props.all_teams.setmatches} setlevel={props.all_teams.setlevels} setmatchesgroup={props.all_teams.setmatchesgroup} username={username} setloading={props.all_teams.setloading} loading={loading} poule={r.name} matches={props.all_teams.groupmatches[index]} level={0} sport={sport} autho={autho}></Matchpoule>
+                            <Matchpoule status={props.all_teams.status} key={index} sportname={sport} setGroups={props.all_teams.setGroups} setmatches={props.all_teams.setmatches} setlevel={props.all_teams.setlevels} setmatchesgroup={props.all_teams.setmatchesgroup} username={username} setloading={props.all_teams.setloading} loading={loading} poule={r.name} matches={props.all_teams.groupmatches[index]} level={0} sport={sport} autho={props.all_teams.autho}></Matchpoule>
                         </View>
                     </View>)}
             </ScrollView>
@@ -98,7 +92,7 @@ export const Trace = (props) => {
     }
     else { // Other (list like trail etc.)
 
-        if (!autho) {
+        if (!props.all_teams.autho) {
             return (
                 <ScrollView kek={console.log(props.all_teams.status)} styles={{ flex: 1 }} horizontal={true}>
 

@@ -9,7 +9,7 @@ import { Planning } from './planning';
 import { version, initialLineNumber } from "./App"
 
 
-let displayed_state = {
+export let displayed_state = {
     "Trail": "",
     "Dodgeball": "",
     "Pizza": "",
@@ -153,11 +153,11 @@ export function videoHandler(setVideoVisible, videoVisible, video, videoSource, 
         </Modal>
     )
 }
-export async function fetch_matches(fetchStatus, statusState, username, setAutho, setStatus, setArbitreRule, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel) {
+export async function fetch_matches(fetchStatus, statusState, username, setAutho, setStatus, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel) {
 
 
     console.log("fetch start");
-    let status = { arbitre: "error", status: "error" }
+    let status = { arbitre: "error", status: "error", states:["error"] }
     // console.log(username);
     if (fetchStatus) {
 
@@ -167,7 +167,6 @@ export async function fetch_matches(fetchStatus, statusState, username, setAutho
 
             status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
                 displayed_state[sportname] = data['status'];
-                setStatus(data);
                 for (var authouser in data['arbitre']) {
                     if (data['arbitre'][authouser] == "All") {
                         setAutho(true);
@@ -182,10 +181,10 @@ export async function fetch_matches(fetchStatus, statusState, username, setAutho
                         setAutho(true);
                     }
                 }
-                setArbitreRule(data);
+                setStatus(data);
                 console.log("status retrieved success", data['status']);
                 return data;
-            }).catch(err => { console.log("ici", err); setArbitreRule({ status: "error", arbitre: "error", rules: "error" }); return { status: "error", arbitre: "error", rules: "error" } });
+            }).catch(err => { console.log("ici", err); setStatus({ status: "error", states:["error"], arbitre: "error", rules: "error" }); return { status: "error",states:["error"], arbitre: "error", rules: "error" } });
         }
     }
     else {

@@ -1,11 +1,10 @@
 import styles from "./style";
 import * as React from 'react';
-import { View, ActivityIndicator, Text, Image } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { View, ActivityIndicator, Text, Image, ScrollView } from 'react-native';
 import { Planning } from "./planning.js";
 import { fetch_results, fetch_activities } from "./trace.js";
 import { getValueFor, manageEvents, eventView, addth } from './utils.js';
-import { SportContext } from "./App";
+import { SportContext, username } from "./App";
 
 export function LastYearsResultsScreen({ route, navigation }) {
     const [loading, setLoading] = React.useState(true);
@@ -25,7 +24,7 @@ export function LastYearsResultsScreen({ route, navigation }) {
 
 
     React.useEffect(() => {
-        getValueFor("username").then(r => username = r)
+        // getValueFor("username").then(r => username = r)
         manageEvents(setEventsDone, setEventsInProgess)
         fetch_activities(username, setArbitre, setEvents);
         fetch_results().then(r => {

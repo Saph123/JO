@@ -1,7 +1,6 @@
 import styles from "./style";
 import * as React from 'react';
-import { View, Text, Image, Pressable } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { View, Text, Image, Pressable, ScrollView } from 'react-native';
 import { Accelerometer } from 'expo-sensors';
 import { modalChat, fetchChat } from "./utils.js"
 import { version, ChatContext } from "./App"

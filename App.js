@@ -1,4 +1,3 @@
-// import styles from "./style";
 import * as React from 'react';
 import { View, Text, Image, Pressable } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
@@ -20,7 +19,6 @@ import { pushNotifScreen } from "./PushNotifScreen.js";
 import { LoginScreen } from "./LoginScreen.js";
 
 export let username = "";
-const styles = require("./style.js");
 export const ArbitreContext = React.createContext(false);
 export const ChatContext = React.createContext(false);
 export const SportContext = React.createContext(false);

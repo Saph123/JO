@@ -3,7 +3,7 @@ import * as React from 'react';
 import { View, TextInput, Text, Image, Linking } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { getValueFor, save, videoHandler, pushtoken } from './utils';
-import { version } from "./App"
+import { version, username } from "./App"
 
 export function LoginScreen({ route, navigation }) {
     const [userName, setuserName] = React.useState("username");

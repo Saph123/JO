@@ -1,18 +1,22 @@
-import styles from "./style";
+import styles from "./style.js";
 import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
-import { View, ScrollView, ActivityIndicator, Text, Modal, RefreshControl } from 'react-native';
-// import { ScrollView } from 'react-native-gesture-handler';
+import { View, ScrollView, ActivityIndicator, Text, Modal, RefreshControl, Pressable } from 'react-native';
 import { Trace } from "./trace.js";
 import { modalChat, fetchChat, fetch_matches } from './utils.js';
 import { ChatContext, ArbitreContext, username } from "./App.js";
 
+const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+}
+
 export function SportDetailsScreen({ route }) {
     const [refreshing, setRefreshing] = React.useState(false);
     const [loadingmain, setloading] = React.useState(true);
-    const [statusArbitre, setArbitreRule] = React.useState({ arbitre: "error", statusArbitre: "error" });
+    const [status, setStatus] = React.useState({ states:["error", "error"], status:"error", arbitre: "error", sportname: "error" });
     const [regle, setRegle] = React.useState(false);
     const [chatText, setChatText] = React.useState("");
+    const [firstTime, setFirstTime] = React.useState(true);
     const [localText, setLocalText] = React.useState("");
     const [matches, setmatches] = React.useState([]);
     const [levels, setlevels] = React.useState([]);
@@ -43,44 +47,52 @@ export function SportDetailsScreen({ route }) {
     all_teams.setGroups = setGroups;
     all_teams.setmatchesgroup = setmatchesgroup;
     all_teams.setAutho = setAutho;
-    all_teams.status = statusArbitre;
+    all_teams.status = status;
+    all_teams.setStatus = setStatus;
+    all_teams.setloading = setloading;
 
     const chatcontext = React.useContext(ChatContext);
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         setloading(true);
         console.log("rfresh");
-        fetch_matches(true, null, route.params.username, setAutho, setArbitreRule, setArbitreRule, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel).then(r => {
-        
+
+        fetch_matches(true, null, route.params.username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel).then(r => {
             setloading(false);
+
         });
+
         setRefreshing(false);
     }, []);
+
     React.useEffect(() => {
+        console.log("ici normalement mais bon");
         chatcontext.setChatName(route.params.sportname);
         var chatInterval = setInterval(() => fetchChat(route.params.sportname, setChatText, chatcontext.setNewMessage), 3000);
-        fetch_matches(true, null, route.params.username, setAutho, setArbitreRule, setArbitreRule, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel).then(r => {
-            console.log("icid",groups);
-            setloading(false)
-        }).catch(err => { console.log(err); navigation.navigate('HomeScreen') });
+        console.log(firstTime, "first time kek");
+        if (firstTime) {
 
+            fetch_matches(true, null, route.params.username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel).then(r => {
+                setloading(false);
+                setFirstTime(false);
+            }).catch(err => { console.log(err); navigation.navigate('HomeScreen') });
+        }
         return () => {
             chatcontext.setChatName("");
             clearInterval(chatInterval);
         }
-    }, [chatcontext.chatName]);
+    }, [chatcontext.chatName, status]);
 
     if (loadingmain) {
         return (<ActivityIndicator size="large" color="#000000" />)
     }
     return (
         <View style={{ flex: 1, flexDirection: "column" }}>
-            <View style={{ flex: 1, flexDirection: "row" }}>
-                <Text style={{ flex: 1, textAlign: "center", backgroundColor: "black", color: "white", borderColor: "white", borderWidth: 1 }}>kek</Text>
-                <Text style={{ flex: 1, textAlign: "center", backgroundColor: "black", color: "white", borderColor: "white", borderWidth: 1 }}>kek2</Text>
+            <View kek={console.log("explanation:",status)}style={{ flex: 1, flexDirection: "row" }}>
+                {status.states.map(r => <Pressable key={r} onPress={() => { setloading(true); setStatus((current) => { current.status = r; console.log(current); return {...current} }); setloading(false) }} style={r == status.status ? { flex: 1, backgroundColor: "black", borderColor: "white", borderWidth: 5, alignItems: "center" } : { flex: 1, backgroundColor: "black", borderColor: "grey", borderWidth: 5 }}><View><Text style={{ textAlign: "center", alignContent: "center", alignSelf: "center", color: "white", fontSize: 24, textAlignVertical: "center" }}>{r}</Text></View></Pressable>)}
             </View>
             <View style={{ flex: 10 }}>
-                <ScrollView  refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} >
+                <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} >
                     <ChatContext.Consumer>
                         {value => modalChat(value, chatText, setChatText, localText, setLocalText, route.params.sportname)}
 
@@ -99,9 +111,9 @@ export function SportDetailsScreen({ route }) {
                                             <ScrollView onScroll={() => setRegle(true)} onScrollEndDrag={() => setTimeout(() => setRegle(false), 2000)} >
                                                 <View style={styles.centeredView}>
                                                     <Text style={styles.modalText}>Arbitres:</Text>
-                                                    {statusArbitre['arbitre'] != "error" ? statusArbitre['arbitre'].map(r => <Text key={r} style={styles.modalText} >{r}</Text>) : <View></View>}
+                                                    {status['arbitre'] != "error" ? status['arbitre'].map(r => <Text key={r} style={styles.modalText} >{r}</Text>) : <View></View>}
                                                     <Text style={styles.modalText}>Règles:</Text>
-                                                    <Text style={styles.modalText}>{statusArbitre['rules']}</Text>
+                                                    <Text style={styles.modalText}>{status['rules']}</Text>
                                                 </View>
                                             </ScrollView>
 
@@ -113,7 +125,7 @@ export function SportDetailsScreen({ route }) {
                         }
                     </ArbitreContext.Consumer>
 
-                    <Trace statusArbitre={statusArbitre} groups={groups} username={username} sport={route.params.sportname} all_teams={all_teams} />
+                    <Trace status={status} username={username} sport={route.params.sportname} all_teams={all_teams} />
                 </ScrollView>
             </View>
         </View>

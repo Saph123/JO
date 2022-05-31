@@ -1,7 +1,6 @@
-'use strict'
 import { StyleSheet } from 'react-native';
 
-module.exports = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "space-between",
@@ -400,6 +399,32 @@ module.exports = StyleSheet.create({
     medailleText:{
         fontSize:24,
         // marginRight:10,
+    },
+    tabView:{
+        flex: 1,
+        backgroundColor: "black",
+        borderColor: "white",
+        borderWidth: 1,
+        alignContent:"center"
+
+    },
+    tabViewSelected:{
+        flex: 1,
+        backgroundColor: "black",
+        borderColor: "white",
+        borderWidth: 1,
+        textAlignVertical:"center"
+
+    },
+    textTab:{
+        textAlign: "center",
+        alignSelf:"center",
+        color: "white",
+        fontSize:24,
+        textAlignVertical:"center",
+
+
     }
 
 })
+export default styles;

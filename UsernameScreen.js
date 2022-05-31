@@ -1,7 +1,6 @@
 import styles from "./style";
 import * as React from 'react';
-import { View, ActivityIndicator, Text, Image } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { View, ActivityIndicator, Text, Image, ScrollView } from 'react-native';
 import { Planning } from "./planning.js";
 import { fetch_results, fetch_activities } from "./trace.js";
 import { getValueFor, manageEvents, eventView, addth } from './utils.js';
