@@ -301,8 +301,6 @@ export const Trace = (props) => {
 
 async function fetch_matches(fetchStatus, statusState, username, setAutho, setStatus, setArbitreRule, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel) {
 
-    let matches = {};
-    let matches_group = {};
 
 
     let status = { arbitre: "error", status: "error" }
@@ -371,7 +369,7 @@ async function fetch_matches(fetchStatus, statusState, username, setAutho, setSt
         if (status['states'].includes("playoff")) {
             await fetch("http://91.121.143.104:7070/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => {
 
-                matches = data;
+                let matches = data;
 
                 let level = [];
                 let local_array_match = [[]];
