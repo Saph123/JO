@@ -142,7 +142,7 @@ function App() {
                             <Stack.Screen options={{
                                 title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text>
                                 </View>
-                            }} initialParams={{ pushtoken: "" }} name="LoginScreen" component={LoginScreen} />
+                            }} initialParams={{ pushtoken: "", username:username }} name="LoginScreen" component={LoginScreen} />
 
                             <Stack.Screen options={({ navigation }) => ({
                                 title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>

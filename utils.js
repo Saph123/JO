@@ -1,4 +1,4 @@
-import styles from "./style.js" 
+import styles from "./style.js"
 import * as React from 'react';
 import { View, Modal, Platform, Pressable, Linking, KeyboardAvoidingView, Image, ScrollView, Text, TextInput } from 'react-native';
 import { Video } from 'expo-av';
@@ -9,26 +9,6 @@ import { Planning } from './planning';
 import { version, initialLineNumber } from "./App"
 
 
-export let displayed_state = {
-    "Trail": "",
-    "Dodgeball": "",
-    "Pizza": "",
-    "Tong": "",
-    "Babyfoot": "",
-    "Flechette": "",
-    "PingPong": "",
-    "Orientation": "",
-    "Beerpong": "",
-    "Volley": "",
-    "Waterpolo": "",
-    "Larmina": "",
-    "Natation": "",
-    "SpikeBall": "",
-    "Ventriglisse": "",
-    "100mRicard": "",
-    "Petanque": "",
-    "Molky": ""
-};
 class Liste {
     constructor(username, score, rank = 0, level = 0) {
         this.username = username;
@@ -153,138 +133,122 @@ export function videoHandler(setVideoVisible, videoVisible, video, videoSource, 
         </Modal>
     )
 }
-export async function fetch_matches(fetchStatus, statusState, username, setAutho, setStatus, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel) {
+export async function fetch_matches(username, setAutho, setStatus, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel) {
 
 
-    console.log("fetch start");
-    let status = { arbitre: "error", status: "error", states:["error"] }
-    // console.log(username);
-    if (fetchStatus) {
-
-
-        while (status['status'] == 'error') {
-
-
-            status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
-                displayed_state[sportname] = data['status'];
-                for (var authouser in data['arbitre']) {
-                    if (data['arbitre'][authouser] == "All") {
-                        setAutho(true);
-                    }
-                    else if (data['arbitre'][authouser] == "None") {
-                        setAutho(false);
-                    }
-                    else if (data['arbitre'][authouser] == username) {
-                        setAutho(true);
-                    }
-                    else if ("Max" == username || "Antoine" == username || "Ugo" == username) {
-                        setAutho(true);
-                    }
-                }
-                setStatus(data);
-                console.log("status retrieved success", data['status']);
-                return data;
-            }).catch(err => { console.log("ici", err); setStatus({ status: "error", states:["error"], arbitre: "error", rules: "error" }); return { status: "error",states:["error"], arbitre: "error", rules: "error" } });
-        }
-    }
-    else {
-        status = statusState;
-    }
-    let allok = false;
+    let allok = false
     while (!allok) {
-        // console.log("retrieve", status['states'], status['states'].includes("poules"));
-        if (status['states'].includes("poules")) {
-            console.log("ok");
-            await fetch("http://91.121.143.104:7070/teams/" + sportname + "_poules.json").then(response => response.json()).then(data => {
-                var i = 0;
-                let array_groups = [];
-                let array_matches_groups = [];
-                let local_array_groupmatch = [];
-                var matches_group = data;
-                for (var groupname in matches_group["groups"]) {
-                    let local_group = matches_group["groups"][groupname];
-                    array_groups.push(new Group(sportname, local_group.name, local_group.teams, i, false));
-                    i++;
+        allok = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
+            for (var authouser in data['arbitre']) {
+                if (data['arbitre'][authouser] == "All") {
+                    setAutho(true);
                 }
-                for (var groupname in matches_group["groups"]) {
-                    let local_group = matches_group["groups"][groupname];
-                    for (var match in local_group.matches) {
-                        let local_match = local_group.matches[match];
-                        local_array_groupmatch.push(new Match(sportname, local_match.team1, local_match.team2, local_match.uniqueId, local_match.score, local_match.over, local_match.level, local_group.name, ""));
+                else if (data['arbitre'][authouser] == "None") {
+                    setAutho(false);
+                }
+                else if (data['arbitre'][authouser] == username) {
+                    setAutho(true);
+                }
+                else if ("Max" == username || "Antoine" == username || "Ugo" == username) {
+                    setAutho(true);
+                }
+            }
+            setStatus(data);
+            let status = data;
+            if (status['states'].includes("poules")) {
+                fetch("http://91.121.143.104:7070/teams/" + sportname + "_poules.json").then(response => response.json()).then(data => {
+
+                    var i = 0;
+                    let array_groups = [];
+                    let array_matches_groups = [];
+                    let local_array_groupmatch = [];
+                    var matches_group = data;
+                    for (var groupname in matches_group["groups"]) {
+                        let local_group = matches_group["groups"][groupname];
+                        array_groups.push(new Group(sportname, local_group.name, local_group.teams, i, false));
                         i++;
                     }
-                    array_matches_groups.push(local_array_groupmatch);
-                }
-                setgroups(JSON.parse(JSON.stringify(array_groups)));
-                setmatchesgroup(JSON.parse(JSON.stringify(array_matches_groups)));
-                allok = true;
-            }).catch((err => {console.log("oui", err), allok=false}));
-        }
-        if (status['states'].includes("playoff")) {
-            await fetch("http://91.121.143.104:7070/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => {
-
-                let level = [];
-                let local_array_match = [[]];
-                // console.log(data);
-                for (let j = 0; j < data['levels']; j++) {
-                    level.push(j);
-
-                    local_array_match.push([]); // need to be initiliazed or doesnt work ffs...
-
-                }
-                for (const prop in data) {
-                    for (const match_iter in data[prop]) {
-                        local_array_match[data[prop][match_iter]["level"]].push(new Match(sportname, data[prop][match_iter]["team1"], data[prop][match_iter]["team2"], data[prop][match_iter]["uniqueId"], data[prop][match_iter]["score"], data[prop][match_iter]["over"], data[prop][match_iter]["level"], "", data[prop][match_iter]["nextmatch"]));
-                    }
-                }
-                setlevel(JSON.parse(JSON.stringify(level)));
-                setmatches(JSON.parse(JSON.stringify(local_array_match)));
-                allok = true;
-            }).catch(err => {console.log(err, "err during playoff retrieval"), allok=false});
-        }
-        if (status['states'].includes("final")) { // gestion listes (trail/tong)
-
-            let liste = {};
-            let filename = (sportname == "Pizza" ? sportname + "/" + username : sportname)
-            await fetch("http://91.121.143.104:7070/teams/" + filename + "_series.json").then(response => response.json()).then(data => {
-                liste = data;
-                let local_liste = [];
-                let local_final = [];
-                var levellist = 1;
-                for (var series in liste["Series"]) {
-                    if (liste["Series"][series]["Name"] == "Final") {
-                        var templist = liste["Series"][series]["Teams"];
-                        for (var i in liste["Series"][series]["Teams"]) {
-                            local_final.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], 0));
+                    for (var groupname in matches_group["groups"]) {
+                        let local_group = matches_group["groups"][groupname];
+                        for (var match in local_group.matches) {
+                            let local_match = local_group.matches[match];
+                            local_array_groupmatch.push(new Match(sportname, local_match.team1, local_match.team2, local_match.uniqueId, local_match.score, local_match.over, local_match.level, local_group.name, ""));
+                            i++;
                         }
-                        setFinal([...local_final])
+                        array_matches_groups.push(local_array_groupmatch);
+                    }
+                    setgroups(JSON.parse(JSON.stringify(array_groups)));
+                    setmatchesgroup(JSON.parse(JSON.stringify(array_matches_groups)));
+                    allok = true;
+                }).catch((err => { console.log("oui", err), allok = false }));
+            }
+            if (status['states'].includes("playoff") && allok) {
+                fetch("http://91.121.143.104:7070/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => {
+
+                    let level = [];
+                    let local_array_match = [[]];
+                    // console.log(data);
+                    for (let j = 0; j < data['levels']; j++) {
+                        level.push(j);
+
+                        local_array_match.push([]); // need to be initiliazed or doesnt work ffs...
 
                     }
-                    else { // consolidation des series avant la finale
-                        var templist = liste["Series"][series]["Teams"];
-                        for (var i in liste["Series"][series]["Teams"]) {
-                            local_liste.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], levellist));
+                    for (const prop in data) {
+                        for (const match_iter in data[prop]) {
+                            local_array_match[data[prop][match_iter]["level"]].push(new Match(sportname, data[prop][match_iter]["team1"], data[prop][match_iter]["team2"], data[prop][match_iter]["uniqueId"], data[prop][match_iter]["score"], data[prop][match_iter]["over"], data[prop][match_iter]["level"], "", data[prop][match_iter]["nextmatch"]));
                         }
-                        levellist += 1;
                     }
-                    setListe([...local_liste]);
-                }
-                if (status.status == "final") {
+                    setlevel(JSON.parse(JSON.stringify(level)));
+                    setmatches(JSON.parse(JSON.stringify(local_array_match)));
+                    allok = true;
+                }).catch(err => { console.log(err, "err during playoff retrieval"), allok = false });
+            }
+            if (status['states'].includes("final") && allok) { // gestion listes (trail/tong)
 
-                    var temp_level_series = local_final.map(r => r.level);
-                    setSeriesLevel([...new Set(temp_level_series)]); // unique levels
-                    setRealListe(local_final);
-                }
-                else if (status.status == "series") {
-                    var temp_level_series = local_liste.map(r => r.level);
-                    setSeriesLevel([...new Set(temp_level_series)]); // unique levels
-                    setRealListe(local_liste);
-                }
-                allok = true;
+                let liste = {};
+                let filename = (sportname == "Pizza" ? sportname + "/" + username : sportname)
+                fetch("http://91.121.143.104:7070/teams/" + filename + "_series.json").then(response => response.json()).then(data => {
+                    liste = data;
+                    let local_liste = [];
+                    let local_final = [];
+                    var levellist = 1;
+                    for (var series in liste["Series"]) {
+                        if (liste["Series"][series]["Name"] == "Final") {
+                            var templist = liste["Series"][series]["Teams"];
+                            for (var i in liste["Series"][series]["Teams"]) {
+                                local_final.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], 0));
+                            }
+                            setFinal([...local_final])
 
-            });
+                        }
+                        else { // consolidation des series avant la finale
+                            var templist = liste["Series"][series]["Teams"];
+                            for (var i in liste["Series"][series]["Teams"]) {
+                                local_liste.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], levellist));
+                            }
+                            levellist += 1;
+                        }
+                        setListe([...local_liste]);
+                    }
+                    if (status.status == "final") {
 
-        }
+                        var temp_level_series = local_final.map(r => r.level);
+                        setSeriesLevel([...new Set(temp_level_series)]); // unique levels
+                        setRealListe(local_final);
+                    }
+                    else if (status.status == "series") {
+                        var temp_level_series = local_liste.map(r => r.level);
+                        setSeriesLevel([...new Set(temp_level_series)]); // unique levels
+                        setRealListe(local_liste);
+                    }
+
+                }).catch(err => { console.log(err, "err in list"); allok = false; });
+
+            }
+            console.log("allok:", allok);
+            return allok;
+        }).catch(err => { console.log("ici", err); setStatus({ status: "error", states: ["error"], arbitre: "error", rules: "error" }); return false; });
     }
 }
 
@@ -312,7 +276,7 @@ export function modalChat(value, text, setChatText, localText, setLocalText, spo
                             </ScrollView>
                         </View>
                         <Pressable style={{ flex: 1, marginTop: 30, marginLeft: 20 }} onPress={() => value.setChat(false)}>
-                            <Image style={{ width: 28, height: 23}} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} />
+                            <Image style={{ width: 28, height: 23 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} />
                         </Pressable>
                     </View>
                     <View style={{ flexDirection: "row", flex: 1 }}>

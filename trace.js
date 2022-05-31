@@ -62,7 +62,7 @@ export const Trace = (props) => {
             <ScrollView horizontal={true}>
 
                 {props.all_teams.levels.slice(0).map(r =>
-                    <View kek={console.log("pourtan", r)} key={r}
+                    <View key={r}
                         style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-between" }}>
                         <Matchcomp status={props.all_teams.status} sportname={sport} setGroups={props.all_teams.setGroups} setmatches={props.all_teams.setmatches} setlevel={props.all_teams.setlevels} setmatchesgroup={props.all_teams.setmatchesgroup} setloading={props.all_teams.setloading} username={username} loading={loading} matches={props.all_teams.matches} level={r} sport={sport} autho={props.all_teams.autho}></Matchcomp>
                     </View>)}
@@ -71,7 +71,7 @@ export const Trace = (props) => {
     }
     if (props.all_teams.status.status == "poules") {
         return (
-            <ScrollView horizontal={true}>
+            <ScrollView kek={console.log(props.all_teams.groups)} horizontal={true}>
                 {props.all_teams.groups.map((r, index) =>
                     <View key={r.name} style={styles.tablecontainer}>
                         <View style={{ flex: 3 }}>

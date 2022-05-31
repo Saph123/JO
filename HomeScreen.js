@@ -8,10 +8,11 @@ import { getNextEventseconds } from "./planning.js";
 import * as Notifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
 import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo } from './utils.js';
-import { ChatContext, SportContext, username} from "./App.js";
+import { ChatContext, SportContext} from "./App.js";
 
 export function HomeScreen({ navigation }) {
     const [loading, setLoading] = React.useState(1);
+    const [username, setusername] = React.useState("");
     const [secondsleft, setSecondsleft] = React.useState(1000);
     const [nextEvent, setNextEvent] = React.useState("");
     const [currentEvents, setCurrentEvents] = React.useState([]);
@@ -53,7 +54,7 @@ export function HomeScreen({ navigation }) {
 
     }
     React.useEffect(() => {
-        setLoading(0);
+        getValueFor("username").then(r => setusername(r));
         chatcontext.setChatName("Home");
         manageEvents(setEventsDone, setCurrentEvents)
         var startEvent = getNextEventseconds();

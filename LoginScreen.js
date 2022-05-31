@@ -3,7 +3,7 @@ import * as React from 'react';
 import { View, TextInput, Text, Image, Linking } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { getValueFor, save, videoHandler, pushtoken } from './utils';
-import { version, username } from "./App"
+import { version } from "./App"
 
 export function LoginScreen({ route, navigation }) {
     const [userName, setuserName] = React.useState("username");
@@ -13,12 +13,13 @@ export function LoginScreen({ route, navigation }) {
     const [status, setStatus] = React.useState({});
     const controller = new AbortController()
     // 5 second timeout:
+    let localusername = "";
     React.useEffect(() => {
-        getValueFor("username").then(r => setuserName(r));
+        localusername = getValueFor("username").then(r => {setuserName(r); return r});
         getValueFor("password").then(r => setpassword(r));
     }, []);
     const timeoutId = setTimeout(() => controller.abort(), 5000)
-    if (username == "") {
+    if (localusername == "") {
         return (
             <ScrollView style={{ flexDirection: "column", flex: 1 }}>
                 {videoHandler(setVideoVisible, videoVisible, video, require('./assets/scep.mp4'), false)}
@@ -35,7 +36,7 @@ export function LoginScreen({ route, navigation }) {
 
                             fetch("http://91.121.143.104:7070/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": userName, "password": password }) }).then(r => {
                                 if (r.status == 200) {
-                                    username = userName;
+                                    props.username = userName;
                                     pushtoken(route.params.pushtoken, userName);
                                     save("username", userName);
                                     save("password", password);
@@ -65,7 +66,7 @@ export function LoginScreen({ route, navigation }) {
                     <View style={{ flexDirection: "row", justifyContent: "center" }}>
                         <Image style={styles.logosah} source={require('./assets/sah.png')} />
                         <TouchableOpacity style={styles.logosah}
-                            onPress={() => { { username = "" }; navigation.navigate('VanRommel', { refresh: "refresh" }) }}
+                            onPress={() => { { setuserName("") }; navigation.navigate('VanRommel', { refresh: "refresh" }) }}
                         >
                             <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
                         </TouchableOpacity>
@@ -91,9 +92,9 @@ export function LoginScreen({ route, navigation }) {
             <View style={{ flexDirection: "column", flex: 1, }}>
                 <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
 
-                    <Text style={styles.texthomebutton}>Currently logged in as {username}</Text>
+                    <Text style={styles.texthomebutton}>Currently logged in as {userName}</Text>
                     <TouchableOpacity style={styles.logoutbutton}
-                        onPress={() => { { username = "" }; navigation.navigate('HomeScreen', { refresh: "refresh" }) }}
+                        onPress={() => { { setuserName("") }; navigation.navigate('HomeScreen', { refresh: "refresh" }) }}
                     >
                         <Text style={styles.texthomebutton}>Log out!</Text>
                     </TouchableOpacity>
@@ -107,7 +108,7 @@ export function LoginScreen({ route, navigation }) {
                     <View style={{ flexDirection: "row", justifyContent: "center" }}>
                         <Image style={styles.logosah} source={require('./assets/sah.png')} />
                         <TouchableOpacity style={styles.logosah}
-                            onPress={() => { { username = "" }; navigation.navigate('VanRommel', { refresh: "refresh" }) }}
+                            onPress={() => { { setuserName("") }; navigation.navigate('VanRommel', { refresh: "refresh" }) }}
                         >
                             <Image style={styles.logosah} source={require('./assets/vanrommel.png')} />
                         </TouchableOpacity>

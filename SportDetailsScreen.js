@@ -55,9 +55,8 @@ export function SportDetailsScreen({ route }) {
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         setloading(true);
-        console.log("rfresh");
-
-        fetch_matches(true, null, route.params.username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel).then(r => {
+        console.log("refresh");
+        fetch_matches(route.params.username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel).then(r => {
             setloading(false);
 
         });
@@ -66,13 +65,12 @@ export function SportDetailsScreen({ route }) {
     }, []);
 
     React.useEffect(() => {
-        console.log("ici normalement mais bon");
+        console.log("useeffect");
         chatcontext.setChatName(route.params.sportname);
         var chatInterval = setInterval(() => fetchChat(route.params.sportname, setChatText, chatcontext.setNewMessage), 3000);
-        console.log(firstTime, "first time kek");
         if (firstTime) {
 
-            fetch_matches(true, null, route.params.username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel).then(r => {
+            fetch_matches(route.params.username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel).then(r => {
                 setloading(false);
                 setFirstTime(false);
             }).catch(err => { console.log(err); navigation.navigate('HomeScreen') });
@@ -81,7 +79,7 @@ export function SportDetailsScreen({ route }) {
             chatcontext.setChatName("");
             clearInterval(chatInterval);
         }
-    }, [chatcontext.chatName, status]);
+    }, []);
 
     if (loadingmain) {
         return (<ActivityIndicator size="large" color="#000000" />)
@@ -89,7 +87,7 @@ export function SportDetailsScreen({ route }) {
     return (
         <View style={{ flex: 1, flexDirection: "column" }}>
             <View kek={console.log("explanation:",status)}style={{ flex: 1, flexDirection: "row" }}>
-                {status.states.map(r => <Pressable key={r} onPress={() => { setloading(true); setStatus((current) => { current.status = r; console.log(current); return {...current} }); setloading(false) }} style={r == status.status ? { flex: 1, backgroundColor: "black", borderColor: "white", borderWidth: 5, alignItems: "center" } : { flex: 1, backgroundColor: "black", borderColor: "grey", borderWidth: 5 }}><View><Text style={{ textAlign: "center", alignContent: "center", alignSelf: "center", color: "white", fontSize: 24, textAlignVertical: "center" }}>{r}</Text></View></Pressable>)}
+                {status.states.map(r => <Pressable key={r} onPress={() => { setloading(true); setStatus((current) => { current.status = r; return {...current} }); setloading(false) }} style={r == status.status ? { flex: 1, backgroundColor: "black", borderColor: "white", borderWidth: 5, alignItems: "center" } : { flex: 1, backgroundColor: "black", borderColor: "grey", borderWidth: 5 }}><View><Text style={{ textAlign: "center", alignContent: "center", alignSelf: "center", color: "white", fontSize: 24, textAlignVertical: "center" }}>{r}</Text></View></Pressable>)}
             </View>
             <View style={{ flex: 10 }}>
                 <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} >
