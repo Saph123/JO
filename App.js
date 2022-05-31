@@ -19,7 +19,7 @@ import { VanRommelScreen } from "./VanRommelScreen.js";
 import { pushNotifScreen } from "./PushNotifScreen.js";
 import { LoginScreen } from "./LoginScreen.js";
 
-let username = "";
+export let username = "";
 const styles = require("./style.js");
 export const ArbitreContext = React.createContext(false);
 export const ChatContext = React.createContext(false);
@@ -165,7 +165,7 @@ function App() {
                                             <Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} />
                                         </TouchableOpacity>
                                     </View>
-                            })} initialParams={{ sportname: currentSport }} name="SportDetails" component={SportDetailsScreen} />
+                            })} initialParams={{ sportname: currentSport, username:username }} name="SportDetails" component={SportDetailsScreen} />
                             <Stack.Screen options={() => ({
                                 title: "Tableau des médailles", headerRight: () => <View>
                                     <Pressable onPress={() => { setChat(true)}}>

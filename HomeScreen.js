@@ -8,7 +8,7 @@ import { getNextEventseconds } from "./planning.js";
 import * as Notifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
 import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo } from './utils.js';
-import { ChatContext, SportContext } from "./App.js";
+import { ChatContext, SportContext, username} from "./App.js";
 
 export function HomeScreen({ navigation }) {
     const [loading, setLoading] = React.useState(1);
@@ -53,8 +53,8 @@ export function HomeScreen({ navigation }) {
 
     }
     React.useEffect(() => {
+        setLoading(0);
         chatcontext.setChatName("Home");
-        getValueFor("username").then(r => { username = r; setLoading(0); });
         manageEvents(setEventsDone, setCurrentEvents)
         var startEvent = getNextEventseconds();
         setSecondsleft(startEvent.time);
@@ -123,6 +123,7 @@ export function HomeScreen({ navigation }) {
             }
 
         });
+        setLoading(0);
         return () => {
             clearInterval(chatInterval);
             Notifications.removeNotificationSubscription(notificationListener.current);

@@ -13,26 +13,6 @@ import { SportDetailsScreen } from './SportDetailsScreen';
 
 const styles = require("./style.js");
 
-let displayed_state = {
-    "Trail": "",
-    "Dodgeball": "",
-    "Pizza": "",
-    "Tong": "",
-    "Babyfoot": "",
-    "Flechette": "",
-    "PingPong": "",
-    "Orientation": "",
-    "Beerpong": "",
-    "Volley": "",
-    "Waterpolo": "",
-    "Larmina": "",
-    "Natation": "",
-    "SpikeBall": "",
-    "Ventriglisse": "",
-    "100mRicard": "",
-    "Petanque": "",
-    "Molky": ""
-};
 
 const MedailleView = (props) => {
     const rank = props.rank;
@@ -69,23 +49,11 @@ const MedailleView = (props) => {
 export const Trace = (props) => {
     const sport = props.sport;
     const username = props.username;
-    const [status, setStatus] = React.useState({ status: "error", states: "error" }); // this is only poule/playoff not arbitre and the rest mofo your mom blyat
     const [autho, setAutho] = React.useState(false);
     const [loading, setloading] = React.useState(true);
-    const [matches, setmatches] = React.useState([]);
-    const [levels, setlevels] = React.useState([]);
-    const [liste, setListe] = React.useState([]);
-    const [final, setFinal] = React.useState([])
-    const [realListe, setRealListe] = React.useState([])
-    const [seriesLevel, setSeriesLevel] = React.useState([0])
-    const [groups, setGroups] = React.useState([]);
-    const [groupmatches, setmatchesgroup] = React.useState([]);
     const navigation = useNavigation();
     React.useEffect(() => {
-        fetch_matches(true, null, username, setAutho, setStatus, props.setArbitreRule, props.sport, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel).then(r => {
             setloading(false)
-            props.traceload(false);
-        }).catch(err => { console.log(err); navigation.navigate('HomeScreen') });
 
 
     }, []);
@@ -94,23 +62,23 @@ export const Trace = (props) => {
 
             <View><ActivityIndicator size="large" color="black" /></View>);
     }
-    if (status.status == "playoff") {
+    if (props.all_teams.status.status == "playoff") {
         return (
 
             <ScrollView horizontal={true}>
 
-                {levels.slice(0).map(r =>
+                {props.all_teams.levels.slice(0).map(r =>
                     <View key={r}
                         style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-between" }}>
-                        <Matchcomp status={status} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} setloading={setloading} username={username} loading={loading} matches={matches} level={r} sport={sport} autho={autho}></Matchcomp>
+                        <Matchcomp status={props.all_teams.status} sportname={sport} setGroups={props.all_teams.setGroups} setmatches={props.all_teams.setmatches} setlevel={props.all_teams.setlevels} setmatchesgroup={props.all_teams.setmatchesgroup} setloading={props.all_teams.setloading} username={username} loading={loading} matches={props.all_teams.matches} level={r} sport={sport} autho={props.all_teams.autho}></Matchcomp>
                     </View>)}
             </ScrollView>
         );
     }
-    if (status.status == "poules") {
+    if (props.all_teams.status.status == "poules") {
         return (
-            <ScrollView horizontal={true}>
-                {groups.map((r, index) =>
+            <ScrollView test={console.log("trace group", props.groups)} horizontal={true}>
+                {props.groups.map((r, index) =>
                     <View key={r.name} style={styles.tablecontainer}>
                         <View style={{ flex: 3 }}>
                             <Text style={{ textAlign: "center" }}>{r.name}</Text>
@@ -121,7 +89,7 @@ export const Trace = (props) => {
                             </Table>
                         </View>
                         <View style={{ flex: 1, flexDirection: "column", justifyContent: "space-around" }}>
-                            <Matchpoule status={status} key={index} sportname={sport} setGroups={setGroups} setmatches={setmatches} setlevel={setlevels} setmatchesgroup={setmatchesgroup} username={username} setloading={setloading} loading={loading} poule={r.name} matches={groupmatches[index]} level={0} sport={sport} autho={autho}></Matchpoule>
+                            <Matchpoule status={props.all_teams.status} key={index} sportname={sport} setGroups={props.all_teams.setGroups} setmatches={props.all_teams.setmatches} setlevel={props.all_teams.setlevels} setmatchesgroup={props.all_teams.setmatchesgroup} username={username} setloading={props.all_teams.setloading} loading={loading} poule={r.name} matches={props.all_teams.groupmatches[index]} level={0} sport={sport} autho={autho}></Matchpoule>
                         </View>
                     </View>)}
             </ScrollView>
@@ -132,7 +100,7 @@ export const Trace = (props) => {
 
         if (!autho) {
             return (
-                <ScrollView styles={{ flex: 1 }} horizontal={true}>
+                <ScrollView kek={console.log(props.all_teams.status)} styles={{ flex: 1 }} horizontal={true}>
 
                     <View styles={{ width: 30, height: 70, alignSelf: "center" }}>
 
@@ -141,21 +109,21 @@ export const Trace = (props) => {
                     <View style={{ flexDirection: "row" }}>
                         <View>
                             <Text style={styles.showPlayers}>Athlete</Text>
-                            {realListe.map(r =>
+                            {props.all_teams.realListe.map(r =>
                                 <Text key={r.username} style={r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers}>{r.username}</Text>
                             )
                             }
                         </View>
                         <View>
                             <Text style={styles.inputScore}>Score/Temps</Text>
-                            {realListe.map(r =>
+                            {props.all_teams.realListe.map(r =>
                                 <Text key={r.username} style={styles.inputScore}>{r.score}</Text>
                             )
                             }
                         </View>
                         <View>
                             <View style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
-                            {realListe.map((r, index) => {
+                            {props.all_teams.realListe.map((r, index) => {
                                 if (r.rank == 1) {
                                     return (
                                         <View key={index} style={{ flexDirection: "row" }} >
@@ -197,8 +165,8 @@ export const Trace = (props) => {
 
 
             return (
-                <ScrollView styles={{ height: "100%", flex: 1 }} horizontal={true} >
-                    {seriesLevel.map(cur_level =>
+                <ScrollView kek={console.log(props.all_teams.status)}  styles={{ height: "100%", flex: 1 }} horizontal={true} >
+                    {props.all_teams.seriesLevel.map(cur_level =>
                         <View key={cur_level}>
                             <View>
                                 <Text style={{ fontSize: 20, fontWeight: "bold" }}>{cur_level == 0 ? "Final" : ("Serie" + cur_level)}</Text>
@@ -206,7 +174,7 @@ export const Trace = (props) => {
                             <View style={{ flexDirection: "row" }}>
                                 <View>
                                     <Text style={[styles.showPlayers, { height: 60 }]}>Athlete</Text>
-                                    {realListe.map((r, index) => {
+                                    {props.all_teams.realListe.map((r, index) => {
 
                                         if (cur_level == r.level) {
                                             return (
@@ -222,7 +190,7 @@ export const Trace = (props) => {
                                 </View>
                                 <View>
                                     <Text style={[styles.inputScore, { height: 60 }]}>Score/Temps</Text>
-                                    {realListe.map((r, index) => {
+                                    {props.all_teams.realListe.map((r, index) => {
                                         if (cur_level == r.level) {
                                             return (
                                                 <TextInput key={index} onChangeText={(text) => { r.score = text; }} style={styles.inputScore}>{r.score}</TextInput>
@@ -235,28 +203,28 @@ export const Trace = (props) => {
                                 <View>
                                     <View style={{ width: 60, height: 60, backgroundColor: "lightgrey", justifyContent: "center" }}>
                                         <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => { // Function to save only the results!
-                                            setListe([...realListe]);
-                                            pushmatch(username, sport, realListe, "liste", 0);
+                                            props.all_teams.setListe([...props.all_teams.realListe]);
+                                            pushmatch(username, sport, props.all_teams.realListe, "liste", 0);
                                         }
                                         }>
                                             <Image resizeMode="cover" resizeMethod="resize" style={{ alignSelf: "center" }} source={require('./assets/save.png')}></Image>
                                         </Pressable>
 
                                     </View>
-                                    {realListe.map((r, index) => {
+                                    {props.all_teams.realListe.map((r, index) => {
                                         if (cur_level == r.level) {
                                             if (sport == 'Pizza')
                                                 return (
                                                     <View key={index} style={{ flexDirection: "row" }} >
-                                                        <MedailleView maxMedals={1} r={r} liste={realListe} setRealListe={setRealListe} setloading={setloading} metal={require('./assets/or.png')} rank={1}></MedailleView>
+                                                        <MedailleView maxMedals={1} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/or.png')} rank={1}></MedailleView>
                                                     </View>
                                                 )
 
                                             return (
                                                 <View key={index} style={{ flexDirection: "row" }} >
-                                                    <MedailleView maxMedals={2} r={r} liste={realListe} setRealListe={setRealListe} setloading={setloading} metal={require('./assets/bronze.png')} rank={3}></MedailleView>
-                                                    <MedailleView maxMedals={2} r={r} liste={realListe} setRealListe={setRealListe} setloading={setloading} metal={require('./assets/argent.png')} rank={2}></MedailleView>
-                                                    <MedailleView maxMedals={2} r={r} liste={realListe} setRealListe={setRealListe} setloading={setloading} metal={require('./assets/or.png')} rank={1}></MedailleView>
+                                                    <MedailleView maxMedals={2} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/bronze.png')} rank={3}></MedailleView>
+                                                    <MedailleView maxMedals={2} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/argent.png')} rank={2}></MedailleView>
+                                                    <MedailleView maxMedals={2} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/or.png')} rank={1}></MedailleView>
                                                 </View>
                                             )
                                         }
@@ -299,161 +267,25 @@ export const Trace = (props) => {
 //         </Pressable>)
 // }
 
-async function fetch_matches(fetchStatus, statusState, username, setAutho, setStatus, setArbitreRule, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel) {
 
+// export function toggle_status(status, setStatus, sportname, setloading) {
 
-
-    let status = { arbitre: "error", status: "error" }
-    if (fetchStatus) {
-
-
-        while (status['status'] == 'error') {
-
-
-            status = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
-                displayed_state[sportname] = data['status'];
-                setStatus(data);
-                for (var authouser in data['arbitre']) {
-                    if (data['arbitre'][authouser] == "All") {
-                        setAutho(true);
-                    }
-                    else if (data['arbitre'][authouser] == "None") {
-                        setAutho(false);
-                    }
-                    else if (data['arbitre'][authouser] == username) {
-                        setAutho(true);
-                    }
-                    else if ("Max" == username || "Antoine" == username || "Ugo" == username) {
-                        setAutho(true);
-                    }
-                }
-                setArbitreRule(data);
-                console.log("status retrieved success");
-                return data;
-            }).catch(err => { console.log("ici", err); setArbitreRule({ status: "error", arbitre: "error", rules: "error" }); return { status: "error", arbitre: "error", rules: "error" } });
-        }
-    }
-    else {
-        status = statusState;
-    }
-    let allok = false;
-    while (!allok) {
-        console.log("retrieve");
-        if (status['states'].includes("poules")) {
-
-            await fetch("http://91.121.143.104:7070/teams/" + sportname + "_poules.json").then(response => response.json()).then(data => {
-                var i = 0;
-                let array_groups = [];
-                let array_matches_groups = [];
-                let local_array_groupmatch = [];
-                var matches_group = data;
-                for (var groupname in matches_group["groups"]) {
-                    let local_group = matches_group["groups"][groupname];
-                    array_groups.push(new Group(sportname, local_group.name, local_group.teams, i, false));
-                    i++;
-                }
-                for (var groupname in matches_group["groups"]) {
-                    let local_group = matches_group["groups"][groupname];
-                    for (var match in local_group.matches) {
-                        let local_match = local_group.matches[match];
-                        local_array_groupmatch.push(new Match(sportname, local_match.team1, local_match.team2, local_match.uniqueId, local_match.score, local_match.over, local_match.level, local_group.name, ""));
-                        i++;
-                    }
-                    array_matches_groups.push(local_array_groupmatch);
-                }
-                setgroups(JSON.parse(JSON.stringify(array_groups)));
-                setmatchesgroup(JSON.parse(JSON.stringify(array_matches_groups)));
-            }).catch((err => console.log("oui", err)));
-            allok = true;
-        }
-        if (status['states'].includes("playoff")) {
-            await fetch("http://91.121.143.104:7070/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => {
-
-                let matches = data;
-
-                let level = [];
-                let local_array_match = [[]];
-                for (let j = 0; j < matches['levels']; j++) {
-                    level.push(j);
-
-                    local_array_match.push([]); // need to be initiliazed or doesnt work ffs...
-
-                }
-                for (const prop in matches) {
-                    for (const match_iter in matches[prop]) {
-                        local_array_match[matches[prop][match_iter]["level"]].push(new Match(sportname, matches[prop][match_iter]["team1"], matches[prop][match_iter]["team2"], matches[prop][match_iter]["uniqueId"], matches[prop][match_iter]["score"], matches[prop][match_iter]["over"], matches[prop][match_iter]["level"], "", matches[prop][match_iter]["nextmatch"]));
-                    }
-                }
-                setlevel(JSON.parse(JSON.stringify(level)));
-                setmatches(JSON.parse(JSON.stringify(local_array_match)));
-                allok = true;
-            });
-        }
-        if (status['states'].includes("final")) { // gestion listes (trail/tong)
-
-            let liste = {};
-            let filename = (sportname == "Pizza" ? sportname + "/" + username : sportname)
-            await fetch("http://91.121.143.104:7070/teams/" + filename + "_series.json").then(response => response.json()).then(data => {
-                liste = data;
-                let local_liste = [];
-                let local_final = [];
-                var levellist = 1;
-                for (var series in liste["Series"]) {
-                    if (liste["Series"][series]["Name"] == "Final") {
-                        var templist = liste["Series"][series]["Teams"];
-                        for (var i in liste["Series"][series]["Teams"]) {
-                            local_final.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], 0));
-                        }
-                        setFinal([...local_final])
-
-                    }
-                    else { // consolidation des series avant la finale
-                        var templist = liste["Series"][series]["Teams"];
-                        for (var i in liste["Series"][series]["Teams"]) {
-                            local_liste.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], levellist));
-                        }
-                        levellist += 1;
-                    }
-                    setListe([...local_liste]);
-                }
-                if (status.status == "final") {
-
-                    var temp_level_series = local_final.map(r => r.level);
-                    setSeriesLevel([...new Set(temp_level_series)]); // unique levels
-                    setRealListe(local_final);
-                }
-                else if (status.status == "series") {
-                    var temp_level_series = local_liste.map(r => r.level);
-                    setSeriesLevel([...new Set(temp_level_series)]); // unique levels
-                    setRealListe(local_liste);
-                }
-                allok = true;
-
-            });
-
-        }
-    }
-}
-
-
-export function toggle_status(status, setStatus, sportname, setloading) {
-
-    for (var i = 0; i < status.states.length; i++) {
-        if (status.states[i] == displayed_state[sportname]) {
-            if (i + 1 < status.states.length) {
-                displayed_state[sportname] = status.states[i + 1];
-            }
-            else {
-                displayed_state[sportname] = status.states[0];
-            }
-            status.status = displayed_state[sportname]
-            setloading(true);
-            setStatus(JSON.parse(JSON.stringify(status))); // immutable object ffs
-            setloading(false);
-            break;
-        }
-    }
-}
+//     for (var i = 0; i < status.states.length; i++) {
+//         if (status.states[i] == displayed_state[sportname]) {
+//             if (i + 1 < status.states.length) {
+//                 displayed_state[sportname] = status.states[i + 1];
+//             }
+//             else {
+//                 displayed_state[sportname] = status.states[0];
+//             }
+//             status.status = displayed_state[sportname]
+//             setloading(true);
+//             setStatus(JSON.parse(JSON.stringify(status))); // immutable object ffs
+//             setloading(false);
+//             break;
+//         }
+//     }
+// }
 
 
 export async function fetch_results() {
@@ -569,7 +401,7 @@ function modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_a
                             updateMatchArray(curMatchZoom, match_array, set_match_array);
                             pushmatch(username, sport, curMatchZoom, type, curMatchZoom.uniqueId);
                             setMatchZoom(false);
-                            fetch_matches(false, status, username, null, null, null, sport, props.setmatches, props.setGroups, props.setlevel, props.setmatchesgroup, null, null, null, null).then(r => props.setloading(false))
+                            // fetch_matches(false, status, username, null, null, null, sport, props.setmatches, props.setGroups, props.setlevel, props.setmatchesgroup, null, null, null, null).then(r => props.setloading(false))
 
                         }}>
                             <View>{over_text(match_array, match_array.indexOf(curMatchZoom))}</View>
@@ -752,35 +584,4 @@ function over_text(match, index) {
     )
 
 }
-class Match {
-    constructor(sport, team1, team2, uniqueId, score, over, level, poulename, nextmatch) {
-        // this.numberOfPlayer = Number(numberOfPlayer)
-        this.team1 = team1;
-        this.team2 = team2;
-        this.sport = sport;
-        this.uniqueId = uniqueId;
-        this.score = score;
-        this.over = over;
-        this.level = level;
-        this.poulename = poulename;
-        this.nextmatch = nextmatch;
-    }
-}
-class Liste {
-    constructor(username, score, rank = 0, level = 0) {
-        this.username = username;
-        this.score = score;
-        this.rank = rank;
-        this.level = level // 0 is final, the rest is series
-    }
-}
-class Group {
-    constructor(sport, name, teams, uniqueId, over, matches) {
-        this.name = name;
-        this.teams = teams;
-        this.sport = sport;
-        this.uniqueId = uniqueId;
-        this.over = over;
-        this.matches = matches;
-    }
-}
+
