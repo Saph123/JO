@@ -4,7 +4,7 @@ import { View, Text, Image, Modal } from 'react-native';
 // import PinchZoomView from 'react-native-pinch-zoom-view';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { Planning } from "./planning.js";
-import { SportContext } from "./App";
+import { SportContext, username } from "./App";
 
 export function PlanningScreen({ route, navigation }) {
     const [clicks, setClicks] = React.useState(0)

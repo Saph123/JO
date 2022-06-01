@@ -1,17 +1,18 @@
 import styles from "./style";
 import * as React from 'react';
-import { View, ActivityIndicator, Text, Image, Pressable, Linking, Alert } from 'react-native';
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import { View, ScrollView, ActivityIndicator, Text, Image, Pressable, Linking, Alert } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Audio } from 'expo-av';
 import CountDown from 'react-native-countdown-component';
 import { getNextEventseconds } from "./planning.js";
 import * as Notifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
 import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo } from './utils.js';
-import { ChatContext, SportContext } from "./App";
+import { ChatContext, SportContext} from "./App.js";
 
-export function HomeScreen({ route, navigation }) {
+export function HomeScreen({ navigation }) {
     const [loading, setLoading] = React.useState(1);
+    const [username, setusername] = React.useState("");
     const [secondsleft, setSecondsleft] = React.useState(1000);
     const [nextEvent, setNextEvent] = React.useState("");
     const [currentEvents, setCurrentEvents] = React.useState([]);
@@ -53,7 +54,8 @@ export function HomeScreen({ route, navigation }) {
 
     }
     React.useEffect(() => {
-        getValueFor("username").then(r => { username = r; setLoading(0); });
+        getValueFor("username").then(r => setusername(r));
+        chatcontext.setChatName("Home");
         manageEvents(setEventsDone, setCurrentEvents)
         var startEvent = getNextEventseconds();
         setSecondsleft(startEvent.time);
@@ -84,7 +86,9 @@ export function HomeScreen({ route, navigation }) {
 
 
         });
-        var chatInterval = setInterval(() => fetchChat("Home", setChatText, chatcontext.setNewMessage), 3000);
+        if(chatcontext.chatName == "Home"){
+            var chatInterval = setInterval(() => fetchChat("Home", setChatText, chatcontext.setNewMessage), 3000);
+        }
 
         // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
@@ -120,13 +124,13 @@ export function HomeScreen({ route, navigation }) {
             }
 
         });
+        setLoading(0);
         return () => {
+            clearInterval(chatInterval);
             Notifications.removeNotificationSubscription(notificationListener.current);
             Notifications.removeNotificationSubscription(responseListener.current);
-            clearInterval(chatInterval);
         };
-
-    }, [chatcontext]);
+    }, [chatcontext.chatName]);
     if (loading) {
         return (<ActivityIndicator size="large" color="#000000" />)
 

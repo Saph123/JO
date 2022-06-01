@@ -1,7 +1,7 @@
 import styles from "./style";
 import * as React from 'react';
-import { View, Text, Image, Linking } from 'react-native';
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import { View, Text, Image, Linking, ScrollView } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export function VanRommelScreen() {
     let textPresentation = "La Friterie Van Rommel fondée en 2020 par Paul & Fritz Van Rommel père & fils.\nCes véritables spécialistes du poulycroc (maison) et de la friture en tout genre ont vu leur renommée dépasser les frontières du Brabant Wallon."

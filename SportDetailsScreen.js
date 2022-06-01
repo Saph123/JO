@@ -1,72 +1,132 @@
-import styles from "./style";
+import styles from "./style.js";
+import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
-import { View, Dimensions, ActivityIndicator, Text, Modal } from 'react-native';
-// import PinchZoomView from 'react-native-pinch-zoom-view';
-import { ScrollView } from 'react-native-gesture-handler';
+import { View, ScrollView, ActivityIndicator, Text, Modal, RefreshControl, Pressable } from 'react-native';
 import { Trace } from "./trace.js";
-import { modalChat, fetchChat } from './utils.js';
-import { ChatContext, ArbitreContext } from "./App.js";
+import { modalChat, fetchChat, fetch_matches } from './utils.js';
+import { ChatContext, ArbitreContext, username } from "./App.js";
 
+const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+}
 
 export function SportDetailsScreen({ route }) {
-
-    const [window_width, setWidth] = React.useState(Dimensions.get("window").width);
-    const [window_height, setHeight] = React.useState(Dimensions.get("window").height);
+    const [refreshing, setRefreshing] = React.useState(false);
     const [loadingmain, setloading] = React.useState(true);
-    const [status, setArbitreRule] = React.useState({ arbitre: "error", status: "error" });
+    const [status, setStatus] = React.useState({ states:["error", "error"], status:"error", arbitre: "error", sportname: "error" });
     const [regle, setRegle] = React.useState(false);
-    const [toupdate, setToUpdate] = React.useState(false);
     const [chatText, setChatText] = React.useState("");
+    const [firstTime, setFirstTime] = React.useState(true);
     const [localText, setLocalText] = React.useState("");
-    const chatcontext = React.useContext(ChatContext);
-    React.useEffect(() => {
-        var chatInterval = setInterval(() => fetchChat(route.params.sportname, setChatText, chatcontext.setNewMessage), 3000);
-        setloading(false);
+    const [matches, setmatches] = React.useState([]);
+    const [levels, setlevels] = React.useState([]);
+    const [liste, setListe] = React.useState([]);
+    const [final, setFinal] = React.useState([])
+    const [realListe, setRealListe] = React.useState([])
+    const [seriesLevel, setSeriesLevel] = React.useState([0])
+    const [groups, setGroups] = React.useState([]);
+    const [groupmatches, setmatchesgroup] = React.useState([]);
+    const [autho, setAutho] = React.useState(false);
+    const navigation = useNavigation();
+    const all_teams = {};
+    all_teams.matches = matches;
+    all_teams.levels = levels;
+    all_teams.liste = liste;
+    all_teams.final = final;
+    all_teams.realListe = realListe;
+    all_teams.seriesLevel = seriesLevel;
+    all_teams.groups = groups;
+    all_teams.groupmatches = groupmatches;
+    all_teams.autho = autho;
+    all_teams.setmatches = setmatches;
+    all_teams.setlevels = setlevels;
+    all_teams.setListe = setListe;
+    all_teams.setFinal = setFinal;
+    all_teams.setRealListe = setRealListe;
+    all_teams.setSeriesLevel = setSeriesLevel;
+    all_teams.setGroups = setGroups;
+    all_teams.setmatchesgroup = setmatchesgroup;
+    all_teams.setAutho = setAutho;
+    all_teams.status = status;
+    all_teams.setStatus = setStatus;
+    all_teams.setloading = setloading;
 
+    const chatcontext = React.useContext(ChatContext);
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        setloading(true);
+        console.log("refresh");
+        fetch_matches(route.params.username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel).then(r => {
+            setloading(false);
+
+        });
+
+        setRefreshing(false);
+    }, []);
+
+    React.useEffect(() => {
+        console.log("useeffect");
+        chatcontext.setChatName(route.params.sportname);
+        var chatInterval = setInterval(() => fetchChat(route.params.sportname, setChatText, chatcontext.setNewMessage), 3000);
+        if (firstTime) {
+
+            fetch_matches(route.params.username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel).then(r => {
+                setloading(false);
+                setFirstTime(false);
+            }).catch(err => { console.log(err); navigation.navigate('HomeScreen') });
+        }
         return () => {
+            chatcontext.setChatName("");
             clearInterval(chatInterval);
         }
-    }, [chatcontext]);
+    }, []);
 
     if (loadingmain) {
         return (<ActivityIndicator size="large" color="#000000" />)
     }
     return (
-        <ScrollView style={{flex:1}}>
-            <ChatContext.Consumer>
-                {value => modalChat(value, chatText, setChatText, localText, setLocalText, route.params.sportname)}
+        <View style={{ flex: 1, flexDirection: "column" }}>
+            <View kek={console.log("explanation:",status)}style={{ flex: 1, flexDirection: "row" }}>
+                {status.states.map(r => <Pressable key={r} onPress={() => { setloading(true); setStatus((current) => { current.status = r; return {...current} }); setloading(false) }} style={r == status.status ? { flex: 1, backgroundColor: "black", borderColor: "white", borderWidth: 5, alignItems: "center" } : { flex: 1, backgroundColor: "black", borderColor: "grey", borderWidth: 5 }}><View><Text style={{ textAlign: "center", alignContent: "center", alignSelf: "center", color: "white", fontSize: 24, textAlignVertical: "center" }}>{r}</Text></View></Pressable>)}
+            </View>
+            <View style={{ flex: 10 }}>
+                <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} >
+                    <ChatContext.Consumer>
+                        {value => modalChat(value, chatText, setChatText, localText, setLocalText, route.params.sportname)}
 
-            </ChatContext.Consumer>
-            <ArbitreContext.Consumer>
-                {value => {
-                    return (
-                        <View style={styles.centeredView}>
-                            <Modal
-                                animationType="slide"
-                                transparent={true}
-                                visible={value || regle}
-                                supportedOrientations={['portrait', 'landscape']}
-                            >
-                                <View style={styles.modalView}>
-                                    <ScrollView onScroll={() => setRegle(true)} onScrollEndDrag={() => setTimeout(() => setRegle(false), 2000)} >
-                                        <View style={styles.centeredView}>
-                                            <Text style={styles.modalText}>Arbitres:</Text>
-                                            {status['arbitre'] != "error" ? status['arbitre'].map(r => <Text key={r} style={styles.modalText} >{r}</Text>) : <View></View>}
-                                            <Text style={styles.modalText}>Règles:</Text>
-                                            <Text style={styles.modalText}>{status['rules']}</Text>
+                    </ChatContext.Consumer>
+                    <ArbitreContext.Consumer>
+                        {value => {
+                            return (
+                                <View style={styles.centeredView}>
+                                    <Modal
+                                        animationType="slide"
+                                        transparent={true}
+                                        visible={value || regle}
+                                        supportedOrientations={['portrait', 'landscape']}
+                                    >
+                                        <View style={styles.modalView}>
+                                            <ScrollView onScroll={() => setRegle(true)} onScrollEndDrag={() => setTimeout(() => setRegle(false), 2000)} >
+                                                <View style={styles.centeredView}>
+                                                    <Text style={styles.modalText}>Arbitres:</Text>
+                                                    {status['arbitre'] != "error" ? status['arbitre'].map(r => <Text key={r} style={styles.modalText} >{r}</Text>) : <View></View>}
+                                                    <Text style={styles.modalText}>Règles:</Text>
+                                                    <Text style={styles.modalText}>{status['rules']}</Text>
+                                                </View>
+                                            </ScrollView>
+
                                         </View>
-                                    </ScrollView>
+                                    </Modal>
+                                </View>)
+                        }
 
-                                </View>
-                            </Modal>
-                        </View>)
-                }
+                        }
+                    </ArbitreContext.Consumer>
 
-                }
-            </ArbitreContext.Consumer>
-
-            <Trace status={status} username={username} sport={route.params.sportname} width={window_width} height={window_height} setHeight={setHeight} setWidth={setWidth} setArbitreRule={setArbitreRule} traceload={setloading} pinchReset={setToUpdate} />
-        </ScrollView>
+                    <Trace status={status} username={username} sport={route.params.sportname} all_teams={all_teams} />
+                </ScrollView>
+            </View>
+        </View>
 
     )
 };
