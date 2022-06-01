@@ -2,7 +2,7 @@ import styles from "./style";
 import * as React from 'react';
 import { View, ActivityIndicator, Text, TextInput, Image, Pressable } from 'react-native';
 import PinchZoomView from 'react-native-pinch-zoom-view';
-import { fetch_teams } from "./trace";
+import { fetch_teams, updateTeams } from "./trace";
 
 
 export function SportMgmtScreen({ route }) {
@@ -37,7 +37,7 @@ export function SportMgmtScreen({ route }) {
                     <View style={{ width: 60, height: 60, backgroundColor: "lightgrey", justifyContent:"center" }}>
                         <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => { // Function to save only the results!
                             setListe([...realListe]);
-                            updateTeams(username, sport, realListe);
+                            updateTeams(username, route.params.sportname, realListe);
                         }
                         }>
                             <Image resizeMode="cover" resizeMethod="resize" style={{alignSelf:"center"}} source={require('./assets/save.png')}></Image>

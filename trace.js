@@ -421,7 +421,7 @@ async function fetch_matches(fetchStatus, statusState, username, setAutho, setSt
 
             let liste = {};
             let filename = (sportname == "Pizza" ? sportname + "/" + username : sportname)
-            liste = await fetch("http://91.121.143.104:7070/teams/" + filename + ".json").then(response => response.json()).then(data => { allok = true; return data });
+            liste = await fetch("http://91.121.143.104:7070/teams/" + filename + "_series.json").then(response => response.json()).then(data => { allok = true; return data });
             let local_liste = [];
             let local_final = [];
             var levellist = 1;
