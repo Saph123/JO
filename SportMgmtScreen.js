@@ -2,7 +2,7 @@ import styles from "./style";
 import * as React from 'react';
 import { View, ActivityIndicator, Text, TextInput, Image, Pressable } from 'react-native';
 import PinchZoomView from 'react-native-pinch-zoom-view';
-import { fetch_teams, updateTeams } from "./trace";
+import { fetch_teams, updateTeams } from "./utils";
 
 
 export function SportMgmtScreen({ route }) {
