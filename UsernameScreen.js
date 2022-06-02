@@ -106,7 +106,7 @@ export function UsernameScreen({ route, navigation }) {
                                 <SportContext.Consumer>
                                     {value =>
                                         <View key={r}>
-                                            {eventView(eventsInProgress, eventsDone, r, navigation, value.setCurrentSport)}
+                                            {eventView(eventsInProgress, eventsDone, r, navigation, value.setCurrentSport, "SportDetails")}
                                         </View>
                                     }
                                 </SportContext.Consumer>
@@ -120,7 +120,7 @@ export function UsernameScreen({ route, navigation }) {
                                 <SportContext.Consumer>
                                     {value =>
                                         <View key={r}>
-                                            {eventView(eventsInProgress, eventsDone, r, navigation, value.setCurrentSport)}
+                                            {eventView(eventsInProgress, eventsDone, r, navigation, value.setCurrentSport, "SportDetails")}
                                         </View>
                                     }
                                 </SportContext.Consumer>

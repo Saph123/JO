@@ -177,28 +177,28 @@ export function HomeScreen({ navigation }) {
                 {value =>
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                         <View style={{ flex: 1 }}>
-                            {eventView(currentEvents, eventsDone, "Trail", navigation, value.setCurrentSport)}
-                            {eventView(currentEvents, eventsDone, "Dodgeball", navigation, value.setCurrentSport)}
-                            {eventView(currentEvents, eventsDone, "Pizza", navigation, value.setCurrentSport)}
-                            {eventView(currentEvents, eventsDone, "Tong", navigation, value.setCurrentSport)}
-                            {eventView(currentEvents, eventsDone, "Babyfoot", navigation, value.setCurrentSport)}
-                            {eventView(currentEvents, eventsDone, "Flechette", navigation, value.setCurrentSport)}
+                        {eventView(currentEvents, eventsDone, "Trail", navigation, value.setCurrentSport, 'SportDetails')}
+                            {eventView(currentEvents, eventsDone, "Dodgeball", navigation, value.setCurrentSport, 'SportDetails')}
+                            {eventView(currentEvents, eventsDone, "Pizza", navigation, value.setCurrentSport, 'SportDetails')}
+                            {eventView(currentEvents, eventsDone, "Tong", navigation, value.setCurrentSport, 'SportDetails')}
+                            {eventView(currentEvents, eventsDone, "Babyfoot", navigation, value.setCurrentSport, 'SportDetails')}
+                            {eventView(currentEvents, eventsDone, "Flechette", navigation, value.setCurrentSport, 'SportDetails')}
                         </View>
                         <View style={{ flex: 1 }}>
-                            {eventView(currentEvents, eventsDone, "PingPong", navigation, value.setCurrentSport)}
-                            {eventView(currentEvents, eventsDone, "Orientation", navigation, value.setCurrentSport)}
-                            {eventView(currentEvents, eventsDone, "Beerpong", navigation, value.setCurrentSport)}
-                            {eventView(currentEvents, eventsDone, "Volley", navigation, value.setCurrentSport)}
-                            {eventView(currentEvents, eventsDone, "Waterpolo", navigation, value.setCurrentSport)}
-                            {eventView(currentEvents, eventsDone, "Larmina", navigation, value.setCurrentSport)}
+                            {eventView(currentEvents, eventsDone, "PingPong", navigation, value.setCurrentSport, 'SportDetails')}
+                            {eventView(currentEvents, eventsDone, "Orientation", navigation, value.setCurrentSport, 'SportDetails')}
+                            {eventView(currentEvents, eventsDone, "Beerpong", navigation, value.setCurrentSport, 'SportDetails')}
+                            {eventView(currentEvents, eventsDone, "Volley", navigation, value.setCurrentSport, 'SportDetails')}
+                            {eventView(currentEvents, eventsDone, "Waterpolo", navigation, value.setCurrentSport, 'SportDetails')}
+                            {eventView(currentEvents, eventsDone, "Larmina", navigation, value.setCurrentSport, 'SportDetails')}
                         </View>
                         <View style={{ flex: 1 }}>
-                            {eventView(currentEvents, eventsDone, "Natation", navigation, value.setCurrentSport)}
-                            {eventView(currentEvents, eventsDone, "SpikeBall", navigation, value.setCurrentSport)}
-                            {eventView(currentEvents, eventsDone, "Ventriglisse", navigation, value.setCurrentSport)}
-                            {eventView(currentEvents, eventsDone, "100mRicard", navigation, value.setCurrentSport)}
-                            {eventView(currentEvents, eventsDone, "Petanque", navigation, value.setCurrentSport, setBoules)}
-                            {eventView(currentEvents, eventsDone, "Molky", navigation, value.setCurrentSport)}
+                            {eventView(currentEvents, eventsDone, "Natation", navigation, value.setCurrentSport, 'SportDetails')}
+                            {eventView(currentEvents, eventsDone, "SpikeBall", navigation, value.setCurrentSport, 'SportDetails')}
+                            {eventView(currentEvents, eventsDone, "Ventriglisse", navigation, value.setCurrentSport, 'SportDetails')}
+                            {eventView(currentEvents, eventsDone, "100mRicard", navigation, value.setCurrentSport, 'SportDetails')}
+                            {eventView(currentEvents, eventsDone, "Petanque", navigation, value.setCurrentSport, 'SportDetails', setBoules)}
+                            {eventView(currentEvents, eventsDone, "Molky", navigation, value.setCurrentSport, 'SportDetails')}
                         </View>
 
                     </View>
@@ -227,12 +227,25 @@ export function HomeScreen({ navigation }) {
 
                     <Text style={styles.texthomebutton}>Logout</Text>
                 </TouchableOpacity>
-                {username == "Max" || username == "Ugo" || username == "Antoine" ? <TouchableOpacity style={styles.logoutbutton}
-                    onPress={() => { navigation.navigate('pushNotifScreen') }}
-                >
+                {username == "Max" || username == "Ugo" || username == "Antoine" ? 
+                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
+                        <View style={{ flex: 1 }}>
+                            <TouchableOpacity style={styles.logoutbutton}
+                            onPress={() => { navigation.navigate('pushNotifScreen') }}
+                        >
+                        <Text style={styles.texthomebutton}>Push Notif!</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                            <TouchableOpacity style={styles.logoutbutton}
+                                onPress={() => { navigation.navigate('teamMgmtScreen') }}
+                            >
 
-                    <Text style={styles.texthomebutton}>Push Notif!</Text>
-                </TouchableOpacity> : <View></View>}
+                                <Text style={styles.texthomebutton}>Team Mgmt</Text>
+                            </TouchableOpacity>
+                        </View>
+                </View>
+                 : <View></View>}
             </View>
             <StatusBar style="light" />
         </ScrollView>

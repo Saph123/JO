@@ -311,11 +311,11 @@ export function addth(rank) {
 }
 
 
-export function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentSport, setfun) {
+export function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentSport, navigateTo, setfun) {
 
     return (
         <Pressable delayLongPress={5000} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
-            onPress={() => { setCurrentSport(sportname), navigation.navigate('SportDetails', { sportname: sportname }) }} onLongPress={() => { if (sportname == 'Petanque') { setfun(true) } }}
+            onPress={() => { setCurrentSport(sportname), navigation.navigate(navigateTo, { sportname: sportname }) }} onLongPress={() => { if (sportname == 'Petanque') { setfun(true) } }}
         >
             <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
         </Pressable>)
@@ -356,6 +356,20 @@ export function fetchChat(sportname, setChatText, setNewMessage) {
 
 }
 
+export async function fetch_teams(sportname) {
+    let fetch_teams = {}
+
+    fetch_teams = await fetch("http://91.121.143.104:7070/teams/" + sportname + ".json").then(response => response.json()).then(data => {
+        let local_liste = [];
+        for (var i in data["Teams"]) {
+            local_liste.push(new Liste(data["Teams"][i]["Players"], data["Teams"][i]["Players"], 0, 0));
+        }
+        local_liste.push(new Liste("", "", 0, 0));
+        return local_liste;
+    }).catch(err => console.log(err));
+    return fetch_teams;
+}
+
 function pushChat(sportname, text) {
     fetch("http://91.121.143.104:7070/chat", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "text": text, "sportname": sportname }) }).then(res => {
         if (res.status == 200) {
@@ -369,6 +383,23 @@ function pushChat(sportname, text) {
 
 }
 
+export function updateTeams(username, sport, teams) {
+
+    // 5 second timeout:
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+    // // push to server
+    fetch("http://91.121.143.104:7070/updateTeams", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sport, "username": username, "teams": teams }) }).then(r => {
+        if (r.status == 200) {
+            Alert.alert("Saved","Saved to server!", ["Ok"])
+        }
+        else {
+            alert("Wrong login or password!");
+        }
+
+    }).catch((err) => { alert("Issue with server!") });
+}
 
 function countLines(str) {
     return (str.match(/\n/g) || '').length + 1;
