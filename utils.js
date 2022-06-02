@@ -182,7 +182,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                     allok = true;
                 }).catch((err => { console.log("oui", err), allok = false }));
             }
-            if (status['states'].includes("playoff") && allok) {
+            if (status['states'].includes("playoff")) {
                 fetch("http://91.121.143.104:7070/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => {
 
                     let level = [];
@@ -204,7 +204,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                     allok = true;
                 }).catch(err => { console.log(err, "err during playoff retrieval"), allok = false });
             }
-            if (status['states'].includes("final") && allok) { // gestion listes (trail/tong)
+            if (status['states'].includes("final")) { // gestion listes (trail/tong)
 
                 let liste = {};
                 let filename = (sportname == "Pizza" ? sportname + "/" + username : sportname)
@@ -242,7 +242,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                         setSeriesLevel([...new Set(temp_level_series)]); // unique levels
                         setRealListe(local_liste);
                     }
-
+                    allok = true;
                 }).catch(err => { console.log(err, "err in list"); allok = false; });
 
             }
@@ -383,14 +383,14 @@ function pushChat(sportname, text) {
 
 }
 
-export function updateTeams(username, sport, teams) {
+export function updateTeams(sport, teams) {
 
     // 5 second timeout:
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     // // push to server
-    fetch("http://91.121.143.104:7070/updateTeams", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sport, "username": username, "teams": teams }) }).then(r => {
+    fetch("http://91.121.143.104:7070/updateTeams", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sport, "teams": teams }) }).then(r => {
         if (r.status == 200) {
             Alert.alert("Saved","Saved to server!", ["Ok"])
         }

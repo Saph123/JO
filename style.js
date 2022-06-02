@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     showPlayersIsIn: {
         fontWeight: "bold",
         borderWidth: 1,
-        width: 400,
+        width: 200,
         height: 30,
         textAlign: "center",
         textAlignVertical: "center"
