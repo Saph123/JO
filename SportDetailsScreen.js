@@ -56,7 +56,7 @@ export function SportDetailsScreen({ route }) {
         setRefreshing(true);
         setloading(true);
         console.log("refresh");
-        fetch_matches(route.params.username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel).then(r => {
+        fetch_matches(username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel).then(r => {
             setloading(false);
 
         });
@@ -70,7 +70,7 @@ export function SportDetailsScreen({ route }) {
         var chatInterval = setInterval(() => fetchChat(route.params.sportname, setChatText, chatcontext.setNewMessage), 3000);
         if (firstTime) {
 
-            fetch_matches(route.params.username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel).then(r => {
+            fetch_matches(username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel).then(r => {
                 setloading(false);
                 setFirstTime(false);
             }).catch(err => { console.log(err); navigation.navigate('HomeScreen') });
