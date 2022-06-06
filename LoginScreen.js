@@ -36,7 +36,7 @@ export function LoginScreen({ route, navigation }) {
 
                             fetch("http://91.121.143.104:7070/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": userName, "password": password }) }).then(r => {
                                 if (r.status == 200) {
-                                    props.username = userName;
+                                    route.params.username = userName;
                                     pushtoken(route.params.pushtoken, userName);
                                     save("username", userName);
                                     save("password", password);
