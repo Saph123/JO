@@ -31,10 +31,10 @@ export function HomeScreen({ navigation }) {
     const chatcontext = React.useContext(ChatContext);
     let planning = new Planning();
     let now = new Date(Date.now());
-    var mercredi = new Date('2022-07-14T00:00:00+02:00');
-    var jeudi = new Date('2022-07-15T00:00:00+02:00');
-    var vendredi = new Date('2022-07-16T00:00:00+02:00');
-    var samedi = new Date('2022-07-17T00:00:00+02:00');
+    var mercredi = new Date('2022-07-13T00:00:00+02:00');
+    var jeudi = new Date('2022-07-14T00:00:00+02:00');
+    var vendredi = new Date('2022-07-15T00:00:00+02:00');
+    var samedi = new Date('2022-07-16T00:00:00+02:00');
     async function playcluedo() {
         pushcluedo()
         if (soundstatus == undefined) {
@@ -267,6 +267,7 @@ export function HomeScreen({ navigation }) {
                     // </View>
                     : <View></View>}
             </View>
+            <StatusBar style="light"/>
         </View>
 
     );
