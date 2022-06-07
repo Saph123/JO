@@ -3,13 +3,12 @@ import * as React from 'react';
 import { View, ScrollView, ActivityIndicator, Text, Image, Pressable, Linking, Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Audio } from 'expo-av';
-import CountDown from 'react-native-countdown-component';
-import { getNextEventseconds } from "./planning.js";
+
+import { getNextEventseconds, Planning } from "./planning.js";
 import * as Notifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
-import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo } from './utils.js';
-import { ChatContext, SportContext} from "./App.js";
-
+import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo, firstDay } from './utils.js';
+import { ChatContext, SportContext } from "./App.js";
 export function HomeScreen({ navigation }) {
     const [loading, setLoading] = React.useState(1);
     const [username, setusername] = React.useState("");
@@ -19,6 +18,8 @@ export function HomeScreen({ navigation }) {
     const [eventsDone, setEventsDone] = React.useState([]);
     const [soundstatus, setSound] = React.useState();
     const [boules, setBoules] = React.useState(false);
+    const [sportToDisplay, setSports] = React.useState({});
+    const [displayDay, setDisplayDay] = React.useState(0);
 
     const notificationListener = React.useRef();
     const videoBoule = React.useRef();
@@ -28,6 +29,12 @@ export function HomeScreen({ navigation }) {
     const [chatText, setChatText] = React.useState("");
     const [localText, setLocalText] = React.useState("");
     const chatcontext = React.useContext(ChatContext);
+    let planning = new Planning();
+    let now = new Date(Date.now());
+    var mercredi = new Date('2022-07-14T00:00:00+02:00');
+    var jeudi = new Date('2022-07-15T00:00:00+02:00');
+    var vendredi = new Date('2022-07-16T00:00:00+02:00');
+    var samedi = new Date('2022-07-17T00:00:00+02:00');
     async function playcluedo() {
         pushcluedo()
         if (soundstatus == undefined) {
@@ -54,6 +61,20 @@ export function HomeScreen({ navigation }) {
 
     }
     React.useEffect(() => {
+        switch (now.getDay()) {
+
+            case jeudi.getDay():
+                setDisplayDay(jeudi);
+                break
+            case vendredi.getDay():
+                setDisplayDay(vendredi);
+                break
+            case samedi.getDay():
+                setDisplayDay(samedi);
+                break
+            default:
+                setDisplayDay(mercredi);
+        }
         getValueFor("username").then(r => setusername(r));
         chatcontext.setChatName("Home");
         manageEvents(setEventsDone, setCurrentEvents)
@@ -66,7 +87,7 @@ export function HomeScreen({ navigation }) {
             setNotification(notification);
             let message = notification.request.content
             if (message.title == "CLUEDO!") {
-                Alert.alert(message.title, message.body, [{text : "Say no more"}, {text : "Hold my beer"}])
+                Alert.alert(message.title, message.body, [{ text: "Say no more" }, { text: "Hold my beer" }])
             }
             else if (message.title == "Clicker: Happy Hour!") {
                 if (message.body.indexOf("fin") != -1) {
@@ -81,23 +102,23 @@ export function HomeScreen({ navigation }) {
                 }
             }
             else {
-                Alert.alert(message.title, message.body, [{text : "Ok"}])
+                Alert.alert(message.title, message.body, [{ text: "Ok" }])
             }
 
 
         });
-        if(chatcontext.chatName == "Home"){
+        if (chatcontext.chatName == "Home") {
             var chatInterval = setInterval(() => fetchChat("Home", setChatText, chatcontext.setNewMessage), 3000);
         }
 
         // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-            
+
             let message = response.notification.request.content
 
-            
+
             if (message.title == "CLUEDO!") {
-                Alert.alert(message.title, message.body, [{text : "Say no more"}, {text : "Hold my beer"}])
+                Alert.alert(message.title, message.body, [{ text: "Say no more" }, { text: "Hold my beer" }])
             }
             else if (message.body.indexOf("PUSH") != -1) {
                 navigation.navigate('pushNotifScreen');
@@ -120,7 +141,7 @@ export function HomeScreen({ navigation }) {
                 }
             }
             else {
-                Alert.alert(message.title, message.body, [{text : "Ok"}])
+                Alert.alert(message.title, message.body, [{ text: "Ok" }])
             }
 
         });
@@ -157,88 +178,96 @@ export function HomeScreen({ navigation }) {
         )
     }
     return (
+        <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, flexDirection: "row" }}>
+                <Pressable onPress={() => { setDisplayDay(mercredi) }} style={displayDay.getDay() === mercredi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={styles.dateTextTabs}>13 Juillet</Text></Pressable>
+                <Pressable onPress={() => { setDisplayDay(jeudi) }} style={displayDay.getDay() === jeudi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={styles.dateTextTabs}>14 Juillet</Text></Pressable>
+                <Pressable onPress={() => { setDisplayDay(vendredi) }} style={displayDay.getDay() === vendredi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={styles.dateTextTabs}>15 Juillet</Text></Pressable>
+                <Pressable onPress={() => { setDisplayDay(samedi) }} style={displayDay.getDay() === samedi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={styles.dateTextTabs}>16 Juillet</Text></Pressable>
+            </View>
+            <View style={{ flex: 15, marginTop: 15 }}>
 
-        <ScrollView>
-            <ChatContext.Consumer>
-                {value => modalChat(value, chatText, setChatText, localText, setLocalText, "Home")}
+                <ScrollView >
+                    <ChatContext.Consumer>
+                        {value => modalChat(value, chatText, setChatText, localText, setLocalText, "Home", username)}
 
-            </ChatContext.Consumer>
-            {videoHandler(setBoules, boules, videoBoule, require('./assets/boules.mp4'), true)}
-            {secondsleft < 0 ? <View><Pressable onPress={() => navigation.navigate('PlanningScreen')} style={styles.loginbutton}><Text style={styles.texthomebutton}>Planning</Text></Pressable></View> : secondsleft == 0 ? <Pressable onPress={() => navigation.navigate('PlanningScreen')}>
-                <Image style={{ alignSelf: "center" }} source={require('./assets/80s.gif')} /></Pressable> : <View><Text style={{ alignSelf: "center" }}>{nextEvent + " dans :"}</Text><CountDown
-                    style={{ color: "black" }}
-                    digitStyle={{ backgroundColor: "#FF8484" }}
-                    until={secondsleft}
-                    onFinish={() => { setSecondsleft(0); setTimeout(() => setSecondsleft(-1), 1000 * 5 * 60 * 60) }}
-                    onPress={() => navigation.navigate('PlanningScreen')}
-                    size={20}
-                /></View>}
-            <SportContext.Consumer>
-                {value =>
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
-                        <View style={{ flex: 1 }}>
-                        {eventView(currentEvents, eventsDone, "Trail", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "Dodgeball", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "Pizza", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "Tong", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "Babyfoot", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "Flechette", navigation, value.setCurrentSport, 'SportDetails')}
-                        </View>
-                        <View style={{ flex: 1 }}>
-                            {eventView(currentEvents, eventsDone, "PingPong", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "Orientation", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "Beerpong", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "Volley", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "Waterpolo", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "Larmina", navigation, value.setCurrentSport, 'SportDetails')}
-                        </View>
-                        <View style={{ flex: 1 }}>
-                            {eventView(currentEvents, eventsDone, "Natation", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "SpikeBall", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "Ventriglisse", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "100mRicard", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "Petanque", navigation, value.setCurrentSport, 'SportDetails', setBoules)}
-                            {eventView(currentEvents, eventsDone, "Molky", navigation, value.setCurrentSport, 'SportDetails')}
-                        </View>
+                    </ChatContext.Consumer>
+                    {videoHandler(setBoules, boules, videoBoule, require('./assets/boules.mp4'), true)}
 
-                    </View>
-                }
-            </SportContext.Consumer>
 
-            <View>
-                <TouchableOpacity style={{ alignSelf: "center", backgroundColor: "lightgrey", borderRadius: 30 }} onPress={playcluedo}>
-                    <Image style={{ borderRadius: 30, borderWidth: 1, borderColor: "black" }} source={require('./assets/cluedo.png')} />
-                </TouchableOpacity>
-                <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, styles.inProgress]} onPress={() => { navigation.navigate('ClickerScreen') }} >
-                    <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
+                    <SportContext.Consumer>
+                        {value =>
+                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
+                                <View style={{ flex: 1 }}>
+                                    {planning["listeevent"].map(r => {
+                                        if (r.timeBegin.getDay() == displayDay.getDay()) {
+                                            if (displayDay.getDay() == mercredi.getDay()) {
+                                                {
+                                                    return(
+                                                    firstDay(secondsleft, setSecondsleft)
+                                                    )
+                                                }
+                                            }
+                                            else {
+
+                                                return (
+                                                    eventView(currentEvents, eventsDone, r.eventname, navigation, value.setCurrentSport, 'SportDetails', null, r.timeBegin));
+                                            }
+                                        }
+                                    })}
+                                </View>
+                            </View>
+                        }
+                    </SportContext.Consumer>
+
+
+                    {/* <StatusBar style="light" /> */}
+                    {/* <View style={{ height: 60 }}></View> */}
+                </ScrollView>
+            </View>
+            <View style={{ backgroundColor: "black", height: 65, flexDirection: "row", borderColor: "black", borderWidth: 1, justifyContent: "space-between" }}>
+                <Pressable style={styles.bottomTabs} onPress={playcluedo}>
+                    <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/cluedo.png')} />
                 </Pressable>
-                <TouchableOpacity style={{ alignSelf: "center", width: 65, height: 85, margin: 10 }} onPress={() => { navigation.navigate('SummaryScreen') }}>
-                    <Image style={{ borderRadius: 15, borderWidth: 1, borderColor: "black" }} source={require('./assets/summary.png')} />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.loginbutton}
-                    onPress={() => { navigation.navigate('2021') }}
-                >
-
-                    <Text style={styles.texthomebutton}>2021</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.loginbutton}
+                <Pressable style={styles.bottomTabs} onPress={() => { navigation.navigate('SummaryScreen') }}>
+                    <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/summary.png')} />
+                </Pressable>
+                <Pressable style={styles.bottomTabs}
                     onPress={() => { navigation.navigate('LoginScreen', { pushtoken: expoPushToken }) }}
                 >
-
-                    <Text style={styles.texthomebutton}>Logout</Text>
-                </TouchableOpacity>
-                {username == "Max" || username == "Ugo" || username == "Antoine" ? 
-                    <View style={{ flex: 1 }}>
-                        <TouchableOpacity style={styles.logoutbutton}
+                    <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/athlete.png')} />
+                </Pressable>
+                {/* <Pressable style={styles.bottomTabs}
+                    onPress={() => { navigation.navigate('PlanningScreen') }}
+                >
+                    <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/calendar.png')} />
+                </Pressable> */}
+                {username == "Max" || username == "Ugo" || username == "Antoine" || username == "Pierrick" ?
+                    <Pressable style={styles.bottomTabs}
                         onPress={() => { navigation.navigate('pushNotifScreen') }}
                     >
-                    <Text style={styles.texthomebutton}>Push Notif!</Text>
-                        </TouchableOpacity>
-                </View>
-                 : <View></View>}
+                        <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/wrench.png')} />
+                    </Pressable>
+                    // <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
+                    //     <View style={{ flex: 1 }}>
+                    //         <Pressable style={styles.logoutbutton}
+                    //             onPress={() => { navigation.navigate('pushNotifScreen') }}
+                    //         >
+                    //             <Text style={styles.texthomebutton}>Push Notif!</Text>
+                    //         </Pressable>
+                    //     </View>
+                    //     <View style={{ flex: 1 }}>
+                    //         <Pressable style={styles.logoutbutton}
+                    //             onPress={() => { navigation.navigate('teamMgmtScreen') }}
+                    //         >
+
+                    //             <Text style={styles.texthomebutton}>Team Mgmt</Text>
+                    //         </Pressable>
+                    //     </View>
+                    // </View>
+                    : <View></View>}
             </View>
-            <StatusBar style="light" />
-        </ScrollView>
+        </View>
 
     );
 }

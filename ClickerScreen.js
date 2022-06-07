@@ -69,7 +69,7 @@ export function ClickerScreen() {
     return (
         <View style={{ flex: 1, flexDirection: 'row', backgroundColor: HH == 2 ? 'black' : 'lightgrey' }}>
             <ChatContext.Consumer>
-                {value => modalChat(value, chatText, setChatText, localText, setLocalText, "Clicker")}
+                {value => modalChat(value, chatText, setChatText, localText, setLocalText, "Clicker", username)}
 
             </ChatContext.Consumer>
             <Image style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: HH == 2 ? 1 : 0 }} source={require("./assets/HH.gif")} />

@@ -17,7 +17,7 @@ export function SummaryScreen() {
     const [modalMedaille, setModaleMedaille] = React.useState(false);
     const chatcontext = React.useContext(ChatContext);
     React.useEffect(() => {
-        chatcontext.setChatName(route.params.sportname);
+        chatcontext.setChatName("Summary");
         fetch_results().then(r => {
             let tempArray = []
             for (var i in r) {
@@ -46,7 +46,7 @@ export function SummaryScreen() {
     return (
         <ScrollView style={{ width: "100%" }}>
             <ChatContext.Consumer>
-                {value => modalChat(value, chatText, setChatText, localText, setLocalText, "Summary")}
+                {value => modalChat(value, chatText, setChatText, localText, setLocalText, "Summary", username)}
 
             </ChatContext.Consumer>
             <Modal

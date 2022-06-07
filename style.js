@@ -26,11 +26,18 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         borderWidth: 1,
         alignItems: "center",
+<<<<<<< HEAD
+        marginLeft: 30,
+        marginRight: 30,
+        width: 100,
+        minHeight: 130
+=======
         marginTop: 30,
         marginBottom: 30,
         marginLeft: 5,
         width: 250,
         minHeight:130
+>>>>>>> 2aec4bf62468c88e10fe51d2697737e6866a7368
     },
     match: {
         backgroundColor: "#A8DADC",
@@ -42,10 +49,10 @@ const styles = StyleSheet.create({
         marginBottom: 30,
         marginLeft: 5,
         width: 250,
-        minHeight:130
+        minHeight: 130
     },
     matchpouleover: {
-        flex:1,
+        flex: 1,
         backgroundColor: "#D62628",
         flexDirection: 'column',
         alignItems: "center",
@@ -57,7 +64,7 @@ const styles = StyleSheet.create({
         borderRadius: 15
     },
     matchpoule: {
-        flex:1,
+        flex: 1,
         backgroundColor: "#A8DADC",
         flexDirection: 'column',
         alignItems: "center",
@@ -78,14 +85,14 @@ const styles = StyleSheet.create({
         textAlign: "center",
         // width: "100%",
         fontSize: 16,
-        color:"black",
+        color: "black",
         fontWeight: "bold"
     },
     teamnormal: {
         textAlign: "center",
         // width: "100%",
         fontSize: 16,
-        color:"black"
+        color: "black"
     },
     lose: {
         textAlign: "center",
@@ -165,8 +172,8 @@ const styles = StyleSheet.create({
     },
     score: {
         textAlign: "center",
-        fontWeight:"bold",
-        fontSize:26
+        fontWeight: "bold",
+        fontSize: 26
         // borderColor: "black",
         // borderWidth: 1,
         // maxWidth:50
@@ -206,7 +213,7 @@ const styles = StyleSheet.create({
     matchZoomView: {
         margin: 20,
         minWidth: 300,
-        minHeight:600,
+        minHeight: 600,
         backgroundColor: "white",
         borderRadius: 20,
         padding: 35,
@@ -227,10 +234,10 @@ const styles = StyleSheet.create({
         textAlign: "center"
     },
     closeButton: {
-        width:23,
-        height:19,
-        alignItems:"flex-end",
-        alignSelf:"flex-end"
+        width: 23,
+        height: 19,
+        alignItems: "flex-end",
+        alignSelf: "flex-end"
     },
     modalText: {
         marginBottom: 15,
@@ -251,11 +258,10 @@ const styles = StyleSheet.create({
         margin: 8,
     },
     eventDone: {
-        // flex: 1,
+        flex: 1,
         backgroundColor: "#ADADAD",
-        width: 70,
-        height: 70,
-
+        // width: 70,
+        // height: 70,
         borderWidth: 1,
         borderColor: 'black',
         borderRadius: 10,
@@ -273,9 +279,9 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'black',
         borderRadius: 10,
-        alignItems: 'stretch',
-        justifyContent: 'center',
-        alignSelf: 'center',
+        // alignItems: 'stretch',
+        // justifyContent: 'center',
+        // alignSelf: 'center',
         margin: 8,
     },
     loginbutton: {
@@ -353,84 +359,113 @@ const styles = StyleSheet.create({
         height: 30,
         flexDirection: "row",
         // backgroundColor: "lightgrey",
-        tintColor:"lightgrey",
-        opacity:0.2
+        tintColor: "lightgrey",
+        opacity: 0.2
     },
     medailleabsent: {
         width: 20,
         height: 30,
         flexDirection: "row",
         // backgroundColor: "lightgrey",
-        tintColor:"lightgrey",
-        opacity:0
+        tintColor: "lightgrey",
+        opacity: 0
     },
     medailleopaque: {
         width: 20,
         height: 30,
         flexDirection: "row",
         // backgroundColor: "lightgrey",
-        tintColor:"lightgrey",
-        opacity:1
+        tintColor: "lightgrey",
+        opacity: 1
     },
     textday: {
-        fontSize:16,
-        fontWeight:"bold",
-        textAlign:"center",
+        fontSize: 16,
+        fontWeight: "bold",
+        textAlign: "center",
     },
     texttime: {
-        fontSize:12,
-        fontStyle:"italic",
-        fontWeight:"bold",
-        textAlign:"center",
-        marginTop:20
+        fontSize: 12,
+        fontStyle: "italic",
+        fontWeight: "bold",
+        textAlign: "center",
+        marginTop: 20
     },
     textevent: {
-        fontSize:16,
-        fontStyle:"italic",
-        textAlign:"center",
+        fontSize: 16,
+        fontStyle: "italic",
+        textAlign: "center",
     },
     calendar: {
-        margin:10,
-        width:200,
+        margin: 10,
+        width: 200,
         backgroundColor: "#FED8B1",
-        borderRadius:15,
-        height: 600
+        borderRadius: 15,
+        height: 600,
+        flexDirection:"column"
     },
     medailleNumber: {
-        fontSize:18,
-        fontWeight:"bold",
-        marginRight:5,
-        marginLeft:5,
+        fontSize: 18,
+        fontWeight: "bold",
+        marginRight: 5,
+        marginLeft: 5,
 
     },
-    medailleText:{
-        fontSize:24,
+    medailleText: {
+        fontSize: 24,
         // marginRight:10,
     },
-    tabView:{
+    tabView: {
         flex: 1,
         backgroundColor: "black",
         borderColor: "white",
         borderWidth: 1,
-        alignContent:"center"
+        alignContent: "center"
 
     },
-    tabViewSelected:{
+    tabViewSelected: {
         flex: 1,
         backgroundColor: "black",
         borderColor: "white",
         borderWidth: 1,
-        textAlignVertical:"center"
+        textAlignVertical: "center"
 
     },
-    textTab:{
+    textTab: {
         textAlign: "center",
-        alignSelf:"center",
+        alignSelf: "center",
         color: "white",
-        fontSize:24,
+        fontSize: 24,
+        textAlignVertical: "center",
+    },
+    bottomTabs: {
+        marginLeft: 10,
+        height: 60,
+        width: 60
+    },
+    dateTabsSelected:{
+        flex: 1,
+        minHeight: 60,
+        backgroundColor: "black",
+        alignContent: "center",
+        alignSelf: "center",
+        alignItems: "center",
+        borderColor: "white",
+        borderWidth: 1
+    },
+    dateTabsNotSelected:{
+        flex: 1,
+        minHeight: 60,
+        backgroundColor: "grey",
+        alignContent: "center",
+        alignSelf: "center",
+        alignItems: "center",
+        borderColor: "white",
+        borderWidth: 1
+    },
+    dateTextTabs:{
+        color:"white",
         textAlignVertical:"center",
-
-
+        flex:1
     }
 
 })

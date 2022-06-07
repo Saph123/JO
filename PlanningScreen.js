@@ -10,13 +10,13 @@ export function PlanningScreen({ route, navigation }) {
     const [clicks, setClicks] = React.useState(0)
     const [gifVisible, setGifVisible] = React.useState(false)
     var planning = new Planning();
-    var jeudi = new Date('2021-08-27T00:00:00+02:00');
-    var vendredi = new Date('2021-08-28T00:00:00+02:00');
-    var samedi = new Date('2021-08-29T00:00:00+02:00');
-    var dimanche = new Date('2021-08-30T00:00:00+02:00');
+    var mercredi = new Date('2022-07-14T00:00:00+02:00');
+    var jeudi = new Date('2022-07-15T00:00:00+02:00');
+    var vendredi = new Date('2022-07-16T00:00:00+02:00');
+    var samedi = new Date('2022-07-17T00:00:00+02:00');
 
     return (
-        <ScrollView style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, flexDirection: "row", width: 1000, height: 1000 }} maxScale={1} minScale={0.5} >
+        <ScrollView style={{ flex:1, backgroundColor: "lightgrey", flexDirection:"row"}} horizontal={true}>
             <Modal style={{ width: "100%", height: "100%", alignSelf: "center" }}
                 visible={gifVisible}>
 
@@ -27,6 +27,25 @@ export function PlanningScreen({ route, navigation }) {
                 </View>
             </Modal>
             <View style={styles.calendar}>
+                <View><Text style={styles.textday}>Mercredi</Text></View>
+                {
+                    planning["listeevent"].map(r => {
+                        var minutes = r.timeBegin.getMinutes();
+                        if (minutes == 0) {
+                            minutes = "00"
+                        }
+                        if (r.timeBegin < mercredi) {
+                            return (
+                                <View>
+                                    <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
+                                    <View><Text style={styles.textevent}>{r.eventname}</Text></View>
+                                </View>)
+                        }
+                    })
+                }
+            </View>
+
+            <View style={styles.calendar}>
                 <View><Text style={styles.textday}>Jeudi</Text></View>
                 {
                     planning["listeevent"].map(r => {
@@ -34,11 +53,14 @@ export function PlanningScreen({ route, navigation }) {
                         if (minutes == 0) {
                             minutes = "00"
                         }
-                        if (r.timeBegin < jeudi) {
+                        if (r.timeBegin < jeudi && r.timeBegin > mercredi) {
                             return (
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
-                                    <View><Text style={styles.textevent}>{r.eventname}</Text></View>
+                                    <SportContext>{value =>
+                                        <View><TouchableOpacity onPress={() => { value.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
+                                    }
+                                    </SportContext>
                                 </View>)
                         }
                     })
@@ -55,28 +77,6 @@ export function PlanningScreen({ route, navigation }) {
                         }
                         if (r.timeBegin < vendredi && r.timeBegin > jeudi) {
                             return (
-                                <View>
-                                    <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
-                                    <SportContext>{value =>
-                                        <View><TouchableOpacity onPress={() => { value.setCurrentSport(r.eventname); navigation.navigate('SportDetails', { sportname: r.eventname }) }}><Text style={styles.textevent}>{r.eventname}</Text></TouchableOpacity></View>
-                                    }
-                                    </SportContext>
-                                </View>)
-                        }
-                    })
-                }
-            </View>
-
-            <View style={styles.calendar}>
-                <View><Text style={styles.textday}>Samedi</Text></View>
-                {
-                    planning["listeevent"].map(r => {
-                        var minutes = r.timeBegin.getMinutes();
-                        if (minutes == 0) {
-                            minutes = "00"
-                        }
-                        if (r.timeBegin < samedi && r.timeBegin > vendredi) {
-                            return (
                                 <SportContext.Consumer>
                                     {value =>
                                         <View>
@@ -91,14 +91,14 @@ export function PlanningScreen({ route, navigation }) {
             </View>
 
             <View style={styles.calendar}>
-                <View><Text style={styles.textday}>Dimanche</Text></View>
+                <View><Text style={styles.textday}>Samedi</Text></View>
                 {
                     planning["listeevent"].map(r => {
                         var minutes = r.timeBegin.getMinutes();
                         if (minutes == 0) {
                             minutes = "00"
                         }
-                        if (r.timeBegin < dimanche && r.timeBegin > samedi) {
+                        if (r.timeBegin < samedi && r.timeBegin > vendredi) {
                             return (
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>

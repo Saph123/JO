@@ -7,7 +7,7 @@ import * as Notifications from 'expo-notifications';
 import * as SecureStore from 'expo-secure-store';
 import { Planning } from './planning';
 import { version, initialLineNumber } from "./App"
-
+import CountDown from 'react-native-countdown-component';
 
 class Liste {
     constructor(username, score, rank = 0, level = 0) {
@@ -43,6 +43,27 @@ class Match {
     }
 }
 
+export function firstDay(secondsleft, setSecondsleft) {
+
+    return (
+        <View>
+            {secondsleft < 0 ? <View></View>:<View><Text style={{ alignSelf: "center" }}>{"Soirée d'ouverture dans :"}</Text><CountDown
+            style={{ color: "black" }}
+            digitStyle={{ backgroundColor: "#FF8484" }}
+            until={secondsleft}
+            onFinish={() => { setSecondsleft(0); setTimeout(() => setSecondsleft(-1), 1000 * 5 * 60 * 60) }}
+            size={20}
+        /></View>}
+            <View style={{justifyContent:"center"}}>
+                <Text style={{textAlign:"center", fontSize:24, fontWeight:"bold"}}> BIENVENUE!</Text>
+                <Text style={{textAlign:"center"}}> What's new?!</Text>
+                <Text style={{textAlign:"center"}}> * Système de paris!</Text>
+                <Text style={{textAlign:"center"}}> * Ta mère</Text>
+                <Text style={{textAlign:"center"}}> * Ta soeur</Text>
+            </View>
+        </View>
+    );
+}
 export async function save(key, value) {
     await SecureStore.setItemAsync(key, value);
 }
@@ -264,7 +285,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
 }
 
 
-export function modalChat(value, text, setChatText, localText, setLocalText, sportname) {
+export function modalChat(value, text, setChatText, localText, setLocalText, sportname, username) {
     return (
         <Modal
             animationType="slide"
@@ -291,8 +312,8 @@ export function modalChat(value, text, setChatText, localText, setLocalText, spo
                         </Pressable>
                     </View>
                     <View style={{ flexDirection: "row", flex: 1 }}>
-                        <TextInput onSubmitEditing={() => { pushChat(sportname, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText(""); }} style={{ borderWidth: 1, flex: 1 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
-                        <Pressable onPress={() => { pushChat(sportname, localText); setChatText(text + "\n" + username + ":" + localText); setLocalText(""); }}>
+                        <TextInput onSubmitEditing={() => { pushChat(sportname, localText, username); setChatText(text + "\n" + username + ":" + localText); setLocalText(""); }} style={{ borderWidth: 1, flex: 1 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
+                        <Pressable onPress={() => { pushChat(sportname, localText, username); setChatText(text + "\n" + username + ":" + localText); setLocalText(""); }}>
                             <Image style={{ width: 50, height: 50 }} source={require('./assets/sendmessage.png')} />
                         </Pressable>
 
@@ -322,14 +343,18 @@ export function addth(rank) {
 }
 
 
-export function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentSport, navigateTo, setfun) {
+export function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentSport, navigateTo, setfun, timeBegin) {
 
     return (
-        <Pressable delayLongPress={5000} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
-            onPress={() => { setCurrentSport(sportname), navigation.navigate(navigateTo, { sportname: sportname }) }} onLongPress={() => { if (sportname == 'Petanque') { setfun(true) } }}
-        >
-            <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
-        </Pressable>)
+        <View style={{ flex: 1, margin: -1, flexDirection: "row", borderColor: "black", borderWidth: 2 }}>
+            <View style={{ alignSelf: "center", width: 70, height: "100%", flexDirection: "column", justifyContent: "center", borderRightWidth: 2, borderRightColor: "black" }}><Text style={{ textAlign: "center", fontWeight: "bold" }}>{timeBegin.getHours() + "H" + timeBegin.getMinutes().toString().padStart(2, "0")}</Text></View>
+            <Pressable delayLongPress={5000} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
+                onPress={() => { setCurrentSport(sportname), navigation.navigate(navigateTo, { sportname: sportname }) }} onLongPress={() => { if (sportname == 'Petanque') { setfun(true) } }}
+            >
+                <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
+            </Pressable>
+            <View style={{ flexDirection: "column", justifyContent: "center", alignSelf: "center", marginLeft: 50 }}><Text>{sportname}</Text></View>
+        </View>)
 }
 
 export function lutImg(imgname) {
@@ -386,6 +411,9 @@ export async function fetch_teams(sportname) {
     return fetch_teams;
 }
 
+<<<<<<< HEAD
+function pushChat(sportname, text, username) {
+=======
 export async function fetch_teams_bet(sportname, username) {
     let fetch_teams = {}
 
@@ -400,6 +428,7 @@ export async function fetch_teams_bet(sportname, username) {
 }
 
 function pushChat(sportname, text) {
+>>>>>>> 2aec4bf62468c88e10fe51d2697737e6866a7368
     fetch("http://91.121.143.104:7070/chat", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "text": text, "sportname": sportname }) }).then(res => {
         if (res.status == 200) {
             initialLineNumber[sportname]++;
@@ -421,7 +450,7 @@ export function updateTeams(sport, teams) {
     // // push to server
     fetch("http://91.121.143.104:7070/updateTeams", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sport, "teams": teams }) }).then(r => {
         if (r.status == 200) {
-            Alert.alert("Saved","Saved to server!", ["Ok"])
+            Alert.alert("Saved", "Saved to server!", ["Ok"])
         }
         else {
             alert("Wrong login or password!");
