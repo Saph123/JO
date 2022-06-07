@@ -92,17 +92,19 @@ export function SportDetailsScreen({ route }) {
     }
     return (
         <View style={{ flex: 1, flexDirection: "column", height: 50 }}>
-            <View kek={console.log("explanation:", status)} style={{ flex: 1, flexDirection: "row" }}>
+            <View style={{ flex: 1, flexDirection: "row" }}>
                 {status.states.map(r =>
-                <Pressable key={r} onPress={() => {
-                    setloading(true);
-                    setStatus((current) => {
-                        current.status = r;
-                        return { ...current } });
-                        setloading(false) }} style={r == status.status ?
+                    <Pressable key={r} onPress={() => {
+                        setloading(true);
+                        setStatus((current) => {
+                            current.status = r;
+                            return { ...current }
+                        });
+                        setloading(false)
+                    }} style={r == status.status ?
                         { flex: 1, backgroundColor: "black", borderColor: "white", borderWidth: 5, alignItems: "center", borderBottomStartRadius: 15, borderBottomEndRadius: 15 } :
                         { flex: 1, backgroundColor: "black", borderColor: "grey", borderWidth: 5, alignItems: "center", borderBottomStartRadius: 15, borderBottomEndRadius: 15 }}><View>
-                            <Image style={styles.tabimage} resizeMode="contain" resizeMethod="auto" source={lutImg(r)}/></View></Pressable>)}            </View>
+                            <Image style={styles.tabimage} resizeMode="contain" resizeMethod="auto" source={lutImg(r)} /></View></Pressable>)}</View>
             <View style={{ flex: 10 }}>
                 <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} >
                     <ChatContext.Consumer>
