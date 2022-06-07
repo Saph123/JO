@@ -248,11 +248,10 @@ const styles = StyleSheet.create({
         margin: 8,
     },
     eventDone: {
-        // flex: 1,
+        flex: 1,
         backgroundColor: "#ADADAD",
-        width: 70,
-        height: 70,
-
+        // width: 70,
+        // height: 70,
         borderWidth: 1,
         borderColor: 'black',
         borderRadius: 10,
@@ -270,9 +269,9 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'black',
         borderRadius: 10,
-        alignItems: 'stretch',
-        justifyContent: 'center',
-        alignSelf: 'center',
+        // alignItems: 'stretch',
+        // justifyContent: 'center',
+        // alignSelf: 'center',
         margin: 8,
     },
     loginbutton: {
@@ -428,6 +427,31 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         height: 60,
         width: 60
+    },
+    dateTabsSelected:{
+        flex: 1,
+        minHeight: 60,
+        backgroundColor: "black",
+        alignContent: "center",
+        alignSelf: "center",
+        alignItems: "center",
+        borderColor: "white",
+        borderWidth: 1
+    },
+    dateTabsNotSelected:{
+        flex: 1,
+        minHeight: 60,
+        backgroundColor: "grey",
+        alignContent: "center",
+        alignSelf: "center",
+        alignItems: "center",
+        borderColor: "white",
+        borderWidth: 1
+    },
+    dateTextTabs:{
+        color:"white",
+        textAlignVertical:"center",
+        flex:1
     }
 
 })

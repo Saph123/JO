@@ -311,14 +311,18 @@ export function addth(rank) {
 }
 
 
-export function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentSport, navigateTo, setfun) {
+export function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentSport, navigateTo, setfun, timeBegin) {
 
     return (
+        <View style={{flex:1, margin:-1, flexDirection:"row", borderColor:"black", borderWidth:2}}>
+            <View style={{alignSelf:"center", width:70, height:"100%", flexDirection:"column", justifyContent:"center", borderRightWidth:2, borderRightColor:"black"}}><Text style={{textAlign:"center", fontWeight:"bold"}}>{timeBegin.getHours() + "H" + timeBegin.getMinutes().toString().padStart(2, "0")}</Text></View>
         <Pressable delayLongPress={5000} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
             onPress={() => { setCurrentSport(sportname), navigation.navigate(navigateTo, { sportname: sportname }) }} onLongPress={() => { if (sportname == 'Petanque') { setfun(true) } }}
         >
             <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
-        </Pressable>)
+        </Pressable>
+        <View style={{flexDirection:"column", justifyContent:"center", alignSelf:"center", marginLeft:50}}><Text>{sportname}</Text></View>
+        </View>)
 }
 
 function lutImg(sportname) {

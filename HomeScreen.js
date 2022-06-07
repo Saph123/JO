@@ -4,12 +4,11 @@ import { View, ScrollView, ActivityIndicator, Text, Image, Pressable, Linking, A
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Audio } from 'expo-av';
 import CountDown from 'react-native-countdown-component';
-import { getNextEventseconds } from "./planning.js";
+import { getNextEventseconds, Planning } from "./planning.js";
 import * as Notifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
 import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo } from './utils.js';
 import { ChatContext, SportContext } from "./App.js";
-
 export function HomeScreen({ navigation }) {
     const [loading, setLoading] = React.useState(1);
     const [username, setusername] = React.useState("");
@@ -19,6 +18,8 @@ export function HomeScreen({ navigation }) {
     const [eventsDone, setEventsDone] = React.useState([]);
     const [soundstatus, setSound] = React.useState();
     const [boules, setBoules] = React.useState(false);
+    const [sportToDisplay, setSports] = React.useState({});
+    const [displayDay, setDisplayDay] = React.useState(0);
 
     const notificationListener = React.useRef();
     const videoBoule = React.useRef();
@@ -28,6 +29,12 @@ export function HomeScreen({ navigation }) {
     const [chatText, setChatText] = React.useState("");
     const [localText, setLocalText] = React.useState("");
     const chatcontext = React.useContext(ChatContext);
+    let planning = new Planning();
+    let now = new Date(Date.now());
+    var mercredi = new Date('2022-07-14T00:00:00+02:00');
+    var jeudi = new Date('2022-07-15T00:00:00+02:00');
+    var vendredi = new Date('2022-07-16T00:00:00+02:00');
+    var samedi = new Date('2022-07-17T00:00:00+02:00');
     async function playcluedo() {
         pushcluedo()
         if (soundstatus == undefined) {
@@ -54,6 +61,19 @@ export function HomeScreen({ navigation }) {
 
     }
     React.useEffect(() => {
+        console.log(now.getDay(), )
+        switch (now.getDay()) {
+
+            case vendredi.getDay():
+                setDisplayDay(vendredi);
+                break
+            case samedi.getDay():
+                setDisplayDay(samedi);
+                break
+            default:
+                console.log("jeudiiiii");
+                setDisplayDay(jeudi);
+        }
         getValueFor("username").then(r => setusername(r));
         chatcontext.setChatName("Home");
         manageEvents(setEventsDone, setCurrentEvents)
@@ -159,9 +179,9 @@ export function HomeScreen({ navigation }) {
     return (
         <View style={{ flex: 1 }}>
             <View style={{ flex: 1, flexDirection: "row" }}>
-                <Pressable style={{ flex: 1, minHeight: 60, backgroundColor: "black", alignContent: "center", alignSelf: "center", alignItems: "center", borderColor: "white", borderWidth: 1 }}><Text style={{ color: "white", textAlignVertical: "center", flex: 1 }}>14 Juillet</Text></Pressable>
-                <Pressable style={{ flex: 1, minHeight: 60, backgroundColor: "grey", alignContent: "center", alignSelf: "center", alignItems: "center", borderColor: "white", borderWidth: 1 }}><Text style={{ color: "white", textAlignVertical: "center", flex: 1 }}>15 Juillet</Text></Pressable>
-                <Pressable style={{ flex: 1, minHeight: 60, backgroundColor: "grey", alignContent: "center", alignSelf: "center", alignItems: "center", borderColor: "white", borderWidth: 1 }}><Text style={{ color: "white", textAlignVertical: "center", flex: 1 }}>16 Juillet</Text></Pressable>
+                <Pressable onPress={() => {setDisplayDay(jeudi)}} style={displayDay.getDay() === jeudi.getDay() ? styles.dateTabsSelected:styles.dateTabsNotSelected}><Text style={styles.dateTextTabs}>14 Juillet</Text></Pressable>
+                <Pressable onPress={() => {setDisplayDay(vendredi)}} style={displayDay.getDay() === vendredi.getDay() ? styles.dateTabsSelected:styles.dateTabsNotSelected}><Text style={styles.dateTextTabs}>15 Juillet</Text></Pressable>
+                <Pressable onPress={() => {setDisplayDay(samedi)}} style={displayDay.getDay() === samedi.getDay() ? styles.dateTabsSelected:styles.dateTabsNotSelected}><Text style={styles.dateTextTabs}>16 Juillet</Text></Pressable>
             </View>
             <View style={{ flex: 15, marginTop:15 }}>
 
@@ -185,14 +205,20 @@ export function HomeScreen({ navigation }) {
                         {value =>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                                 <View style={{ flex: 1 }}>
-                                    {eventView(currentEvents, eventsDone, "Trail", navigation, value.setCurrentSport, 'SportDetails')}
+                                    { planning["listeevent"].map( r => {
+                                        if( r.timeBegin.getDay() == displayDay.getDay()){
+                                            return(
+                                            eventView(currentEvents, eventsDone, r.eventname, navigation, value.setCurrentSport, 'SportDetails', null, r.timeBegin));
+                                        }
+                                    })}
+                                    {/* {eventView(currentEvents, eventsDone, "Trail", navigation, value.setCurrentSport, 'SportDetails')}
                                     {eventView(currentEvents, eventsDone, "Dodgeball", navigation, value.setCurrentSport, 'SportDetails')}
                                     {eventView(currentEvents, eventsDone, "Pizza", navigation, value.setCurrentSport, 'SportDetails')}
                                     {eventView(currentEvents, eventsDone, "Tong", navigation, value.setCurrentSport, 'SportDetails')}
                                     {eventView(currentEvents, eventsDone, "Babyfoot", navigation, value.setCurrentSport, 'SportDetails')}
-                                    {eventView(currentEvents, eventsDone, "Flechette", navigation, value.setCurrentSport, 'SportDetails')}
+                                    {eventView(currentEvents, eventsDone, "Flechette", navigation, value.setCurrentSport, 'SportDetails')} */}
                                 </View>
-                                <View style={{ flex: 1 }}>
+                                {/* <View style={{ flex: 1 }}>
                                     {eventView(currentEvents, eventsDone, "PingPong", navigation, value.setCurrentSport, 'SportDetails')}
                                     {eventView(currentEvents, eventsDone, "Orientation", navigation, value.setCurrentSport, 'SportDetails')}
                                     {eventView(currentEvents, eventsDone, "Beerpong", navigation, value.setCurrentSport, 'SportDetails')}
@@ -207,7 +233,7 @@ export function HomeScreen({ navigation }) {
                                     {eventView(currentEvents, eventsDone, "100mRicard", navigation, value.setCurrentSport, 'SportDetails')}
                                     {eventView(currentEvents, eventsDone, "Petanque", navigation, value.setCurrentSport, 'SportDetails', setBoules)}
                                     {eventView(currentEvents, eventsDone, "Molky", navigation, value.setCurrentSport, 'SportDetails')}
-                                </View>
+                                </View> */}
 
                             </View>
                         }

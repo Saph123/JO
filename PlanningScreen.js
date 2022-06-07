@@ -10,10 +10,10 @@ export function PlanningScreen({ route, navigation }) {
     const [clicks, setClicks] = React.useState(0)
     const [gifVisible, setGifVisible] = React.useState(false)
     var planning = new Planning();
-    var jeudi = new Date('2022-07-14T00:00:00+02:00');
-    var vendredi = new Date('2022-07-15T00:00:00+02:00');
-    var samedi = new Date('2022-07-16T00:00:00+02:00');
-    var dimanche = new Date('2022-07-17T00:00:00+02:00');
+    var mercredi = new Date('2022-07-14T00:00:00+02:00');
+    var jeudi = new Date('2022-07-15T00:00:00+02:00');
+    var vendredi = new Date('2022-07-16T00:00:00+02:00');
+    var samedi = new Date('2022-07-17T00:00:00+02:00');
 
     return (
         <ScrollView style={{ flex:1, backgroundColor: "lightgrey", flexDirection:"row"}} horizontal={true}>
@@ -34,7 +34,7 @@ export function PlanningScreen({ route, navigation }) {
                         if (minutes == 0) {
                             minutes = "00"
                         }
-                        if (r.timeBegin < jeudi) {
+                        if (r.timeBegin < mercredi) {
                             return (
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
@@ -53,7 +53,7 @@ export function PlanningScreen({ route, navigation }) {
                         if (minutes == 0) {
                             minutes = "00"
                         }
-                        if (r.timeBegin < vendredi && r.timeBegin > jeudi) {
+                        if (r.timeBegin < jeudi && r.timeBegin > mercredi) {
                             return (
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
@@ -75,7 +75,7 @@ export function PlanningScreen({ route, navigation }) {
                         if (minutes == 0) {
                             minutes = "00"
                         }
-                        if (r.timeBegin < samedi && r.timeBegin > vendredi) {
+                        if (r.timeBegin < vendredi && r.timeBegin > jeudi) {
                             return (
                                 <SportContext.Consumer>
                                     {value =>
@@ -98,7 +98,7 @@ export function PlanningScreen({ route, navigation }) {
                         if (minutes == 0) {
                             minutes = "00"
                         }
-                        if (r.timeBegin < dimanche && r.timeBegin > samedi) {
+                        if (r.timeBegin < samedi && r.timeBegin > vendredi) {
                             return (
                                 <View>
                                     <View><Text style={styles.texttime}>{r.timeBegin.getHours() + ":" + minutes}</Text></View>
