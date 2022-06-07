@@ -10,10 +10,10 @@ export function PlanningScreen({ route, navigation }) {
     const [clicks, setClicks] = React.useState(0)
     const [gifVisible, setGifVisible] = React.useState(false)
     var planning = new Planning();
-    var mercredi = new Date('2022-07-14T00:00:00+02:00');
-    var jeudi = new Date('2022-07-15T00:00:00+02:00');
-    var vendredi = new Date('2022-07-16T00:00:00+02:00');
-    var samedi = new Date('2022-07-17T00:00:00+02:00');
+    var mercredi = new Date('2022-07-13T00:00:00+02:00');
+    var jeudi = new Date('2022-07-14T00:00:00+02:00');
+    var vendredi = new Date('2022-07-15T00:00:00+02:00');
+    var samedi = new Date('2022-07-16T00:00:00+02:00');
 
     return (
         <ScrollView style={{ flex:1, backgroundColor: "lightgrey", flexDirection:"row"}} horizontal={true}>
