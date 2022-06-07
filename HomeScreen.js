@@ -216,7 +216,7 @@ export function HomeScreen({ navigation }) {
                     {/* <View style={{ height: 60 }}></View> */}
                 </ScrollView>
             </View>
-            <View style={{ backgroundColor: "black", height: 61, flexDirection: "row", borderColor: "black", borderWidth: 1 }}>
+            <View style={{ backgroundColor: "black", height: 61, flexDirection: "row", borderColor: "black", borderWidth: 1, justifyContent:"space-between" }}>
                 <Pressable style={{ marginLeft: 10, height: 60, width: 60 }} onPress={playcluedo}>
                     <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/cluedo.png')} />
                 </Pressable>
@@ -234,25 +234,30 @@ export function HomeScreen({ navigation }) {
 
                     <Text style={styles.texthomebutton}>Logout</Text>
                 </Pressable> */}
-                {/* {username == "Max" || username == "Ugo" || username == "Antoine" ?
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
-                        <View style={{ flex: 1 }}>
-                            <Pressable style={styles.logoutbutton}
-                                onPress={() => { navigation.navigate('pushNotifScreen') }}
-                            >
-                                <Text style={styles.texthomebutton}>Push Notif!</Text>
-                            </Pressable>
-                        </View>
-                        <View style={{ flex: 1 }}>
-                            <Pressable style={styles.logoutbutton}
-                                onPress={() => { navigation.navigate('teamMgmtScreen') }}
-                            >
+               {username == "Max" || username == "Ugo" || username == "Antoine" ?
+                               <Pressable style={{ marginLeft: 10, height: 60, width: 60 }} 
+                               onPress={() => { navigation.navigate('pushNotifScreen') }}
+                           >
+                               <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/wrench.png')} />
+                           </Pressable>
+                    // <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
+                    //     <View style={{ flex: 1 }}>
+                    //         <Pressable style={styles.logoutbutton}
+                    //             onPress={() => { navigation.navigate('pushNotifScreen') }}
+                    //         >
+                    //             <Text style={styles.texthomebutton}>Push Notif!</Text>
+                    //         </Pressable>
+                    //     </View>
+                    //     <View style={{ flex: 1 }}>
+                    //         <Pressable style={styles.logoutbutton}
+                    //             onPress={() => { navigation.navigate('teamMgmtScreen') }}
+                    //         >
 
-                                <Text style={styles.texthomebutton}>Team Mgmt</Text>
-                            </Pressable>
-                        </View>
-                    </View>
-                    : <View></View>}  */}
+                    //             <Text style={styles.texthomebutton}>Team Mgmt</Text>
+                    //         </Pressable>
+                    //     </View>
+                    // </View>
+                    : <View></View>}
             </View>
         </View>
 
