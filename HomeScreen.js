@@ -3,11 +3,11 @@ import * as React from 'react';
 import { View, ScrollView, ActivityIndicator, Text, Image, Pressable, Linking, Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Audio } from 'expo-av';
-import CountDown from 'react-native-countdown-component';
+
 import { getNextEventseconds, Planning } from "./planning.js";
 import * as Notifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
-import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo } from './utils.js';
+import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo, firstDay } from './utils.js';
 import { ChatContext, SportContext } from "./App.js";
 export function HomeScreen({ navigation }) {
     const [loading, setLoading] = React.useState(1);
@@ -61,9 +61,11 @@ export function HomeScreen({ navigation }) {
 
     }
     React.useEffect(() => {
-        console.log(now.getDay(), )
         switch (now.getDay()) {
 
+            case jeudi.getDay():
+                setDisplayDay(jeudi);
+                break
             case vendredi.getDay():
                 setDisplayDay(vendredi);
                 break
@@ -71,8 +73,7 @@ export function HomeScreen({ navigation }) {
                 setDisplayDay(samedi);
                 break
             default:
-                console.log("jeudiiiii");
-                setDisplayDay(jeudi);
+                setDisplayDay(mercredi);
         }
         getValueFor("username").then(r => setusername(r));
         chatcontext.setChatName("Home");
@@ -179,11 +180,12 @@ export function HomeScreen({ navigation }) {
     return (
         <View style={{ flex: 1 }}>
             <View style={{ flex: 1, flexDirection: "row" }}>
-                <Pressable onPress={() => {setDisplayDay(jeudi)}} style={displayDay.getDay() === jeudi.getDay() ? styles.dateTabsSelected:styles.dateTabsNotSelected}><Text style={styles.dateTextTabs}>14 Juillet</Text></Pressable>
-                <Pressable onPress={() => {setDisplayDay(vendredi)}} style={displayDay.getDay() === vendredi.getDay() ? styles.dateTabsSelected:styles.dateTabsNotSelected}><Text style={styles.dateTextTabs}>15 Juillet</Text></Pressable>
-                <Pressable onPress={() => {setDisplayDay(samedi)}} style={displayDay.getDay() === samedi.getDay() ? styles.dateTabsSelected:styles.dateTabsNotSelected}><Text style={styles.dateTextTabs}>16 Juillet</Text></Pressable>
+                <Pressable onPress={() => { setDisplayDay(mercredi) }} style={displayDay.getDay() === mercredi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={styles.dateTextTabs}>13 Juillet</Text></Pressable>
+                <Pressable onPress={() => { setDisplayDay(jeudi) }} style={displayDay.getDay() === jeudi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={styles.dateTextTabs}>14 Juillet</Text></Pressable>
+                <Pressable onPress={() => { setDisplayDay(vendredi) }} style={displayDay.getDay() === vendredi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={styles.dateTextTabs}>15 Juillet</Text></Pressable>
+                <Pressable onPress={() => { setDisplayDay(samedi) }} style={displayDay.getDay() === samedi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={styles.dateTextTabs}>16 Juillet</Text></Pressable>
             </View>
-            <View style={{ flex: 15, marginTop:15 }}>
+            <View style={{ flex: 15, marginTop: 15 }}>
 
                 <ScrollView >
                     <ChatContext.Consumer>
@@ -191,50 +193,29 @@ export function HomeScreen({ navigation }) {
 
                     </ChatContext.Consumer>
                     {videoHandler(setBoules, boules, videoBoule, require('./assets/boules.mp4'), true)}
-                    {secondsleft < 0 ? <View><Pressable onPress={() => navigation.navigate('PlanningScreen')} style={styles.loginbutton}><Text style={styles.texthomebutton}>Planning</Text></Pressable></View> : secondsleft == 0 ? <Pressable onPress={() => navigation.navigate('PlanningScreen')}>
-                        <Image style={{ alignSelf: "center" }} source={require('./assets/80s.gif')} /></Pressable> : <View><Text style={{ alignSelf: "center" }}>{nextEvent + " dans :"}</Text><CountDown
-                            style={{ color: "black" }}
-                            digitStyle={{ backgroundColor: "#FF8484" }}
-                            until={secondsleft}
-                            onFinish={() => { setSecondsleft(0); setTimeout(() => setSecondsleft(-1), 1000 * 5 * 60 * 60) }}
-                            onPress={() => navigation.navigate('PlanningScreen')}
-                            size={20}
-                        /></View>}
+
 
                     <SportContext.Consumer>
                         {value =>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                                 <View style={{ flex: 1 }}>
-                                    { planning["listeevent"].map( r => {
-                                        if( r.timeBegin.getDay() == displayDay.getDay()){
-                                            return(
-                                            eventView(currentEvents, eventsDone, r.eventname, navigation, value.setCurrentSport, 'SportDetails', null, r.timeBegin));
+                                    {planning["listeevent"].map(r => {
+                                        if (r.timeBegin.getDay() == displayDay.getDay()) {
+                                            if (displayDay.getDay() == mercredi.getDay()) {
+                                                {
+                                                    return(
+                                                    firstDay(secondsleft, setSecondsleft)
+                                                    )
+                                                }
+                                            }
+                                            else {
+
+                                                return (
+                                                    eventView(currentEvents, eventsDone, r.eventname, navigation, value.setCurrentSport, 'SportDetails', null, r.timeBegin));
+                                            }
                                         }
                                     })}
-                                    {/* {eventView(currentEvents, eventsDone, "Trail", navigation, value.setCurrentSport, 'SportDetails')}
-                                    {eventView(currentEvents, eventsDone, "Dodgeball", navigation, value.setCurrentSport, 'SportDetails')}
-                                    {eventView(currentEvents, eventsDone, "Pizza", navigation, value.setCurrentSport, 'SportDetails')}
-                                    {eventView(currentEvents, eventsDone, "Tong", navigation, value.setCurrentSport, 'SportDetails')}
-                                    {eventView(currentEvents, eventsDone, "Babyfoot", navigation, value.setCurrentSport, 'SportDetails')}
-                                    {eventView(currentEvents, eventsDone, "Flechette", navigation, value.setCurrentSport, 'SportDetails')} */}
                                 </View>
-                                {/* <View style={{ flex: 1 }}>
-                                    {eventView(currentEvents, eventsDone, "PingPong", navigation, value.setCurrentSport, 'SportDetails')}
-                                    {eventView(currentEvents, eventsDone, "Orientation", navigation, value.setCurrentSport, 'SportDetails')}
-                                    {eventView(currentEvents, eventsDone, "Beerpong", navigation, value.setCurrentSport, 'SportDetails')}
-                                    {eventView(currentEvents, eventsDone, "Volley", navigation, value.setCurrentSport, 'SportDetails')}
-                                    {eventView(currentEvents, eventsDone, "Waterpolo", navigation, value.setCurrentSport, 'SportDetails')}
-                                    {eventView(currentEvents, eventsDone, "Larmina", navigation, value.setCurrentSport, 'SportDetails')}
-                                </View>
-                                <View style={{ flex: 1 }}>
-                                    {eventView(currentEvents, eventsDone, "Natation", navigation, value.setCurrentSport, 'SportDetails')}
-                                    {eventView(currentEvents, eventsDone, "SpikeBall", navigation, value.setCurrentSport, 'SportDetails')}
-                                    {eventView(currentEvents, eventsDone, "Ventriglisse", navigation, value.setCurrentSport, 'SportDetails')}
-                                    {eventView(currentEvents, eventsDone, "100mRicard", navigation, value.setCurrentSport, 'SportDetails')}
-                                    {eventView(currentEvents, eventsDone, "Petanque", navigation, value.setCurrentSport, 'SportDetails', setBoules)}
-                                    {eventView(currentEvents, eventsDone, "Molky", navigation, value.setCurrentSport, 'SportDetails')}
-                                </View> */}
-
                             </View>
                         }
                     </SportContext.Consumer>
@@ -256,11 +237,11 @@ export function HomeScreen({ navigation }) {
                 >
                     <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/athlete.png')} />
                 </Pressable>
-                <Pressable style={styles.bottomTabs}
+                {/* <Pressable style={styles.bottomTabs}
                     onPress={() => { navigation.navigate('PlanningScreen') }}
                 >
                     <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/calendar.png')} />
-                </Pressable>
+                </Pressable> */}
                 {username == "Max" || username == "Ugo" || username == "Antoine" || username == "Pierrick" ?
                     <Pressable style={styles.bottomTabs}
                         onPress={() => { navigation.navigate('pushNotifScreen') }}
