@@ -8,7 +8,7 @@ import { getNextEventseconds } from "./planning.js";
 import * as Notifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
 import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo } from './utils.js';
-import { ChatContext, SportContext} from "./App.js";
+import { ChatContext, SportContext } from "./App.js";
 
 export function HomeScreen({ navigation }) {
     const [loading, setLoading] = React.useState(1);
@@ -66,7 +66,7 @@ export function HomeScreen({ navigation }) {
             setNotification(notification);
             let message = notification.request.content
             if (message.title == "CLUEDO!") {
-                Alert.alert(message.title, message.body, [{text : "Say no more"}, {text : "Hold my beer"}])
+                Alert.alert(message.title, message.body, [{ text: "Say no more" }, { text: "Hold my beer" }])
             }
             else if (message.title == "Clicker: Happy Hour!") {
                 if (message.body.indexOf("fin") != -1) {
@@ -81,23 +81,23 @@ export function HomeScreen({ navigation }) {
                 }
             }
             else {
-                Alert.alert(message.title, message.body, [{text : "Ok"}])
+                Alert.alert(message.title, message.body, [{ text: "Ok" }])
             }
 
 
         });
-        if(chatcontext.chatName == "Home"){
+        if (chatcontext.chatName == "Home") {
             var chatInterval = setInterval(() => fetchChat("Home", setChatText, chatcontext.setNewMessage), 3000);
         }
 
         // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-            
+
             let message = response.notification.request.content
 
-            
+
             if (message.title == "CLUEDO!") {
-                Alert.alert(message.title, message.body, [{text : "Say no more"}, {text : "Hold my beer"}])
+                Alert.alert(message.title, message.body, [{ text: "Say no more" }, { text: "Hold my beer" }])
             }
             else if (message.body.indexOf("PUSH") != -1) {
                 navigation.navigate('pushNotifScreen');
@@ -120,7 +120,7 @@ export function HomeScreen({ navigation }) {
                 }
             }
             else {
-                Alert.alert(message.title, message.body, [{text : "Ok"}])
+                Alert.alert(message.title, message.body, [{ text: "Ok" }])
             }
 
         });
@@ -157,103 +157,105 @@ export function HomeScreen({ navigation }) {
         )
     }
     return (
+        <View style={{ flex: 1 }}>
+            <View style={{ flex: 15 }}>
+                <ScrollView >
+                    <ChatContext.Consumer>
+                        {value => modalChat(value, chatText, setChatText, localText, setLocalText, "Home")}
 
-        <ScrollView>
-            <ChatContext.Consumer>
-                {value => modalChat(value, chatText, setChatText, localText, setLocalText, "Home")}
-
-            </ChatContext.Consumer>
-            {videoHandler(setBoules, boules, videoBoule, require('./assets/boules.mp4'), true)}
-            {secondsleft < 0 ? <View><Pressable onPress={() => navigation.navigate('PlanningScreen')} style={styles.loginbutton}><Text style={styles.texthomebutton}>Planning</Text></Pressable></View> : secondsleft == 0 ? <Pressable onPress={() => navigation.navigate('PlanningScreen')}>
-                <Image style={{ alignSelf: "center" }} source={require('./assets/80s.gif')} /></Pressable> : <View><Text style={{ alignSelf: "center" }}>{nextEvent + " dans :"}</Text><CountDown
-                    style={{ color: "black" }}
-                    digitStyle={{ backgroundColor: "#FF8484" }}
-                    until={secondsleft}
-                    onFinish={() => { setSecondsleft(0); setTimeout(() => setSecondsleft(-1), 1000 * 5 * 60 * 60) }}
-                    onPress={() => navigation.navigate('PlanningScreen')}
-                    size={20}
-                /></View>}
-                <View style={{ flex: 1, flexDirection: "row" }}>
-                <Pressable style={{ flex: 1, minHeight:60, backgroundColor:"black", alignContent:"center", alignSelf:"center", alignItems:"center", borderColor:"white", borderWidth:1}}><Text style={{color:"white", textAlignVertical:"center" , flex:1}}>14 Juillet</Text></Pressable>
-                <Pressable style={{ flex: 1, minHeight:60, backgroundColor:"grey", alignContent:"center", alignSelf:"center", alignItems:"center", borderColor:"white", borderWidth:1}}><Text style={{color:"white", textAlignVertical:"center" , flex:1}}>15 Juillet</Text></Pressable>
-                <Pressable style={{ flex: 1, minHeight:60, backgroundColor:"grey", alignContent:"center", alignSelf:"center", alignItems:"center", borderColor:"white", borderWidth:1}}><Text style={{color:"white", textAlignVertical:"center" , flex:1}}>16 Juillet</Text></Pressable>
-            </View>
-            <SportContext.Consumer>
-                {value =>
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
-                        <View style={{ flex: 1 }}>
-                        {eventView(currentEvents, eventsDone, "Trail", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "Dodgeball", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "Pizza", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "Tong", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "Babyfoot", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "Flechette", navigation, value.setCurrentSport, 'SportDetails')}
-                        </View>
-                        <View style={{ flex: 1 }}>
-                            {eventView(currentEvents, eventsDone, "PingPong", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "Orientation", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "Beerpong", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "Volley", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "Waterpolo", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "Larmina", navigation, value.setCurrentSport, 'SportDetails')}
-                        </View>
-                        <View style={{ flex: 1 }}>
-                            {eventView(currentEvents, eventsDone, "Natation", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "SpikeBall", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "Ventriglisse", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "100mRicard", navigation, value.setCurrentSport, 'SportDetails')}
-                            {eventView(currentEvents, eventsDone, "Petanque", navigation, value.setCurrentSport, 'SportDetails', setBoules)}
-                            {eventView(currentEvents, eventsDone, "Molky", navigation, value.setCurrentSport, 'SportDetails')}
-                        </View>
-
+                    </ChatContext.Consumer>
+                    {videoHandler(setBoules, boules, videoBoule, require('./assets/boules.mp4'), true)}
+                    {secondsleft < 0 ? <View><Pressable onPress={() => navigation.navigate('PlanningScreen')} style={styles.loginbutton}><Text style={styles.texthomebutton}>Planning</Text></Pressable></View> : secondsleft == 0 ? <Pressable onPress={() => navigation.navigate('PlanningScreen')}>
+                        <Image style={{ alignSelf: "center" }} source={require('./assets/80s.gif')} /></Pressable> : <View><Text style={{ alignSelf: "center" }}>{nextEvent + " dans :"}</Text><CountDown
+                            style={{ color: "black" }}
+                            digitStyle={{ backgroundColor: "#FF8484" }}
+                            until={secondsleft}
+                            onFinish={() => { setSecondsleft(0); setTimeout(() => setSecondsleft(-1), 1000 * 5 * 60 * 60) }}
+                            onPress={() => navigation.navigate('PlanningScreen')}
+                            size={20}
+                        /></View>}
+                    <View style={{ flex: 1, flexDirection: "row" }}>
+                        <Pressable style={{ flex: 1, minHeight: 60, backgroundColor: "black", alignContent: "center", alignSelf: "center", alignItems: "center", borderColor: "white", borderWidth: 1 }}><Text style={{ color: "white", textAlignVertical: "center", flex: 1 }}>14 Juillet</Text></Pressable>
+                        <Pressable style={{ flex: 1, minHeight: 60, backgroundColor: "grey", alignContent: "center", alignSelf: "center", alignItems: "center", borderColor: "white", borderWidth: 1 }}><Text style={{ color: "white", textAlignVertical: "center", flex: 1 }}>15 Juillet</Text></Pressable>
+                        <Pressable style={{ flex: 1, minHeight: 60, backgroundColor: "grey", alignContent: "center", alignSelf: "center", alignItems: "center", borderColor: "white", borderWidth: 1 }}><Text style={{ color: "white", textAlignVertical: "center", flex: 1 }}>16 Juillet</Text></Pressable>
                     </View>
-                }
-            </SportContext.Consumer>
+                    <SportContext.Consumer>
+                        {value =>
+                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
+                                <View style={{ flex: 1 }}>
+                                    {eventView(currentEvents, eventsDone, "Trail", navigation, value.setCurrentSport, 'SportDetails')}
+                                    {eventView(currentEvents, eventsDone, "Dodgeball", navigation, value.setCurrentSport, 'SportDetails')}
+                                    {eventView(currentEvents, eventsDone, "Pizza", navigation, value.setCurrentSport, 'SportDetails')}
+                                    {eventView(currentEvents, eventsDone, "Tong", navigation, value.setCurrentSport, 'SportDetails')}
+                                    {eventView(currentEvents, eventsDone, "Babyfoot", navigation, value.setCurrentSport, 'SportDetails')}
+                                    {eventView(currentEvents, eventsDone, "Flechette", navigation, value.setCurrentSport, 'SportDetails')}
+                                </View>
+                                <View style={{ flex: 1 }}>
+                                    {eventView(currentEvents, eventsDone, "PingPong", navigation, value.setCurrentSport, 'SportDetails')}
+                                    {eventView(currentEvents, eventsDone, "Orientation", navigation, value.setCurrentSport, 'SportDetails')}
+                                    {eventView(currentEvents, eventsDone, "Beerpong", navigation, value.setCurrentSport, 'SportDetails')}
+                                    {eventView(currentEvents, eventsDone, "Volley", navigation, value.setCurrentSport, 'SportDetails')}
+                                    {eventView(currentEvents, eventsDone, "Waterpolo", navigation, value.setCurrentSport, 'SportDetails')}
+                                    {eventView(currentEvents, eventsDone, "Larmina", navigation, value.setCurrentSport, 'SportDetails')}
+                                </View>
+                                <View style={{ flex: 1 }}>
+                                    {eventView(currentEvents, eventsDone, "Natation", navigation, value.setCurrentSport, 'SportDetails')}
+                                    {eventView(currentEvents, eventsDone, "SpikeBall", navigation, value.setCurrentSport, 'SportDetails')}
+                                    {eventView(currentEvents, eventsDone, "Ventriglisse", navigation, value.setCurrentSport, 'SportDetails')}
+                                    {eventView(currentEvents, eventsDone, "100mRicard", navigation, value.setCurrentSport, 'SportDetails')}
+                                    {eventView(currentEvents, eventsDone, "Petanque", navigation, value.setCurrentSport, 'SportDetails', setBoules)}
+                                    {eventView(currentEvents, eventsDone, "Molky", navigation, value.setCurrentSport, 'SportDetails')}
+                                </View>
 
-            <View>
-                <TouchableOpacity style={{ alignSelf: "center", backgroundColor: "lightgrey", borderRadius: 30 }} onPress={playcluedo}>
-                    <Image style={{ borderRadius: 30, borderWidth: 1, borderColor: "black" }} source={require('./assets/cluedo.png')} />
-                </TouchableOpacity>
-                <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, styles.inProgress]} onPress={() => { navigation.navigate('ClickerScreen') }} >
-                    <Image style={styles.sportimage} source={require('./assets/sports/clicker.png')} />
+                            </View>
+                        }
+                    </SportContext.Consumer>
+
+
+                    {/* <StatusBar style="light" /> */}
+                    {/* <View style={{ height: 60 }}></View> */}
+                </ScrollView>
+            </View>
+            <View style={{ backgroundColor: "black", height: 61, flexDirection:"row", borderColor:"black", borderWidth:1 }}>
+                <Pressable style={{  marginLeft:10,height: 60, width: 60 }} onPress={playcluedo}>
+                    <Image style={{ tintColor: "white"}} resizeMode="contain" source={require('./assets/cluedo.png')} />
                 </Pressable>
-                <TouchableOpacity style={{ alignSelf: "center", width: 65, height: 85, margin: 10 }} onPress={() => { navigation.navigate('SummaryScreen') }}>
-                    <Image style={{ borderRadius: 15, borderWidth: 1, borderColor: "black" }} source={require('./assets/summary.png')} />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.loginbutton}
+                <Pressable style={{ marginLeft:10, height: 60, width: 60 }} onPress={() => { navigation.navigate('SummaryScreen') }}>
+                    <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/summary.png')} />
+                </Pressable>
+                {/* <Pressable style={styles.loginbutton}
                     onPress={() => { navigation.navigate('2021') }}
                 >
 
                     <Text style={styles.texthomebutton}>2021</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.loginbutton}
+                </Pressable> */}
+                {/* <Pressable style={styles.loginbutton}
                     onPress={() => { navigation.navigate('LoginScreen', { pushtoken: expoPushToken }) }}
                 >
 
                     <Text style={styles.texthomebutton}>Logout</Text>
-                </TouchableOpacity>
-                {username == "Max" || username == "Ugo" || username == "Antoine" ? 
+                </Pressable> */}
+                {/* {username == "Max" || username == "Ugo" || username == "Antoine" ?
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                         <View style={{ flex: 1 }}>
-                            <TouchableOpacity style={styles.logoutbutton}
-                            onPress={() => { navigation.navigate('pushNotifScreen') }}
-                        >
-                        <Text style={styles.texthomebutton}>Push Notif!</Text>
-                            </TouchableOpacity>
+                            <Pressable style={styles.logoutbutton}
+                                onPress={() => { navigation.navigate('pushNotifScreen') }}
+                            >
+                                <Text style={styles.texthomebutton}>Push Notif!</Text>
+                            </Pressable>
                         </View>
                         <View style={{ flex: 1 }}>
-                            <TouchableOpacity style={styles.logoutbutton}
+                            <Pressable style={styles.logoutbutton}
                                 onPress={() => { navigation.navigate('teamMgmtScreen') }}
                             >
 
                                 <Text style={styles.texthomebutton}>Team Mgmt</Text>
-                            </TouchableOpacity>
+                            </Pressable>
                         </View>
-                </View>
-                 : <View></View>}
+                    </View>
+                    : <View></View>}  */}
             </View>
-            <StatusBar style="light" />
-        </ScrollView>
+        </View>
 
     );
 }

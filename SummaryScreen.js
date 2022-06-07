@@ -17,7 +17,7 @@ export function SummaryScreen() {
     const [modalMedaille, setModaleMedaille] = React.useState(false);
     const chatcontext = React.useContext(ChatContext);
     React.useEffect(() => {
-        chatcontext.setChatName(route.params.sportname);
+        chatcontext.setChatName("Summary");
         fetch_results().then(r => {
             let tempArray = []
             for (var i in r) {
