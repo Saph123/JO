@@ -443,7 +443,9 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         alignItems: "center",
         borderColor: "white",
-        borderWidth: 1
+        borderWidth: 5,
+        borderBottomStartRadius: 15,
+        borderBottomEndRadius: 15
     },
     dateTabsNotSelected:{
         flex: 1,
@@ -453,11 +455,13 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         alignItems: "center",
         borderColor: "white",
-        borderWidth: 1
+        borderWidth: 5,
+        borderBottomStartRadius: 15,
+        borderBottomEndRadius: 15
     },
     dateTextTabs:{
         color:"white",
-        textAlignVertical:"center",
+        marginTop: "20%",
         flex:1
     }
 

@@ -245,7 +245,11 @@ export function HomeScreen({ navigation }) {
 
                     : <View></View>}
             </View>
+<<<<<<< HEAD
             <StatusBar style="light" />
+=======
+            <StatusBar style="light"/>
+>>>>>>> 78b960f999b82a848bc801fa36540561faff1d91
         </View>
 
     );
