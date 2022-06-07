@@ -159,7 +159,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                     }).catch(err => { console.log(err); allok = false});
                 }
             }
-            fetch_teams_bet(sportname).then(r => {
+            fetch_teams_bet(sportname, username).then(r => {
                 console.log(r);
                 setBetListe(r);
             }).catch(err => { console.log(err); allok = false});
@@ -386,13 +386,13 @@ export async function fetch_teams(sportname) {
     return fetch_teams;
 }
 
-export async function fetch_teams_bet(sportname) {
+export async function fetch_teams_bet(sportname, username) {
     let fetch_teams = {}
 
     fetch_teams = await fetch("http://91.121.143.104:7070/bets/" + sportname + ".json").then(response => response.json()).then(data => {
         let local_liste = [];
         for (var i in data["Teams"]) {
-            local_liste.push(new Liste(data["Teams"][i]["Players"], data["Teams"][i]["Votes"].length, 0, 0));
+            local_liste.push(new Liste(data["Teams"][i]["Players"], data["Teams"][i]["TotalVotes"], data["Teams"][i]["Votes"].includes(username) ? 1 : 0, 0));
         }
         return local_liste;
     }).catch(err => console.log(err));
@@ -430,6 +430,23 @@ export function updateTeams(sport, teams) {
     }).catch((err) => { alert("Issue with server!") });
 }
 
+export function pushbets(username, sport, bets) {
+
+    // 5 second timeout:
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+    // // push to server
+    fetch("http://91.121.143.104:7070/pushBets", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "sport": sport, "bets": bets }) }).then(r => {
+        if (r.status == 200) {
+            Alert.alert("Saved","Saved to server!", ["Ok"])
+        }
+        else {
+            alert("Wrong login or password!");
+        }
+
+    }).catch((err) => { alert("Issue with server!") });
+}
 function countLines(str) {
     return (str.match(/\n/g) || '').length + 1;
 }

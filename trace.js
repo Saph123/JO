@@ -7,7 +7,7 @@ import { Svg, Polyline } from 'react-native-svg';
 import { Table, Row } from 'react-native-table-component';
 import 'react-native-url-polyfill/auto';
 import { version } from "./App"
-import { updateTeams } from "./utils.js";
+import { updateTeams, pushbets } from "./utils";
 
 
 const MedailleView = (props) => {
@@ -147,7 +147,7 @@ export const Trace = (props) => {
                             </View>
                             {props.all_teams.betListe.map(r =>
                             <View key={r.username} style={{ flexDirection: "row" }} >
-                                <MedailleView maxMedals={1} r={r} liste={props.all_teams.betListe} setRealListe={props.all_teams.setBetListe} setloading={props.all_teams.setloading} metal={require('./assets/or.png')} rank={1}></MedailleView>
+                                <MedailleView maxMedals={1} r={r} liste={props.all_teams.betListe} setRealListe={props.all_teams.setBetListe} setloading={props.all_teams.setloading} metal={require('./assets/youpin.png')} rank={1}></MedailleView>
                             </View>
                             )
                             }
