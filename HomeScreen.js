@@ -216,19 +216,18 @@ export function HomeScreen({ navigation }) {
                     {/* <View style={{ height: 60 }}></View> */}
                 </ScrollView>
             </View>
-            <View style={{ backgroundColor: "black", height: 61, flexDirection:"row", borderColor:"black", borderWidth:1 }}>
-                <Pressable style={{  marginLeft:10,height: 60, width: 60 }} onPress={playcluedo}>
-                    <Image style={{ tintColor: "white"}} resizeMode="contain" source={require('./assets/cluedo.png')} />
+            <View style={{ backgroundColor: "black", height: 61, flexDirection: "row", borderColor: "black", borderWidth: 1 }}>
+                <Pressable style={{ marginLeft: 10, height: 60, width: 60 }} onPress={playcluedo}>
+                    <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/cluedo.png')} />
                 </Pressable>
-                <Pressable style={{ marginLeft:10, height: 60, width: 60 }} onPress={() => { navigation.navigate('SummaryScreen') }}>
+                <Pressable style={{ marginLeft: 10, height: 60, width: 60 }} onPress={() => { navigation.navigate('SummaryScreen') }}>
                     <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/summary.png')} />
                 </Pressable>
-                {/* <Pressable style={styles.loginbutton}
-                    onPress={() => { navigation.navigate('2021') }}
+                <Pressable style={{ marginLeft: 10, height: 60, width: 60 }} 
+                    onPress={() => { navigation.navigate('LoginScreen', { pushtoken: expoPushToken }) }}
                 >
-
-                    <Text style={styles.texthomebutton}>2021</Text>
-                </Pressable> */}
+                    <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/athlete.png')} />
+                </Pressable>
                 {/* <Pressable style={styles.loginbutton}
                     onPress={() => { navigation.navigate('LoginScreen', { pushtoken: expoPushToken }) }}
                 >
