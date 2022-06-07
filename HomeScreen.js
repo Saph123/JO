@@ -216,7 +216,7 @@ export function HomeScreen({ navigation }) {
                     {/* <View style={{ height: 60 }}></View> */}
                 </ScrollView>
             </View>
-            <View style={{ backgroundColor: "black", height: 61, flexDirection: "row", borderColor: "black", borderWidth: 1, justifyContent:"space-between" }}>
+            <View style={{ backgroundColor: "black", height: 65, flexDirection: "row", borderColor: "black", borderWidth: 1, justifyContent:"space-between" }}>
                 <Pressable style={{ marginLeft: 10, height: 60, width: 60 }} onPress={playcluedo}>
                     <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/cluedo.png')} />
                 </Pressable>
@@ -228,13 +228,12 @@ export function HomeScreen({ navigation }) {
                 >
                     <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/athlete.png')} />
                 </Pressable>
-                {/* <Pressable style={styles.loginbutton}
-                    onPress={() => { navigation.navigate('LoginScreen', { pushtoken: expoPushToken }) }}
+                <Pressable style={{ marginLeft: 10, height: 60, width: 60 }} 
+                    onPress={() => { navigation.navigate('PlanningScreen') }}
                 >
-
-                    <Text style={styles.texthomebutton}>Logout</Text>
-                </Pressable> */}
-               {username == "Max" || username == "Ugo" || username == "Antoine" ?
+                    <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/calendar.png')} />
+                </Pressable>
+               {username == "Max" || username == "Ugo" || username == "Antoine" || username == "Pierrick" ?
                                <Pressable style={{ marginLeft: 10, height: 60, width: 60 }} 
                                onPress={() => { navigation.navigate('pushNotifScreen') }}
                            >
