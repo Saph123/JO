@@ -173,6 +173,11 @@ export function HomeScreen({ navigation }) {
                     onPress={() => navigation.navigate('PlanningScreen')}
                     size={20}
                 /></View>}
+                <View style={{ flex: 1, flexDirection: "row" }}>
+                <Pressable style={{ flex: 1, minHeight:60, backgroundColor:"black", alignContent:"center", alignSelf:"center", alignItems:"center", borderColor:"white", borderWidth:1}}><Text style={{color:"white", textAlignVertical:"center" , flex:1}}>14 Juillet</Text></Pressable>
+                <Pressable style={{ flex: 1, minHeight:60, backgroundColor:"grey", alignContent:"center", alignSelf:"center", alignItems:"center", borderColor:"white", borderWidth:1}}><Text style={{color:"white", textAlignVertical:"center" , flex:1}}>15 Juillet</Text></Pressable>
+                <Pressable style={{ flex: 1, minHeight:60, backgroundColor:"grey", alignContent:"center", alignSelf:"center", alignItems:"center", borderColor:"white", borderWidth:1}}><Text style={{color:"white", textAlignVertical:"center" , flex:1}}>16 Juillet</Text></Pressable>
+            </View>
             <SportContext.Consumer>
                 {value =>
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
