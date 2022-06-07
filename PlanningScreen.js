@@ -10,13 +10,13 @@ export function PlanningScreen({ route, navigation }) {
     const [clicks, setClicks] = React.useState(0)
     const [gifVisible, setGifVisible] = React.useState(false)
     var planning = new Planning();
-    var jeudi = new Date('2021-08-27T00:00:00+02:00');
-    var vendredi = new Date('2021-08-28T00:00:00+02:00');
-    var samedi = new Date('2021-08-29T00:00:00+02:00');
-    var dimanche = new Date('2021-08-30T00:00:00+02:00');
+    var jeudi = new Date('2022-07-14T00:00:00+02:00');
+    var vendredi = new Date('2022-07-15T00:00:00+02:00');
+    var samedi = new Date('2022-07-16T00:00:00+02:00');
+    var dimanche = new Date('2022-07-17T00:00:00+02:00');
 
     return (
-        <ScrollView style={{ position: 'absolute', backgroundColor: "lightgrey", top: 0, left: 0, flexDirection: "row", width: 1000, height: 1000 }} maxScale={1} minScale={0.5} >
+        <ScrollView style={{ flex:1, backgroundColor: "lightgrey", flexDirection:"row"}} horizontal={true}>
             <Modal style={{ width: "100%", height: "100%", alignSelf: "center" }}
                 visible={gifVisible}>
 
@@ -27,7 +27,7 @@ export function PlanningScreen({ route, navigation }) {
                 </View>
             </Modal>
             <View style={styles.calendar}>
-                <View><Text style={styles.textday}>Jeudi</Text></View>
+                <View><Text style={styles.textday}>Mercredi</Text></View>
                 {
                     planning["listeevent"].map(r => {
                         var minutes = r.timeBegin.getMinutes();
@@ -46,7 +46,7 @@ export function PlanningScreen({ route, navigation }) {
             </View>
 
             <View style={styles.calendar}>
-                <View><Text style={styles.textday}>Vendredi</Text></View>
+                <View><Text style={styles.textday}>Jeudi</Text></View>
                 {
                     planning["listeevent"].map(r => {
                         var minutes = r.timeBegin.getMinutes();
@@ -68,7 +68,7 @@ export function PlanningScreen({ route, navigation }) {
             </View>
 
             <View style={styles.calendar}>
-                <View><Text style={styles.textday}>Samedi</Text></View>
+                <View><Text style={styles.textday}>Vendredi</Text></View>
                 {
                     planning["listeevent"].map(r => {
                         var minutes = r.timeBegin.getMinutes();
@@ -91,7 +91,7 @@ export function PlanningScreen({ route, navigation }) {
             </View>
 
             <View style={styles.calendar}>
-                <View><Text style={styles.textday}>Dimanche</Text></View>
+                <View><Text style={styles.textday}>Samedi</Text></View>
                 {
                     planning["listeevent"].map(r => {
                         var minutes = r.timeBegin.getMinutes();

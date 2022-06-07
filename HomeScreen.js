@@ -158,7 +158,13 @@ export function HomeScreen({ navigation }) {
     }
     return (
         <View style={{ flex: 1 }}>
-            <View style={{ flex: 15 }}>
+            <View style={{ flex: 1, flexDirection: "row" }}>
+                <Pressable style={{ flex: 1, minHeight: 60, backgroundColor: "black", alignContent: "center", alignSelf: "center", alignItems: "center", borderColor: "white", borderWidth: 1 }}><Text style={{ color: "white", textAlignVertical: "center", flex: 1 }}>14 Juillet</Text></Pressable>
+                <Pressable style={{ flex: 1, minHeight: 60, backgroundColor: "grey", alignContent: "center", alignSelf: "center", alignItems: "center", borderColor: "white", borderWidth: 1 }}><Text style={{ color: "white", textAlignVertical: "center", flex: 1 }}>15 Juillet</Text></Pressable>
+                <Pressable style={{ flex: 1, minHeight: 60, backgroundColor: "grey", alignContent: "center", alignSelf: "center", alignItems: "center", borderColor: "white", borderWidth: 1 }}><Text style={{ color: "white", textAlignVertical: "center", flex: 1 }}>16 Juillet</Text></Pressable>
+            </View>
+            <View style={{ flex: 15, marginTop:15 }}>
+
                 <ScrollView >
                     <ChatContext.Consumer>
                         {value => modalChat(value, chatText, setChatText, localText, setLocalText, "Home")}
@@ -174,11 +180,7 @@ export function HomeScreen({ navigation }) {
                             onPress={() => navigation.navigate('PlanningScreen')}
                             size={20}
                         /></View>}
-                    <View style={{ flex: 1, flexDirection: "row" }}>
-                        <Pressable style={{ flex: 1, minHeight: 60, backgroundColor: "black", alignContent: "center", alignSelf: "center", alignItems: "center", borderColor: "white", borderWidth: 1 }}><Text style={{ color: "white", textAlignVertical: "center", flex: 1 }}>14 Juillet</Text></Pressable>
-                        <Pressable style={{ flex: 1, minHeight: 60, backgroundColor: "grey", alignContent: "center", alignSelf: "center", alignItems: "center", borderColor: "white", borderWidth: 1 }}><Text style={{ color: "white", textAlignVertical: "center", flex: 1 }}>15 Juillet</Text></Pressable>
-                        <Pressable style={{ flex: 1, minHeight: 60, backgroundColor: "grey", alignContent: "center", alignSelf: "center", alignItems: "center", borderColor: "white", borderWidth: 1 }}><Text style={{ color: "white", textAlignVertical: "center", flex: 1 }}>16 Juillet</Text></Pressable>
-                    </View>
+
                     <SportContext.Consumer>
                         {value =>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
@@ -216,29 +218,29 @@ export function HomeScreen({ navigation }) {
                     {/* <View style={{ height: 60 }}></View> */}
                 </ScrollView>
             </View>
-            <View style={{ backgroundColor: "black", height: 65, flexDirection: "row", borderColor: "black", borderWidth: 1, justifyContent:"space-between" }}>
-                <Pressable style={{ marginLeft: 10, height: 60, width: 60 }} onPress={playcluedo}>
+            <View style={{ backgroundColor: "black", height: 65, flexDirection: "row", borderColor: "black", borderWidth: 1, justifyContent: "space-between" }}>
+                <Pressable style={styles.bottomTabs} onPress={playcluedo}>
                     <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/cluedo.png')} />
                 </Pressable>
-                <Pressable style={{ marginLeft: 10, height: 60, width: 60 }} onPress={() => { navigation.navigate('SummaryScreen') }}>
+                <Pressable style={styles.bottomTabs} onPress={() => { navigation.navigate('SummaryScreen') }}>
                     <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/summary.png')} />
                 </Pressable>
-                <Pressable style={{ marginLeft: 10, height: 60, width: 60 }} 
+                <Pressable style={styles.bottomTabs}
                     onPress={() => { navigation.navigate('LoginScreen', { pushtoken: expoPushToken }) }}
                 >
                     <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/athlete.png')} />
                 </Pressable>
-                <Pressable style={{ marginLeft: 10, height: 60, width: 60 }} 
+                <Pressable style={styles.bottomTabs}
                     onPress={() => { navigation.navigate('PlanningScreen') }}
                 >
                     <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/calendar.png')} />
                 </Pressable>
-               {username == "Max" || username == "Ugo" || username == "Antoine" || username == "Pierrick" ?
-                               <Pressable style={{ marginLeft: 10, height: 60, width: 60 }} 
-                               onPress={() => { navigation.navigate('pushNotifScreen') }}
-                           >
-                               <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/wrench.png')} />
-                           </Pressable>
+                {username == "Max" || username == "Ugo" || username == "Antoine" || username == "Pierrick" ?
+                    <Pressable style={styles.bottomTabs}
+                        onPress={() => { navigation.navigate('pushNotifScreen') }}
+                    >
+                        <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/wrench.png')} />
+                    </Pressable>
                     // <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                     //     <View style={{ flex: 1 }}>
                     //         <Pressable style={styles.logoutbutton}
