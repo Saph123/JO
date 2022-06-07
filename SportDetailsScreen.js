@@ -91,24 +91,9 @@ export function SportDetailsScreen({ route }) {
         return (<ActivityIndicator size="large" color="#000000" />)
     }
     return (
-<<<<<<< HEAD
         <View style={{ flex: 1, flexDirection: "column" }}>
             <View style={{ flex: 1, flexDirection: "row" }}>
                 {status.states.map(r => <Pressable key={r} onPress={() => { setloading(true); setStatus((current) => { current.status = r; return {...current} }); setloading(false) }} style={r == status.status ? { flex: 1, backgroundColor: "black", borderColor: "white", borderWidth: 5, alignItems: "center" } : { flex: 1, backgroundColor: "black", borderColor: "grey", borderWidth: 5 }}><View><Text style={{ textAlign: "center", alignContent: "center", alignSelf: "center", color: "white", fontSize: 24, textAlignVertical: "center" }}>{r}</Text></View></Pressable>)}
-=======
-        <View style={{ flex: 1, flexDirection: "column", height: 50 }}>
-            <View kek={console.log("explanation:", status)} style={{ flex: 1, flexDirection: "row" }}>
-                {status.states.map(r =>
-                <Pressable key={r} onPress={() => {
-                    setloading(true);
-                    setStatus((current) => {
-                        current.status = r;
-                        return { ...current } });
-                        setloading(false) }} style={r == status.status ?
-                        { flex: 1, backgroundColor: "black", borderColor: "white", borderWidth: 5, alignItems: "center", borderBottomStartRadius: 15, borderBottomEndRadius: 15 } :
-                        { flex: 1, backgroundColor: "black", borderColor: "grey", borderWidth: 5, alignItems: "center", borderBottomStartRadius: 15, borderBottomEndRadius: 15 }}><View>
-                            <Image style={styles.tabimage} resizeMode="contain" resizeMethod="auto" source={lutImg(r)}/></View></Pressable>)}
->>>>>>> 2aec4bf62468c88e10fe51d2697737e6866a7368
             </View>
             <View style={{ flex: 10 }}>
                 <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} >

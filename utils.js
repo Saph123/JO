@@ -411,24 +411,7 @@ export async function fetch_teams(sportname) {
     return fetch_teams;
 }
 
-<<<<<<< HEAD
 function pushChat(sportname, text, username) {
-=======
-export async function fetch_teams_bet(sportname, username) {
-    let fetch_teams = {}
-
-    fetch_teams = await fetch("http://91.121.143.104:7070/bets/" + sportname + ".json").then(response => response.json()).then(data => {
-        let local_liste = [];
-        for (var i in data["Teams"]) {
-            local_liste.push(new Liste(data["Teams"][i]["Players"], data["Teams"][i]["TotalVotes"], data["Teams"][i]["Votes"].includes(username) ? 1 : 0, 0));
-        }
-        return local_liste;
-    }).catch(err => console.log(err));
-    return fetch_teams;
-}
-
-function pushChat(sportname, text) {
->>>>>>> 2aec4bf62468c88e10fe51d2697737e6866a7368
     fetch("http://91.121.143.104:7070/chat", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "text": text, "sportname": sportname }) }).then(res => {
         if (res.status == 200) {
             initialLineNumber[sportname]++;

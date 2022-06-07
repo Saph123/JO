@@ -26,18 +26,10 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         borderWidth: 1,
         alignItems: "center",
-<<<<<<< HEAD
         marginLeft: 30,
         marginRight: 30,
         width: 100,
         minHeight: 130
-=======
-        marginTop: 30,
-        marginBottom: 30,
-        marginLeft: 5,
-        width: 250,
-        minHeight:130
->>>>>>> 2aec4bf62468c88e10fe51d2697737e6866a7368
     },
     match: {
         backgroundColor: "#A8DADC",
