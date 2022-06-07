@@ -412,7 +412,7 @@ export async function fetch_teams(sportname) {
 }
 
 function pushChat(sportname, text, username) {
-    fetch("http://91.121.143.104:7070/chat", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "text": text, "sportname": sportname }) }).then(res => {
+    fetch("http://91.121.143.104:7070/Chatalere/" + sportname + ".txt", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "text": text }) }).then(res => {
         if (res.status == 200) {
             initialLineNumber[sportname]++;
             save("initialLineNumber", JSON.stringify(initialLineNumber));
