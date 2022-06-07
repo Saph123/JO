@@ -495,3 +495,16 @@ export async function askPushNotif(username, title, body, to) {
         return
     }).catch((err) => { console.log(err, "Maybe it's normal") });
 }
+
+export async function fetch_teams_bet(sportname, username) {
+    let fetch_teams = {}
+
+    fetch_teams = await fetch("http://91.121.143.104:7070/bets/" + sportname + ".json").then(response => response.json()).then(data => {
+        let local_liste = [];
+        for (var i in data["Teams"]) {
+            local_liste.push(new Liste(data["Teams"][i]["Players"], data["Teams"][i]["TotalVotes"], data["Teams"][i]["Votes"].includes(username) ? 1 : 0, 0));
+        }
+        return local_liste;
+    }).catch(err => console.log(err));
+    return fetch_teams;
+}
