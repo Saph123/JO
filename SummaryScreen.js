@@ -46,7 +46,7 @@ export function SummaryScreen() {
     return (
         <ScrollView style={{ width: "100%" }}>
             <ChatContext.Consumer>
-                {value => modalChat(value, chatText, setChatText, localText, setLocalText, "Summary")}
+                {value => modalChat(value, chatText, setChatText, localText, setLocalText, "Summary", username)}
 
             </ChatContext.Consumer>
             <Modal

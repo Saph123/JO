@@ -92,7 +92,7 @@ export function SportDetailsScreen({ route }) {
             <View style={{ flex: 10 }}>
                 <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} >
                     <ChatContext.Consumer>
-                        {value => modalChat(value, chatText, setChatText, localText, setLocalText, route.params.sportname)}
+                        {value => modalChat(value, chatText, setChatText, localText, setLocalText, route.params.sportname, username)}
 
                     </ChatContext.Consumer>
                     <ArbitreContext.Consumer>

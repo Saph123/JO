@@ -189,7 +189,7 @@ export function HomeScreen({ navigation }) {
 
                 <ScrollView >
                     <ChatContext.Consumer>
-                        {value => modalChat(value, chatText, setChatText, localText, setLocalText, "Home")}
+                        {value => modalChat(value, chatText, setChatText, localText, setLocalText, "Home", username)}
 
                     </ChatContext.Consumer>
                     {videoHandler(setBoules, boules, videoBoule, require('./assets/boules.mp4'), true)}
