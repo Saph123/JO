@@ -17,8 +17,6 @@ import { SportDetailsScreen } from "./SportDetailsScreen.js";
 import { VanRommelScreen } from "./VanRommelScreen.js";
 import { pushNotifScreen } from "./PushNotifScreen.js";
 import { LoginScreen } from "./LoginScreen.js";
-import { teamMgmtScreen } from './TeamManagement.js';
-import { SportMgmtScreen } from './SportMgmtScreen.js';
 
 export let username = "";
 export const ArbitreContext = React.createContext(false);
@@ -183,13 +181,6 @@ function App() {
                             <Stack.Screen options={() => ({
                                 title: "Notif tool"
                             })} initialParams={{ username: username }} name="pushNotifScreen" component={pushNotifScreen} />
-                            <Stack.Screen options={() => ({
-                                title: "Team Management"
-                            })} initialParams={{ username: username }} name="teamMgmtScreen" component={teamMgmtScreen} />
-
-                            <Stack.Screen options={({ navigation }) => ({
-                                title: currentSport
-                            })} initialParams={{ sportname: currentSport }} name="SportMgmtScreen" component={SportMgmtScreen} />
 
                             <Stack.Screen options={({ navigation }) => ({
                                 title: "Clicker!", headerRight: () => <View>

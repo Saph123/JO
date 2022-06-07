@@ -1,9 +1,9 @@
 import styles from "./style.js";
 import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
-import { View, ScrollView, ActivityIndicator, Text, Modal, RefreshControl, Pressable } from 'react-native';
+import { View, ScrollView, ActivityIndicator, Text, Modal, RefreshControl, Pressable, Image } from 'react-native';
 import { Trace } from "./trace.js";
-import { modalChat, fetchChat, fetch_matches } from './utils.js';
+import { modalChat, fetchChat, fetch_matches, lutImg } from './utils.js';
 import { ChatContext, ArbitreContext, username } from "./App.js";
 
 const wait = (timeout) => {
@@ -13,7 +13,7 @@ const wait = (timeout) => {
 export function SportDetailsScreen({ route }) {
     const [refreshing, setRefreshing] = React.useState(false);
     const [loadingmain, setloading] = React.useState(true);
-    const [status, setStatus] = React.useState({ states:["error", "error"], status:"error", arbitre: "error", sportname: "error" });
+    const [status, setStatus] = React.useState({ states: ["error", "error"], status: "error", arbitre: "error", sportname: "error" });
     const [regle, setRegle] = React.useState(false);
     const [chatText, setChatText] = React.useState("");
     const [firstTime, setFirstTime] = React.useState(true);
@@ -23,6 +23,8 @@ export function SportDetailsScreen({ route }) {
     const [liste, setListe] = React.useState([]);
     const [final, setFinal] = React.useState([])
     const [realListe, setRealListe] = React.useState([])
+    const [betListe, setBetListe] = React.useState([])
+    const [modifListe, setModifListe] = React.useState([])
     const [seriesLevel, setSeriesLevel] = React.useState([0])
     const [groups, setGroups] = React.useState([]);
     const [groupmatches, setmatchesgroup] = React.useState([]);
@@ -34,6 +36,8 @@ export function SportDetailsScreen({ route }) {
     all_teams.liste = liste;
     all_teams.final = final;
     all_teams.realListe = realListe;
+    all_teams.betListe = betListe;
+    all_teams.modifListe = modifListe;
     all_teams.seriesLevel = seriesLevel;
     all_teams.groups = groups;
     all_teams.groupmatches = groupmatches;
@@ -43,6 +47,8 @@ export function SportDetailsScreen({ route }) {
     all_teams.setListe = setListe;
     all_teams.setFinal = setFinal;
     all_teams.setRealListe = setRealListe;
+    all_teams.setModifListe = setModifListe;
+    all_teams.setBetListe = setBetListe;
     all_teams.setSeriesLevel = setSeriesLevel;
     all_teams.setGroups = setGroups;
     all_teams.setmatchesgroup = setmatchesgroup;
@@ -56,7 +62,7 @@ export function SportDetailsScreen({ route }) {
         setRefreshing(true);
         setloading(true);
         console.log("refresh");
-        fetch_matches(username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel).then(r => {
+        fetch_matches(username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel, setModifListe, setBetListe).then(r => {
             setloading(false);
 
         });
@@ -70,7 +76,7 @@ export function SportDetailsScreen({ route }) {
         var chatInterval = setInterval(() => fetchChat(route.params.sportname, setChatText, chatcontext.setNewMessage), 3000);
         if (firstTime) {
 
-            fetch_matches(username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel).then(r => {
+            fetch_matches(username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel, setModifListe, setBetListe).then(r => {
                 setloading(false);
                 setFirstTime(false);
             }).catch(err => { console.log(err); navigation.navigate('HomeScreen') });
@@ -85,9 +91,24 @@ export function SportDetailsScreen({ route }) {
         return (<ActivityIndicator size="large" color="#000000" />)
     }
     return (
+<<<<<<< HEAD
         <View style={{ flex: 1, flexDirection: "column" }}>
             <View style={{ flex: 1, flexDirection: "row" }}>
                 {status.states.map(r => <Pressable key={r} onPress={() => { setloading(true); setStatus((current) => { current.status = r; return {...current} }); setloading(false) }} style={r == status.status ? { flex: 1, backgroundColor: "black", borderColor: "white", borderWidth: 5, alignItems: "center" } : { flex: 1, backgroundColor: "black", borderColor: "grey", borderWidth: 5 }}><View><Text style={{ textAlign: "center", alignContent: "center", alignSelf: "center", color: "white", fontSize: 24, textAlignVertical: "center" }}>{r}</Text></View></Pressable>)}
+=======
+        <View style={{ flex: 1, flexDirection: "column", height: 50 }}>
+            <View kek={console.log("explanation:", status)} style={{ flex: 1, flexDirection: "row" }}>
+                {status.states.map(r =>
+                <Pressable key={r} onPress={() => {
+                    setloading(true);
+                    setStatus((current) => {
+                        current.status = r;
+                        return { ...current } });
+                        setloading(false) }} style={r == status.status ?
+                        { flex: 1, backgroundColor: "black", borderColor: "white", borderWidth: 5, alignItems: "center", borderBottomStartRadius: 15, borderBottomEndRadius: 15 } :
+                        { flex: 1, backgroundColor: "black", borderColor: "grey", borderWidth: 5, alignItems: "center", borderBottomStartRadius: 15, borderBottomEndRadius: 15 }}><View>
+                            <Image style={styles.tabimage} resizeMode="contain" resizeMethod="auto" source={lutImg(r)}/></View></Pressable>)}
+>>>>>>> 2aec4bf62468c88e10fe51d2697737e6866a7368
             </View>
             <View style={{ flex: 10 }}>
                 <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} >

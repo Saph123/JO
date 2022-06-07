@@ -23,13 +23,21 @@ const styles = StyleSheet.create({
     matchover: {
         backgroundColor: "#D62628",
         flexDirection: 'column',
-        justifyContent: "space-evenly",
+        justifyContent: "center",
         borderWidth: 1,
         alignItems: "center",
+<<<<<<< HEAD
         marginLeft: 30,
         marginRight: 30,
         width: 100,
         minHeight: 130
+=======
+        marginTop: 30,
+        marginBottom: 30,
+        marginLeft: 5,
+        width: 250,
+        minHeight:130
+>>>>>>> 2aec4bf62468c88e10fe51d2697737e6866a7368
     },
     match: {
         backgroundColor: "#A8DADC",
@@ -39,7 +47,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginTop: 30,
         marginBottom: 30,
-        // marginRight: 30,
+        marginLeft: 5,
         width: 250,
         minHeight: 130
     },
@@ -142,6 +150,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         width: 200,
         height: 30,
+        marginLeft: 5,
         textAlign: "center",
         textAlignVertical: "center"
     },
@@ -150,6 +159,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         width: 200,
         height: 30,
+        marginLeft: 5,
         textAlign: "center",
         textAlignVertical: "center"
     },
@@ -315,6 +325,10 @@ const styles = StyleSheet.create({
     sportimage: {
         width: 68,
         height: 68,
+    },
+    tabimage: {
+        width: 40,
+        height: 40,
     },
     logosah: {
         width: 108,
