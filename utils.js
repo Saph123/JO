@@ -55,7 +55,7 @@ export function firstDay(secondsleft, setSecondsleft) {
             size={20}
         /></View>}
             <View style={{justifyContent:"center"}}>
-                <Text style={{textAlign:"center"}}> BIENVENUE!</Text>
+                <Text style={{textAlign:"center", fontSize:24, fontWeight:"bold"}}> BIENVENUE!</Text>
                 <Text style={{textAlign:"center"}}> What's new?!</Text>
                 <Text style={{textAlign:"center"}}> * Système de paris!</Text>
                 <Text style={{textAlign:"center"}}> * Ta mère</Text>
