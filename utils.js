@@ -133,7 +133,7 @@ export function videoHandler(setVideoVisible, videoVisible, video, videoSource, 
         </Modal>
     )
 }
-export async function fetch_matches(username, setAutho, setStatus, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel) {
+export async function fetch_matches(username, setAutho, setStatus, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel, setModifListe, setBetListe) {
 
 
     let allok = false
@@ -149,10 +149,21 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                 else if (data['arbitre'][authouser] == username) {
                     setAutho(true);
                 }
-                else if ("Max" == username || "Antoine" == username || "Ugo" == username) {
+                if ("Max" == username || "Antoine" == username || "Ugo" == username) {
                     setAutho(true);
+                    if (! data['states'].includes("modif")) {
+                        data['states'].push("modif");
+                    }
+                    fetch_teams(sportname).then(r => {
+                        setModifListe(r);
+                    }).catch(err => { console.log(err); allok = false});
                 }
             }
+            fetch_teams_bet(sportname, username).then(r => {
+                console.log(r);
+                setBetListe(r);
+            }).catch(err => { console.log(err); allok = false});
+            data['states'].push("paris");
             setStatus(data);
             let status = data;
             if (status['states'].includes("poules")) {
@@ -321,7 +332,7 @@ export function eventView(currentEvents, eventsDone, sportname, navigation, setC
         </Pressable>)
 }
 
-function lutImg(sportname) {
+export function lutImg(imgname) {
     var lut = {
         Trail: require('./assets/sports/run.png'),
         Dodgeball: require('./assets/sports/dodgeball.png'),
@@ -341,9 +352,14 @@ function lutImg(sportname) {
         "100mRicard": require('./assets/sports/100mricard.png'),
         Petanque: require('./assets/sports/petanque.png'),
         Molky: require('./assets/sports/molkky.png'),
-
+        paris: require('./assets/paris.png'),
+        poules: require('./assets/poules.png'),
+        playoff: require('./assets/playoff.png'),
+        modif: require('./assets/editlogo2.png'),
+        final: require('./assets/liste.png'),
+        series: require('./assets/liste.png'),
     };
-    return lut[sportname];
+    return lut[imgname];
 }
 
 export function fetchChat(sportname, setChatText, setNewMessage) {
@@ -365,6 +381,19 @@ export async function fetch_teams(sportname) {
             local_liste.push(new Liste(data["Teams"][i]["Players"], data["Teams"][i]["Players"], 0, 0));
         }
         local_liste.push(new Liste("", "", 0, 0));
+        return local_liste;
+    }).catch(err => console.log(err));
+    return fetch_teams;
+}
+
+export async function fetch_teams_bet(sportname, username) {
+    let fetch_teams = {}
+
+    fetch_teams = await fetch("http://91.121.143.104:7070/bets/" + sportname + ".json").then(response => response.json()).then(data => {
+        let local_liste = [];
+        for (var i in data["Teams"]) {
+            local_liste.push(new Liste(data["Teams"][i]["Players"], data["Teams"][i]["TotalVotes"], data["Teams"][i]["Votes"].includes(username) ? 1 : 0, 0));
+        }
         return local_liste;
     }).catch(err => console.log(err));
     return fetch_teams;
@@ -401,6 +430,23 @@ export function updateTeams(sport, teams) {
     }).catch((err) => { alert("Issue with server!") });
 }
 
+export function pushbets(username, sport, bets) {
+
+    // 5 second timeout:
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+    // // push to server
+    fetch("http://91.121.143.104:7070/pushBets", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "sport": sport, "bets": bets }) }).then(r => {
+        if (r.status == 200) {
+            Alert.alert("Saved","Saved to server!", ["Ok"])
+        }
+        else {
+            alert("Wrong login or password!");
+        }
+
+    }).catch((err) => { alert("Issue with server!") });
+}
 function countLines(str) {
     return (str.match(/\n/g) || '').length + 1;
 }

@@ -228,22 +228,12 @@ export function HomeScreen({ navigation }) {
                     <Text style={styles.texthomebutton}>Logout</Text>
                 </TouchableOpacity>
                 {username == "Max" || username == "Ugo" || username == "Antoine" ? 
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
-                        <View style={{ flex: 1 }}>
-                            <TouchableOpacity style={styles.logoutbutton}
-                            onPress={() => { navigation.navigate('pushNotifScreen') }}
-                        >
-                        <Text style={styles.texthomebutton}>Push Notif!</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{ flex: 1 }}>
-                            <TouchableOpacity style={styles.logoutbutton}
-                                onPress={() => { navigation.navigate('teamMgmtScreen') }}
-                            >
-
-                                <Text style={styles.texthomebutton}>Team Mgmt</Text>
-                            </TouchableOpacity>
-                        </View>
+                    <View style={{ flex: 1 }}>
+                        <TouchableOpacity style={styles.logoutbutton}
+                        onPress={() => { navigation.navigate('pushNotifScreen') }}
+                    >
+                    <Text style={styles.texthomebutton}>Push Notif!</Text>
+                        </TouchableOpacity>
                 </View>
                  : <View></View>}
             </View>

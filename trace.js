@@ -7,6 +7,7 @@ import { Svg, Polyline } from 'react-native-svg';
 import { Table, Row } from 'react-native-table-component';
 import 'react-native-url-polyfill/auto';
 import { version } from "./App"
+import { updateTeams, pushbets } from "./utils";
 
 
 const MedailleView = (props) => {
@@ -90,6 +91,71 @@ export const Trace = (props) => {
         )
 
     }
+    if (props.all_teams.status.status == "modif")
+    {
+        return (
+            <ScrollView>
+                <View style={{ flexDirection: "row" }}>
+                    <View>
+                        <Text style={[styles.showPlayers, { height: 60 }]}>Équipe/Athlète</Text>
+                        {props.all_teams.modifListe.map(r =>
+                            <TextInput key={r.username} onChangeText={(text) => { r.username = text; }} style={styles.showPlayers}>{r.username}</TextInput>
+                        )
+                        }
+                    </View>
+                    <View style={{ width: 60, height: 60, backgroundColor: "lightgrey", justifyContent:"center" }}>
+                        <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => { // Function to save only the results!
+                            props.all_teams.setModifListe([...props.all_teams.modifListe]);
+                            updateTeams(sport, props.all_teams.modifListe);
+                        }
+                        }>
+                            <Image resizeMode="cover" resizeMethod="resize" style={{alignSelf:"center"}} source={require('./assets/save.png')}></Image>
+                        </Pressable>
+                    </View>
+                </View>
+            </ScrollView>
+        )
+    }
+    if (props.all_teams.status.status == "paris")
+    {
+        return (
+            <ScrollView>
+                <View style={{ flexDirection: "row" }}>
+                    <View>
+                        <Text style={[styles.showPlayers, { height: 60 }]}>Équipe/Athlète</Text>
+                        {props.all_teams.betListe.map(r =>
+                            <Text key={r.username} onChangeText={(text) => { r.username = text; }} style={styles.showPlayers}>{r.username}</Text>
+                        )
+                        }
+                    </View>
+                        <View>
+                            <Text style={[styles.inputScore, { height: 60 }]}>Nb votes</Text>
+                            {props.all_teams.betListe.map(r =>
+                                <Text key={r.username} style={styles.inputScore}>{r.score}</Text>
+                            )
+                            }
+                        </View>
+                        <View style={{ flexDirection: "column" }}>
+                            <View style={{ width: 60, height: 60, backgroundColor: "lightgrey", justifyContent: "center" }}>
+                                <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => { // Function to save only the results!
+                                    pushbets(username, sport, props.all_teams.betListe);
+                                }
+                                }>
+                                    <Image resizeMode="cover" resizeMethod="resize" style={{ alignSelf: "center" }} source={require('./assets/save.png')}></Image>
+                                </Pressable>
+
+                            </View>
+                            {props.all_teams.betListe.map(r =>
+                            <View key={r.username} style={{ flexDirection: "row" }} >
+                                <MedailleView maxMedals={1} r={r} liste={props.all_teams.betListe} setRealListe={props.all_teams.setBetListe} setloading={props.all_teams.setloading} metal={require('./assets/youpin.png')} rank={1}></MedailleView>
+                            </View>
+                            )
+                            }
+                        </View>
+                </View>
+            </ScrollView>
+        )
+    }
     else { // Other (list like trail etc.)
 
         if (!props.all_teams.autho) {
@@ -102,7 +168,7 @@ export const Trace = (props) => {
                     </View>
                     <View style={{ flexDirection: "row" }}>
                         <View>
-                            <Text style={styles.showPlayers}>Athlete</Text>
+                            <Text style={styles.inputScore}>Athlete</Text>
                             {props.all_teams.realListe.map(r =>
                                 <Text key={r.username} style={r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers}>{r.username}</Text>
                             )
@@ -162,9 +228,6 @@ export const Trace = (props) => {
                 <ScrollView kek={console.log(props.all_teams.status)}  styles={{ height: "100%", flex: 1 }} horizontal={true} >
                     {props.all_teams.seriesLevel.map(cur_level =>
                         <View key={cur_level}>
-                            <View>
-                                <Text style={{ fontSize: 20, fontWeight: "bold" }}>{cur_level == 0 ? "Final" : ("Serie" + cur_level)}</Text>
-                            </View>
                             <View style={{ flexDirection: "row" }}>
                                 <View>
                                     <Text style={[styles.showPlayers, { height: 60 }]}>Athlete</Text>
@@ -345,13 +408,15 @@ function matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, typ
 
         <View key={index} style={r.over == 0 ? (type == "playoff" ? styles.match : styles.matchpoule) : (type == "playoff" ? styles.matchover : styles.matchpouleover)}>
             <Text style={r.over == 2 ? styles.lose : (r.over == 0 ? (r.team1.includes(username) ? styles.teamUserIsIn : styles.teamnormal) : styles.teamnormal)}>{r.team1}</Text>
-            <Text style={styles.score}>{r.team1 == "" ? "" : r.score}</Text>
+            <View style={{ flex: 1, alignItems: 'center', flexDirection: "row" , width : 150}}>
+            <View style={{ flex: 1 }}><Text style={styles.score}>{r.team1 == "" ? "" : r.score}</Text></View>
+                {(r.team1 != "" && r.team2 != "" && autho) ?
+                    <View style={{ flex: 1 }}><Pressable onPress={() => { setInitScore(r.score); setCurrMatchZoom(r); setMatchZoom(true) }}>
+                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/editlogo.png')} />
+                    </Pressable></View> : <View />
+                }
+            </View>
             <View><Text style={r.over == 1 ? styles.lose : (r.over == 0 ? (r.team2.includes(username) ? styles.teamUserIsIn : styles.teamnormal) : styles.teamnormal)}>{r.team2}</Text></View>
-            {(r.team1 != "" && r.team2 != "" && autho) ?
-                <Pressable onPress={() => { setInitScore(r.score); setCurrMatchZoom(r); setMatchZoom(true) }}>
-                    <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/editlogo.png')} />
-                </Pressable> : <View />
-            }
 
         </View>)
 
