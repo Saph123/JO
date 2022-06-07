@@ -18,8 +18,7 @@ export function HomeScreen({ navigation }) {
     const [eventsDone, setEventsDone] = React.useState([]);
     const [soundstatus, setSound] = React.useState();
     const [boules, setBoules] = React.useState(false);
-    const [sportToDisplay, setSports] = React.useState({});
-    const [displayDay, setDisplayDay] = React.useState(0);
+    const [displayDay, setDisplayDay] = React.useState(new Date('2022-07-13T00:00:00+02:00'));
 
     const notificationListener = React.useRef();
     const videoBoule = React.useRef();
@@ -221,7 +220,7 @@ export function HomeScreen({ navigation }) {
                     </SportContext.Consumer>
 
 
-                    {/* <StatusBar style="light" /> */}
+                    
                     {/* <View style={{ height: 60 }}></View> */}
                 </ScrollView>
             </View>
@@ -237,34 +236,13 @@ export function HomeScreen({ navigation }) {
                 >
                     <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/athlete.png')} />
                 </Pressable>
-                {/* <Pressable style={styles.bottomTabs}
-                    onPress={() => { navigation.navigate('PlanningScreen') }}
-                >
-                    <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/calendar.png')} />
-                </Pressable> */}
                 {username == "Max" || username == "Ugo" || username == "Antoine" || username == "Pierrick" ?
                     <Pressable style={styles.bottomTabs}
                         onPress={() => { navigation.navigate('pushNotifScreen') }}
                     >
                         <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/wrench.png')} />
                     </Pressable>
-                    // <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
-                    //     <View style={{ flex: 1 }}>
-                    //         <Pressable style={styles.logoutbutton}
-                    //             onPress={() => { navigation.navigate('pushNotifScreen') }}
-                    //         >
-                    //             <Text style={styles.texthomebutton}>Push Notif!</Text>
-                    //         </Pressable>
-                    //     </View>
-                    //     <View style={{ flex: 1 }}>
-                    //         <Pressable style={styles.logoutbutton}
-                    //             onPress={() => { navigation.navigate('teamMgmtScreen') }}
-                    //         >
 
-                    //             <Text style={styles.texthomebutton}>Team Mgmt</Text>
-                    //         </Pressable>
-                    //     </View>
-                    // </View>
                     : <View></View>}
             </View>
             <StatusBar style="light"/>

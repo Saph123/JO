@@ -388,7 +388,7 @@ export function lutImg(imgname) {
 }
 
 export function fetchChat(sportname, setChatText, setNewMessage) {
-    fetch("http://91.121.143.104:7070/chat/" + sportname + "_chat.txt").then(response => response.text()).then(r => {
+    fetch("http://91.121.143.104:7070/Chatalere/" + sportname + ".txt").then(response => response.text()).then(r => {
         if (initialLineNumber[sportname] != countLines(r) && countLines(r) > 1) {
             setNewMessage(true);
         }
@@ -412,7 +412,7 @@ export async function fetch_teams(sportname) {
 }
 
 function pushChat(sportname, text, username) {
-    fetch("http://91.121.143.104:7070/chat", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "text": text, "sportname": sportname }) }).then(res => {
+    fetch("http://91.121.143.104:7070/Chatalere/" + sportname + ".txt", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "text": text }) }).then(res => {
         if (res.status == 200) {
             initialLineNumber[sportname]++;
             save("initialLineNumber", JSON.stringify(initialLineNumber));
