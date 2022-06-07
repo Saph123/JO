@@ -30,6 +30,14 @@ const MedailleView = (props) => {
                     else if (count < maxMedals) {
                         r.rank = rank;
                     }
+                    else
+                    {
+                        for (var i = 0; i < props.liste.length; ++i) {
+                            if (props.liste[i].rank == rank)
+                            props.liste[i].rank = 0;
+                        }
+                        r.rank = rank;
+                    }
                     // uncomment if you want only one medal
                     // props.liste.map((q, index2) => { if (r != q && q.rank == rank) { q.rank = 0 } }); 
                     props.setRealListe([...props.liste]);
