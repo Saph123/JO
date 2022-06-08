@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     },
     showPlayers: {
         borderWidth: 1,
-        width: 200,
+        minWidth: 200,
         height: 30,
         marginLeft: 5,
         textAlign: "center",
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     showPlayersIsIn: {
         fontWeight: "bold",
         borderWidth: 1,
-        width: 200,
+        minWidth: 200,
         height: 30,
         marginLeft: 5,
         textAlign: "center",

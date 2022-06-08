@@ -234,7 +234,7 @@ export function HomeScreen({ navigation }) {
                 <Pressable style={styles.bottomTabs}
                     onPress={() => { navigation.navigate('LoginScreen', { pushtoken: expoPushToken }) }}
                 >
-                    <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/athlete.png')} />
+                    <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/person.png')} />
                 </Pressable>
                 {username == "Max" || username == "Ugo" || username == "Antoine" || username == "Pierrick" ?
                     <Pressable style={styles.bottomTabs}

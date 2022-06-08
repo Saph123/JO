@@ -4,7 +4,7 @@ import * as React from 'react';
 import { View, ScrollView, ActivityIndicator, Text, Modal, RefreshControl, Pressable, Image } from 'react-native';
 import { Trace } from "./trace.js";
 import { modalChat, fetchChat, fetch_matches, lutImg } from './utils.js';
-import { ChatContext, ArbitreContext } from "./App.js";
+import { ChatContext, ArbitreContext, WinnerContext } from "./App.js";
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -13,7 +13,7 @@ const wait = (timeout) => {
 export function SportDetailsScreen({ route }) {
     const [refreshing, setRefreshing] = React.useState(false);
     const [loadingmain, setloading] = React.useState(true);
-    const [status, setStatus] = React.useState({ states: ["error", "error"], status: "error", arbitre: "error", sportname: "error" });
+    const [status, setStatus] = React.useState({ states: ["error", "error"], status: "error", arbitre: "error", sportname: "error", winner: "error" });
     const [regle, setRegle] = React.useState(false);
     const [chatText, setChatText] = React.useState("");
     const [firstTime, setFirstTime] = React.useState(true);
@@ -111,6 +111,31 @@ export function SportDetailsScreen({ route }) {
                         {value => modalChat(value, chatText, setChatText, localText, setLocalText, route.params.sportname, route.params.username)}
 
                     </ChatContext.Consumer>
+                    <WinnerContext.Consumer>
+                        {value => {
+                            return (
+                                <View style={styles.centeredView}>
+                                    <Modal
+                                        animationType="slide"
+                                        transparent={true}
+                                        visible={value}
+                                        supportedOrientations={['portrait', 'landscape']}
+                                    >
+                                        <View style={styles.modalView}>
+                                            <ScrollView onScroll={() => setRegle(true)} onScrollEndDrag={() => setTimeout(() => setRegle(false), 2000)} >
+                                                <View style={styles.centeredView}>
+                                                    <Text style={styles.modalText}>Tenant du Titre:</Text>
+                                                    <Text style={styles.modalText}>{status['winner']}</Text>
+                                                </View>
+                                            </ScrollView>
+
+                                        </View>
+                                    </Modal>
+                                </View>)
+                        }
+
+                        }
+                    </WinnerContext.Consumer>
                     <ArbitreContext.Consumer>
                         {value => {
                             return (

@@ -349,7 +349,7 @@ export function eventView(currentEvents, eventsDone, sportname, navigation, setC
         <View style={{ flex: 1, margin: -1, flexDirection: "row", borderColor: "black", borderWidth: 2 }}>
             <View style={{ alignSelf: "center", width: 70, height: "100%", flexDirection: "column", justifyContent: "center", borderRightWidth: 2, borderRightColor: "black" }}><Text style={{ textAlign: "center", fontWeight: "bold" }}>{timeBegin.getHours() + "H" + timeBegin.getMinutes().toString().padStart(2, "0")}</Text></View>
             <Pressable delayLongPress={5000} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
-                onPress={() => { setCurrentSport(sportname), navigation.navigate(navigateTo, { sportname: sportname }) }} onLongPress={() => { if (sportname == 'Petanque') { setfun(true) } }}
+                onPress={() => { sportlist().includes(sportname) ? setCurrentSport(sportname) : "", sportlist().includes(sportname) ? navigation.navigate(navigateTo, { sportname: sportname }) : ""}} onLongPress={() => { if (sportname == 'Petanque') { setfun(true) } }}
             >
                 <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
             </Pressable>
@@ -387,6 +387,30 @@ export function lutImg(imgname) {
     return lut[imgname];
 }
 
+function sportlist(){
+    return [
+        "Trail",
+        "Dodgeball",
+        "Pizza",
+        "Tong",
+        "Babyfoot",
+        "Flechette",
+        "PingPong",
+        "Orientation",
+        "Beerpong",
+        "Volley",
+        "Waterpolo",
+        "Larmina",
+        "Natation",
+        "SpikeBall",
+        "Ventriglisse",
+        "100mRicard",
+        "Petanque",
+        "Molky",
+        "Clicker",
+        "Home"
+    ]
+}
 export function fetchChat(sportname, setChatText, setNewMessage) {
     fetch("http://91.121.143.104:7070/Chatalere/" + sportname + ".txt").then(response => response.text()).then(r => {
         if (initialLineNumber[sportname] != countLines(r) && countLines(r) > 1) {

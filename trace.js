@@ -103,6 +103,7 @@ export const Trace = (props) => {
     {
         return (
             <ScrollView>
+            <ScrollView horizontal={true} directionalLockEnabled={false}>
                 <View style={{ flexDirection: "row" }}>
                     <View>
                         <Text style={[styles.showPlayers, { height: 60 }]}>Équipe/Athlète</Text>
@@ -122,12 +123,14 @@ export const Trace = (props) => {
                     </View>
                 </View>
             </ScrollView>
+            </ScrollView>
         )
     }
     if (props.all_teams.status.status == "paris")
     {
         return (
             <ScrollView>
+            <ScrollView horizontal={true} directionalLockEnabled={false}>
                 <View style={{ flexDirection: "row" }}>
                     <View>
                         <Text style={[styles.showPlayers, { height: 60 }]}>Équipe/Athlète</Text>
@@ -162,13 +165,15 @@ export const Trace = (props) => {
                         </View>
                 </View>
             </ScrollView>
+            </ScrollView>
         )
     }
     else { // Other (list like trail etc.)
 
         if (!props.all_teams.autho) {
             return (
-                <ScrollView kek={console.log(props.all_teams.status)} styles={{ flex: 1 }} horizontal={true}>
+                <ScrollView>
+                <ScrollView kek={console.log(props.all_teams.status)} styles={{ flex: 1 }} horizontal={true} directionalLockEnabled={false}>
 
                     <View styles={{ width: 30, height: 70, alignSelf: "center" }}>
 
@@ -225,6 +230,7 @@ export const Trace = (props) => {
 
                     </View>
                 </ScrollView>
+                </ScrollView>
 
 
             )
@@ -233,7 +239,8 @@ export const Trace = (props) => {
 
 
             return (
-                <ScrollView kek={console.log(props.all_teams.status)}  styles={{ height: "100%", flex: 1 }} horizontal={true} >
+                <ScrollView>
+                <ScrollView kek={console.log(props.all_teams.status)}  styles={{ height: "100%", flex: 1 }} horizontal={true} directionalLockEnabled={false}>
                     {props.all_teams.seriesLevel.map(cur_level =>
                         <View key={cur_level}>
                             <View style={{ flexDirection: "row" }}>
@@ -298,7 +305,8 @@ export const Trace = (props) => {
                                 </View>
                             </View>
                         </View>)}
-                </ScrollView >
+                </ScrollView>
+                </ScrollView>
             )
 
 
@@ -392,6 +400,9 @@ function crement_score_team(teamnumber, curMatch, matchArray, setMatchArray, inc
         else if (scoreteam1 > 0) {
             scoreteam1 -= count;
         }
+        if (scoreteam1 < 0) {
+            scoreteam1 = 0;
+        }
     }
     else {
         if (incrementorDecrement == 0) {
@@ -400,6 +411,9 @@ function crement_score_team(teamnumber, curMatch, matchArray, setMatchArray, inc
         }
         else if (scoreteam2 > 0) {
             scoreteam2 -= count;
+        }
+        if (scoreteam2< 0) {
+            scoreteam2 = 0;
         }
     }
     let finalscore = scoreteam1 + ":" + scoreteam2;

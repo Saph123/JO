@@ -20,6 +20,7 @@ import { LoginScreen } from "./LoginScreen.js";
 
 export let username = "";
 export const ArbitreContext = React.createContext(false);
+export const WinnerContext = React.createContext(false);
 export const ChatContext = React.createContext(false);
 export const SportContext = React.createContext(false);
 export let version = 4
@@ -56,6 +57,7 @@ Notifications.setNotificationHandler({
 const Stack = createStackNavigator();
 function App() {
     const [arbitre, setArbitre] = React.useState(false);
+    const [winner, setWinner] = React.useState(false);
     const [username, setUsername] = React.useState("");
     const [chat, setChat] = React.useState(false);
     const [chatName, setChatName] = React.useState("");
@@ -112,92 +114,100 @@ function App() {
     }
     return (
         <NavigationContainer>
-            <ArbitreContext.Provider value={arbitre}>
-                <ChatContext.Provider value={{ chat: chat, setChat: setChat, chatName:chatName, setChatName:setChatName, setNewMessage: setNewMessage }}>
-                    <SportContext.Provider value={{ setCurrentSport: setCurrentSport }}>
-                        <Stack.Navigator screenOptions={{
-                            headerStyle: {
-                                backgroundColor: '#000',
-                                height: 100
-                            },
-                            headerTintColor: '#fff',
-                            headerTitleStyle: {
-                                fontWeight: 'bold',
-                            },
-                        }} initialRouteName="HomeScreen">
-                            <Stack.Screen options={({ navigation }) => ({
-                                title: "Home", headerRight: () => (
-                                    <View style={{ flexDirection: "row", margin: 10 }}>
-                                        <Pressable onPress={() => { setChat(true) }}>
-                                            <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", marginRight: 110, marginTop: 25, alignSelf:"center" }} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
-                                        </Pressable>
-                                        <TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPress={() => { navigation.navigate('UsernameScreen') }}>
-                                            <Text style={{ color: "white", marginTop: username == "Pierrick" ? 0 : 30, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity onPress={playmegaphone}>
-                                            <Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} />
-                                        </TouchableOpacity>
-                                    </View>)
-                            })} initialParams={{ username: username }}  name="HomeScreen" component={HomeScreen} />
+            <WinnerContext.Provider value={winner}>
+                <ArbitreContext.Provider value={arbitre}>
+                    <ChatContext.Provider value={{ chat: chat, setChat: setChat, chatName:chatName, setChatName:setChatName, setNewMessage: setNewMessage }}>
+                        <SportContext.Provider value={{ setCurrentSport: setCurrentSport }}>
+                            <Stack.Navigator screenOptions={{
+                                headerStyle: {
+                                    backgroundColor: '#000',
+                                    height: 100
+                                },
+                                headerTintColor: '#fff',
+                                headerTitleStyle: {
+                                    fontWeight: 'bold',
+                                },
+                            }} initialRouteName="HomeScreen">
+                                <Stack.Screen options={({ navigation }) => ({
+                                    title: "Home", headerRight: () => (
+                                        <View style={{ flexDirection: "row", margin: 10 }}>
+                                            <Pressable onPress={() => { setChat(true) }}>
+                                                <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", marginRight: 110, marginTop: 25, alignSelf:"center" }} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
+                                            </Pressable>
+                                            <TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPress={() => { navigation.navigate('UsernameScreen') }}>
+                                                <Text style={{ color: "white", marginTop: username == "Pierrick" ? 0 : 30, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity onPress={playmegaphone}>
+                                                <Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} />
+                                            </TouchableOpacity>
+                                        </View>)
+                                })} initialParams={{ username: username }}  name="HomeScreen" component={HomeScreen} />
 
-                            <Stack.Screen options={{
-                                title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text>
-                                </View>
-                            }} initialParams={{ pushtoken: "", username: username, setUsername: setUsername }} name="LoginScreen" component={LoginScreen} />
+                                <Stack.Screen options={{
+                                    title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text>
+                                    </View>
+                                }} initialParams={{ pushtoken: "", username: username, setUsername: setUsername }} name="LoginScreen" component={LoginScreen} />
 
-                            <Stack.Screen options={({ navigation }) => ({
-                                title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>
-                                    <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPress={() => { navigation.navigate('UsernameScreen') }}>
-                                        <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
-                                    </TouchableOpacity></View></View>
-                            })} initialParams={{ setCurrentSport: setCurrentSport }} name="PlanningScreen" component={PlanningScreen} />
-                            <Stack.Screen options={({ navigation }) => ({
-                                title: currentSport, headerRight: () =>
-                                    <View style={{ flexDirection: "row", margin: 10 }}>
+                                <Stack.Screen options={({ navigation }) => ({
+                                    title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>
                                         <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPress={() => { navigation.navigate('UsernameScreen') }}>
                                             <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
-                                        </TouchableOpacity></View>
+                                        </TouchableOpacity></View></View>
+                                })} initialParams={{ setCurrentSport: setCurrentSport }} name="PlanningScreen" component={PlanningScreen} />
+                                <Stack.Screen options={({ navigation }) => ({
+                                    title: currentSport, headerRight: () =>
+                                        <View style={{ flexDirection: "row"}}>
+                                            <View style={{flex: 1, marginRight: 15}}>
+                                                <TouchableOpacity onPress={() => { setWinner(true) }} onPressOut={() => setTimeout(() => { setWinner(false) }, 3000)}>
+                                                    <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white"}} source={require('./assets/cup.png')} />
+                                                </TouchableOpacity>
+                                            </View>
+                                            <View style={{flex: 1, marginRight: 15}}>
+                                                <Pressable onPress={() => { setChat(true)}}>
+                                                    <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white",}} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
+                                                </Pressable>
+                                            </View>
+                                            <View style={{flex: 1, marginRight: 15}}>
+                                                <TouchableOpacity onPress={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 3000)}>
+                                                    <Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} />
+                                                </TouchableOpacity>
+                                            </View>
+                                        </View>
+                                })} initialParams={{ sportname: currentSport, username:username }} name="SportDetails" component={SportDetailsScreen} />
+                                <Stack.Screen options={() => ({
+                                    title: "Tableau des médailles", headerRight: () => <View>
                                         <Pressable onPress={() => { setChat(true)}}>
-                                            <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", marginRight: 10 }} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
+                                            <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", marginRight: 20 }} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
                                         </Pressable>
-                                        <TouchableOpacity onPress={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 3000)}>
-                                            <Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} />
-                                        </TouchableOpacity>
                                     </View>
-                            })} initialParams={{ sportname: currentSport, username:username }} name="SportDetails" component={SportDetailsScreen} />
-                            <Stack.Screen options={() => ({
-                                title: "Tableau des médailles", headerRight: () => <View>
-                                    <Pressable onPress={() => { setChat(true)}}>
-                                        <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", marginRight: 20 }} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
-                                    </Pressable>
-                                </View>
-                            })} name="SummaryScreen" component={SummaryScreen} />
-                            <Stack.Screen options={() => ({
-                                title: username
-                            })} initialParams={{ setCurrentSport: setCurrentSport }} name="UsernameScreen" component={UsernameScreen} />
-                            <Stack.Screen options={() => ({
-                                title: username
-                            })} initialParams={{ setCurrentSport: setCurrentSport }} name="2021" component={LastYearsResultsScreen} />
+                                })} name="SummaryScreen" component={SummaryScreen} />
+                                <Stack.Screen options={() => ({
+                                    title: username
+                                })} initialParams={{username: username, setCurrentSport: setCurrentSport }} name="UsernameScreen" component={UsernameScreen} />
+                                <Stack.Screen options={() => ({
+                                    title: username
+                                })} initialParams={{username: username, setCurrentSport: setCurrentSport }} name="2021" component={LastYearsResultsScreen} />
 
-                            <Stack.Screen options={() => ({
-                                title: "Notif tool"
-                            })} initialParams={{ username: username }} name="pushNotifScreen" component={pushNotifScreen} />
+                                <Stack.Screen options={() => ({
+                                    title: "Notif tool"
+                                })} initialParams={{ username: username }} name="pushNotifScreen" component={pushNotifScreen} />
 
-                            <Stack.Screen options={({ navigation }) => ({
-                                title: "Clicker!", headerRight: () => <View>
-                                    <Pressable onPress={() => { setChat(true)}}>
-                                        <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", marginRight: 20 }} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
-                                    </Pressable>
-                                </View>
-                            })} initialParams={{ username: username }} name="ClickerScreen" component={ClickerScreen} />
-                            <Stack.Screen options={() => ({
-                                title: "Van Rommel"
-                            })} name="VanRommel" component={VanRommelScreen} />
+                                <Stack.Screen options={({ navigation }) => ({
+                                    title: "Clicker!", headerRight: () => <View>
+                                        <Pressable onPress={() => { setChat(true)}}>
+                                            <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", marginRight: 20 }} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
+                                        </Pressable>
+                                    </View>
+                                })} initialParams={{ username: username }} name="ClickerScreen" component={ClickerScreen} />
+                                <Stack.Screen options={() => ({
+                                    title: "Van Rommel"
+                                })} name="VanRommel" component={VanRommelScreen} />
 
-                        </Stack.Navigator>
-                    </SportContext.Provider>
-                </ChatContext.Provider>
-            </ArbitreContext.Provider>
+                            </Stack.Navigator>
+                        </SportContext.Provider>
+                    </ChatContext.Provider>
+                </ArbitreContext.Provider>
+            </WinnerContext.Provider>
         </NavigationContainer>
     );
 };
