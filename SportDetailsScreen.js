@@ -4,7 +4,7 @@ import * as React from 'react';
 import { View, ScrollView, ActivityIndicator, Text, Modal, RefreshControl, Pressable, Image } from 'react-native';
 import { Trace } from "./trace.js";
 import { modalChat, fetchChat, fetch_matches, lutImg } from './utils.js';
-import { ChatContext, ArbitreContext, username } from "./App.js";
+import { ChatContext, ArbitreContext } from "./App.js";
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -62,7 +62,7 @@ export function SportDetailsScreen({ route }) {
         setRefreshing(true);
         setloading(true);
         console.log("refresh");
-        fetch_matches(username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel, setModifListe, setBetListe).then(r => {
+        fetch_matches(route.params.username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel, setModifListe, setBetListe).then(r => {
             setloading(false);
 
         });
@@ -76,7 +76,7 @@ export function SportDetailsScreen({ route }) {
         var chatInterval = setInterval(() => fetchChat(route.params.sportname, setChatText, chatcontext.setNewMessage), 3000);
         if (firstTime) {
 
-            fetch_matches(username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel, setModifListe, setBetListe).then(r => {
+            fetch_matches(route.params.username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel, setModifListe, setBetListe).then(r => {
                 setloading(false);
                 setFirstTime(false);
             }).catch(err => { console.log(err); navigation.navigate('HomeScreen') });
@@ -108,7 +108,7 @@ export function SportDetailsScreen({ route }) {
             <View style={{ flex: 10 }}>
                 <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} >
                     <ChatContext.Consumer>
-                        {value => modalChat(value, chatText, setChatText, localText, setLocalText, route.params.sportname, username)}
+                        {value => modalChat(value, chatText, setChatText, localText, setLocalText, route.params.sportname, route.params.username)}
 
                     </ChatContext.Consumer>
                     <ArbitreContext.Consumer>
@@ -139,7 +139,7 @@ export function SportDetailsScreen({ route }) {
                         }
                     </ArbitreContext.Consumer>
 
-                    <Trace status={status} username={username} sport={route.params.sportname} all_teams={all_teams} />
+                    <Trace status={status} username={route.params.username} sport={route.params.sportname} all_teams={all_teams} />
                 </ScrollView>
             </View>
         </View>

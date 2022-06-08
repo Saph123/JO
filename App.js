@@ -56,6 +56,7 @@ Notifications.setNotificationHandler({
 const Stack = createStackNavigator();
 function App() {
     const [arbitre, setArbitre] = React.useState(false);
+    const [username, setUsername] = React.useState("");
     const [chat, setChat] = React.useState(false);
     const [chatName, setChatName] = React.useState("");
     const [soundstatus, setSound] = React.useState();
@@ -94,7 +95,7 @@ function App() {
 
     React.useEffect(() => {
 
-        getValueFor("username").then(r => username = r);
+        getValueFor("username").then(r => setUsername(r));
         for (sport in initialLineNumber) {
         }
         getValueFor("initialLineNumber").then(r => { if (r != "") { initialLineNumber = JSON.parse(r) }; });
@@ -137,12 +138,12 @@ function App() {
                                             <Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} />
                                         </TouchableOpacity>
                                     </View>)
-                            })} name="HomeScreen" component={HomeScreen} />
+                            })} initialParams={{ username: username }}  name="HomeScreen" component={HomeScreen} />
 
                             <Stack.Screen options={{
                                 title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text>
                                 </View>
-                            }} initialParams={{ pushtoken: "", username:username }} name="LoginScreen" component={LoginScreen} />
+                            }} initialParams={{ pushtoken: "", username: username, setUsername: setUsername }} name="LoginScreen" component={LoginScreen} />
 
                             <Stack.Screen options={({ navigation }) => ({
                                 title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>

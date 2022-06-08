@@ -176,7 +176,7 @@ export const Trace = (props) => {
                     </View>
                     <View style={{ flexDirection: "row" }}>
                         <View>
-                            <Text style={styles.inputScore}>Athlete</Text>
+                            <Text style={styles.showPlayers}>Athlete</Text>
                             {props.all_teams.realListe.map(r =>
                                 <Text key={r.username} style={r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers}>{r.username}</Text>
                             )
