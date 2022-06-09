@@ -464,14 +464,16 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         alignItems: "center",
         borderColor: "white",
-        borderWidth: 5,
-        borderBottomStartRadius: 15,
-        borderBottomEndRadius: 15
+        borderWidth: 3,
+        // borderBottomStartRadius: 15,
+        // borderBottomEndRadius: 15,
+        borderTopStartRadius: 15,
+        borderTopEndRadius: 15,
     },
     dateTabsNotSelected: {
         flex: 1,
         minHeight: 60,
-        backgroundColor: "grey",
+        backgroundColor: "white",
         alignContent: "center",
         alignSelf: "center",
         alignItems: "center",
@@ -485,6 +487,5 @@ const styles = StyleSheet.create({
         marginTop: "20%",
         flex: 1
     }
-
 })
 export default styles;
