@@ -457,7 +457,7 @@ export function updateTeams(sport, teams) {
     // // push to server
     fetch("http://91.121.143.104:7070/updateTeams", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sport, "teams": teams }) }).then(r => {
         if (r.status == 200) {
-            Alert.alert("Saved", "Saved to server!", ["Ok"])
+            alert("Saved", "Saved to server!", ["Ok"])
         }
         else {
             alert("Wrong login or password!");
@@ -473,15 +473,22 @@ export function pushbets(username, sport, bets) {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     // // push to server
-    fetch("http://91.121.143.104:7070/pushBets", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "sport": sport, "bets": bets }) }).then(r => {
-        if (r.status == 200) {
-            Alert.alert("Saved","Saved to server!", ["Ok"])
+    for (var i in bets) {
+        if (bets[i]['rank'] == 1) {
+            
+            fetch("http://91.121.143.104:7070/pushBets", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "sport": sport, "bets": bets[i]["username"] }) }).then(r => {
+                if (r.status == 200) {
+                    alert("Saved","Saved to server!", ["Ok"])
+                }
+                else {
+                    alert("Wrong login or password!");
+                }
+                
+            }).catch((err) => { alert("Issue with server!") });
+            return;
         }
-        else {
-            alert("Wrong login or password!");
-        }
-
-    }).catch((err) => { alert("Issue with server!") });
+        
+    }
 }
 function countLines(str) {
     return (str.match(/\n/g) || '').length + 1;
