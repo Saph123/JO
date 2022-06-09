@@ -477,15 +477,23 @@ const styles = StyleSheet.create({
         alignContent: "center",
         alignSelf: "center",
         alignItems: "center",
-        borderColor: "white",
-        borderWidth: 5,
-        borderBottomStartRadius: 15,
-        borderBottomEndRadius: 15
+        borderColor: "black",
+        borderWidth: 3,
+        borderTopStartRadius: 15,
+        borderTopEndRadius: 15,
+        borderBottomWidth:0,
+        shadowColor:"red",
+    },
+    dateTextTabsNotSelected:{
+        color:"grey",
+        marginTop: "20%",
+        flex:1
     },
     dateTextTabs: {
         color: "white",
         marginTop: "20%",
-        flex: 1
+        flex:1,
+        fontWeight:"bold",
     }
 })
 export default styles;
