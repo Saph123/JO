@@ -17,39 +17,38 @@ const MedailleView = (props) => {
     const locked = props.locked;
     return (
         locked ? <View style={r.rank == rank ? styles.medailleopaque : styles.medailleabsent}>
-            <Image resizeMode="cover" resizeMethod="resize" source={props.metal} /></View> : 
-        <View style={r.rank == rank ? styles.medailleopaque : styles.medailletransparent}>
-            <TouchableOpacity
-                onPress={() => {
-                    props.setloading(true);
-                    var count = 0;
-                    for (var i = 0; i < props.liste.length; ++i) {
-                        if (props.liste[i].rank == rank)
-                            count++;
-                    }
-                    if (r.rank == rank) {
-                        r.rank = 0
-                    }
-                    else if (count < maxMedals) {
-                        r.rank = rank;
-                    }
-                    else
-                    {
+            <Image resizeMode="cover" resizeMethod="resize" source={props.metal} /></View> :
+            <View style={r.rank == rank ? styles.medailleopaque : styles.medailletransparent}>
+                <TouchableOpacity
+                    onPress={() => {
+                        props.setloading(true);
+                        var count = 0;
                         for (var i = 0; i < props.liste.length; ++i) {
                             if (props.liste[i].rank == rank)
-                            props.liste[i].rank = 0;
+                                count++;
                         }
-                        r.rank = rank;
-                    }
-                    // uncomment if you want only one medal
-                    // props.liste.map((q, index2) => { if (r != q && q.rank == rank) { q.rank = 0 } }); 
-                    props.setRealListe([...props.liste]);
-                    props.setloading(false)
-                }}
-            >
-                <Image resizeMode="cover" resizeMethod="resize" source={props.metal} />
-            </TouchableOpacity>
-        </View>
+                        if (r.rank == rank) {
+                            r.rank = 0
+                        }
+                        else if (count < maxMedals) {
+                            r.rank = rank;
+                        }
+                        else {
+                            for (var i = 0; i < props.liste.length; ++i) {
+                                if (props.liste[i].rank == rank)
+                                    props.liste[i].rank = 0;
+                            }
+                            r.rank = rank;
+                        }
+                        // uncomment if you want only one medal
+                        // props.liste.map((q, index2) => { if (r != q && q.rank == rank) { q.rank = 0 } }); 
+                        props.setRealListe([...props.liste]);
+                        props.setloading(false)
+                    }}
+                >
+                    <Image resizeMode="cover" resizeMethod="resize" source={props.metal} />
+                </TouchableOpacity>
+            </View>
     )
 
 }
@@ -60,7 +59,7 @@ export const Trace = (props) => {
     const [loading, setloading] = React.useState(true);
     const navigation = useNavigation();
     React.useEffect(() => {
-            setloading(false)
+        setloading(false)
 
 
     }, [status]);
@@ -103,46 +102,44 @@ export const Trace = (props) => {
         )
 
     }
-    if (status == "modif")
-    {
+    if (status == "modif") {
         return (
             <ScrollView>
-            <ScrollView horizontal={true} directionalLockEnabled={false}>
-                <View style={{ flexDirection: "row" }}>
-                    <View>
-                        <Text style={[styles.showPlayers, { height: 60 }]}>Équipe/Athlète</Text>
-                        {props.all_teams.modifListe.map(r =>
-                            <TextInput key={r.username} onChangeText={(text) => { r.username = text; }} style={styles.showPlayers}>{r.username}</TextInput>
-                        )
-                        }
+                <ScrollView horizontal={true} directionalLockEnabled={false}>
+                    <View style={{ flexDirection: "row" }}>
+                        <View>
+                            <Text style={[styles.showPlayers, { height: 60 }]}>Équipe/Athlète</Text>
+                            {props.all_teams.modifListe.map(r =>
+                                <TextInput key={r.username} onChangeText={(text) => { r.username = text; }} style={styles.showPlayers}>{r.username}</TextInput>
+                            )
+                            }
+                        </View>
+                        <View style={{ width: 60, height: 60, backgroundColor: "lightgrey", justifyContent: "center" }}>
+                            <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => { // Function to save only the results!
+                                props.all_teams.setModifListe([...props.all_teams.modifListe]);
+                                updateTeams(sport, props.all_teams.modifListe);
+                            }
+                            }>
+                                <Image resizeMode="cover" resizeMethod="resize" style={{ alignSelf: "center" }} source={require('./assets/save.png')}></Image>
+                            </Pressable>
+                        </View>
                     </View>
-                    <View style={{ width: 60, height: 60, backgroundColor: "lightgrey", justifyContent:"center" }}>
-                        <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => { // Function to save only the results!
-                            props.all_teams.setModifListe([...props.all_teams.modifListe]);
-                            updateTeams(sport, props.all_teams.modifListe);
-                        }
-                        }>
-                            <Image resizeMode="cover" resizeMethod="resize" style={{alignSelf:"center"}} source={require('./assets/save.png')}></Image>
-                        </Pressable>
-                    </View>
-                </View>
-            </ScrollView>
+                </ScrollView>
             </ScrollView>
         )
     }
-    if (status == "paris" || status == "paris_locked")
-    {
+    if (status == "paris" || status == "paris_locked") {
         return (
             <ScrollView>
-            <ScrollView horizontal={true} directionalLockEnabled={false}>
-                <View style={{ flexDirection: "row" }}>
-                    <View>
-                        <Text style={[styles.showPlayers, { height: 60 }]}>Équipe/Athlète</Text>
-                        {props.all_teams.betListe.map(r =>
-                            <Text key={r.username} onChangeText={(text) => { r.username = text; }} style={styles.showPlayers}>{r.username}</Text>
-                        )
-                        }
-                    </View>
+                <ScrollView horizontal={true} directionalLockEnabled={false}>
+                    <View style={{ flexDirection: "row" }}>
+                        <View>
+                            <Text style={[styles.showPlayers, { height: 60 }]}>Équipe/Athlète</Text>
+                            {props.all_teams.betListe.map(r =>
+                                <Text key={r.username} onChangeText={(text) => { r.username = text; }} style={styles.showPlayers}>{r.username}</Text>
+                            )
+                            }
+                        </View>
                         <View>
                             <Text style={[styles.inputScore, { height: 60 }]}>Nb votes</Text>
                             {props.all_teams.betListe.map(r =>
@@ -161,42 +158,50 @@ export const Trace = (props) => {
 
                             </View>
                             {props.all_teams.betListe.map(r =>
-                            <View key={r.username} style={{ flexDirection: "row" }} >
-                                <MedailleView maxMedals={1} r={r} liste={props.all_teams.betListe} setRealListe={props.all_teams.setBetListe} setloading={props.all_teams.setloading} metal={require('./assets/youpin.png')} rank={1} locked={status=="paris_locked"}></MedailleView>
-                            </View>
+                                <View key={r.username} style={{ flexDirection: "row" }} >
+                                    <MedailleView maxMedals={1} r={r} liste={props.all_teams.betListe} setRealListe={props.all_teams.setBetListe} setloading={props.all_teams.setloading} metal={require('./assets/youpin.png')} rank={1} locked={status == "paris_locked"}></MedailleView>
+                                </View>
                             )
                             }
                         </View>
-                </View>
-            </ScrollView>
+                    </View>
+                </ScrollView>
             </ScrollView>
         )
     }
-    if (status == "done")
-    {
+    if (status == "done") {
         const dimensions = Dimensions.get('window');
-        const imageHeight = dimensions.height*.75;
+        const imageHeight = dimensions.height * .75;
         const imageWidth = dimensions.width;
         return (
-            <ImageBackground style={{ width: imageWidth, height: imageHeight}} source={require('./assets/podium2.png')}>
-
-                <View style={{ position:"absolute", flexDirection: "row", alignSelf:"center", alignItems:"center", bottom: "10%" }}>
-                    <View style={[styles.podium, {marginLeft: "15%", marginRight: 20}]}>
-                        <Text style={{textAlign:"center"}}>Quentin{"\n"}Remi{"\n"}Mich{"\n"}Girex</Text>
-                    </View>
-                    <View style={[styles.podium, {justifyContent: "center", marginBottom: "15%"}]}>
-                        <Text style={{textAlign:"center"}}>Boolbi{"\n"}Shmave{"\n"}Willy{"\n"}Antoine</Text>
-                    </View>
-                    <View style={{ flexDirection: "column", marginRight: 20, marginBottom: "19%"}}>
-                        <View style={[styles.podium, {marginBottom:5}]}>
-                            <Text style={{textAlign:"center"}}>Carol-Ann{"\n"}Ugo{"\n"}Guibra{"\n"}Thomas</Text>
+            <ImageBackground style={{ width: imageWidth, height: imageHeight }} source={require('./assets/podium2.png')}>
+                <View style={{flex:1}}>
+                    <Text style={{textAlign:"center", fontWeight:"bold", fontSize:46,}}> 2021</Text>
+                </View>
+                <View style={{ flex: 10, flexDirection: "row", alignSelf: "center", width: "100%" }}>
+                    <View style={{ flex: 1, flexDirection: "row", marginTop: "20%", justifyContent: "center" }}>
+                        <View style={[styles.podium, { flex: 1, marginLeft: 30 }]}>
+                            <Text style={{ textAlign: "center" }}>Quentin{"\n"}Remi{"\n"}Mich{"\n"}Girex</Text>
                         </View>
-                        <View style={[styles.podium, {marginTop:5}]}>
-                            <Text style={{textAlign:"center"}}>Emma{"\n"}Pierrick{"\n"}Jolan{"\n"}Florent</Text>
+                    </View>
+                    <View style={{ flex: 1, flexDirection: "row", marginTop: "5%", justifyContent: "center" }}>
+                        <View style={[styles.podium, { flex: 1 }]}>
+                            <Text style={{ textAlign: "center" }}>Boolbi{"\n"}Shmave{"\n"}Willy{"\n"}Antoine</Text>
+                        </View>
+                    </View>
+
+                    <View style={{ flex: 1,marginTop: "20%", justifyContent: "center" }}>
+                        <View style={{ flex:1, flexDirection:"row", marginBottom: 5, justifyContent:"space-between" }}>
+                            <View style={[styles.podium, { marginBottom: 5 }]}>
+                                <Text style={{ textAlign: "center", flexShrink: 1 }}>Carol-Ann{"\n"}Ugo{"\n"}Guibra{"\n"}Thomas</Text>
+                            </View>
+                            <View style={[styles.podium, { marginBottom: 5 }]}>
+                                <Text style={{ textAlign: "center" }}>Emma{"\n"}Pierrick{"\n"}Jolan{"\n"}Florent</Text>
+                            </View>
                         </View>
                     </View>
                 </View>
-            </ImageBackground>
+            </ImageBackground >
         )
     }
     else { // Other (list like trail etc.)
@@ -204,63 +209,63 @@ export const Trace = (props) => {
         if (!props.all_teams.autho) {
             return (
                 <ScrollView>
-                <ScrollView kek={console.log(props.all_teams.status)} styles={{ flex: 1 }} horizontal={true} directionalLockEnabled={false}>
+                    <ScrollView kek={console.log(props.all_teams.status)} styles={{ flex: 1 }} horizontal={true} directionalLockEnabled={false}>
 
-                    <View styles={{ width: 30, height: 70, alignSelf: "center" }}>
+                        <View styles={{ width: 30, height: 70, alignSelf: "center" }}>
 
-                        {/* {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, 0, setListe, setFinal, username, setSeriesLevel, setRealListe) : <Text></Text>} */}
-                    </View>
-                    <View style={{ flexDirection: "row" }}>
-                        <View>
-                            <Text style={styles.showPlayers}>Athlete</Text>
-                            {props.all_teams.realListe.map(r =>
-                                <Text key={r.username} style={r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers}>{r.username}</Text>
-                            )
-                            }
+                            {/* {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, 0, setListe, setFinal, username, setSeriesLevel, setRealListe) : <Text></Text>} */}
                         </View>
-                        <View>
-                            <Text style={styles.inputScore}>Score/Temps</Text>
-                            {props.all_teams.realListe.map(r =>
-                                <Text key={r.username} style={styles.inputScore}>{r.score}</Text>
-                            )
-                            }
-                        </View>
-                        <View>
-                            <View style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
-                            {props.all_teams.realListe.map((r, index) => {
-                                if (r.rank == 1) {
-                                    return (
-                                        <View key={index} style={{ flexDirection: "row" }} >
-                                            <View style={styles.medailleopaque}>
-                                                <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
+                        <View style={{ flexDirection: "row" }}>
+                            <View>
+                                <Text style={styles.showPlayers}>Athlete</Text>
+                                {props.all_teams.realListe.map(r =>
+                                    <Text key={r.username} style={r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers}>{r.username}</Text>
+                                )
+                                }
+                            </View>
+                            <View>
+                                <Text style={styles.inputScore}>Score/Temps</Text>
+                                {props.all_teams.realListe.map(r =>
+                                    <Text key={r.username} style={styles.inputScore}>{r.score}</Text>
+                                )
+                                }
+                            </View>
+                            <View>
+                                <View style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
+                                {props.all_teams.realListe.map((r, index) => {
+                                    if (r.rank == 1) {
+                                        return (
+                                            <View key={index} style={{ flexDirection: "row" }} >
+                                                <View style={styles.medailleopaque}>
+                                                    <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
+                                                </View>
+                                            </View>)
+
+                                    }
+                                    else if (r.rank == 2) {
+                                        return (
+                                            <View key={index} style={styles.medailleopaque}>
+                                                <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
+                                            </View>)
+                                    }
+                                    else if (r.rank == 3) {
+                                        return (
+                                            <View key={index} style={styles.medailleopaque}>
+                                                <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
                                             </View>
-                                        </View>)
+                                        )
+                                    }
+                                    else {
+                                        return (
+                                            <View key={index} style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
+                                        )
+                                    }
+                                }
+                                )}
+                            </View>
 
-                                }
-                                else if (r.rank == 2) {
-                                    return (
-                                        <View key={index} style={styles.medailleopaque}>
-                                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
-                                        </View>)
-                                }
-                                else if (r.rank == 3) {
-                                    return (
-                                        <View key={index} style={styles.medailleopaque}>
-                                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
-                                        </View>
-                                    )
-                                }
-                                else {
-                                    return (
-                                        <View key={index} style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
-                                    )
-                                }
-                            }
-                            )}
                         </View>
-
-                    </View>
-                </ScrollView>
+                    </ScrollView>
                 </ScrollView>
 
 
@@ -271,72 +276,72 @@ export const Trace = (props) => {
 
             return (
                 <ScrollView>
-                <ScrollView kek={console.log(props.all_teams.status)}  styles={{ height: "100%", flex: 1 }} horizontal={true} directionalLockEnabled={false}>
-                    {props.all_teams.seriesLevel.map(cur_level =>
-                        <View key={cur_level}>
-                            <View style={{ flexDirection: "row" }}>
-                                <View>
-                                    <Text style={[styles.showPlayers, { height: 60 }]}>Athlete</Text>
-                                    {props.all_teams.realListe.map((r, index) => {
+                    <ScrollView kek={console.log(props.all_teams.status)} styles={{ height: "100%", flex: 1 }} horizontal={true} directionalLockEnabled={false}>
+                        {props.all_teams.seriesLevel.map(cur_level =>
+                            <View key={cur_level}>
+                                <View style={{ flexDirection: "row" }}>
+                                    <View>
+                                        <Text style={[styles.showPlayers, { height: 60 }]}>Athlete</Text>
+                                        {props.all_teams.realListe.map((r, index) => {
 
-                                        if (cur_level == r.level) {
-                                            return (
-
-                                                <View key={index}>
-                                                    <Text style={r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers}>{r.username}</Text>
-                                                </View>
-                                            )
-                                        }
-                                    }
-                                    )
-                                    }
-                                </View>
-                                <View>
-                                    <Text style={[styles.inputScore, { height: 60 }]}>Score/Temps</Text>
-                                    {props.all_teams.realListe.map((r, index) => {
-                                        if (cur_level == r.level) {
-                                            return (
-                                                <TextInput key={index} onChangeText={(text) => { r.score = text; }} style={styles.inputScore}>{r.score}</TextInput>
-                                            )
-                                        }
-                                    }
-                                    )
-                                    }
-                                </View>
-                                <View>
-                                    <View style={{ width: 60, height: 60, backgroundColor: "lightgrey", justifyContent: "center" }}>
-                                        <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => { // Function to save only the results!
-                                            props.all_teams.setListe([...props.all_teams.realListe]);
-                                            pushmatch(username, sport, props.all_teams.realListe, "liste", 0);
-                                        }
-                                        }>
-                                            <Image resizeMode="cover" resizeMethod="resize" style={{ alignSelf: "center" }} source={require('./assets/save.png')}></Image>
-                                        </Pressable>
-
-                                    </View>
-                                    {props.all_teams.realListe.map((r, index) => {
-                                        if (cur_level == r.level) {
-                                            if (sport == 'Pizza')
+                                            if (cur_level == r.level) {
                                                 return (
-                                                    <View key={index} style={{ flexDirection: "row" }} >
-                                                        <MedailleView maxMedals={1} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/or.png')} rank={1} locked={false}></MedailleView>
+
+                                                    <View key={index}>
+                                                        <Text style={r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers}>{r.username}</Text>
                                                     </View>
                                                 )
-
-                                            return (
-                                                <View key={index} style={{ flexDirection: "row" }} >
-                                                    <MedailleView maxMedals={2} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/bronze.png')} rank={3} locked={false}></MedailleView>
-                                                    <MedailleView maxMedals={2} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/argent.png')} rank={2} locked={false}></MedailleView>
-                                                    <MedailleView maxMedals={2} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/or.png')} rank={1} locked={false}></MedailleView>
-                                                </View>
-                                            )
+                                            }
                                         }
-                                    }
-                                    )}
+                                        )
+                                        }
+                                    </View>
+                                    <View>
+                                        <Text style={[styles.inputScore, { height: 60 }]}>Score/Temps</Text>
+                                        {props.all_teams.realListe.map((r, index) => {
+                                            if (cur_level == r.level) {
+                                                return (
+                                                    <TextInput key={index} onChangeText={(text) => { r.score = text; }} style={styles.inputScore}>{r.score}</TextInput>
+                                                )
+                                            }
+                                        }
+                                        )
+                                        }
+                                    </View>
+                                    <View>
+                                        <View style={{ width: 60, height: 60, backgroundColor: "lightgrey", justifyContent: "center" }}>
+                                            <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => { // Function to save only the results!
+                                                props.all_teams.setListe([...props.all_teams.realListe]);
+                                                pushmatch(username, sport, props.all_teams.realListe, "liste", 0);
+                                            }
+                                            }>
+                                                <Image resizeMode="cover" resizeMethod="resize" style={{ alignSelf: "center" }} source={require('./assets/save.png')}></Image>
+                                            </Pressable>
+
+                                        </View>
+                                        {props.all_teams.realListe.map((r, index) => {
+                                            if (cur_level == r.level) {
+                                                if (sport == 'Pizza')
+                                                    return (
+                                                        <View key={index} style={{ flexDirection: "row" }} >
+                                                            <MedailleView maxMedals={1} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/or.png')} rank={1} locked={false}></MedailleView>
+                                                        </View>
+                                                    )
+
+                                                return (
+                                                    <View key={index} style={{ flexDirection: "row" }} >
+                                                        <MedailleView maxMedals={2} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/bronze.png')} rank={3} locked={false}></MedailleView>
+                                                        <MedailleView maxMedals={2} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/argent.png')} rank={2} locked={false}></MedailleView>
+                                                        <MedailleView maxMedals={2} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/or.png')} rank={1} locked={false}></MedailleView>
+                                                    </View>
+                                                )
+                                            }
+                                        }
+                                        )}
+                                    </View>
                                 </View>
-                            </View>
-                        </View>)}
-                </ScrollView>
+                            </View>)}
+                    </ScrollView>
                 </ScrollView>
             )
 
@@ -443,7 +448,7 @@ function crement_score_team(teamnumber, curMatch, matchArray, setMatchArray, inc
         else if (scoreteam2 > 0) {
             scoreteam2 -= count;
         }
-        if (scoreteam2< 0) {
+        if (scoreteam2 < 0) {
             scoreteam2 = 0;
         }
     }
@@ -461,8 +466,8 @@ function matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, typ
 
         <View key={index} style={r.over == 0 ? (type == "playoff" ? styles.match : styles.matchpoule) : (type == "playoff" ? styles.matchover : styles.matchpouleover)}>
             <Text style={r.over == 2 ? styles.lose : (r.over == 0 ? (r.team1.includes(username) ? styles.teamUserIsIn : styles.teamnormal) : styles.teamnormal)}>{r.team1}</Text>
-            <View style={{ flex: 1, alignItems: 'center', flexDirection: "row" , width : 150}}>
-            <View style={{ flex: 1 }}><Text style={styles.score}>{r.team1 == "" ? "" : r.score}</Text></View>
+            <View style={{ flex: 1, alignItems: 'center', flexDirection: "row", width: 150 }}>
+                <View style={{ flex: 1 }}><Text style={styles.score}>{r.team1 == "" ? "" : r.score}</Text></View>
                 {(r.team1 != "" && r.team2 != "" && autho) ?
                     <View style={{ flex: 1 }}><Pressable onPress={() => { setInitScore(r.score); setCurrMatchZoom(r); setMatchZoom(true) }}>
                         <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/editlogo.png')} />

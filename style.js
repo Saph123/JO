@@ -204,9 +204,12 @@ const styles = StyleSheet.create({
         elevation: 5
     },
     podium: {
-        margin: 20,
+        marginTop: 20,
+        flex:1,
+        // margin:10,
         maxWidth: 100,
         maxHeight: 140,
+        // minWidth:80,
         backgroundColor: "white",
         borderRadius: 20,
         padding: 5,
