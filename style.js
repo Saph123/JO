@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
         marginBottom: 30,
         marginLeft: 5,
         width: 250,
-        minHeight:130
+        minHeight: 130
     },
     match: {
         backgroundColor: "#A8DADC",
@@ -192,6 +192,24 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         borderRadius: 20,
         padding: 35,
+        alignSelf: "center",
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5
+    },
+    podium: {
+        margin: 20,
+        maxWidth: 100,
+        maxHeight: 140,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 5,
         alignSelf: "center",
         alignItems: "center",
         shadowColor: "#000",
@@ -394,7 +412,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#FED8B1",
         borderRadius: 15,
         height: 600,
-        flexDirection:"column"
+        flexDirection: "column"
     },
     medailleNumber: {
         fontSize: 18,
@@ -435,7 +453,7 @@ const styles = StyleSheet.create({
         height: 60,
         width: 60
     },
-    dateTabsSelected:{
+    dateTabsSelected: {
         flex: 1,
         minHeight: 60,
         backgroundColor: "black",
@@ -447,7 +465,7 @@ const styles = StyleSheet.create({
         borderBottomStartRadius: 15,
         borderBottomEndRadius: 15
     },
-    dateTabsNotSelected:{
+    dateTabsNotSelected: {
         flex: 1,
         minHeight: 60,
         backgroundColor: "grey",
@@ -459,10 +477,10 @@ const styles = StyleSheet.create({
         borderBottomStartRadius: 15,
         borderBottomEndRadius: 15
     },
-    dateTextTabs:{
-        color:"white",
+    dateTextTabs: {
+        color: "white",
         marginTop: "20%",
-        flex:1
+        flex: 1
     }
 
 })

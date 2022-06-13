@@ -1,6 +1,6 @@
 import styles from "./style";
 import { useNavigation } from '@react-navigation/native';
-import { View, ActivityIndicator, ScrollView, TextInput, Text, Image, Modal, Pressable, Alert } from 'react-native';
+import { View, ActivityIndicator, ScrollView, TextInput, Text, Image, Modal, Pressable, Alert, Dimensions, ImageBackground } from 'react-native';
 import * as React from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Svg, Polyline } from 'react-native-svg';
@@ -14,7 +14,10 @@ const MedailleView = (props) => {
     const rank = props.rank;
     const r = props.r;
     const maxMedals = props.maxMedals
+    const locked = props.locked;
     return (
+        locked ? <View style={r.rank == rank ? styles.medailleopaque : styles.medailleabsent}>
+            <Image resizeMode="cover" resizeMethod="resize" source={props.metal} /></View> : 
         <View style={r.rank == rank ? styles.medailleopaque : styles.medailletransparent}>
             <TouchableOpacity
                 onPress={() => {
@@ -53,19 +56,20 @@ const MedailleView = (props) => {
 export const Trace = (props) => {
     const sport = props.sport;
     const username = props.username;
+    const status = props.all_teams.status.status;
     const [loading, setloading] = React.useState(true);
     const navigation = useNavigation();
     React.useEffect(() => {
             setloading(false)
 
 
-    }, [props.all_teams.status.status]);
+    }, [status]);
     if (loading) {
         return (
 
             <View><ActivityIndicator size="large" color="black" /></View>);
     }
-    if (props.all_teams.status.status == "playoff") {
+    if (status == "playoff") {
         return (
 
             <ScrollView horizontal={true}>
@@ -78,7 +82,7 @@ export const Trace = (props) => {
             </ScrollView>
         );
     }
-    if (props.all_teams.status.status == "poules") {
+    if (status == "poules") {
         return (
             <ScrollView kek={console.log(props.all_teams.groups)} horizontal={true}>
                 {props.all_teams.groups.map((r, index) =>
@@ -99,7 +103,7 @@ export const Trace = (props) => {
         )
 
     }
-    if (props.all_teams.status.status == "modif")
+    if (status == "modif")
     {
         return (
             <ScrollView>
@@ -126,7 +130,7 @@ export const Trace = (props) => {
             </ScrollView>
         )
     }
-    if (props.all_teams.status.status == "paris")
+    if (status == "paris" || status == "paris_locked")
     {
         return (
             <ScrollView>
@@ -147,9 +151,9 @@ export const Trace = (props) => {
                             }
                         </View>
                         <View style={{ flexDirection: "column" }}>
-                            <View style={{ width: 60, height: 60, backgroundColor: "lightgrey", justifyContent: "center" }}>
-                                <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => { // Function to save only the results!
-                                    pushbets(username, sport, props.all_teams.betListe);
+                            <View style={{ width: 60, height: 60, backgroundColor: status == "paris" ? "lightgrey" : "", justifyContent: "center" }}>
+                                <Pressable style={({ pressed }) => [{ opacity: status == "paris" ? pressed ? 0.2 : 1 : 0, alignSelf: "center" }]} onPress={() => { // Function to save only the results!
+                                    status == "paris" ? pushbets(username, sport, props.all_teams.betListe) : "";
                                 }
                                 }>
                                     <Image resizeMode="cover" resizeMethod="resize" style={{ alignSelf: "center" }} source={require('./assets/save.png')}></Image>
@@ -158,7 +162,7 @@ export const Trace = (props) => {
                             </View>
                             {props.all_teams.betListe.map(r =>
                             <View key={r.username} style={{ flexDirection: "row" }} >
-                                <MedailleView maxMedals={1} r={r} liste={props.all_teams.betListe} setRealListe={props.all_teams.setBetListe} setloading={props.all_teams.setloading} metal={require('./assets/youpin.png')} rank={1}></MedailleView>
+                                <MedailleView maxMedals={1} r={r} liste={props.all_teams.betListe} setRealListe={props.all_teams.setBetListe} setloading={props.all_teams.setloading} metal={require('./assets/youpin.png')} rank={1} locked={status=="paris_locked"}></MedailleView>
                             </View>
                             )
                             }
@@ -166,6 +170,33 @@ export const Trace = (props) => {
                 </View>
             </ScrollView>
             </ScrollView>
+        )
+    }
+    if (status == "done")
+    {
+        const dimensions = Dimensions.get('window');
+        const imageHeight = dimensions.height*.75;
+        const imageWidth = dimensions.width;
+        return (
+            <ImageBackground style={{ width: imageWidth, height: imageHeight}} source={require('./assets/podium2.png')}>
+
+                <View style={{ position:"absolute", flexDirection: "row", alignSelf:"center", alignItems:"center", bottom: "10%" }}>
+                    <View style={[styles.podium, {marginLeft: "15%", marginRight: 20}]}>
+                        <Text style={{textAlign:"center"}}>Quentin{"\n"}Remi{"\n"}Mich{"\n"}Girex</Text>
+                    </View>
+                    <View style={[styles.podium, {justifyContent: "center", marginBottom: "15%"}]}>
+                        <Text style={{textAlign:"center"}}>Boolbi{"\n"}Shmave{"\n"}Willy{"\n"}Antoine</Text>
+                    </View>
+                    <View style={{ flexDirection: "column", marginRight: 20, marginBottom: "19%"}}>
+                        <View style={[styles.podium, {marginBottom:5}]}>
+                            <Text style={{textAlign:"center"}}>Carol-Ann{"\n"}Ugo{"\n"}Guibra{"\n"}Thomas</Text>
+                        </View>
+                        <View style={[styles.podium, {marginTop:5}]}>
+                            <Text style={{textAlign:"center"}}>Emma{"\n"}Pierrick{"\n"}Jolan{"\n"}Florent</Text>
+                        </View>
+                    </View>
+                </View>
+            </ImageBackground>
         )
     }
     else { // Other (list like trail etc.)
@@ -288,15 +319,15 @@ export const Trace = (props) => {
                                             if (sport == 'Pizza')
                                                 return (
                                                     <View key={index} style={{ flexDirection: "row" }} >
-                                                        <MedailleView maxMedals={1} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/or.png')} rank={1}></MedailleView>
+                                                        <MedailleView maxMedals={1} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/or.png')} rank={1} locked={false}></MedailleView>
                                                     </View>
                                                 )
 
                                             return (
                                                 <View key={index} style={{ flexDirection: "row" }} >
-                                                    <MedailleView maxMedals={2} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/bronze.png')} rank={3}></MedailleView>
-                                                    <MedailleView maxMedals={2} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/argent.png')} rank={2}></MedailleView>
-                                                    <MedailleView maxMedals={2} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/or.png')} rank={1}></MedailleView>
+                                                    <MedailleView maxMedals={2} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/bronze.png')} rank={3} locked={false}></MedailleView>
+                                                    <MedailleView maxMedals={2} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/argent.png')} rank={2} locked={false}></MedailleView>
+                                                    <MedailleView maxMedals={2} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/or.png')} rank={1} locked={false}></MedailleView>
                                                 </View>
                                             )
                                         }

@@ -91,7 +91,7 @@ export function SportDetailsScreen({ route }) {
         return (<ActivityIndicator size="large" color="#000000" />)
     }
     return (
-        <View style={{ flex: 1, flexDirection: "column", height: 50 }}>
+        <View style={{ flex: 1, flexDirection: "column", height: 50, backgroundColor:"#C9CBCD" }}>
             <View style={{ flex: 1, flexDirection: "row" }}>
                 {status.states.map(r =>
                     <Pressable key={r} onPress={() => {

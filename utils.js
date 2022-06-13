@@ -184,7 +184,6 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                 console.log(r);
                 setBetListe(r);
             }).catch(err => { console.log(err); allok = false});
-            data['states'].push("paris");
             setStatus(data);
             let status = data;
             if (status['states'].includes("poules")) {
@@ -378,11 +377,13 @@ export function lutImg(imgname) {
         Petanque: require('./assets/sports/petanque.png'),
         Molky: require('./assets/sports/molkky.png'),
         paris: require('./assets/paris.png'),
+        paris_locked: require('./assets/paris.png'),
         poules: require('./assets/poules.png'),
         playoff: require('./assets/playoff.png'),
         modif: require('./assets/editlogo2.png'),
         final: require('./assets/liste.png'),
         series: require('./assets/liste.png'),
+        done: require('./assets/podium.png'),
     };
     return lut[imgname];
 }
@@ -471,24 +472,25 @@ export function pushbets(username, sport, bets) {
     // 5 second timeout:
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
+    const vote = ""
 
     // // push to server
     for (var i in bets) {
         if (bets[i]['rank'] == 1) {
-            
-            fetch("http://91.121.143.104:7070/pushBets", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "sport": sport, "bets": bets[i]["username"] }) }).then(r => {
-                if (r.status == 200) {
-                    alert("Saved","Saved to server!", ["Ok"])
-                }
-                else {
-                    alert("Wrong login or password!");
-                }
-                
-            }).catch((err) => { alert("Issue with server!") });
-            return;
+            vote = bets[i]["username"];
+            break;
+        }
+    }
+    fetch("http://91.121.143.104:7070/pushBets", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "sport": sport, "bets": vote }) }).then(r => {
+        if (r.status == 200) {
+            alert("Saved","Saved to server!", ["Ok"])
+        }
+        else {
+            alert("Wrong login or password!");
         }
         
-    }
+    }).catch((err) => { alert("Issue with server!") });
+    return;
 }
 function countLines(str) {
     return (str.match(/\n/g) || '').length + 1;
