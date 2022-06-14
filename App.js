@@ -5,7 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Audio } from 'expo-av';
 import * as Notifications from 'expo-notifications';
-import { getValueFor } from './utils.js';
+import { getValueFor, save } from './utils.js';
 
 import { HomeScreen } from "./HomeScreen.js";
 import { PlanningScreen } from "./PlanningScreen.js";
@@ -96,17 +96,12 @@ function App() {
     }
 
     React.useEffect(() => {
-
         getValueFor("username").then(r => setUsername(r));
         for (sport in initialLineNumber) {
         }
         getValueFor("initialLineNumber").then(r => { if (r != "") { initialLineNumber = JSON.parse(r) }; });
         setLoad(false);
-
-
-
-
-    }, []);
+    }, [username]);
     if (load) {
         return (
             <View></View>
@@ -141,7 +136,7 @@ function App() {
                                                 <Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} />
                                             </TouchableOpacity>
                                         </View>)
-                                })} initialParams={{ username: username }}  name="HomeScreen" component={HomeScreen} />
+                                })} initialParams={{ username: username, refresh:"" }}  name="HomeScreen" component={HomeScreen} />
 
                                 <Stack.Screen options={{
                                     title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text>
