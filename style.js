@@ -459,7 +459,7 @@ const styles = StyleSheet.create({
     dateTabsSelected: {
         flex: 1,
         minHeight: 60,
-        backgroundColor: "black",
+        backgroundColor: "white",
         alignContent: "center",
         alignSelf: "center",
         alignItems: "center",
@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
     dateTabsNotSelected: {
         flex: 1,
         minHeight: 60,
-        backgroundColor: "white",
+        backgroundColor: "black",
         alignContent: "center",
         alignSelf: "center",
         alignItems: "center",
@@ -490,7 +490,7 @@ const styles = StyleSheet.create({
         flex:1
     },
     dateTextTabs: {
-        color: "white",
+        color: "black",
         marginTop: "20%",
         flex:1,
         fontWeight:"bold",
