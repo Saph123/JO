@@ -15,7 +15,7 @@ export function LoginScreen({ route, navigation }) {
     // 5 second timeout:
     let localusername = "";
     React.useEffect(() => {
-        localusername = getValueFor("username").then(r => {setuserName(r); return r});
+        localusername = getValueFor("username").then(r => { setuserName(r); return r });
         getValueFor("password").then(r => setpassword(r));
     }, []);
     const timeoutId = setTimeout(() => controller.abort(), 5000)
@@ -32,22 +32,25 @@ export function LoginScreen({ route, navigation }) {
                     </View>
                     <View style={{ margin: 30, flexDirection: "row" }}>
 
-                        <TouchableOpacity style={{ width: 60, height: 30, borderRadius: 15, backgroundColor: "#ff8484", justifyContent: "center" }} title="Log in" onPress={() =>
-
+                        <TouchableOpacity style={{ width: 60, height: 30, borderRadius: 15, backgroundColor: "#ff8484", justifyContent: "center" }} title="Log in" onPress={() => {
+                            console.log(userName, password);
                             fetch("http://91.121.143.104:7070/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": userName, "password": password }) }).then(r => {
                                 if (r.status == 200) {
                                     route.params.setUsername(userName);
                                     pushtoken(route.params.pushtoken, userName);
                                     save("username", userName);
                                     save("password", password);
-                                    navigation.reset({index: 0, routes: [{name: 'HomeScreen'}]});
+                                    console.log(userName, password);
+                                    navigation.reset({ index: 0, routes: [{ name: 'HomeScreen' }] });
                                     return;
                                 }
                                 else {
                                     alert("Wrong login or password!");
                                     return;
                                 }
-                            }).catch((err) => { alert(err, "Issue with server!"); return })}>
+
+                            }).catch((err) => { alert(err, "Issue with server!"); return })
+                        }}>
                             <Text style={{ textAlign: "center", textAlignVertical: "center" }}>Login</Text>
                         </TouchableOpacity>
                     </View>

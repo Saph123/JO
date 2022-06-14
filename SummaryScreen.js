@@ -3,7 +3,7 @@ import * as React from 'react';
 import { View, ActivityIndicator, Text, Image, Modal, Pressable } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { fetch_results } from "./trace.js";
-import { modalChat, fetchChat, addth } from './utils.js';
+import { modalChat, fetchChat, addth, getValueFor } from './utils.js';
 import { ChatContext } from "./App.js";
 
 
@@ -11,12 +11,14 @@ export function SummaryScreen() {
     const [loading, setLoading] = React.useState(true);
     const [tableauMedaille, setTableauMedaille] = React.useState([{}]);
     const [chatText, setChatText] = React.useState("");
+    const [username, setusername] = React.useState("");
     const [localText, setLocalText] = React.useState("");
     const [medailleSport, setMedailleSport] = React.useState(false);
     const [winSport, setWinSport] = React.useState(false);
     const [modalMedaille, setModaleMedaille] = React.useState(false);
     const chatcontext = React.useContext(ChatContext);
     React.useEffect(() => {
+        getValueFor("username").then(r => setusername(r));
         chatcontext.setChatName("Summary");
         fetch_results().then(r => {
             let tempArray = []
