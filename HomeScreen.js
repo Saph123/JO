@@ -1,6 +1,6 @@
 import styles from "./style";
 import * as React from 'react';
-import { View, ScrollView, ActivityIndicator, Text, Image, Pressable, Linking, Alert, Pressable } from 'react-native';
+import { View, ScrollView, ActivityIndicator, Text, Image, Pressable, Linking, Alert } from 'react-native';
 import { Audio } from 'expo-av';
 
 import { getNextEventseconds, Planning } from "./planning.js";
@@ -146,6 +146,7 @@ export function HomeScreen({ route, navigation }) {
         // setLoading(0);
         return () => {
             clearInterval(chatInterval);
+            console.log("kek");
             Notifications.removeNotificationSubscription(notificationListener.current);
             Notifications.removeNotificationSubscription(responseListener.current);
         };
