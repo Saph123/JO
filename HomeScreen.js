@@ -1,7 +1,6 @@
 import styles from "./style";
 import * as React from 'react';
-import { View, ScrollView, ActivityIndicator, Text, Image, Pressable, Linking, Alert } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { View, ScrollView, ActivityIndicator, Text, Image, Pressable, Linking, Alert, Pressable } from 'react-native';
 import { Audio } from 'expo-av';
 
 import { getNextEventseconds, Planning } from "./planning.js";
@@ -167,11 +166,11 @@ export function HomeScreen({ route, navigation }) {
                 />
                 <Text style={{ fontWeight: "bold" }}>Tu dois te connecter d'abord!</Text>
                 <Text style={{ fontWeight: "bold" }}>Demande à Max tes identifiants</Text>
-                <TouchableOpacity style={styles.loginbutton}
+                <Pressable style={styles.loginbutton}
                     onPress={() => { navigation.navigate('LoginScreen') }}
                 >
                     <Text style={styles.texthomebutton}>Login</Text>
-                </TouchableOpacity>
+                </Pressable>
                 <StatusBar style="light" />
             </View>
         )
