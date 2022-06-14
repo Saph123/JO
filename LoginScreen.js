@@ -2,8 +2,9 @@ import styles from "./style";
 import * as React from 'react';
 import { View, TextInput, Text, Image, Linking, Pressable, ScrollView } from 'react-native';
 import { getValueFor, save, videoHandler, pushtoken, manageEvents, eventView } from './utils';
-import { version, SportContext } from "./App"
-import { fetch_global_results, fetch_activities } from "./trace.js";
+import { version } from "./App"
+import { SportContext } from "./context.js"
+import { fetch_results, fetch_activities } from "./trace.js";
 import { Planning } from "./planning.js";
 
 export function LoginScreen({ route, navigation }) {
@@ -89,7 +90,6 @@ export function LoginScreen({ route, navigation }) {
                                     pushtoken(route.params.pushtoken, userName);
                                     save("username", userName);
                                     save("password", password);
-                                    console.log(userName, password);
                                     navigation.reset({ index: 0, routes: [{ name: 'HomeScreen' }] });
                                     return;
                                 }

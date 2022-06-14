@@ -8,19 +8,17 @@ import * as Notifications from 'expo-notifications';
 import { getValueFor, save } from './utils.js';
 
 import { HomeScreen } from "./HomeScreen.js";
-import { PlanningScreen } from "./PlanningScreen.js";
 import { SummaryScreen } from "./SummaryScreen.js";
-import { ClickerScreen } from "./ClickerScreen.js";
 import { LastYearsResultsScreen } from "./LastYearsResultsScreen.js";
 import { SportDetailsScreen } from "./SportDetailsScreen.js";
 import { VanRommelScreen } from "./VanRommelScreen.js";
 import { pushNotifScreen } from "./PushNotifScreen.js";
 import { LoginScreen } from "./LoginScreen.js";
-
+import { SportContext } from "./context.js"
 export let username = "";
 export const ArbitreContext = React.createContext(false);
 export const ChatContext = React.createContext(false);
-export const SportContext = React.createContext(false);
+
 export let version = 4
 export let initialLineNumber = {
     "Trail": 0,
@@ -140,12 +138,6 @@ function App() {
                                 }} initialParams={{ pushtoken: "", username: username, setUsername: setUsername }} name="LoginScreen" component={LoginScreen} />
 
                                 <Stack.Screen options={({ navigation }) => ({
-                                    title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>
-                                        <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPress={() => { navigation.navigate('LoginScreen') }}>
-                                            <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
-                                        </TouchableOpacity></View></View>
-                                })} initialParams={{ setCurrentSport: setCurrentSport }} name="PlanningScreen" component={PlanningScreen} />
-                                <Stack.Screen options={({ navigation }) => ({
                                     title: currentSport, headerRight: () =>
                                         <View style={{ flexDirection: "row"}}>
                                             <View style={{flex: 1, marginRight: 15}}>
@@ -175,13 +167,6 @@ function App() {
                                     title: "Notif tool"
                                 })} initialParams={{ username: username }} name="pushNotifScreen" component={pushNotifScreen} />
 
-                                <Stack.Screen options={({ navigation }) => ({
-                                    title: "Clicker!", headerRight: () => <View>
-                                        <Pressable onPress={() => { setChat(true)}}>
-                                            <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", marginRight: 20 }} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
-                                        </Pressable>
-                                    </View>
-                                })} initialParams={{ username: username }} name="ClickerScreen" component={ClickerScreen} />
                                 <Stack.Screen options={() => ({
                                     title: "Van Rommel"
                                 })} name="VanRommel" component={VanRommelScreen} />
