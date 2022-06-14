@@ -177,14 +177,14 @@ export function HomeScreen({ navigation }) {
         )
     }
     return (
-        <View style={{ flex: 1 }}>
-            <View style={{ flex: 1, flexDirection: "row" }}>
-                <Pressable onPress={() => { setDisplayDay(mercredi) }} style={displayDay.getDay() === mercredi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={styles.dateTextTabs}>13 Juillet</Text></Pressable>
-                <Pressable onPress={() => { setDisplayDay(jeudi) }} style={displayDay.getDay() === jeudi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={styles.dateTextTabs}>14 Juillet</Text></Pressable>
-                <Pressable onPress={() => { setDisplayDay(vendredi) }} style={displayDay.getDay() === vendredi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={styles.dateTextTabs}>15 Juillet</Text></Pressable>
-                <Pressable onPress={() => { setDisplayDay(samedi) }} style={displayDay.getDay() === samedi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={styles.dateTextTabs}>16 Juillet</Text></Pressable>
+        <View style={{ flex: 1, backgroundColor:"black" }}>
+            <View style={{ backgroundColor:"red", flex: 1,marginTop:10, flexDirection: "row" }}>
+                <Pressable onPress={() => { setDisplayDay(mercredi) }} style={displayDay.getDay() === mercredi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === mercredi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>13 Juillet</Text></Pressable>
+                <Pressable onPress={() => { setDisplayDay(jeudi) }} style={displayDay.getDay() === jeudi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === jeudi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>14 Juillet</Text></Pressable>
+                <Pressable onPress={() => { setDisplayDay(vendredi) }} style={displayDay.getDay() === vendredi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === vendredi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>15 Juillet</Text></Pressable>
+                <Pressable onPress={() => { setDisplayDay(samedi) }} style={displayDay.getDay() === samedi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === samedi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>16 Juillet</Text></Pressable>
             </View>
-            <View style={{ flex: 15, marginTop: 15 }}>
+            <View style={{ flex: 15, marginTop: 10,backgroundColor:"white"}}>
 
                 <ScrollView >
                     <ChatContext.Consumer>
