@@ -196,7 +196,7 @@ export function HomeScreen({ route, navigation }) {
 
                     <SportContext.Consumer>
                         {value =>
-                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
+                            <View key={value} style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                                 <View style={{ flex: 1 }}>
                                     {planning["listeevent"].map(r => {
                                         if (r.timeBegin.getDay() == displayDay.getDay()) {

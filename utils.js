@@ -46,7 +46,7 @@ class Match {
 export function firstDay(secondsleft, setSecondsleft) {
 
     return (
-        <View>
+        <View key={secondsleft}>
             {secondsleft < 0 ? <View></View> : <View><Text style={{ alignSelf: "center" }}>{"Soirée d'ouverture dans :"}</Text><CountDown
                 style={{ color: "black" }}
                 digitStyle={{ backgroundColor: "#FF8484" }}
@@ -54,7 +54,7 @@ export function firstDay(secondsleft, setSecondsleft) {
                 onFinish={() => { setSecondsleft(0); setTimeout(() => setSecondsleft(-1), 1000 * 5 * 60 * 60) }}
                 size={20}
             /></View>}
-            <View style={{ justifyContent: "center" }}>
+            <View key={"details"} style={{ justifyContent: "center" }}>
                 <Text style={{ textAlign: "center", fontSize: 24, fontWeight: "bold" }}> BIENVENUE!</Text>
                 <Text style={{ textAlign: "center" }}> What's new?!</Text>
                 <Text style={{ textAlign: "center" }}> * Système de paris!</Text>
