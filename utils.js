@@ -181,7 +181,6 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                 }
             }
             fetch_teams_bet(sportname, username).then(r => {
-                console.log(r);
                 setBetListe(r);
             }).catch(err => { console.log(err); allok = false });
             setStatus(data);
@@ -218,7 +217,6 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
 
                     let level = [];
                     let local_array_match = [[]];
-                    // console.log(data);
                     for (let j = 0; j < data['levels']; j++) {
                         level.push(j);
 
@@ -402,7 +400,7 @@ export function lutImg(imgname) {
         modif: require('./assets/editlogo2.png'),
         final: require('./assets/liste.png'),
         series: require('./assets/liste.png'),
-        done: require('./assets/podium.png'),
+        results: require('./assets/podium.png'),
     };
     return lut[imgname];
 }
@@ -433,7 +431,6 @@ function sportlist() {
 }
 export function fetchChat(sportname, setChatText, setNewMessage) {
     fetch("https://applijo.freeddns.org/Chatalere/" + sportname + ".txt").then(response => response.text()).then(r => {
-        console.log(countLines(r));
         if (initialLineNumber[sportname] != countLines(r) && countLines(r) > 1) {
             setNewMessage(true);
         }
@@ -454,6 +451,27 @@ export async function fetch_teams(sportname) {
         return local_liste;
     }).catch(err => console.log(err));
     return fetch_teams;
+}
+
+export async function fetch_sport_results(sportname, setResults) {
+    let lists;
+    lists = await fetch("https://applijo.freeddns.org/results/sports/" + sportname + "_summary.json").then(response => response.json()).then(data => {
+        let results = {"1":{}, "2":{}, "3":{}}
+        for (var i in data)
+            {
+                results["1"][i] = [];
+                results["2"][i] = [];
+                results["3"][i] = [];
+                for(team in data[i]["Teams"])
+                {
+                    console.log(data[i]["Teams"][team])
+                    results[data[i]["Teams"][team]['rank'].toString()][i].push(data[i]["Teams"][team]["Players"].replace(/\//g, "\n"));
+                }
+            }
+            console.log(results)
+            setResults(results)
+            return results;
+    }).catch(err => console.log(err));
 }
 
 function pushChat(sportname, text, username) {
@@ -492,7 +510,7 @@ export function pushbets(username, sport, bets) {
     // 5 second timeout:
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
-    const vote = ""
+    var vote = ""
 
     // // push to server
     for (var i in bets) {

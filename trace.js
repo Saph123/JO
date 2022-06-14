@@ -57,6 +57,8 @@ export const Trace = (props) => {
     const username = props.username;
     const status = props.all_teams.status.status;
     const [loading, setloading] = React.useState(true);
+    const [year, setYear] = React.useState(2021);
+    const [second, setSecond] = React.useState(0);
     const navigation = useNavigation();
     React.useEffect(() => {
         setloading(false)
@@ -83,7 +85,7 @@ export const Trace = (props) => {
     }
     if (status == "poules") {
         return (
-            <ScrollView kek={console.log(props.all_teams.groups)} horizontal={true}>
+            <ScrollView  horizontal={true}>
                 {props.all_teams.groups.map((r, index) =>
                     <View key={r.name} style={styles.tablecontainer}>
                         <View style={{ flex: 3 }}>
@@ -169,36 +171,35 @@ export const Trace = (props) => {
             </ScrollView>
         )
     }
-    if (status == "done") {
+    if (status == "results") {
         const dimensions = Dimensions.get('window');
         const imageHeight = dimensions.height * .75;
         const imageWidth = dimensions.width;
         return (
-            <ImageBackground style={{ width: imageWidth, height: imageHeight }} source={require('./assets/podium2.png')}>
-                <View style={{flex:1}}>
-                    <Text style={{textAlign:"center", fontWeight:"bold", fontSize:46,}}> 2021</Text>
+            <ImageBackground style={{ width: imageWidth, height: imageHeight }} source={require('./assets/podium3.png')}>
+                <View style={{flex:2}}>
+                    <View style={{ flexDirection: "row", alignSelf: "center", width: "100%"}}>
+                        <Pressable style={({ pressed }) => [{ opacity: (year - 1) in props.results["1"] ? pressed ? 0.2 : 1 : 0 }]} onPress={() => { if((year - 1) in props.results["1"]) setYear(year - 1) }}>
+                           <Image source={require('./assets/arrow_left.png')}/>
+                        </Pressable>
+                        <View style={{flex:1}}>
+                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/calendar2.png')}/>
+                            <Text style={{textAlign:"center", fontWeight:"bold", fontSize:30, marginTop: "-40%"}}>{year}</Text>
+                        </View>
+                        <Pressable style={({ pressed }) => [{ opacity: (year + 1) in props.results["1"] ? pressed ? 0.2 : 1 : 0 }]} onPress={() => { if ((year + 1) in props.results["1"]) setYear(year + 1) }}>
+                            <Image source={require('./assets/arrow_right.png')}/>
+                        </Pressable>
+                    </View>
                 </View>
                 <View style={{ flex: 10, flexDirection: "row", alignSelf: "center", width: "100%" }}>
-                    <View style={{ flex: 1, flexDirection: "row", marginTop: "20%", justifyContent: "center" }}>
-                        <View style={[styles.podium, { flex: 1, marginLeft: 30 }]}>
-                            <Text style={{ textAlign: "center" }}>Quentin{"\n"}Remi{"\n"}Mich{"\n"}Girex</Text>
-                        </View>
-                    </View>
                     <View style={{ flex: 1, flexDirection: "row", marginTop: "5%", justifyContent: "center" }}>
-                        <View style={[styles.podium, { flex: 1 }]}>
-                            <Text style={{ textAlign: "center" }}>Boolbi{"\n"}Shmave{"\n"}Willy{"\n"}Antoine</Text>
-                        </View>
+                        {props.results["2"][year].map(r => result_view(r))}
                     </View>
-
-                    <View style={{ flex: 1,marginTop: "20%", justifyContent: "center" }}>
-                        <View style={{ flex:1, flexDirection:"row", marginBottom: 5, justifyContent:"space-between" }}>
-                            <View style={[styles.podium, { marginBottom: 5 }]}>
-                                <Text style={{ textAlign: "center", flexShrink: 1 }}>Carol-Ann{"\n"}Ugo{"\n"}Guibra{"\n"}Thomas</Text>
-                            </View>
-                            <View style={[styles.podium, { marginBottom: 5 }]}>
-                                <Text style={{ textAlign: "center" }}>Emma{"\n"}Pierrick{"\n"}Jolan{"\n"}Florent</Text>
-                            </View>
-                        </View>
+                    <View style={{ flex: 1, flexDirection: "row", marginTop: "-5%", justifyContent: "center" }}>
+                        {props.results["1"][year].map(r => result_view(r))}
+                    </View>
+                    <View style={{ flex: 1, flexDirection: "row", marginTop: "7%", justifyContent: "center" }}>
+                        {props.results["3"][year].map(r => result_view(r))}
                     </View>
                 </View>
             </ImageBackground >
@@ -209,7 +210,7 @@ export const Trace = (props) => {
         if (!props.all_teams.autho) {
             return (
                 <ScrollView>
-                    <ScrollView kek={console.log(props.all_teams.status)} styles={{ flex: 1 }} horizontal={true} directionalLockEnabled={false}>
+                    <ScrollView styles={{ flex: 1 }} horizontal={true} directionalLockEnabled={false}>
 
                         <View styles={{ width: 30, height: 70, alignSelf: "center" }}>
 
@@ -276,7 +277,7 @@ export const Trace = (props) => {
 
             return (
                 <ScrollView>
-                    <ScrollView kek={console.log(props.all_teams.status)} styles={{ height: "100%", flex: 1 }} horizontal={true} directionalLockEnabled={false}>
+                    <ScrollView styles={{ height: "100%", flex: 1 }} horizontal={true} directionalLockEnabled={false}>
                         {props.all_teams.seriesLevel.map(cur_level =>
                             <View key={cur_level}>
                                 <View style={{ flexDirection: "row" }}>
@@ -352,6 +353,14 @@ export const Trace = (props) => {
 
 
 }
+
+function result_view(results)
+{
+    return(
+        <View style={styles.podium}>
+            <Text style={{ textAlign: "center" }}>{results}</Text>
+        </View>)
+}
 // function button_switch(status, setStatus, sport, otherState, setloading, team_number, setListe, setFinal, username, setSeriesLevel, setRealListe) {
 // if (otherState == "playoff") { // so we will be in groups
 //     setWidth(400 * (team_number.length + 1));
@@ -397,7 +406,7 @@ export const Trace = (props) => {
 // }
 
 
-export async function fetch_results() {
+export async function fetch_global_results() {
     let fetch_results = {}
 
     fetch_results = await fetch("https://applijo.freeddns.org/results/global.json").then(response => response.json()).then(data => {

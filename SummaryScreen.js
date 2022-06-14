@@ -2,7 +2,7 @@ import styles from "./style";
 import * as React from 'react';
 import { View, ActivityIndicator, Text, Image, Modal, Pressable } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { fetch_results } from "./trace.js";
+import { fetch_global_results } from "./trace.js";
 import { modalChat, fetchChat, addth, getValueFor } from './utils.js';
 import { ChatContext } from "./App.js";
 
@@ -20,7 +20,7 @@ export function SummaryScreen() {
     React.useEffect(() => {
         getValueFor("username").then(r => setusername(r));
         chatcontext.setChatName("Summary");
-        fetch_results().then(r => {
+        fetch_global_results().then(r => {
             let tempArray = []
             for (var i in r) {
 

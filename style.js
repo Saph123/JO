@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
         flex:1,
         // margin:10,
         maxWidth: 100,
-        maxHeight: 140,
+        maxHeight: 300,
         // minWidth:80,
         backgroundColor: "white",
         borderRadius: 20,

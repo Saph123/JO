@@ -3,7 +3,7 @@ import * as React from 'react';
 import { View, TextInput, Text, Image, Linking, Pressable, ScrollView } from 'react-native';
 import { getValueFor, save, videoHandler, pushtoken, manageEvents, eventView } from './utils';
 import { version, SportContext } from "./App"
-import { fetch_results, fetch_activities } from "./trace.js";
+import { fetch_global_results, fetch_activities } from "./trace.js";
 import { Planning } from "./planning.js";
 
 export function LoginScreen({ route, navigation }) {
@@ -35,7 +35,7 @@ export function LoginScreen({ route, navigation }) {
                 setLoggedIn(true);
                 manageEvents(setEventsDone, setEventsInProgess)
                 fetch_activities(r, setArbitre, setEvents);
-                fetch_results().then(r => {
+                fetch_global_results().then(r => {
 
                     for (var player_data in r) {
                         if (r[player_data]["name"] == r) {
