@@ -146,7 +146,6 @@ export function HomeScreen({ route, navigation }) {
         // setLoading(0);
         return () => {
             clearInterval(chatInterval);
-            console.log("kek");
             Notifications.removeNotificationSubscription(notificationListener.current);
             Notifications.removeNotificationSubscription(responseListener.current);
         };

@@ -6,7 +6,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Svg, Polyline } from 'react-native-svg';
 import { Table, Row } from 'react-native-table-component';
 import 'react-native-url-polyfill/auto';
-import { version } from "./App"
+import { version } from "./global"
 import { updateTeams, pushbets } from "./utils";
 
 
