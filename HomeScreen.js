@@ -1,14 +1,13 @@
 import styles from "./style";
 import * as React from 'react';
 import { View, ScrollView, ActivityIndicator, Text, Image, Pressable, Linking, Alert } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Audio } from 'expo-av';
 
 import { getNextEventseconds, Planning } from "./planning.js";
 import * as Notifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
 import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo, firstDay } from './utils.js';
-import { ChatContext, SportContext } from "./App.js";
+import {SportContext, ChatContext} from "./global.js"
 export function HomeScreen({ route, navigation }) {
     const [loading, setLoading] = React.useState(1);
     const [username, setusername] = React.useState("");
@@ -35,7 +34,7 @@ export function HomeScreen({ route, navigation }) {
     var vendredi = new Date('2022-07-15T00:00:00+02:00');
     var samedi = new Date('2022-07-16T00:00:00+02:00');
     async function playcluedo() {
-        pushcluedo()
+        pushcluedo().then(r => console.log("pushing cluedo")).catch((err) => console.error("cluedo", err));
         if (soundstatus == undefined) {
 
 
@@ -167,11 +166,11 @@ export function HomeScreen({ route, navigation }) {
                 />
                 <Text style={{ fontWeight: "bold" }}>Tu dois te connecter d'abord!</Text>
                 <Text style={{ fontWeight: "bold" }}>Demande à Max tes identifiants</Text>
-                <TouchableOpacity style={styles.loginbutton}
+                <Pressable style={styles.loginbutton}
                     onPress={() => { navigation.navigate('LoginScreen') }}
                 >
                     <Text style={styles.texthomebutton}>Login</Text>
-                </TouchableOpacity>
+                </Pressable>
                 <StatusBar style="light" />
             </View>
         )
@@ -196,7 +195,7 @@ export function HomeScreen({ route, navigation }) {
 
                     <SportContext.Consumer>
                         {value =>
-                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
+                            <View key={value} style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                                 <View style={{ flex: 1 }}>
                                     {planning["listeevent"].map(r => {
                                         if (r.timeBegin.getDay() == displayDay.getDay()) {

@@ -4,7 +4,7 @@ import { View, ActivityIndicator, Text, Image, Modal, Pressable } from 'react-na
 import { ScrollView } from 'react-native-gesture-handler';
 import { fetch_global_results } from "./trace.js";
 import { modalChat, fetchChat, addth, getValueFor } from './utils.js';
-import { ChatContext } from "./App.js";
+import { ChatContext } from "./global";
 
 
 export function SummaryScreen() {

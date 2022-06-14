@@ -4,7 +4,7 @@ import * as React from 'react';
 import { View, ScrollView, ActivityIndicator, Text, Modal, RefreshControl, Pressable, Image } from 'react-native';
 import { Trace } from "./trace.js";
 import { modalChat, fetchChat, fetch_matches, lutImg, fetch_sport_results } from './utils.js';
-import { ChatContext, ArbitreContext, WinnerContext } from "./App.js";
+import { ChatContext, ArbitreContext } from "./global.js";
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));

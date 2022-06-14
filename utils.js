@@ -6,7 +6,7 @@ import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import * as SecureStore from 'expo-secure-store';
 import { Planning } from './planning';
-import { version, initialLineNumber } from "./App"
+import { version, initialLineNumber } from "./global.js"
 import CountDown from 'react-native-countdown-component';
 
 class Liste {
@@ -46,7 +46,7 @@ class Match {
 export function firstDay(secondsleft, setSecondsleft) {
 
     return (
-        <View>
+        <View key={secondsleft}>
             {secondsleft < 0 ? <View></View> : <View><Text style={{ alignSelf: "center" }}>{"Soirée d'ouverture dans :"}</Text><CountDown
                 style={{ color: "black" }}
                 digitStyle={{ backgroundColor: "#FF8484" }}
@@ -54,7 +54,7 @@ export function firstDay(secondsleft, setSecondsleft) {
                 onFinish={() => { setSecondsleft(0); setTimeout(() => setSecondsleft(-1), 1000 * 5 * 60 * 60) }}
                 size={20}
             /></View>}
-            <View style={{ justifyContent: "center" }}>
+            <View key={"details"} style={{ justifyContent: "center" }}>
                 <Text style={{ textAlign: "center", fontSize: 24, fontWeight: "bold" }}> BIENVENUE!</Text>
                 <Text style={{ textAlign: "center" }}> What's new?!</Text>
                 <Text style={{ textAlign: "center" }}> * Système de paris!</Text>
@@ -551,10 +551,12 @@ export async function pushcluedo() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     // // push to server
+    getValueFor("username").then( username =>
     fetch("https://applijo.freeddns.org/cluedo", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "cluedo": username }) }).then(r => {
 
 
-    }).catch((err) => { console.log("Maybe it's normal") });
+    }).catch((err) => { console.log("Maybe it's normal") })
+    );
 }
 
 export async function askPushNotif(username, title, body, to) {

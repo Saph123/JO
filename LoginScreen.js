@@ -1,9 +1,9 @@
 import styles from "./style";
 import * as React from 'react';
-import { View, TextInput, Text, Image, Linking, Pressable, ScrollView } from 'react-native';
+import { View, TextInput, Text, Image, Linking, Pressable, ScrollView, ActivityIndicator } from 'react-native';
 import { getValueFor, save, videoHandler, pushtoken, manageEvents, eventView } from './utils';
-import { version, SportContext } from "./App"
-import { fetch_global_results, fetch_activities } from "./trace.js";
+import { SportContext, version } from "./global.js"
+import { fetch_activities } from "./trace.js";
 import { Planning } from "./planning.js";
 
 export function LoginScreen({ route, navigation }) {
@@ -67,7 +67,7 @@ export function LoginScreen({ route, navigation }) {
     }, []);
     const timeoutId = setTimeout(() => controller.abort(), 5000)
     if (loading) {
-        return (<View><Text>kek</Text></View>)
+        return (<ActivityIndicator size="large" color="#000000" />)
     }
     if (!loggedIn) {
         return (
@@ -89,7 +89,6 @@ export function LoginScreen({ route, navigation }) {
                                     pushtoken(route.params.pushtoken, userName);
                                     save("username", userName);
                                     save("password", password);
-                                    console.log(userName, password);
                                     navigation.reset({ index: 0, routes: [{ name: 'HomeScreen' }] });
                                     return;
                                 }

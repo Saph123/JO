@@ -4,7 +4,7 @@ import { View, ActivityIndicator, Text, Image, ScrollView } from 'react-native';
 import { Planning } from "./planning.js";
 import { fetch_global_results, fetch_activities } from "./trace.js";
 import { getValueFor, manageEvents, eventView, addth } from './utils.js';
-import { SportContext } from "./App";
+import {SportContext} from "./global.js"
 
 export function LastYearsResultsScreen({ route, navigation }) {
     const [loading, setLoading] = React.useState(true);

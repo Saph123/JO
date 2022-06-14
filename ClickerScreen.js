@@ -3,7 +3,8 @@ import * as React from 'react';
 import { View, Text, Image, Pressable, ScrollView } from 'react-native';
 import { Accelerometer } from 'expo-sensors';
 import { modalChat, fetchChat } from "./utils.js"
-import { version, ChatContext } from "./App"
+import { version, ChatContext } from "./global.js"
+
 
 let newvalueclicker = 0;
 let previousValueClicker = 0;
