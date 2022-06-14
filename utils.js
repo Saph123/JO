@@ -551,10 +551,12 @@ export async function pushcluedo() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     // // push to server
+    getValueFor("username").then( username =>
     fetch("https://applijo.freeddns.org/cluedo", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "cluedo": username }) }).then(r => {
 
 
-    }).catch((err) => { console.log("Maybe it's normal") });
+    }).catch((err) => { console.log("Maybe it's normal") })
+    );
 }
 
 export async function askPushNotif(username, title, body, to) {

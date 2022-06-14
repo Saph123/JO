@@ -16,7 +16,6 @@ export function pushNotifScreen() {
     }, []);
     if (loading) {
         return (<ActivityIndicator size="large" color="#000000" />)
-
     }
     return (
         <View>

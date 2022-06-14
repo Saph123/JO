@@ -35,7 +35,7 @@ export function HomeScreen({ route, navigation }) {
     var vendredi = new Date('2022-07-15T00:00:00+02:00');
     var samedi = new Date('2022-07-16T00:00:00+02:00');
     async function playcluedo() {
-        pushcluedo()
+        pushcluedo().then(r => console.log("pushing cluedo")).catch((err) => console.error("cluedo", err));
         if (soundstatus == undefined) {
 
 
