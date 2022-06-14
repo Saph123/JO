@@ -74,7 +74,7 @@ export function HomeScreen({ route, navigation }) {
             default:
                 setDisplayDay(mercredi);
         }
-        getValueFor("username").then(r => setusername(r));
+        getValueFor("username").then(r => {setusername(r); setLoading(0)}).catch( () => setLoading(0));
         chatcontext.setChatName("Home");
         manageEvents(setEventsDone, setCurrentEvents)
         var startEvent = getNextEventseconds();
@@ -144,7 +144,7 @@ export function HomeScreen({ route, navigation }) {
             }
 
         });
-        setLoading(0);
+        // setLoading(0);
         return () => {
             clearInterval(chatInterval);
             Notifications.removeNotificationSubscription(notificationListener.current);
@@ -210,7 +210,7 @@ export function HomeScreen({ route, navigation }) {
                                             else {
 
                                                 return (
-                                                    eventView(currentEvents, eventsDone, r.eventname, navigation, value.setCurrentSport, 'SportDetails', null, r.timeBegin));
+                                                    eventView(currentEvents, eventsDone, r.eventname, navigation, value.setCurrentSport, 'SportDetails', r.timeBegin));
                                             }
                                         }
                                     })}

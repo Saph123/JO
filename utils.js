@@ -47,19 +47,19 @@ export function firstDay(secondsleft, setSecondsleft) {
 
     return (
         <View>
-            {secondsleft < 0 ? <View></View>:<View><Text style={{ alignSelf: "center" }}>{"Soirée d'ouverture dans :"}</Text><CountDown
-            style={{ color: "black" }}
-            digitStyle={{ backgroundColor: "#FF8484" }}
-            until={secondsleft}
-            onFinish={() => { setSecondsleft(0); setTimeout(() => setSecondsleft(-1), 1000 * 5 * 60 * 60) }}
-            size={20}
-        /></View>}
-            <View style={{justifyContent:"center"}}>
-                <Text style={{textAlign:"center", fontSize:24, fontWeight:"bold"}}> BIENVENUE!</Text>
-                <Text style={{textAlign:"center"}}> What's new?!</Text>
-                <Text style={{textAlign:"center"}}> * Système de paris!</Text>
-                <Text style={{textAlign:"center"}}> * Ta mère</Text>
-                <Text style={{textAlign:"center"}}> * Ta soeur</Text>
+            {secondsleft < 0 ? <View></View> : <View><Text style={{ alignSelf: "center" }}>{"Soirée d'ouverture dans :"}</Text><CountDown
+                style={{ color: "black" }}
+                digitStyle={{ backgroundColor: "#FF8484" }}
+                until={secondsleft}
+                onFinish={() => { setSecondsleft(0); setTimeout(() => setSecondsleft(-1), 1000 * 5 * 60 * 60) }}
+                size={20}
+            /></View>}
+            <View style={{ justifyContent: "center" }}>
+                <Text style={{ textAlign: "center", fontSize: 24, fontWeight: "bold" }}> BIENVENUE!</Text>
+                <Text style={{ textAlign: "center" }}> What's new?!</Text>
+                <Text style={{ textAlign: "center" }}> * Système de paris!</Text>
+                <Text style={{ textAlign: "center" }}> * Ta mère</Text>
+                <Text style={{ textAlign: "center" }}> * Ta soeur</Text>
             </View>
         </View>
     );
@@ -172,18 +172,18 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                 }
                 if ("Max" == username || "Antoine" == username || "Ugo" == username) {
                     setAutho(true);
-                    if (! data['states'].includes("modif")) {
+                    if (!data['states'].includes("modif")) {
                         data['states'].push("modif");
                     }
                     fetch_teams(sportname).then(r => {
                         setModifListe(r);
-                    }).catch(err => { console.log(err); allok = false});
+                    }).catch(err => { console.log(err); allok = false });
                 }
             }
             fetch_teams_bet(sportname, username).then(r => {
                 console.log(r);
                 setBetListe(r);
-            }).catch(err => { console.log(err); allok = false});
+            }).catch(err => { console.log(err); allok = false });
             setStatus(data);
             let status = data;
             if (status['states'].includes("poules")) {
@@ -342,18 +342,37 @@ export function addth(rank) {
 }
 
 
-export function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentSport, navigateTo, setfun, timeBegin) {
+export function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentSport, navigateTo, timeBegin, summary = false) {
 
-    return (
-        <View style={{ flex: 1, margin: -1, flexDirection: "row", borderColor: "black", borderWidth: 2, borderTopWidth:0 }}>
-            <View style={{ alignSelf: "center", width: 70, height: "100%", flexDirection: "column", justifyContent: "center", borderRightWidth: 2, borderRightColor: "black" }}><Text style={{ textAlign: "center", fontWeight: "bold" }}>{timeBegin.getHours() + "H" + timeBegin.getMinutes().toString().padStart(2, "0")}</Text></View>
-            <Pressable delayLongPress={5000} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
-                onPress={() => { sportlist().includes(sportname) ? setCurrentSport(sportname) : "", sportlist().includes(sportname) ? navigation.navigate(navigateTo, { sportname: sportname }) : ""}} onLongPress={() => { if (sportname == 'Petanque') { setfun(true) } }}
-            >
-                <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
-            </Pressable>
-            <View style={{ flexDirection: "column", justifyContent: "center", alignSelf: "center", marginLeft: 50 }}><Text>{sportname}</Text></View>
-        </View>)
+    if (!summary) {
+        return (
+
+            <View style={{ flex: 1, margin: -1, flexDirection: "row", borderColor: "black", borderWidth: 2, borderTopWidth: 0 }}>
+                <View style={{ alignSelf: "center", width: 70, height: "100%", flexDirection: "column", justifyContent: "center", borderRightWidth: 2, borderRightColor: "black" }}><Text style={{ textAlign: "center", fontWeight: "bold" }}>{timeBegin.getHours() + "H" + timeBegin.getMinutes().toString().padStart(2, "0")}</Text></View>
+                <Pressable delayLongPress={5000} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
+                    onPress={() => { sportlist().includes(sportname) ? setCurrentSport(sportname) : "", sportlist().includes(sportname) ? navigation.navigate(navigateTo, { sportname: sportname }) : "" }}
+                >
+                    <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
+                </Pressable>
+                <View style={{ flexDirection: "column", justifyContent: "center", alignSelf: "center", marginLeft: 50 }}><Text>{sportname}</Text></View>
+            </View>
+        )
+    }
+    else {
+        return (
+            <View style={{ flex: 1, margin: -1, flexDirection: "row", borderColor: "black", borderWidth: 2, borderTopWidth: 0, justifyContent: "flex-start", maxHeight: 80 }}>
+                <View style={{ flex: 1, justifyContent: "center" }}>
+                    <Pressable delayLongPress={5000} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
+                        onPress={() => { sportlist().includes(sportname) ? setCurrentSport(sportname) : "", sportlist().includes(sportname) ? navigation.navigate(navigateTo, { sportname: sportname }) : "" }}
+                    >
+                        <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
+                    </Pressable>
+                </View>
+                <View style={{ flex:1, flexDirection: "column", justifyContent: "center", alignSelf:"center" }}><Text>{sportname}</Text></View>
+            </View>
+        )
+
+    }
 }
 
 export function lutImg(imgname) {
@@ -388,7 +407,7 @@ export function lutImg(imgname) {
     return lut[imgname];
 }
 
-function sportlist(){
+function sportlist() {
     return [
         "Trail",
         "Dodgeball",
@@ -483,12 +502,12 @@ export function pushbets(username, sport, bets) {
     }
     fetch("http://91.121.143.104:7070/pushBets", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "sport": sport, "bets": vote }) }).then(r => {
         if (r.status == 200) {
-            alert("Saved","Saved to server!", ["Ok"])
+            alert("Saved", "Saved to server!", ["Ok"])
         }
         else {
             alert("Wrong login or password!");
         }
-        
+
     }).catch((err) => { alert("Issue with server!") });
     return;
 }
