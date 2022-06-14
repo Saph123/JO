@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
 import { View, ScrollView, ActivityIndicator, Text, Modal, RefreshControl, Pressable, Image } from 'react-native';
 import { Trace } from "./trace.js";
-import { modalChat, fetchChat, fetch_matches, lutImg } from './utils.js';
+import { modalChat, fetchChat, fetch_matches, lutImg, fetch_sport_results } from './utils.js';
 import { ChatContext, ArbitreContext, WinnerContext } from "./App.js";
 
 const wait = (timeout) => {
@@ -21,11 +21,12 @@ export function SportDetailsScreen({ route }) {
     const [matches, setmatches] = React.useState([]);
     const [levels, setlevels] = React.useState([]);
     const [liste, setListe] = React.useState([]);
-    const [final, setFinal] = React.useState([])
-    const [realListe, setRealListe] = React.useState([])
-    const [betListe, setBetListe] = React.useState([])
-    const [modifListe, setModifListe] = React.useState([])
-    const [seriesLevel, setSeriesLevel] = React.useState([0])
+    const [final, setFinal] = React.useState([]);
+    const [realListe, setRealListe] = React.useState([]);
+    const [betListe, setBetListe] = React.useState([]);
+    const [results, setResults] = React.useState({"1":{}, "2":{}, "3":{}});
+    const [modifListe, setModifListe] = React.useState([]);
+    const [seriesLevel, setSeriesLevel] = React.useState([0]);
     const [groups, setGroups] = React.useState([]);
     const [groupmatches, setmatchesgroup] = React.useState([]);
     const [autho, setAutho] = React.useState(false);
@@ -66,6 +67,7 @@ export function SportDetailsScreen({ route }) {
             setloading(false);
 
         });
+        fetch_sport_results(route.params.sportname, setResults);
 
         setRefreshing(false);
     }, []);
@@ -80,7 +82,9 @@ export function SportDetailsScreen({ route }) {
                 setloading(false);
                 setFirstTime(false);
             }).catch(err => { console.log(err); navigation.navigate('HomeScreen') });
-        }
+            fetch_sport_results(route.params.sportname, setResults);
+            console.log(results)
+    }
         return () => {
             chatcontext.setChatName("");
             clearInterval(chatInterval);
@@ -111,31 +115,6 @@ export function SportDetailsScreen({ route }) {
                         {value => modalChat(value, chatText, setChatText, localText, setLocalText, route.params.sportname, route.params.username)}
 
                     </ChatContext.Consumer>
-                    <WinnerContext.Consumer>
-                        {value => {
-                            return (
-                                <View style={styles.centeredView}>
-                                    <Modal
-                                        animationType="slide"
-                                        transparent={true}
-                                        visible={value}
-                                        supportedOrientations={['portrait', 'landscape']}
-                                    >
-                                        <View style={styles.modalView}>
-                                            <ScrollView onScroll={() => setRegle(true)} onScrollEndDrag={() => setTimeout(() => setRegle(false), 2000)} >
-                                                <View style={styles.centeredView}>
-                                                    <Text style={styles.modalText}>Tenant du Titre:</Text>
-                                                    <Text style={styles.modalText}>{status['winner']}</Text>
-                                                </View>
-                                            </ScrollView>
-
-                                        </View>
-                                    </Modal>
-                                </View>)
-                        }
-
-                        }
-                    </WinnerContext.Consumer>
                     <ArbitreContext.Consumer>
                         {value => {
                             return (
@@ -164,7 +143,7 @@ export function SportDetailsScreen({ route }) {
                         }
                     </ArbitreContext.Consumer>
 
-                    <Trace status={status} username={route.params.username} sport={route.params.sportname} all_teams={all_teams} />
+                    <Trace status={status} username={route.params.username} sport={route.params.sportname} all_teams={all_teams} results={results} setStatus={setStatus} setLoading={setloading} />
                 </ScrollView>
             </View>
         </View>

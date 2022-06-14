@@ -2,7 +2,7 @@ import styles from "./style";
 import * as React from 'react';
 import { View, ActivityIndicator, Text, Image, ScrollView } from 'react-native';
 import { Planning } from "./planning.js";
-import { fetch_results, fetch_activities } from "./trace.js";
+import { fetch_global_results, fetch_activities } from "./trace.js";
 import { getValueFor, manageEvents, eventView, addth } from './utils.js';
 import { SportContext } from "./App";
 
@@ -27,7 +27,7 @@ export function LastYearsResultsScreen({ route, navigation }) {
         // getValueFor("username").then(r => username = r)
         manageEvents(setEventsDone, setEventsInProgess)
         fetch_activities(route.params.username, setArbitre, setEvents);
-        fetch_results().then(r => {
+        fetch_global_results().then(r => {
 
             for (var player_data in r) {
                 if (r[player_data]["name"] == route.params.username) {

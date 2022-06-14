@@ -3,7 +3,7 @@ import * as React from 'react';
 import { View, TextInput, Text, Image, Linking, Pressable, ScrollView } from 'react-native';
 import { getValueFor, save, videoHandler, pushtoken, manageEvents, eventView } from './utils';
 import { version, SportContext } from "./App"
-import { fetch_results, fetch_activities } from "./trace.js";
+import { fetch_global_results, fetch_activities } from "./trace.js";
 import { Planning } from "./planning.js";
 
 export function LoginScreen({ route, navigation }) {
@@ -35,7 +35,7 @@ export function LoginScreen({ route, navigation }) {
                 setLoggedIn(true);
                 manageEvents(setEventsDone, setEventsInProgess)
                 fetch_activities(r, setArbitre, setEvents);
-                fetch_results().then(r => {
+                fetch_global_results().then(r => {
 
                     for (var player_data in r) {
                         if (r[player_data]["name"] == r) {
@@ -83,7 +83,7 @@ export function LoginScreen({ route, navigation }) {
                     <View style={{ margin: 30, flexDirection: "row" }}>
 
                         <Pressable style={{ width: 60, height: 30, borderRadius: 15, backgroundColor: "#ff8484", justifyContent: "center" }} title="Log in" onPress={() => {
-                            fetch("http://91.121.143.104:7070/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": userName, "password": password }) }).then(r => {
+                            fetch("https://applijo.freeddns.org/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": userName, "password": password }) }).then(r => {
                                 if (r.status == 200) {
                                     route.params.setUsername(userName);
                                     pushtoken(route.params.pushtoken, userName);

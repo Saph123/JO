@@ -20,7 +20,6 @@ import { LoginScreen } from "./LoginScreen.js";
 
 export let username = "";
 export const ArbitreContext = React.createContext(false);
-export const WinnerContext = React.createContext(false);
 export const ChatContext = React.createContext(false);
 export const SportContext = React.createContext(false);
 export let version = 4
@@ -57,7 +56,6 @@ Notifications.setNotificationHandler({
 const Stack = createStackNavigator();
 function App() {
     const [arbitre, setArbitre] = React.useState(false);
-    const [winner, setWinner] = React.useState(false);
     const [username, setUsername] = React.useState("");
     const [chat, setChat] = React.useState(false);
     const [chatName, setChatName] = React.useState("");
@@ -109,7 +107,6 @@ function App() {
     }
     return (
         <NavigationContainer>
-            <WinnerContext.Provider value={winner}>
                 <ArbitreContext.Provider value={arbitre}>
                     <ChatContext.Provider value={{ chat: chat, setChat: setChat, chatName:chatName, setChatName:setChatName, setNewMessage: setNewMessage }}>
                         <SportContext.Provider value={{ setCurrentSport: setCurrentSport }}>
@@ -152,11 +149,6 @@ function App() {
                                 <Stack.Screen options={({ navigation }) => ({
                                     title: currentSport, headerRight: () =>
                                         <View style={{ flexDirection: "row"}}>
-                                            <View style={{flex: 1, marginRight: 15}}>
-                                                <TouchableOpacity onPress={() => { setWinner(true) }} onPressOut={() => setTimeout(() => { setWinner(false) }, 3000)}>
-                                                    <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white"}} source={require('./assets/cup.png')} />
-                                                </TouchableOpacity>
-                                            </View>
                                             <View style={{flex: 1, marginRight: 15}}>
                                                 <Pressable onPress={() => { setChat(true)}}>
                                                     <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white",}} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
@@ -202,7 +194,6 @@ function App() {
                         </SportContext.Provider>
                     </ChatContext.Provider>
                 </ArbitreContext.Provider>
-            </WinnerContext.Provider>
         </NavigationContainer>
     );
 };

@@ -159,7 +159,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
 
     let allok = false
     while (!allok) {
-        allok = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
+        allok = await fetch("https://applijo.freeddns.org/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
             for (var authouser in data['arbitre']) {
                 if (data['arbitre'][authouser] == "All") {
                     setAutho(true);
@@ -181,13 +181,12 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                 }
             }
             fetch_teams_bet(sportname, username).then(r => {
-                console.log(r);
                 setBetListe(r);
             }).catch(err => { console.log(err); allok = false });
             setStatus(data);
             let status = data;
             if (status['states'].includes("poules")) {
-                fetch("http://91.121.143.104:7070/teams/" + sportname + "_poules.json").then(response => response.json()).then(data => {
+                fetch("https://applijo.freeddns.org/teams/" + sportname + "_poules.json").then(response => response.json()).then(data => {
 
                     var i = 0;
                     let array_groups = [];
@@ -214,11 +213,10 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                 }).catch((err => { console.log("oui", err), allok = false }));
             }
             if (status['states'].includes("playoff")) {
-                fetch("http://91.121.143.104:7070/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => {
+                fetch("https://applijo.freeddns.org/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => {
 
                     let level = [];
                     let local_array_match = [[]];
-                    // console.log(data);
                     for (let j = 0; j < data['levels']; j++) {
                         level.push(j);
 
@@ -239,7 +237,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
 
                 let liste = {};
                 let filename = (sportname == "Pizza" ? sportname + "/" + username : sportname)
-                fetch("http://91.121.143.104:7070/teams/" + filename + "_series.json").then(response => response.json()).then(data => {
+                fetch("https://applijo.freeddns.org/teams/" + filename + "_series.json").then(response => response.json()).then(data => {
                     liste = data;
                     let local_liste = [];
                     let local_final = [];
@@ -402,7 +400,7 @@ export function lutImg(imgname) {
         modif: require('./assets/editlogo2.png'),
         final: require('./assets/liste.png'),
         series: require('./assets/liste.png'),
-        done: require('./assets/podium.png'),
+        results: require('./assets/podium.png'),
     };
     return lut[imgname];
 }
@@ -432,7 +430,7 @@ function sportlist() {
     ]
 }
 export function fetchChat(sportname, setChatText, setNewMessage) {
-    fetch("http://91.121.143.104:7070/Chatalere/" + sportname + ".txt").then(response => response.text()).then(r => {
+    fetch("https://applijo.freeddns.org/Chatalere/" + sportname + ".txt").then(response => response.text()).then(r => {
         if (initialLineNumber[sportname] != countLines(r) && countLines(r) > 1) {
             setNewMessage(true);
         }
@@ -444,7 +442,7 @@ export function fetchChat(sportname, setChatText, setNewMessage) {
 export async function fetch_teams(sportname) {
     let fetch_teams = {}
 
-    fetch_teams = await fetch("http://91.121.143.104:7070/teams/" + sportname + ".json").then(response => response.json()).then(data => {
+    fetch_teams = await fetch("https://applijo.freeddns.org/teams/" + sportname + ".json").then(response => response.json()).then(data => {
         let local_liste = [];
         for (var i in data["Teams"]) {
             local_liste.push(new Liste(data["Teams"][i]["Players"], data["Teams"][i]["Players"], 0, 0));
@@ -455,8 +453,29 @@ export async function fetch_teams(sportname) {
     return fetch_teams;
 }
 
+export async function fetch_sport_results(sportname, setResults) {
+    let lists;
+    lists = await fetch("https://applijo.freeddns.org/results/sports/" + sportname + "_summary.json").then(response => response.json()).then(data => {
+        let results = {"1":{}, "2":{}, "3":{}}
+        for (var i in data)
+            {
+                results["1"][i] = [];
+                results["2"][i] = [];
+                results["3"][i] = [];
+                for(team in data[i]["Teams"])
+                {
+                    console.log(data[i]["Teams"][team])
+                    results[data[i]["Teams"][team]['rank'].toString()][i].push(data[i]["Teams"][team]["Players"].replace(/\//g, "\n"));
+                }
+            }
+            console.log(results)
+            setResults(results)
+            return results;
+    }).catch(err => console.log(err));
+}
+
 function pushChat(sportname, text, username) {
-    fetch("http://91.121.143.104:7070/Chatalere/" + sportname + ".txt", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "text": text }) }).then(res => {
+    fetch("https://applijo.freeddns.org/Chatalere/" + sportname + ".txt", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "text": text }) }).then(res => {
         if (res.status == 200) {
             initialLineNumber[sportname]++;
             save("initialLineNumber", JSON.stringify(initialLineNumber));
@@ -475,7 +494,7 @@ export function updateTeams(sport, teams) {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     // // push to server
-    fetch("http://91.121.143.104:7070/updateTeams", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sport, "teams": teams }) }).then(r => {
+    fetch("https://applijo.freeddns.org/updateTeams", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sport, "teams": teams }) }).then(r => {
         if (r.status == 200) {
             alert("Saved", "Saved to server!", ["Ok"])
         }
@@ -491,7 +510,7 @@ export function pushbets(username, sport, bets) {
     // 5 second timeout:
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
-    const vote = ""
+    var vote = ""
 
     // // push to server
     for (var i in bets) {
@@ -500,7 +519,7 @@ export function pushbets(username, sport, bets) {
             break;
         }
     }
-    fetch("http://91.121.143.104:7070/pushBets", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "sport": sport, "bets": vote }) }).then(r => {
+    fetch("https://applijo.freeddns.org/pushBets", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "sport": sport, "bets": vote }) }).then(r => {
         if (r.status == 200) {
             alert("Saved", "Saved to server!", ["Ok"])
         }
@@ -522,7 +541,7 @@ export async function pushtoken(token, username) {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     // // push to server
-    fetch("http://91.121.143.104:7070/pushtoken", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "token": token, "username": username }) }).then(r => {
+    fetch("https://applijo.freeddns.org/pushtoken", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "token": token, "username": username }) }).then(r => {
         return;
     }).catch((err) => { console.log("Maybe it's normal") });
 }
@@ -532,7 +551,7 @@ export async function pushcluedo() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     // // push to server
-    fetch("http://91.121.143.104:7070/cluedo", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "cluedo": username }) }).then(r => {
+    fetch("https://applijo.freeddns.org/cluedo", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "cluedo": username }) }).then(r => {
 
 
     }).catch((err) => { console.log("Maybe it's normal") });
@@ -543,7 +562,7 @@ export async function askPushNotif(username, title, body, to) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     // // push to server
-    fetch("http://91.121.143.104:7070/pushnotif", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "title": title, "body": body, "to": to }) }).then(r => {
+    fetch("https://applijo.freeddns.org/pushnotif", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "title": title, "body": body, "to": to }) }).then(r => {
         return
     }).catch((err) => { console.log(err, "Maybe it's normal") });
 }
@@ -551,7 +570,7 @@ export async function askPushNotif(username, title, body, to) {
 export async function fetch_teams_bet(sportname, username) {
     let fetch_teams = {}
 
-    fetch_teams = await fetch("http://91.121.143.104:7070/bets/" + sportname + ".json").then(response => response.json()).then(data => {
+    fetch_teams = await fetch("https://applijo.freeddns.org/bets/" + sportname + ".json").then(response => response.json()).then(data => {
         let local_liste = [];
         for (var i in data["Teams"]) {
             local_liste.push(new Liste(data["Teams"][i]["Players"], data["Teams"][i]["TotalVotes"], data["Teams"][i]["Votes"].includes(username) ? 1 : 0, 0));
