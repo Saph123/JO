@@ -83,7 +83,7 @@ export function LoginScreen({ route, navigation }) {
                     <View style={{ margin: 30, flexDirection: "row" }}>
 
                         <Pressable style={{ width: 60, height: 30, borderRadius: 15, backgroundColor: "#ff8484", justifyContent: "center" }} title="Log in" onPress={() => {
-                            fetch("http://91.121.143.104:7070/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": userName, "password": password }) }).then(r => {
+                            fetch("https://applijo.freeddns.org/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": userName, "password": password }) }).then(r => {
                                 if (r.status == 200) {
                                     route.params.setUsername(userName);
                                     pushtoken(route.params.pushtoken, userName);
