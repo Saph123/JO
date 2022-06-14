@@ -11,7 +11,6 @@ import { HomeScreen } from "./HomeScreen.js";
 import { PlanningScreen } from "./PlanningScreen.js";
 import { SummaryScreen } from "./SummaryScreen.js";
 import { ClickerScreen } from "./ClickerScreen.js";
-import { UsernameScreen } from "./UsernameScreen.js";
 import { LastYearsResultsScreen } from "./LastYearsResultsScreen.js";
 import { SportDetailsScreen } from "./SportDetailsScreen.js";
 import { VanRommelScreen } from "./VanRommelScreen.js";
@@ -126,7 +125,7 @@ function App() {
                                             <Pressable onPress={() => { setChat(true) }}>
                                                 <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", marginRight: 110, marginTop: 25, alignSelf:"center" }} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
                                             </Pressable>
-                                            <TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPress={() => { navigation.navigate('UsernameScreen') }}>
+                                            <TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPress={() => { navigation.navigate('LoginScreen') }}>
                                                 <Text style={{ color: "white", marginTop: username == "Pierrick" ? 0 : 30, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity onPress={playmegaphone}>
@@ -142,7 +141,7 @@ function App() {
 
                                 <Stack.Screen options={({ navigation }) => ({
                                     title: "Planning", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}>
-                                        <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPress={() => { navigation.navigate('UsernameScreen') }}>
+                                        <View><TouchableOpacity style={{ alignContent: "center", textAlignVertical: "center" }} onPress={() => { navigation.navigate('LoginScreen') }}>
                                             <Text style={{ color: "white", margin: 10, alignSelf: "center", textAlignVertical: "center" }}>{username}</Text>
                                         </TouchableOpacity></View></View>
                                 })} initialParams={{ setCurrentSport: setCurrentSport }} name="PlanningScreen" component={PlanningScreen} />
@@ -168,9 +167,6 @@ function App() {
                                         </Pressable>
                                     </View>
                                 })} name="SummaryScreen" component={SummaryScreen} />
-                                <Stack.Screen options={() => ({
-                                    title: username
-                                })} initialParams={{username: username, setCurrentSport: setCurrentSport }} name="UsernameScreen" component={UsernameScreen} />
                                 <Stack.Screen options={() => ({
                                     title: username
                                 })} initialParams={{username: username, setCurrentSport: setCurrentSport }} name="2021" component={LastYearsResultsScreen} />
