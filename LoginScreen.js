@@ -10,16 +10,24 @@ export function LoginScreen({ route, navigation }) {
     const [password, setpassword] = React.useState("password");
     const [videoVisible, setVideoVisible] = React.useState(false);
     const video = React.useRef(null);
+    const [loggedIn, setLoggedIn] = React.useState(false);
     const [status, setStatus] = React.useState({});
     const controller = new AbortController()
     // 5 second timeout:
     let localusername = "";
     React.useEffect(() => {
-        localusername = getValueFor("username").then(r => { setuserName(r); return r });
+        getValueFor("username").then(r => { 
+            setuserName(r);
+            if (r != ""){
+
+                setLoggedIn(true);
+            }
+            });
         getValueFor("password").then(r => setpassword(r));
     }, []);
     const timeoutId = setTimeout(() => controller.abort(), 5000)
-    if (localusername == "") {
+
+    if (!loggedIn) {
         return (
             <ScrollView style={{ flexDirection: "column", flex: 1 }}>
                 {videoHandler(setVideoVisible, videoVisible, video, require('./assets/scep.mp4'), false)}
@@ -97,7 +105,7 @@ export function LoginScreen({ route, navigation }) {
 
                     <Text style={styles.texthomebutton}>Currently logged in as {userName}</Text>
                     <TouchableOpacity style={styles.logoutbutton}
-                        onPress={() => { { setuserName("") }; navigation.navigate('HomeScreen', { refresh: "refresh" }) }}
+                        onPress={() => { { setuserName(""); save("username", ""); route.params.setUsername(""); setLoggedIn(false); }; navigation.navigate('HomeScreen', { refresh: "refresh" }) }}
                     >
                         <Text style={styles.texthomebutton}>Log out!</Text>
                     </TouchableOpacity>

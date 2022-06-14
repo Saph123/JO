@@ -9,7 +9,7 @@ import * as Notifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
 import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo, firstDay } from './utils.js';
 import { ChatContext, SportContext } from "./App.js";
-export function HomeScreen({ navigation }) {
+export function HomeScreen({ route, navigation }) {
     const [loading, setLoading] = React.useState(1);
     const [username, setusername] = React.useState("");
     const [secondsleft, setSecondsleft] = React.useState(1000);
@@ -150,7 +150,7 @@ export function HomeScreen({ navigation }) {
             Notifications.removeNotificationSubscription(notificationListener.current);
             Notifications.removeNotificationSubscription(responseListener.current);
         };
-    }, [chatcontext.chatName]);
+    }, [chatcontext.chatName, route.params.refresh]);
     if (loading) {
         return (<ActivityIndicator size="large" color="#000000" />)
 

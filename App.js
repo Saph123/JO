@@ -101,11 +101,7 @@ function App() {
         }
         getValueFor("initialLineNumber").then(r => { if (r != "") { initialLineNumber = JSON.parse(r) }; });
         setLoad(false);
-
-
-
-
-    }, []);
+    }, [username]);
     if (load) {
         return (
             <View></View>
@@ -140,7 +136,7 @@ function App() {
                                                 <Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} />
                                             </TouchableOpacity>
                                         </View>)
-                                })} initialParams={{ username: username }}  name="HomeScreen" component={HomeScreen} />
+                                })} initialParams={{ username: username, refresh:"" }}  name="HomeScreen" component={HomeScreen} />
 
                                 <Stack.Screen options={{
                                     title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text>
