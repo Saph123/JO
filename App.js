@@ -14,34 +14,8 @@ import { SportDetailsScreen } from "./SportDetailsScreen.js";
 import { VanRommelScreen } from "./VanRommelScreen.js";
 import { pushNotifScreen } from "./PushNotifScreen.js";
 import { LoginScreen } from "./LoginScreen.js";
-import { SportContext } from "./global.js"
-export let username = "";
-export const ArbitreContext = React.createContext(false);
-export const ChatContext = React.createContext(false);
+import { SportContext, initialLineNumber, ArbitreContext, ChatContext, calcInitLines } from "./global.js"
 
-
-export let initialLineNumber = {
-    "Trail": 0,
-    "Dodgeball": 0,
-    "Pizza": 0,
-    "Tong": 0,
-    "Babyfoot": 0,
-    "Flechette": 0,
-    "PingPong": 0,
-    "Orientation": 0,
-    "Beerpong": 0,
-    "Volley": 0,
-    "Waterpolo": 0,
-    "Larmina": 0,
-    "Natation": 0,
-    "SpikeBall": 0,
-    "Ventriglisse": 0,
-    "100mRicard": 0,
-    "Petanque": 0,
-    "Molky": 0,
-    "Clicker": 0,
-    "Home": 0
-};
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
         shouldShowAlert: true,
@@ -92,10 +66,8 @@ function App() {
 
     React.useEffect(() => {
         getValueFor("username").then(r => setUsername(r));
-        for (sport in initialLineNumber) {
-        }
-        getValueFor("initialLineNumber").then(r => { if (r != "") { initialLineNumber = JSON.parse(r) }; });
-        setLoad(false);
+        calcInitLines().then(r => {setLoad(false)});
+        // setLoad(false);
     }, [username]);
     if (load) {
         return (
