@@ -159,7 +159,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
 
     let allok = false
     while (!allok) {
-        allok = await fetch("http://91.121.143.104:7070/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
+        allok = await fetch("https://applijo.freeddns.org/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
             for (var authouser in data['arbitre']) {
                 if (data['arbitre'][authouser] == "All") {
                     setAutho(true);
@@ -187,7 +187,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
             setStatus(data);
             let status = data;
             if (status['states'].includes("poules")) {
-                fetch("http://91.121.143.104:7070/teams/" + sportname + "_poules.json").then(response => response.json()).then(data => {
+                fetch("https://applijo.freeddns.org/teams/" + sportname + "_poules.json").then(response => response.json()).then(data => {
 
                     var i = 0;
                     let array_groups = [];
@@ -214,7 +214,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                 }).catch((err => { console.log("oui", err), allok = false }));
             }
             if (status['states'].includes("playoff")) {
-                fetch("http://91.121.143.104:7070/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => {
+                fetch("https://applijo.freeddns.org/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => {
 
                     let level = [];
                     let local_array_match = [[]];
@@ -239,7 +239,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
 
                 let liste = {};
                 let filename = (sportname == "Pizza" ? sportname + "/" + username : sportname)
-                fetch("http://91.121.143.104:7070/teams/" + filename + "_series.json").then(response => response.json()).then(data => {
+                fetch("https://applijo.freeddns.org/teams/" + filename + "_series.json").then(response => response.json()).then(data => {
                     liste = data;
                     let local_liste = [];
                     let local_final = [];
@@ -347,7 +347,7 @@ export function eventView(currentEvents, eventsDone, sportname, navigation, setC
     if (!summary) {
         return (
 
-            <View style={{ flex: 1, margin: -1, flexDirection: "row", borderColor: "black", borderWidth: 2, borderTopWidth: 0 }}>
+            <View key={sportname} style={{ flex: 1, margin: -1, flexDirection: "row", borderColor: "black", borderWidth: 2, borderTopWidth: 0 }}>
                 <View style={{ alignSelf: "center", width: 70, height: "100%", flexDirection: "column", justifyContent: "center", borderRightWidth: 2, borderRightColor: "black" }}><Text style={{ textAlign: "center", fontWeight: "bold" }}>{timeBegin.getHours() + "H" + timeBegin.getMinutes().toString().padStart(2, "0")}</Text></View>
                 <Pressable delayLongPress={5000} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
                     onPress={() => { sportlist().includes(sportname) ? setCurrentSport(sportname) : "", sportlist().includes(sportname) ? navigation.navigate(navigateTo, { sportname: sportname }) : "" }}
@@ -360,7 +360,7 @@ export function eventView(currentEvents, eventsDone, sportname, navigation, setC
     }
     else {
         return (
-            <View style={{ flex: 1, margin: -1, flexDirection: "row", borderColor: "black", borderWidth: 2, borderTopWidth: 0, justifyContent: "flex-start", maxHeight: 80 }}>
+            <View key={sportname}  style={{ flex: 1, margin: -1, flexDirection: "row", borderColor: "black", borderWidth: 2, borderTopWidth: 0, justifyContent: "flex-start", maxHeight: 80 }}>
                 <View style={{ flex: 1, justifyContent: "center" }}>
                     <Pressable delayLongPress={5000} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
                         onPress={() => { sportlist().includes(sportname) ? setCurrentSport(sportname) : "", sportlist().includes(sportname) ? navigation.navigate(navigateTo, { sportname: sportname }) : "" }}
@@ -432,19 +432,20 @@ function sportlist() {
     ]
 }
 export function fetchChat(sportname, setChatText, setNewMessage) {
-    fetch("http://91.121.143.104:7070/Chatalere/" + sportname + ".txt").then(response => response.text()).then(r => {
+    fetch("https://applijo.freeddns.org/Chatalere/" + sportname + ".txt").then(response => response.text()).then(r => {
+        console.log(countLines(r));
         if (initialLineNumber[sportname] != countLines(r) && countLines(r) > 1) {
             setNewMessage(true);
         }
         setChatText(r);
-    });
+    }).catch(err => console.error("chatalerr", err));
 
 }
 
 export async function fetch_teams(sportname) {
     let fetch_teams = {}
 
-    fetch_teams = await fetch("http://91.121.143.104:7070/teams/" + sportname + ".json").then(response => response.json()).then(data => {
+    fetch_teams = await fetch("https://applijo.freeddns.org/teams/" + sportname + ".json").then(response => response.json()).then(data => {
         let local_liste = [];
         for (var i in data["Teams"]) {
             local_liste.push(new Liste(data["Teams"][i]["Players"], data["Teams"][i]["Players"], 0, 0));
@@ -456,7 +457,7 @@ export async function fetch_teams(sportname) {
 }
 
 function pushChat(sportname, text, username) {
-    fetch("http://91.121.143.104:7070/Chatalere/" + sportname + ".txt", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "text": text }) }).then(res => {
+    fetch("https://applijo.freeddns.org/Chatalere/" + sportname + ".txt", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "text": text }) }).then(res => {
         if (res.status == 200) {
             initialLineNumber[sportname]++;
             save("initialLineNumber", JSON.stringify(initialLineNumber));
@@ -475,7 +476,7 @@ export function updateTeams(sport, teams) {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     // // push to server
-    fetch("http://91.121.143.104:7070/updateTeams", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sport, "teams": teams }) }).then(r => {
+    fetch("https://applijo.freeddns.org/updateTeams", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sport, "teams": teams }) }).then(r => {
         if (r.status == 200) {
             alert("Saved", "Saved to server!", ["Ok"])
         }
@@ -500,7 +501,7 @@ export function pushbets(username, sport, bets) {
             break;
         }
     }
-    fetch("http://91.121.143.104:7070/pushBets", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "sport": sport, "bets": vote }) }).then(r => {
+    fetch("https://applijo.freeddns.org/pushBets", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "sport": sport, "bets": vote }) }).then(r => {
         if (r.status == 200) {
             alert("Saved", "Saved to server!", ["Ok"])
         }
@@ -522,7 +523,7 @@ export async function pushtoken(token, username) {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     // // push to server
-    fetch("http://91.121.143.104:7070/pushtoken", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "token": token, "username": username }) }).then(r => {
+    fetch("https://applijo.freeddns.org/pushtoken", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "token": token, "username": username }) }).then(r => {
         return;
     }).catch((err) => { console.log("Maybe it's normal") });
 }
@@ -532,7 +533,7 @@ export async function pushcluedo() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     // // push to server
-    fetch("http://91.121.143.104:7070/cluedo", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "cluedo": username }) }).then(r => {
+    fetch("https://applijo.freeddns.org/cluedo", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "cluedo": username }) }).then(r => {
 
 
     }).catch((err) => { console.log("Maybe it's normal") });
@@ -543,7 +544,7 @@ export async function askPushNotif(username, title, body, to) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     // // push to server
-    fetch("http://91.121.143.104:7070/pushnotif", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "title": title, "body": body, "to": to }) }).then(r => {
+    fetch("https://applijo.freeddns.org/pushnotif", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "title": title, "body": body, "to": to }) }).then(r => {
         return
     }).catch((err) => { console.log(err, "Maybe it's normal") });
 }
@@ -551,7 +552,7 @@ export async function askPushNotif(username, title, body, to) {
 export async function fetch_teams_bet(sportname, username) {
     let fetch_teams = {}
 
-    fetch_teams = await fetch("http://91.121.143.104:7070/bets/" + sportname + ".json").then(response => response.json()).then(data => {
+    fetch_teams = await fetch("https://applijo.freeddns.org/bets/" + sportname + ".json").then(response => response.json()).then(data => {
         let local_liste = [];
         for (var i in data["Teams"]) {
             local_liste.push(new Liste(data["Teams"][i]["Players"], data["Teams"][i]["TotalVotes"], data["Teams"][i]["Votes"].includes(username) ? 1 : 0, 0));
