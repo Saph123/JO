@@ -14,12 +14,12 @@ import { SportDetailsScreen } from "./SportDetailsScreen.js";
 import { VanRommelScreen } from "./VanRommelScreen.js";
 import { pushNotifScreen } from "./PushNotifScreen.js";
 import { LoginScreen } from "./LoginScreen.js";
-import { SportContext } from "./context.js"
+import { SportContext } from "./global.js"
 export let username = "";
 export const ArbitreContext = React.createContext(false);
 export const ChatContext = React.createContext(false);
 
-export let version = 4
+
 export let initialLineNumber = {
     "Trail": 0,
     "Dodgeball": 0,

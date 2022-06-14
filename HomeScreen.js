@@ -8,7 +8,7 @@ import * as Notifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
 import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo, firstDay } from './utils.js';
 import { ChatContext } from "./App.js";
-import {SportContext} from "./context.js"
+import {SportContext} from "./global.js"
 export function HomeScreen({ route, navigation }) {
     const [loading, setLoading] = React.useState(1);
     const [username, setusername] = React.useState("");
