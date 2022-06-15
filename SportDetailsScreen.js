@@ -73,7 +73,6 @@ export function SportDetailsScreen({ route }) {
     }, []);
 
     React.useEffect(() => {
-        console.log("useeffect");
         chatcontext.setChatName(route.params.sportname);
         var chatInterval = setInterval(() => fetchChat(route.params.sportname, setChatText, chatcontext.setNewMessage), 3000);
         if (firstTime) {

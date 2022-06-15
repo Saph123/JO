@@ -405,7 +405,7 @@ export function lutImg(imgname) {
     return lut[imgname];
 }
 
-function sportlist() {
+export function sportlist() {
     return [
         "Trail",
         "Dodgeball",
