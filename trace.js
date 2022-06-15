@@ -361,49 +361,7 @@ function result_view(results)
             <Text style={{ textAlign: "center" }}>{results}</Text>
         </View>)
 }
-// function button_switch(status, setStatus, sport, otherState, setloading, team_number, setListe, setFinal, username, setSeriesLevel, setRealListe) {
-// if (otherState == "playoff") { // so we will be in groups
-//     setWidth(400 * (team_number.length + 1));
-//     setHeight(400 * (team_number.length + 1) * 4); // poule de 4 en dur
-// }
-// else if (otherState == "poules") {
-//     if (team_number.length > 1) {
-//         setWidth(Math.min(400 * ((team_number.length - 1) * (team_number.length - 1)), 3500));
-//         setHeight(Math.max(200 * (team_number.length + 1), Dimensions.get("window").height + 100));
-//     }
-//     else {
-//         setWidth(1000);
-//         setHeight(1000);
-//     }
-// }
 
-//     return (
-//         <Pressable style={styles.inProgress}
-//             onPress={() => { setloading(true); toggle_status(status, setStatus, sport, setloading); if (status.status == "series" || status.status == "final") { fetch_matches(false, status, username, null, null, null, sport, null, null, null, null, setListe, setFinal, setRealListe, setSeriesLevel) }; }}
-//         >
-//             <Text alignSelf="center">Switch to {otherState}</Text>
-//         </Pressable>)
-// }
-
-
-// export function toggle_status(status, setStatus, sportname, setloading) {
-
-//     for (var i = 0; i < status.states.length; i++) {
-//         if (status.states[i] == displayed_state[sportname]) {
-//             if (i + 1 < status.states.length) {
-//                 displayed_state[sportname] = status.states[i + 1];
-//             }
-//             else {
-//                 displayed_state[sportname] = status.states[0];
-//             }
-//             status.status = displayed_state[sportname]
-//             setloading(true);
-//             setStatus(JSON.parse(JSON.stringify(status))); // immutable object ffs
-//             setloading(false);
-//             break;
-//         }
-//     }
-// }
 
 
 export async function fetch_global_results() {

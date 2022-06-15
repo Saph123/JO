@@ -64,11 +64,13 @@ export function SportDetailsScreen({ route }) {
         setRefreshing(true);
         setloading(true);
         fetch_sport_results(route.params.sportname, setResults);
-        fetch_matches(route.params.username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel, setModifListe, setBetListe).then(r => {
-        setStatus(prev_status);
+        fetch_matches(route.params.username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel, setModifListe, setBetListe, route.params.setLock).then(r => {
+        if(prev_status.status != "error" )
+        {
+            console.error(prev_status.status);
+            setStatus(prev_status);
+        }
         setloading(false);
-        
-
         });
 
         setRefreshing(false);
@@ -80,7 +82,7 @@ export function SportDetailsScreen({ route }) {
         if (firstTime) {
 
             fetch_sport_results(route.params.sportname, setResults);
-            fetch_matches(route.params.username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel, setModifListe, setBetListe).then(r => {
+            fetch_matches(route.params.username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel, setModifListe, setBetListe, route.params.setLock).then(r => {
                 setloading(false);
                 setFirstTime(false);
             }).catch(err => { console.log(err); navigation.navigate('HomeScreen') });

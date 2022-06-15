@@ -4,6 +4,7 @@ export let version = 4
 export const SportContext = React.createContext(false);
 export const ArbitreContext = React.createContext(false);
 export const ChatContext = React.createContext(false);
+export const LockContext = React.createContext(false);
 
 export let initialLineNumber = {
     "Trail": 0,

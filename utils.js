@@ -154,7 +154,7 @@ export function videoHandler(setVideoVisible, videoVisible, video, videoSource, 
         </Modal>
     )
 }
-export async function fetch_matches(username, setAutho, setStatus, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel, setModifListe, setBetListe) {
+export async function fetch_matches(username, setAutho, setStatus, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel, setModifListe, setBetListe, setLock) {
 
 
     let allok = false
@@ -170,12 +170,17 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                         setAutho(true);
                     }
                 }
+                setLock(false);
                 for (var state in data['states']) {
                     if (data['states'][state] != "paris_locked")
                     {
+                        if(data['states'][state].indexOf("_locked") !== -1){
+                            setLock(true);
+                        }
                         data['states'][state] = data['states'][state].replace("_locked", "");
                     }
                 }
+
                 data["status"] = data["status"].replace("_locked", "");
                 if (adminlist.includes(username)) {
                     setAutho(true);
@@ -217,7 +222,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                     setgroups(JSON.parse(JSON.stringify(array_groups)));
                     setmatchesgroup(JSON.parse(JSON.stringify(array_matches_groups)));
                     allok = true;
-                }).catch((err => { console.log("oui", err), allok = false }));
+                }).catch((err => { console.error("oui", err); allok = false }));
             }
             if (status['states'].includes("playoff")) {
                 fetch("https://applijo.freeddns.org/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => {

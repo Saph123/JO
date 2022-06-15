@@ -129,7 +129,7 @@ function App() {
                                             </TouchableOpacity>
                                         </View>
                                     </View>
-                            })} initialParams={{ sportname: currentSport, username: username }} name="SportDetails" component={SportDetailsScreen} />
+                            })} initialParams={{ sportname: currentSport, username: username, setLock:setLock }} name="SportDetails" component={SportDetailsScreen} />
                             <Stack.Screen options={() => ({
                                 title: "Tableau des médailles", headerRight: () => <View>
                                     <Pressable onPress={() => { setChat(true) }}>
