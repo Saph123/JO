@@ -7,7 +7,7 @@ import { getNextEventseconds, Planning } from "./planning.js";
 import * as Notifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
 import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo, firstDay } from './utils.js';
-import {SportContext, ChatContext} from "./global.js"
+import {SportContext, ChatContext, adminlist} from "./global.js"
 export function HomeScreen({ route, navigation }) {
     const [loading, setLoading] = React.useState(1);
     const [username, setusername] = React.useState("");
@@ -235,7 +235,7 @@ export function HomeScreen({ route, navigation }) {
                 >
                     <Image style={{ tintColor: "white" }} resizeMode="contain" source={require('./assets/person.png')} />
                 </Pressable>
-                {username == "Max" || username == "Ugo" || username == "Antoine" || username == "Pierrick" ?
+                {adminlist.includes(username) ?
                     <Pressable style={styles.bottomTabs}
                         onPress={() => { navigation.navigate('pushNotifScreen') }}
                     >

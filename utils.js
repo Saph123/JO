@@ -6,7 +6,7 @@ import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import * as SecureStore from 'expo-secure-store';
 import { Planning } from './planning';
-import { version, initialLineNumber } from "./global.js"
+import { version, initialLineNumber, adminlist } from "./global.js"
 import CountDown from 'react-native-countdown-component';
 
 class Liste {
@@ -170,7 +170,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                 else if (data['arbitre'][authouser] == username) {
                     setAutho(true);
                 }
-                if ("Max" == username || "Antoine" == username || "Ugo" == username) {
+                if (adminlist.includes(username)) {
                     setAutho(true);
                     if (!data['states'].includes("modif")) {
                         data['states'].push("modif");
@@ -275,7 +275,6 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                 }).catch(err => { console.log(err, "err in list"); allok = false; });
 
             }
-            console.log("allok:", allok);
             return allok;
         }).catch(err => { console.log("ici", err); setStatus({ status: "error", states: ["error"], arbitre: "error", rules: "error" }); return false; });
     }
@@ -405,7 +404,7 @@ export function lutImg(imgname) {
     return lut[imgname];
 }
 
-function sportlist() {
+export function sportlist() {
     return [
         "Trail",
         "Dodgeball",
@@ -464,11 +463,9 @@ export async function fetch_sport_results(sportname, setResults) {
                 results["3"][i] = [];
                 for(team in data[i]["Teams"])
                 {
-                    console.log(data[i]["Teams"][team])
                     results[data[i]["Teams"][team]['rank'].toString()][i].push(data[i]["Teams"][team]["Players"].replace(/\//g, "\n"));
                 }
             }
-            console.log(results)
             setResults(results)
             return results;
     }).catch(err => console.log(err));
@@ -580,4 +577,30 @@ export async function fetch_teams_bet(sportname, username) {
         return local_liste;
     }).catch(err => console.log(err));
     return fetch_teams;
+}
+
+export function lock_unlock(lock, setLock, sportname) {
+    const controller = new AbortController();
+    let type = "";
+    if (lock) {
+
+        type = "unlock";
+    }
+    else {
+
+        type = "lock";
+    }
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    fetch("https://applijo.freeddns.org/locksport", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sportname, "type": type }) }).then(r => {
+        if (r.status == 200) {
+
+            setLock(!lock);
+        }
+        else {
+            let msg = "Server reply :" + r.status
+            alert(msg);
+        }
+    }
+    ).catch(err => console.error(err))
+
 }

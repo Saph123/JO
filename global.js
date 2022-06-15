@@ -4,6 +4,7 @@ export let version = 4
 export const SportContext = React.createContext(false);
 export const ArbitreContext = React.createContext(false);
 export const ChatContext = React.createContext(false);
+
 export let initialLineNumber = {
     "Trail": 0,
     "Dodgeball": 0,
@@ -26,6 +27,13 @@ export let initialLineNumber = {
     "Clicker": 0,
     "Home": 0
 };
+
+export let adminlist = [
+    "Max",
+    "Antoine",
+    "Ugo",
+    "Pierrick"
+]
 
 export async function calcInitLines(){
     let result = await SecureStore.getItemAsync("initialLineNumber");
