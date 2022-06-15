@@ -60,13 +60,16 @@ export function SportDetailsScreen({ route }) {
 
     const chatcontext = React.useContext(ChatContext);
     const onRefresh = React.useCallback(() => {
+        let prev_status = status;
         setRefreshing(true);
         setloading(true);
+        fetch_sport_results(route.params.sportname, setResults);
         fetch_matches(route.params.username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel, setModifListe, setBetListe).then(r => {
-            setloading(false);
+        setStatus(prev_status);
+        setloading(false);
+        
 
         });
-        fetch_sport_results(route.params.sportname, setResults);
 
         setRefreshing(false);
     }, []);
@@ -76,11 +79,11 @@ export function SportDetailsScreen({ route }) {
         var chatInterval = setInterval(() => fetchChat(route.params.sportname, setChatText, chatcontext.setNewMessage), 3000);
         if (firstTime) {
 
+            fetch_sport_results(route.params.sportname, setResults);
             fetch_matches(route.params.username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel, setModifListe, setBetListe).then(r => {
                 setloading(false);
                 setFirstTime(false);
             }).catch(err => { console.log(err); navigation.navigate('HomeScreen') });
-            fetch_sport_results(route.params.sportname, setResults);
     }
         return () => {
             chatcontext.setChatName("");
