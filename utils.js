@@ -361,7 +361,7 @@ export function eventView(currentEvents, eventsDone, sportname, navigation, setC
                 <Pressable delayLongPress={5000} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
                     onPress={() => { sportlist().includes(sportname) ? setCurrentSport(sportname) : "", sportlist().includes(sportname) ? navigation.navigate(navigateTo, { sportname: sportname }) : "" }}
                 >
-                    <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
+                    <Image style={[styles.sportimage,{ tintColor:"black"}]} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
                 </Pressable>
                 <View style={{ flexDirection: "column", justifyContent: "center", alignSelf: "center", marginLeft: 50 }}><Text>{sportname}</Text></View>
             </View>
@@ -374,7 +374,7 @@ export function eventView(currentEvents, eventsDone, sportname, navigation, setC
                     <Pressable delayLongPress={5000} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
                         onPress={() => { sportlist().includes(sportname) ? setCurrentSport(sportname) : "", sportlist().includes(sportname) ? navigation.navigate(navigateTo, { sportname: sportname }) : "" }}
                     >
-                        <Image style={styles.sportimage} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
+                        <Image style={[styles.sportimage,{ tintColor:"black"}]} resizeMode="contain" resizeMethod="auto"  source={lutImg(sportname)} />
                     </Pressable>
                 </View>
                 <View style={{ flex:1, flexDirection: "column", justifyContent: "center", alignSelf:"center" }}><Text>{sportname}</Text></View>
@@ -412,6 +412,8 @@ export function lutImg(imgname) {
         final: require('./assets/liste.png'),
         series: require('./assets/liste.png'),
         results: require('./assets/podium.png'),
+        "Remise des prix": require('./assets/podium.png'),
+        "Rangement": require('./assets/sweep.png'),
     };
     return lut[imgname];
 }
