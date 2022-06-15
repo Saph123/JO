@@ -72,7 +72,7 @@ export function LoginScreen({ route, navigation }) {
     if (!loggedIn) {
         return (
             <ScrollView style={{ flexDirection: "column", flex: 1 }}>
-                {/* {videoHandler(setVideoVisible, videoVisible, video, require('./assets/scep.mp4'), false)} */}
+                {videoHandler(setVideoVisible, videoVisible, video, require('./assets/scep.mp4'), false)}
                 <View style={{ flex: 1, alignItems: "center", alignContent: "center" }}>
                     <View style={{ flexDirection: "row", margin: 15 }}>
                         <TextInput autoCompleteType="username" style={{ textAlign: "center", borderRadius: 15, borderWidth: 1, height: 20, minWidth: 100 }} onChangeText={text => { setuserName(text) }} value={userName}></TextInput>
