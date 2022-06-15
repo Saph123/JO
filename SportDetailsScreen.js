@@ -62,7 +62,6 @@ export function SportDetailsScreen({ route }) {
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         setloading(true);
-        console.log("refresh");
         fetch_matches(route.params.username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel, setModifListe, setBetListe).then(r => {
             setloading(false);
 
@@ -82,7 +81,6 @@ export function SportDetailsScreen({ route }) {
                 setFirstTime(false);
             }).catch(err => { console.log(err); navigation.navigate('HomeScreen') });
             fetch_sport_results(route.params.sportname, setResults);
-            console.log(results)
     }
         return () => {
             chatcontext.setChatName("");

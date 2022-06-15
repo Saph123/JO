@@ -275,7 +275,6 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                 }).catch(err => { console.log(err, "err in list"); allok = false; });
 
             }
-            console.log("allok:", allok);
             return allok;
         }).catch(err => { console.log("ici", err); setStatus({ status: "error", states: ["error"], arbitre: "error", rules: "error" }); return false; });
     }
@@ -464,11 +463,9 @@ export async function fetch_sport_results(sportname, setResults) {
                 results["3"][i] = [];
                 for(team in data[i]["Teams"])
                 {
-                    console.log(data[i]["Teams"][team])
                     results[data[i]["Teams"][team]['rank'].toString()][i].push(data[i]["Teams"][team]["Players"].replace(/\//g, "\n"));
                 }
             }
-            console.log(results)
             setResults(results)
             return results;
     }).catch(err => console.log(err));
