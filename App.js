@@ -5,7 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Audio } from 'expo-av';
 import * as Notifications from 'expo-notifications';
-import { getValueFor, sportlist } from './utils.js';
+import { getValueFor } from './utils.js';
 
 import { HomeScreen } from "./HomeScreen.js";
 import { SummaryScreen } from "./SummaryScreen.js";
