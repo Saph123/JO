@@ -6,7 +6,7 @@ import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import * as SecureStore from 'expo-secure-store';
 import { Planning } from './planning';
-import { version, initialLineNumber } from "./global.js"
+import { version, initialLineNumber, adminlist } from "./global.js"
 import CountDown from 'react-native-countdown-component';
 
 class Liste {
@@ -170,7 +170,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                 else if (data['arbitre'][authouser] == username) {
                     setAutho(true);
                 }
-                if ("Max" == username || "Antoine" == username || "Ugo" == username) {
+                if (adminlist.includes(username)) {
                     setAutho(true);
                     if (!data['states'].includes("modif")) {
                         data['states'].push("modif");
