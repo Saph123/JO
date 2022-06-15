@@ -14,7 +14,7 @@ import { SportDetailsScreen } from "./SportDetailsScreen.js";
 import { VanRommelScreen } from "./VanRommelScreen.js";
 import { pushNotifScreen } from "./PushNotifScreen.js";
 import { LoginScreen } from "./LoginScreen.js";
-import { SportContext, ArbitreContext, ChatContext, calcInitLines, version } from "./global.js"
+import { SportContext, ArbitreContext, ChatContext, calcInitLines, version, adminlist } from "./global.js"
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -117,11 +117,12 @@ function App() {
                                                 <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", }} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
                                             </Pressable>
                                         </View>
-                                        <View style={{ flex: 1, marginRight: 15 }}>
+                                        {adminlist.includes(username) ?<View style={{ flex: 1, marginRight: 15 }}>
                                             <Pressable onPress={() => { lock_unlock(lock, setLock, currentSport) }}>
                                                 <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white" }} resizeMethod="auto" resizeMode='cover' source={lock ? require('./assets/lock.png') : require('./assets/unlock.png')} />
                                             </Pressable>
-                                        </View>
+                                        </View> : <View></View>}
+                                        
                                         <View style={{ flex: 1, marginRight: 15 }}>
                                             <TouchableOpacity onPress={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 3000)}>
                                                 <Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} />
