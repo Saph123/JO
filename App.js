@@ -5,7 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Audio } from 'expo-av';
 import * as Notifications from 'expo-notifications';
-import { getValueFor } from './utils.js';
+import { getValueFor, lock_unlock } from './utils.js';
 
 import { HomeScreen } from "./HomeScreen.js";
 import { SummaryScreen } from "./SummaryScreen.js";
@@ -23,31 +23,7 @@ Notifications.setNotificationHandler({
         shouldSetBadge: false,
     }),
 });
-function lock_unlock(lock, setLock, sportname) {
-    const controller = new AbortController();
-    let type = "";
-    if (lock) {
 
-        type = "unlock";
-    }
-    else {
-
-        type = "lock";
-    }
-    const timeoutId = setTimeout(() => controller.abort(), 10000);
-    fetch("https://applijo.freeddns.org/locksport", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sportname, "type": type }) }).then(r => {
-        if (r.status == 200) {
-
-            setLock(!lock);
-        }
-        else {
-            let msg = "Server reply :" + r.status
-            alert(msg);
-        }
-    }
-    ).catch(err => console.error(err))
-
-}
 const Stack = createStackNavigator();
 function App() {
     const [arbitre, setArbitre] = React.useState(false);
