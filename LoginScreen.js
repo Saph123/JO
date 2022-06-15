@@ -3,7 +3,7 @@ import * as React from 'react';
 import { View, TextInput, Text, Image, Linking, Pressable, ScrollView, ActivityIndicator } from 'react-native';
 import { getValueFor, save, videoHandler, pushtoken, manageEvents, eventView } from './utils';
 import { SportContext, version } from "./global.js"
-import { fetch_activities } from "./trace.js";
+import { fetch_activities, fetch_global_results } from "./trace.js";
 import { Planning } from "./planning.js";
 
 export function LoginScreen({ route, navigation }) {

@@ -164,12 +164,19 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                 if (data['arbitre'][authouser] == "All") {
                     setAutho(true);
                 }
-                else if (data['arbitre'][authouser] == "None") {
-                    setAutho(false);
-                }
                 else if (data['arbitre'][authouser] == username) {
-                    setAutho(true);
+                    if (!data['states'].includes("final_locked") && !data['states'].includes("playoff_locked") && !data['states'].includes("poules_locked"))
+                    {
+                        setAutho(true);
+                    }
                 }
+                for (var state in data['states']) {
+                    if (data['states'][state] != "paris_locked")
+                    {
+                        data['states'][state] = data['states'][state].replace("_locked", "");
+                    }
+                }
+                data["status"] = data["status"].replace("_locked", "");
                 if (adminlist.includes(username)) {
                     setAutho(true);
                     if (!data['states'].includes("modif")) {
