@@ -131,44 +131,62 @@ export const Trace = (props) => {
         )
     }
     if (status == "paris" || status == "paris_locked") {
+        const dimensions = Dimensions.get('window');
+        const imageHeight = dimensions.height;
+        const imageWidth = dimensions.width;
         return (
-            <ScrollView>
-                <ScrollView horizontal={true} directionalLockEnabled={false}>
-                    <View style={{ flexDirection: "row" }}>
-                        <View>
-                            <Text style={[styles.showPlayers, { height: 60 }]}>Équipe/Athlète</Text>
-                            {props.all_teams.betListe.map(r =>
-                                <Text key={r.username} onChangeText={(text) => { r.username = text; }} style={styles.showPlayers}>{r.username}</Text>
-                            )
-                            }
-                        </View>
-                        <View>
-                            <Text style={[styles.inputScore, { height: 60 }]}>Nb votes</Text>
-                            {props.all_teams.betListe.map(r =>
-                                <Text key={r.username} style={styles.inputScore}>{r.score}</Text>
-                            )
-                            }
-                        </View>
-                        <View style={{ flexDirection: "column" }}>
-                            <View style={{ width: 60, height: 60, backgroundColor: status == "paris" ? "lightgrey" : "", justifyContent: "center" }}>
-                                <Pressable style={({ pressed }) => [{ opacity: status == "paris" ? pressed ? 0.2 : 1 : 0, alignSelf: "center" }]} onPress={() => { // Function to save only the results!
-                                    status == "paris" ? pushbets(username, sport, props.all_teams.betListe) : "";
-                                }
-                                }>
-                                    <Image resizeMode="cover" resizeMethod="resize" style={{ alignSelf: "center" }} source={require('./assets/save.png')}></Image>
-                                </Pressable>
-
-                            </View>
-                            {props.all_teams.betListe.map(r =>
-                                <View key={r.username} style={{ flexDirection: "row" }} >
-                                    <MedailleView maxMedals={1} r={r} liste={props.all_teams.betListe} setRealListe={props.all_teams.setBetListe} setloading={props.all_teams.setloading} metal={require('./assets/youpin.png')} rank={1} locked={status == "paris_locked"}></MedailleView>
-                                </View>
-                            )
-                            }
-                        </View>
+            <ImageBackground style={{ width:imageWidth}} source={require('./assets/poker2.jpg')}>
+                <View style={{ flex: 2, flexDirection: "column", justifyContent:"space-around"}}>
+                    <View style={{marginTop: 10}}>
+                        <Text style={{textAlign: "center", textAlignVertical:"center", fontSize:25}} >Sélectionnez votre favori!</Text>
                     </View>
-                </ScrollView>
-            </ScrollView>
+                    {props.all_teams.betListe.map(r =>
+                        <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", }}>
+                            <View style={[styles.bet, {alignSelf: "center"}]}>
+                                <Text key={r.username} onChangeText={(text) => { r.username = text; }}>{r.username}</Text>
+                            </View>
+
+                            <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1}, r.rank == 1 ? styles.betScoreIsIn : styles.betScore, {flexDirection: "row"}]} onPress={() => {
+                                var new_liste = props.all_teams.betListe;
+                                if (r.rank == 1)
+                                {
+                                    for (var index = 0; index < new_liste.length; index++) 
+                                    {
+                                        if (new_liste[index].username == r.username)
+                                        {
+                                            new_liste[index].rank = 0;
+                                            new_liste[index].score -= 1;
+                                        }
+                                    }
+                                    pushbets(username, sport, "");
+                                }
+                                else
+                                {
+                                    for (var index = 0; index < new_liste.length; index++) 
+                                    {
+                                        if (new_liste[index].rank == 1)
+                                        {
+                                            new_liste[index].score -= 1;
+                                            new_liste[index].rank = 0;
+                                        }
+                                        if (new_liste[index].username == r.username)
+                                        {
+                                            new_liste[index].rank = 1;
+                                            new_liste[index].score += 1;
+                                        }
+                                    }
+                                    pushbets(username, sport, r.username);
+                                }
+                                props.all_teams.setBetListe([...new_liste]);
+                            }}>
+                                <Text key={r.username}>{r.score} </Text>
+                                <Image source={require('./assets/youpin.png')}/>
+                            </Pressable>
+                        </View>
+                    )
+                    }
+                </View>
+            </ImageBackground>
         )
     }
     if (status == "results") {
@@ -202,7 +220,7 @@ export const Trace = (props) => {
                         {props.results["3"][year].map(r => result_view(r))}
                     </View>
                 </View>
-            </ImageBackground >
+            </ImageBackground>
         )
     }
     else { // Other (list like trail etc.)

@@ -516,20 +516,13 @@ export function updateTeams(sport, teams) {
     }).catch((err) => { alert("Issue with server!") });
 }
 
-export function pushbets(username, sport, bets) {
+export function pushbets(username, sport, vote) {
 
     // 5 second timeout:
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
-    var vote = ""
 
     // // push to server
-    for (var i in bets) {
-        if (bets[i]['rank'] == 1) {
-            vote = bets[i]["username"];
-            break;
-        }
-    }
     fetch("https://applijo.freeddns.org/pushBets", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "sport": sport, "bets": vote }) }).then(r => {
         if (r.status == 200) {
             alert("Saved", "Saved to server!", ["Ok"])
