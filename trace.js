@@ -91,9 +91,9 @@ export const Trace = (props) => {
                         <View style={{ flex: 3 }}>
                             <Text style={{ textAlign: "center" }}>{r.name}</Text>
                             <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
-                                <Row data={["Team", "P", "W", "L", "Points", "Diff"]} widthArr={[180, 35, 35, 35, 60, 50]} style={{ width: "100%", height: 40, backgroundColor: '#f1f8ff', margin: 6, fontSize: 16 }}></Row>
+                                <Row data={["Team", "P", "W", "L", "Points", "Diff"]} widthArr={[180, 35, 35, 35, 60, 50]} style={{ width: "100%", height: 40, backgroundColor: '#f1f8ff', fontSize: 16 }}></Row>
                                 {r.teams.sort((a, b) => a.points > b.points ? 1 : (a.points == b.points ? (a.diff > b.diff ? 1 : -1) : -1)).reverse().map(q =>
-                                    <Row key={q.name} data={[q.name, q.played, q.wins, q.loses, q.points, q.diff]} widthArr={[180, 35, 35, 35, 60, 50]} style={{ margin: 6, fontSize: 16, fontWeight: (q.name.includes(username) ? "bold" : "normal") }}></Row>)}
+                                    <Row key={q.name} data={[q.name, q.played, q.wins, q.loses, q.points, q.diff]} widthArr={[180, 35, 35, 35, 60, 50]} style={{ fontSize: 16, fontWeight: (q.name.includes(username) ? "bold" : "normal") }}></Row>)}
                             </Table>
                         </View>
                         <View style={{ flex: 1, flexDirection: "column", justifyContent: "space-around" }}>
