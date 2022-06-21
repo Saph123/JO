@@ -525,7 +525,7 @@ export function pushbets(username, sport, vote) {
     // // push to server
     fetch("https://applijo.freeddns.org/pushBets", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "sport": sport, "bets": vote }) }).then(r => {
         if (r.status == 200) {
-            alert("Saved", "Saved to server!", ["Ok"])
+            return true;
         }
         else {
             alert("Wrong login or password!");
