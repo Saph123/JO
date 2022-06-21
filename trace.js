@@ -108,7 +108,7 @@ export const Trace = (props) => {
         return (
             <ScrollView>
                 <ScrollView horizontal={true} directionalLockEnabled={false}>
-                    <View style={{ flexDirection: "row" }}>
+                    <View style={{ flexDirection: "row", marginTop:22 }}>
                         <View>
                             <Text style={[styles.showPlayers, { height: 60 }]}>Équipe/Athlète</Text>
                             {props.all_teams.modifListe.map(r =>
@@ -146,12 +146,15 @@ export const Trace = (props) => {
                                 <Text key={r.username} onChangeText={(text) => { r.username = text; }}>{r.username}</Text>
                             </View>
 
-                            <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1}, r.rank == 1 ? styles.betScoreIsIn : styles.betScore, {flexDirection: "row"}]} onPress={() => {
-                                var new_liste = props.all_teams.betListe;
-                                if (r.rank == 1)
+                            <Pressable style={({ pressed }) => [{ opacity: status == "paris_locked" ? r.rank == 0 ? 0 : 1 : pressed ? 0.2 : 1}, r.rank == 1 ? styles.betScoreIsIn : styles.betScore, {flexDirection: "row"}]} onPress={() => {
+                                if (status == "paris")
                                 {
-                                    for (var index = 0; index < new_liste.length; index++) 
+
+                                    var new_liste = props.all_teams.betListe;
+                                    if (r.rank == 1)
                                     {
+                                        for (var index = 0; index < new_liste.length; index++) 
+                                        {
                                         if (new_liste[index].username == r.username)
                                         {
                                             new_liste[index].rank = 0;
@@ -178,6 +181,7 @@ export const Trace = (props) => {
                                     pushbets(username, sport, r.username);
                                 }
                                 props.all_teams.setBetListe([...new_liste]);
+                            }
                             }}>
                                 <Text key={r.username}>{r.score} </Text>
                                 <Image source={require('./assets/youpin.png')}/>
@@ -196,7 +200,7 @@ export const Trace = (props) => {
         return (
             <ImageBackground style={{ width: imageWidth, height: imageHeight }} source={require('./assets/podium3.png')}>
                 <View style={{flex:2}}>
-                    <View style={{ flexDirection: "row", alignSelf: "center", width: "100%"}}>
+                    <View style={{ flexDirection: "row", alignSelf: "center", width: "100%", marginTop:22}}>
                         <Pressable style={({ pressed }) => [{ opacity: (year - 1) in props.results["1"] ? pressed ? 0.2 : 1 : 0 }]} onPress={() => { if((year - 1) in props.results["1"]) setYear(year - 1) }}>
                            <Image source={require('./assets/arrow_left.png')}/>
                         </Pressable>
@@ -230,11 +234,7 @@ export const Trace = (props) => {
                 <ScrollView>
                     <ScrollView styles={{ flex: 1 }} horizontal={true} directionalLockEnabled={false}>
 
-                        <View styles={{ width: 30, height: 70, alignSelf: "center" }}>
-
-                            {/* {(status.states.length > 1) ? button_switch(status, setStatus, sport, (status.status == "series") ? "final" : "series", setloading, 0, setListe, setFinal, username, setSeriesLevel, setRealListe) : <Text></Text>} */}
-                        </View>
-                        <View style={{ flexDirection: "row" }}>
+                        <View style={{ flexDirection: "row", marginTop:22 }}>
                             <View>
                                 <Text style={styles.showPlayers}>Athlete</Text>
                                 {props.all_teams.realListe.map(r =>
@@ -298,7 +298,7 @@ export const Trace = (props) => {
                     <ScrollView styles={{ height: "100%", flex: 1 }} horizontal={true} directionalLockEnabled={false}>
                         {props.all_teams.seriesLevel.map(cur_level =>
                             <View key={cur_level}>
-                                <View style={{ flexDirection: "row" }}>
+                                <View style={{ flexDirection: "row", marginTop:22 }}>
                                     <View>
                                         <Text style={[styles.showPlayers, { height: 60 }]}>Athlete</Text>
                                         {props.all_teams.realListe.map((r, index) => {

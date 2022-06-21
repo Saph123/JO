@@ -183,8 +183,7 @@ const styles = StyleSheet.create({
         flex: 0.5,
         maxWidth: 200,
         justifyContent: "center",
-        alignItems: "center",
-        marginTop: 22
+        alignItems: "center"
     },
     modalView: {
         margin: 20,
