@@ -5,6 +5,7 @@ import { getValueFor, save, videoHandler, pushtoken, manageEvents, eventView } f
 import { SportContext, version } from "./global.js"
 import { fetch_activities, fetch_global_results } from "./trace.js";
 import { Planning } from "./planning.js";
+import { addth } from "./utils";
 
 export function LoginScreen({ route, navigation }) {
     const [userName, setuserName] = React.useState("");
@@ -29,16 +30,16 @@ export function LoginScreen({ route, navigation }) {
     let planning = new Planning();
     let localusername = "";
     React.useEffect(() => {
-        getValueFor("username").then(r => {
-            setuserName(r);
-            if (r != "") {
+        getValueFor("username").then(user => {
+            setuserName(user);
+            if (user != "") {
                 setLoggedIn(true);
                 manageEvents(setEventsDone, setEventsInProgess)
-                fetch_activities(r, setArbitre, setEvents);
+                fetch_activities(user, setArbitre, setEvents);
                 fetch_global_results().then(r => {
 
                     for (var player_data in r) {
-                        if (r[player_data]["name"] == r) {
+                        if (r[player_data]["name"] == user) {
                             setRank(r[player_data]["rank"] + addth(Number(r[player_data]["rank"])))
                             setGoldMedal(r[player_data]["gold"]["number"])
                             if (r[player_data]["gold"]["number"]) {
