@@ -145,7 +145,7 @@ export function SportDetailsScreen({ route }) {
                         }
                     </ArbitreContext.Consumer>
 
-                    <Trace status={status} username={route.params.username} sport={route.params.sportname} all_teams={all_teams} results={results} setStatus={setStatus} setLoading={setloading} />
+                    <Trace status={status} username={route.params.username} sport={route.params.sportname} all_teams={all_teams} results={results} setStatus={setStatus} setLoading={setloading} onRefresh={onRefresh}/>
                 </ScrollView>
             </View>
         </View>

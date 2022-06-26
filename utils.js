@@ -164,17 +164,18 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                 if (data['arbitre'][authouser] == "All") {
                     setAutho(true);
                 }
+                else if (sportname == "Pizza") {
+                    setAutho(true);
+                }
                 else if (data['arbitre'][authouser] == username) {
-                    if (!data['states'].includes("final_locked") && !data['states'].includes("playoff_locked") && !data['states'].includes("poules_locked"))
-                    {
+                    if (!data['states'].includes("final_locked") && !data['states'].includes("playoff_locked") && !data['states'].includes("poules_locked")) {
                         setAutho(true);
                     }
                 }
                 setLock(false);
                 for (var state in data['states']) {
-                    if (data['states'][state] != "paris_locked")
-                    {
-                        if(data['states'][state].indexOf("_locked") !== -1){
+                    if (data['states'][state] != "paris_locked") {
+                        if (data['states'][state].indexOf("_locked") !== -1) {
                             setLock(true);
                         }
                         data['states'][state] = data['states'][state].replace("_locked", "");
@@ -248,16 +249,25 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
             if (status['states'].includes("final")) { // gestion listes (trail/tong)
 
                 let liste = {};
-                let filename = (sportname == "Pizza" ? sportname + "/" + username : sportname)
-                fetch("https://applijo.freeddns.org/teams/" + filename + "_series.json").then(response => response.json()).then(data => {
+                fetch("https://applijo.freeddns.org/teams/" + sportname + "_series.json").then(response => response.json()).then(data => {
                     liste = data;
                     let local_liste = [];
                     let local_final = [];
                     var levellist = 1;
+                    var score = 0;
+                    rank = 0;
                     for (var series in liste["Series"]) {
                         if (liste["Series"][series]["Name"] == "Final") {
                             var templist = liste["Series"][series]["Teams"];
                             for (var i in liste["Series"][series]["Teams"]) {
+                                if (sportname == "Pizza") {
+                                    rank = templist[i]["score"].includes(username) ? 1 : 0;
+                                    score = templist[i]["score"].length;
+                                }
+                                else {
+                                    rank = templist[i]["rank"];
+                                    score = templist[i]["score"];
+                                }
                                 local_final.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], 0));
                             }
                             setFinal([...local_final])
@@ -361,7 +371,7 @@ export function eventView(currentEvents, eventsDone, sportname, navigation, setC
                 <Pressable delayLongPress={5000} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
                     onPress={() => { sportlist().includes(sportname) ? setCurrentSport(sportname) : "", sportlist().includes(sportname) ? navigation.navigate(navigateTo, { sportname: sportname }) : "" }}
                 >
-                    <Image style={[styles.sportimage,{ tintColor:"black"}]} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
+                    <Image style={[styles.sportimage, { tintColor: "black" }]} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
                 </Pressable>
                 <View style={{ flexDirection: "column", justifyContent: "center", alignSelf: "center", marginLeft: 50 }}><Text>{sportname}</Text></View>
             </View>
@@ -369,15 +379,15 @@ export function eventView(currentEvents, eventsDone, sportname, navigation, setC
     }
     else {
         return (
-            <View key={sportname}  style={{ flex: 1, margin: -1, flexDirection: "row", borderColor: "black", borderWidth: 2, borderTopWidth: 0, justifyContent: "flex-start", maxHeight: 80 }}>
+            <View key={sportname} style={{ flex: 1, margin: -1, flexDirection: "row", borderColor: "black", borderWidth: 2, borderTopWidth: 0, justifyContent: "flex-start", maxHeight: 80 }}>
                 <View style={{ flex: 1, justifyContent: "center" }}>
                     <Pressable delayLongPress={5000} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
                         onPress={() => { sportlist().includes(sportname) ? setCurrentSport(sportname) : "", sportlist().includes(sportname) ? navigation.navigate(navigateTo, { sportname: sportname }) : "" }}
                     >
-                        <Image style={[styles.sportimage,{ tintColor:"black"}]} resizeMode="contain" resizeMethod="auto"  source={lutImg(sportname)} />
+                        <Image style={[styles.sportimage, { tintColor: "black" }]} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
                     </Pressable>
                 </View>
-                <View style={{ flex:1, flexDirection: "column", justifyContent: "center", alignSelf:"center" }}><Text>{sportname}</Text></View>
+                <View style={{ flex: 1, flexDirection: "column", justifyContent: "center", alignSelf: "center" }}><Text>{sportname}</Text></View>
             </View>
         )
 
@@ -474,19 +484,17 @@ export async function fetch_teams(sportname) {
 export async function fetch_sport_results(sportname, setResults) {
     let lists;
     lists = await fetch("https://applijo.freeddns.org/results/sports/" + sportname + "_summary.json").then(response => response.json()).then(data => {
-        let results = {"1":{}, "2":{}, "3":{}}
-        for (var i in data)
-            {
-                results["1"][i] = [];
-                results["2"][i] = [];
-                results["3"][i] = [];
-                for(team in data[i]["Teams"])
-                {
-                    results[data[i]["Teams"][team]['rank'].toString()][i].push(data[i]["Teams"][team]["Players"].replace(/\//g, "\n"));
-                }
+        let results = { "1": {}, "2": {}, "3": {} }
+        for (var i in data) {
+            results["1"][i] = [];
+            results["2"][i] = [];
+            results["3"][i] = [];
+            for (team in data[i]["Teams"]) {
+                results[data[i]["Teams"][team]['rank'].toString()][i].push(data[i]["Teams"][team]["Players"].replace(/\//g, "\n"));
             }
-            setResults(results)
-            return results;
+        }
+        setResults(results)
+        return results;
     }).catch(err => console.log(err));
 }
 
@@ -539,6 +547,26 @@ export function pushbets(username, sport, vote) {
     }).catch((err) => { alert("Issue with server!") });
     return;
 }
+
+export function pushpizza(username, vote) {
+
+    // 5 second timeout:
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+    // // push to server
+    fetch("https://applijo.freeddns.org/pushPizza", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "bets": vote }) }).then(r => {
+        if (r.status == 200) {
+            return true;
+        }
+        else {
+            alert("Wrong login or password!");
+        }
+
+    }).catch((err) => { alert("Issue with server!") });
+    return;
+}
+
 function countLines(str) {
     return (str.match(/\n/g) || '').length + 1;
 }
@@ -560,11 +588,11 @@ export async function pushcluedo() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     // // push to server
-    getValueFor("username").then( username =>
-    fetch("https://applijo.freeddns.org/cluedo", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "cluedo": username }) }).then(r => {
+    getValueFor("username").then(username =>
+        fetch("https://applijo.freeddns.org/cluedo", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "cluedo": username }) }).then(r => {
 
 
-    }).catch((err) => { console.log("Maybe it's normal") })
+        }).catch((err) => { console.log("Maybe it's normal") })
     );
 }
 

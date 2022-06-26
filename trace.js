@@ -78,14 +78,14 @@ export const Trace = (props) => {
                 {props.all_teams.levels.slice(0).map(r =>
                     <View key={r}
                         style={{ flexDirection: 'row', alignItems: "stretch", justifyContent: "space-between" }}>
-                        <Matchcomp status={props.all_teams.status} sportname={sport} setGroups={props.all_teams.setGroups} setmatches={props.all_teams.setmatches} setlevel={props.all_teams.setlevels} setmatchesgroup={props.all_teams.setmatchesgroup} setloading={props.all_teams.setloading} username={username} loading={loading} matches={props.all_teams.matches} level={r} sport={sport} autho={props.all_teams.autho}></Matchcomp>
+                        <Matchcomp status={props.all_teams.status} sportname={sport} setGroups={props.all_teams.setGroups} setmatches={props.all_teams.setmatches} setlevel={props.all_teams.setlevels} setmatchesgroup={props.all_teams.setmatchesgroup} setloading={props.all_teams.setloading} username={username} loading={loading} matches={props.all_teams.matches} level={r} sport={sport} autho={props.all_teams.autho} onRefresh={props.onRefresh}></Matchcomp>
                     </View>)}
             </ScrollView>
         );
     }
     if (status == "poules") {
         return (
-            <ScrollView  horizontal={true}>
+            <ScrollView horizontal={true}>
                 {props.all_teams.groups.map((r, index) =>
                     <View key={r.name} style={styles.tablecontainer}>
                         <View style={{ flex: 3 }}>
@@ -97,7 +97,7 @@ export const Trace = (props) => {
                             </Table>
                         </View>
                         <View style={{ flex: 1, flexDirection: "column", justifyContent: "space-around" }}>
-                            <Matchpoule status={props.all_teams.status} key={index} sportname={sport} setGroups={props.all_teams.setGroups} setmatches={props.all_teams.setmatches} setlevel={props.all_teams.setlevels} setmatchesgroup={props.all_teams.setmatchesgroup} username={username} setloading={props.all_teams.setloading} loading={loading} poule={r.name} matches={props.all_teams.groupmatches[index]} level={0} sport={sport} autho={props.all_teams.autho}></Matchpoule>
+                            <Matchpoule status={props.all_teams.status} key={index} sportname={sport} setGroups={props.all_teams.setGroups} setmatches={props.all_teams.setmatches} setlevel={props.all_teams.setlevels} setmatchesgroup={props.all_teams.setmatchesgroup} username={username} setloading={props.all_teams.setloading} loading={loading} poule={r.name} matches={props.all_teams.groupmatches[index]} level={0} sport={sport} autho={props.all_teams.autho} onRefresh={props.onRefresh}></Matchpoule>
                         </View>
                     </View>)}
             </ScrollView>
@@ -108,7 +108,7 @@ export const Trace = (props) => {
         return (
             <ScrollView>
                 <ScrollView horizontal={true} directionalLockEnabled={false}>
-                    <View style={{ flexDirection: "row", marginTop:22 }}>
+                    <View style={{ flexDirection: "row", marginTop: 22 }}>
                         <View>
                             <Text style={[styles.showPlayers, { height: 60 }]}>Équipe/Athlète</Text>
                             {props.all_teams.modifListe.map(r =>
@@ -132,59 +132,51 @@ export const Trace = (props) => {
     }
     if (status == "paris" || status == "paris_locked") {
         const dimensions = Dimensions.get('window');
-        const imageHeight = dimensions.height;
+        const imageHeight = dimensions.height * 0.8;
         const imageWidth = dimensions.width;
         return (
-            <ImageBackground style={{ width:imageWidth}} source={require('./assets/poker2.jpg')}>
-                <View style={{ flex: 2, flexDirection: "column", justifyContent:"space-around"}}>
-                    <View style={{marginTop: 10}}>
-                        <Text style={{textAlign: "center", textAlignVertical:"center", fontSize:25}} >Sélectionnez votre favori!</Text>
+            <ImageBackground style={{ width: imageWidth, minHeight: imageHeight }} source={require('./assets/poker2.jpg')}>
+                <View style={{ flex: 2, flexDirection: "column", justifyContent: "space-around" }}>
+                    <View style={{ marginTop: 10 }}>
+                        <Text style={{ textAlign: "center", textAlignVertical: "center", fontSize: 25 }} >Sélectionnez votre favori!</Text>
                     </View>
                     {props.all_teams.betListe.map(r =>
                         <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", }}>
-                            <View style={[styles.bet, {alignSelf: "center"}]}>
+                            <View style={[styles.bet, { alignSelf: "center" }]}>
                                 <Text key={r.username} onChangeText={(text) => { r.username = text; }}>{r.username}</Text>
                             </View>
 
-                            <Pressable style={({ pressed }) => [{ opacity: status == "paris_locked" ? r.rank == 0 ? 0 : 1 : pressed ? 0.2 : 1}, r.rank == 1 ? styles.betScoreIsIn : styles.betScore, {flexDirection: "row"}]} onPress={() => {
-                                if (status == "paris")
-                                {
+                            <Pressable style={({ pressed }) => [{ opacity: status == "paris_locked" ? r.rank == 0 ? 0 : 1 : pressed ? 0.2 : 1 }, r.rank == 1 ? styles.betScoreIsIn : styles.betScore, { flexDirection: "row" }]} onPress={() => {
+                                if (status == "paris") {
 
                                     var new_liste = props.all_teams.betListe;
-                                    if (r.rank == 1)
-                                    {
-                                        for (var index = 0; index < new_liste.length; index++) 
-                                        {
-                                        if (new_liste[index].username == r.username)
-                                        {
-                                            new_liste[index].rank = 0;
-                                            new_liste[index].score -= 1;
+                                    if (r.rank == 1) {
+                                        for (var index = 0; index < new_liste.length; index++) {
+                                            if (new_liste[index].username == r.username) {
+                                                new_liste[index].rank = 0;
+                                                new_liste[index].score -= 1;
+                                            }
                                         }
+                                        pushbets(username, sport, "");
                                     }
-                                    pushbets(username, sport, "");
-                                }
-                                else
-                                {
-                                    for (var index = 0; index < new_liste.length; index++) 
-                                    {
-                                        if (new_liste[index].rank == 1)
-                                        {
-                                            new_liste[index].score -= 1;
-                                            new_liste[index].rank = 0;
+                                    else {
+                                        for (var index = 0; index < new_liste.length; index++) {
+                                            if (new_liste[index].rank == 1) {
+                                                new_liste[index].score -= 1;
+                                                new_liste[index].rank = 0;
+                                            }
+                                            if (new_liste[index].username == r.username) {
+                                                new_liste[index].rank = 1;
+                                                new_liste[index].score += 1;
+                                            }
                                         }
-                                        if (new_liste[index].username == r.username)
-                                        {
-                                            new_liste[index].rank = 1;
-                                            new_liste[index].score += 1;
-                                        }
+                                        pushbets(username, sport, r.username);
                                     }
-                                    pushbets(username, sport, r.username);
+                                    props.all_teams.setBetListe([...new_liste]);
                                 }
-                                props.all_teams.setBetListe([...new_liste]);
-                            }
                             }}>
                                 <Text key={r.username}>{r.score} </Text>
-                                <Image source={require('./assets/youpin.png')}/>
+                                <Image source={require('./assets/youpin.png')} />
                             </Pressable>
                         </View>
                     )
@@ -199,17 +191,17 @@ export const Trace = (props) => {
         const imageWidth = dimensions.width;
         return (
             <ImageBackground style={{ width: imageWidth, height: imageHeight }} source={require('./assets/podium3.png')}>
-                <View style={{flex:2}}>
-                    <View style={{ flexDirection: "row", alignSelf: "center", width: "100%", marginTop:22}}>
-                        <Pressable style={({ pressed }) => [{ opacity: (year - 1) in props.results["1"] ? pressed ? 0.2 : 1 : 0 }]} onPress={() => { if((year - 1) in props.results["1"]) setYear(year - 1) }}>
-                           <Image source={require('./assets/arrow_left.png')}/>
+                <View style={{ flex: 2 }}>
+                    <View style={{ flexDirection: "row", alignSelf: "center", width: "100%", marginTop: 22 }}>
+                        <Pressable style={({ pressed }) => [{ opacity: (year - 1) in props.results["1"] ? pressed ? 0.2 : 1 : 0 }]} onPress={() => { if ((year - 1) in props.results["1"]) setYear(year - 1) }}>
+                            <Image source={require('./assets/arrow_left.png')} />
                         </Pressable>
-                        <View style={{flex:1}}>
-                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/calendar2.png')}/>
-                            <Text style={{textAlign:"center", fontWeight:"bold", fontSize:30, marginTop: "-40%"}}>{year}</Text>
+                        <View style={{ flex: 1 }}>
+                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/calendar2.png')} />
+                            <Text style={{ textAlign: "center", fontWeight: "bold", fontSize: 30, marginTop: "-40%" }}>{year}</Text>
                         </View>
                         <Pressable style={({ pressed }) => [{ opacity: (year + 1) in props.results["1"] ? pressed ? 0.2 : 1 : 0 }]} onPress={() => { if ((year + 1) in props.results["1"]) setYear(year + 1) }}>
-                            <Image source={require('./assets/arrow_right.png')}/>
+                            <Image source={require('./assets/arrow_right.png')} />
                         </Pressable>
                     </View>
                 </View>
@@ -234,7 +226,7 @@ export const Trace = (props) => {
                 <ScrollView>
                     <ScrollView styles={{ flex: 1 }} horizontal={true} directionalLockEnabled={false}>
 
-                        <View style={{ flexDirection: "row", marginTop:22 }}>
+                        <View style={{ flexDirection: "row", marginTop: 22 }}>
                             <View>
                                 <Text style={styles.showPlayers}>Athlete</Text>
                                 {props.all_teams.realListe.map(r =>
@@ -298,16 +290,16 @@ export const Trace = (props) => {
                     <ScrollView styles={{ height: "100%", flex: 1 }} horizontal={true} directionalLockEnabled={false}>
                         {props.all_teams.seriesLevel.map(cur_level =>
                             <View key={cur_level}>
-                                <View style={{ flexDirection: "row", marginTop:22 }}>
+                                <View style={{ flexDirection: "row", marginTop: 22 }}>
                                     <View>
-                                        <Text style={[styles.showPlayers, { height: 60 }]}>Athlete</Text>
+                                        <Text style={[styles.showPlayers, { height: 60, backgroundColor: "#ff8484" }]}>Athlete</Text>
                                         {props.all_teams.realListe.map((r, index) => {
 
                                             if (cur_level == r.level) {
                                                 return (
 
                                                     <View key={index}>
-                                                        <Text style={r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers}>{r.username}</Text>
+                                                        <Text style={[r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers, {backgroundColor: index%2 ? "#ff8484": "#FED8B1"}]}>{r.username}</Text>
                                                     </View>
                                                 )
                                             }
@@ -316,11 +308,11 @@ export const Trace = (props) => {
                                         }
                                     </View>
                                     <View>
-                                        <Text style={[styles.inputScore, { height: 60 }]}>Score/Temps</Text>
+                                        <Text style={[styles.inputScore, { height: 60, backgroundColor: "#ff8484"  }]}>Score/Temps</Text>
                                         {props.all_teams.realListe.map((r, index) => {
                                             if (cur_level == r.level) {
                                                 return (
-                                                    <TextInput key={index} onChangeText={(text) => { r.score = text; }} style={styles.inputScore}>{r.score}</TextInput>
+                                                    <TextInput key={index} onChangeText={(text) => { r.score = text; }} style={[styles.inputScore, {backgroundColor: index%2 ? "#ff8484": "#FED8B1"}]}>{r.score}</TextInput>
                                                 )
                                             }
                                         }
@@ -331,7 +323,16 @@ export const Trace = (props) => {
                                         <View style={{ width: 60, height: 60, backgroundColor: "lightgrey", justifyContent: "center" }}>
                                             <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => { // Function to save only the results!
                                                 props.all_teams.setListe([...props.all_teams.realListe]);
-                                                pushmatch(username, sport, props.all_teams.realListe, "liste", 0);
+                                                if (sport == "Pizza") {
+                                                    for (let index = 0; index < props.all_teams.realListe.length; index++) {
+                                                        if (props.all_teams.realListe[index].rank == 1) {
+                                                            pushpizza(username, props.all_teams.realListe[index].username);
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    pushmatch(username, sport, props.all_teams.realListe, "liste", 0);
+                                                }
                                             }
                                             }>
                                                 <Image resizeMode="cover" resizeMethod="resize" style={{ alignSelf: "center" }} source={require('./assets/save.png')}></Image>
@@ -372,15 +373,21 @@ export const Trace = (props) => {
 
 }
 
-function result_view(results)
-{
-    return(
+function result_view(results) {
+    return (
         <View style={styles.podium}>
             <Text style={{ textAlign: "center" }}>{results}</Text>
         </View>)
 }
 
+export async function fetch_global_bets_results() {
+    let fetch_results = {}
 
+    fetch_results = await fetch("https://applijo.freeddns.org/results/global_bets.json").then(response => response.json()).then(data => {
+        return data;
+    }).catch(err => console.log(err));
+    return fetch_results;
+}
 
 export async function fetch_global_results() {
     let fetch_results = {}
@@ -503,6 +510,7 @@ function modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_a
                             updateMatchArray(curMatchZoom, match_array, set_match_array);
                             pushmatch(username, sport, curMatchZoom, type, curMatchZoom.uniqueId);
                             setMatchZoom(false);
+                            props.onRefresh();
                             // fetch_matches(false, status, username, null, null, null, sport, props.setmatches, props.setGroups, props.setlevel, props.setmatchesgroup, null, null, null, null).then(r => props.setloading(false))
 
                         }}>
