@@ -259,7 +259,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                                     rank = templist[i]["rank"];
                                     score = templist[i]["score"];
                                 }
-                                local_final.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], 0));
+                                local_final.push(new Liste(templist[i]["Players"], score, rank, 0));
                             }
                             setFinal([...local_final])
 
@@ -546,7 +546,7 @@ export function pushpizza(username, vote) {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     // // push to server
-    fetch("https://applijo.freeddns.org/pushPizza", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "bets": vote }) }).then(r => {
+    fetch("https://applijo.freeddns.org/pushpizza", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "vote": vote }) }).then(r => {
         if (r.status == 200) {
             return true;
         }

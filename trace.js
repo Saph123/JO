@@ -7,7 +7,7 @@ import { Svg, Polyline } from 'react-native-svg';
 import { Table, Row } from 'react-native-table-component';
 import 'react-native-url-polyfill/auto';
 import { version } from "./global"
-import { updateTeams, pushbets } from "./utils";
+import { updateTeams, pushbets, pushpizza } from "./utils";
 
 
 const MedailleView = (props) => {
@@ -327,11 +327,13 @@ export const Trace = (props) => {
                                                     for (let index = 0; index < props.all_teams.realListe.length; index++) {
                                                         if (props.all_teams.realListe[index].rank == 1) {
                                                             pushpizza(username, props.all_teams.realListe[index].username);
+                                                            props.onRefresh();
                                                         }
                                                     }
                                                 }
                                                 else {
                                                     pushmatch(username, sport, props.all_teams.realListe, "liste", 0);
+                                                    props.onRefresh();
                                                 }
                                             }
                                             }>
