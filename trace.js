@@ -292,14 +292,14 @@ export const Trace = (props) => {
                             <View key={cur_level}>
                                 <View style={{ flexDirection: "row", marginTop: 22 }}>
                                     <View>
-                                        <Text style={[styles.showPlayers, { height: 60, backgroundColor: "#ff8484" }]}>Athlete</Text>
+                                        <Text style={[styles.showPlayers, { height: 60, backgroundColor: "#74b3d2" }]}>Athlete</Text>
                                         {props.all_teams.realListe.map((r, index) => {
 
                                             if (cur_level == r.level) {
                                                 return (
 
                                                     <View key={index}>
-                                                        <Text style={[r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers, {backgroundColor: index%2 ? "#ff8484": "#FED8B1"}]}>{r.username}</Text>
+                                                        <Text style={[r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers, {backgroundColor: index%2 ? "#74b3d2": "#85ad94"}]}>{r.username}</Text>
                                                     </View>
                                                 )
                                             }
@@ -308,13 +308,13 @@ export const Trace = (props) => {
                                         }
                                     </View>
                                     <View>
-                                        <Text style={[styles.inputScore, { height: 60, backgroundColor: "#ff8484"  }]}>Score/Temps</Text>
+                                        <Text style={[styles.inputScore, { height: 60, backgroundColor: "#74b3d2"  }]}>Score/Temps</Text>
                                         {props.all_teams.realListe.map((r, index) => {
                                             if (cur_level == r.level) {
                                                 return (
                                                     sport == "Pizza" ? 
-                                                    <Text key={index} style={[styles.inputScore, {backgroundColor: index%2 ? "#ff8484": "#FED8B1"}]}>{r.score}</Text> :
-                                                    <TextInput key={index} onChangeText={(text) => { r.score = text; }} style={[styles.inputScore, {backgroundColor: index%2 ? "#ff8484": "#FED8B1"}]}>{r.score}</TextInput>
+                                                    <Text key={index} style={[styles.inputScore, {backgroundColor: index%2 ? "#74b3d2": "#85ad94"}]}>{r.score}</Text> :
+                                                    <TextInput key={index} onChangeText={(text) => { r.score = text; }} style={[styles.inputScore, {backgroundColor: index%2 ? "#74b3d2": "#85ad94"}]}>{r.score}</TextInput>
                                                 )
                                             }
                                         }
