@@ -16,9 +16,9 @@ const MedailleView = (props) => {
     const maxMedals = props.maxMedals
     const locked = props.locked;
     return (
-        locked ? <View style={r.rank == rank ? styles.medailleopaque : styles.medailleabsent}>
+        locked ? <View style={[r.rank == rank ? styles.medailleopaque : styles.medailleabsent, , {backgroundColor: props.color == 1 ? "#A1BFF3" : "#CCE5FF", tintColor: props.color == 1 ? "#A1BFF3" : "#CCE5FF"}]}>
             <Image resizeMode="cover" resizeMethod="resize" source={props.metal} /></View> :
-            <View style={r.rank == rank ? styles.medailleopaque : styles.medailletransparent}>
+            <View style={[r.rank == rank ? styles.medailleopaque : styles.medailletransparent, {backgroundColor: props.color == 1 ? "#A1BFF3" : "#CCE5FF", tintColor: props.color == 1 ? "#A1BFF3" : "#CCE5FF"}]}>
                 <TouchableOpacity
                     onPress={() => {
                         props.setloading(true);
@@ -46,7 +46,7 @@ const MedailleView = (props) => {
                         props.setloading(false)
                     }}
                 >
-                    <Image resizeMode="cover" resizeMethod="resize" source={props.metal} />
+                    <Image resizeMode="cover" resizeMethod="resize" source={props.metal} style={{backgroundColor: props.color == 1 ? "#A1BFF3" : "#CCE5FF"}} />
                 </TouchableOpacity>
             </View>
     )
@@ -292,14 +292,14 @@ export const Trace = (props) => {
                             <View key={cur_level}>
                                 <View style={{ flexDirection: "row", marginTop: 22 }}>
                                     <View>
-                                        <Text style={[styles.showPlayers, { height: 60, backgroundColor: "#74b3d2" }]}>Athlete</Text>
+                                        <Text style={[styles.showPlayers, { height: 60, backgroundColor: "#A1BFF3", fontSize:18, fontStyle:"italic" }]}>Athlete</Text>
                                         {props.all_teams.realListe.map((r, index) => {
 
                                             if (cur_level == r.level) {
                                                 return (
 
                                                     <View key={index}>
-                                                        <Text style={[r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers, {backgroundColor: index%2 ? "#74b3d2": "#85ad94"}]}>{r.username}</Text>
+                                                        <Text style={[r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers, {backgroundColor: index%2 ? "#A1BFF3": "#CCE5FF"}]}>{r.username}</Text>
                                                     </View>
                                                 )
                                             }
@@ -308,13 +308,13 @@ export const Trace = (props) => {
                                         }
                                     </View>
                                     <View>
-                                        <Text style={[styles.inputScore, { height: 60, backgroundColor: "#74b3d2"  }]}>Score/Temps</Text>
+                                        <Text style={[styles.inputScore, { height: 60, backgroundColor: "#A1BFF3", fontSize:18, fontStyle:"italic"  }]}>Score / Temps</Text>
                                         {props.all_teams.realListe.map((r, index) => {
                                             if (cur_level == r.level) {
                                                 return (
                                                     sport == "Pizza" ? 
-                                                    <Text key={index} style={[styles.inputScore, {backgroundColor: index%2 ? "#74b3d2": "#85ad94"}]}>{r.score}</Text> :
-                                                    <TextInput key={index} onChangeText={(text) => { r.score = text; }} style={[styles.inputScore, {backgroundColor: index%2 ? "#74b3d2": "#85ad94"}]}>{r.score}</TextInput>
+                                                    <Text key={index} style={[styles.inputScore, {backgroundColor: index%2 ? "#A1BFF3": "#CCE5FF"}]}>{r.score}</Text> :
+                                                    <TextInput key={index} onChangeText={(text) => { r.score = text; }} style={[styles.inputScore, {backgroundColor: index%2 ? "#A1BFF3": "#CCE5FF"}]}>{r.score}</TextInput>
                                                 )
                                             }
                                         }
@@ -322,7 +322,7 @@ export const Trace = (props) => {
                                         }
                                     </View>
                                     <View>
-                                        <View style={{ width: 60, height: 60, backgroundColor: "lightgrey", justifyContent: "center" }}>
+                                        <View style={{ width: 60, height: 60, backgroundColor: "#A1BFF3", justifyContent: "center" }}>
                                             <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => { // Function to save only the results!
                                                 props.all_teams.setListe([...props.all_teams.realListe]);
                                                 if (sport == "Pizza") {
@@ -339,7 +339,7 @@ export const Trace = (props) => {
                                                 }
                                             }
                                             }>
-                                                <Image resizeMode="cover" resizeMethod="resize" style={{ alignSelf: "center" }} source={require('./assets/save.png')}></Image>
+                                                <Image resizeMode="cover" resizeMethod="resize" style={{ alignSelf: "center" }}  source={require('./assets/save.png')}></Image>
                                             </Pressable>
 
                                         </View>
@@ -354,9 +354,9 @@ export const Trace = (props) => {
 
                                                 return (
                                                     <View key={index} style={{ flexDirection: "row" }} >
-                                                        <MedailleView maxMedals={2} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/bronze.png')} rank={3} locked={false}></MedailleView>
-                                                        <MedailleView maxMedals={2} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/argent.png')} rank={2} locked={false}></MedailleView>
-                                                        <MedailleView maxMedals={2} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/or.png')} rank={1} locked={false}></MedailleView>
+                                                        <MedailleView maxMedals={2} color={index % 2} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/bronze.png')} rank={3} locked={false}></MedailleView>
+                                                        <MedailleView maxMedals={2} color={index % 2} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/argent.png')} rank={2} locked={false}></MedailleView>
+                                                        <MedailleView maxMedals={2} color={index % 2} r={r} liste={props.all_teams.realListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/or.png')} rank={1} locked={false}></MedailleView>
                                                     </View>
                                                 )
                                             }

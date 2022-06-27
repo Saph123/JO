@@ -141,14 +141,18 @@ const styles = StyleSheet.create({
     },
     showPlayers: {
         borderWidth: 1,
+        borderColor:"#E0E0E0",
         minWidth: 200,
         height: 30,
+        borderTopLeftRadius:5,
+        borderBottomLeftRadius:5,
         marginLeft: 5,
         textAlign: "center",
         textAlignVertical: "center"
     },
     showPlayersIsIn: {
         fontWeight: "bold",
+        borderColor:"#E0E0E0",
         borderWidth: 1,
         minWidth: 200,
         height: 30,
@@ -158,6 +162,7 @@ const styles = StyleSheet.create({
     },
     inputScore: {
         borderWidth: 1,
+        borderColor:"#E0E0E0",
         width: 100,
         height: 30,
         textAlign: "center",
@@ -438,7 +443,7 @@ const styles = StyleSheet.create({
         height: 30,
         flexDirection: "row",
         // backgroundColor: "lightgrey",
-        tintColor: "lightgrey",
+        // tintColor: "lightgrey",
         opacity: 0.2
     },
     medailleabsent: {
@@ -446,7 +451,6 @@ const styles = StyleSheet.create({
         height: 30,
         flexDirection: "row",
         // backgroundColor: "lightgrey",
-        tintColor: "lightgrey",
         opacity: 0
     },
     medailleopaque: {
@@ -454,7 +458,6 @@ const styles = StyleSheet.create({
         height: 30,
         flexDirection: "row",
         // backgroundColor: "lightgrey",
-        tintColor: "lightgrey",
         opacity: 1
     },
     textday: {
