@@ -207,13 +207,13 @@ export const Trace = (props) => {
                 </View>
                 <View style={{ flex: 10, flexDirection: "row", alignSelf: "center", width: "100%" }}>
                     <View style={{ flex: 1, flexDirection: "row", marginTop: "5%", justifyContent: "center" }}>
-                        {props.results["2"][year].map(r => result_view(r))}
+                        {year in props.results["2"] ? props.results["2"][year].map(r => result_view(r)) : <Text></Text>}
                     </View>
                     <View style={{ flex: 1, flexDirection: "row", marginTop: "-5%", justifyContent: "center" }}>
-                        {props.results["1"][year].map(r => result_view(r))}
+                        {year in props.results["1"] ? props.results["1"][year].map(r => result_view(r)): <Text></Text>}
                     </View>
                     <View style={{ flex: 1, flexDirection: "row", marginTop: "7%", justifyContent: "center" }}>
-                        {props.results["3"][year].map(r => result_view(r))}
+                        {year in props.results["3"] ? props.results["3"][year].map(r => result_view(r)): <Text></Text>}
                     </View>
                 </View>
             </ImageBackground>
