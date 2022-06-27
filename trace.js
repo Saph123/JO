@@ -312,6 +312,8 @@ export const Trace = (props) => {
                                         {props.all_teams.realListe.map((r, index) => {
                                             if (cur_level == r.level) {
                                                 return (
+                                                    sport == "Pizza" ? 
+                                                    <Text key={index} style={[styles.inputScore, {backgroundColor: index%2 ? "#ff8484": "#FED8B1"}]}>{r.score}</Text> :
                                                     <TextInput key={index} onChangeText={(text) => { r.score = text; }} style={[styles.inputScore, {backgroundColor: index%2 ? "#ff8484": "#FED8B1"}]}>{r.score}</TextInput>
                                                 )
                                             }
