@@ -8,6 +8,7 @@ import * as SecureStore from 'expo-secure-store';
 import { Planning } from './planning';
 import { version, initialLineNumber, adminlist } from "./global.js"
 import CountDown from 'react-native-countdown-component';
+import { createNativeWrapper } from "react-native-gesture-handler";
 
 class Liste {
     constructor(username, score, rank = 0, level = 0) {
@@ -313,7 +314,36 @@ export function modalChat(value, text, setChatText, localText, setLocalText, spo
                         <View style={{ flex: 5 }}>
                             <ScrollView style={{ marginTop: 20 }} ref={ref => { this.scrollView = ref }} onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
 
-                                <Text >{text}</Text>
+                                <View style={{flex: 10, flexDirection : "column"}}>
+                                    {text.split("\n").map((r, index) => {
+                                        if (index == 0)
+                                        {
+                                            return
+                                        }
+                                        var date = r.split("- ")[0]
+                                        var who = r.replace(date + '-  ', "").split(" : ")[0]
+                                        date = date.replace(",", "")
+                                        var what = r.split(": ")[1]
+                                        return(
+                                            <View style={{flex: 1, flexDirection : "row"}}>
+                                            <View style={{borderWidth:1, borderRadius: 4 ,flex: 1, flexDirection : "column", margin:2}}>
+                                                <View style={{flex: 1}}>
+                                                    <Text>{date}</Text>
+                                                </View>
+                                                <View style={{flex: 1}}>
+                                                    <Text>{who}</Text>
+                                                </View>
+                                            </View>
+                                                <View style={{flex: 4}}>
+                                                    <View key={index} style={
+                                                        {borderRadius: 10, borderWidth:1, marginTop:5, paddingRight:5, paddingLeft:5, alignSelf: who == username ? "flex-end" : "flex-start", backgroundColor: who == username ? "#186edb" : "#04dd04"}}>
+                                                        <Text>{what}</Text>
+                                                    </View>
+                                                </View>
+                                            </View>
+                                        )
+                                    })}
+                                </View>
                             </ScrollView>
                         </View>
                         <Pressable style={{ flex: 1, marginTop: 30, marginLeft: 20 }} onPress={() => value.setChat(false)}>
