@@ -59,8 +59,8 @@ export function firstDay(secondsleft, setSecondsleft) {
                 <Text style={{ textAlign: "center", fontSize: 24, fontWeight: "bold" }}> BIENVENUE!</Text>
                 <Text style={{ textAlign: "center" }}> What's new?!</Text>
                 <Text style={{ textAlign: "center" }}> * Système de paris!</Text>
-                <Text style={{ textAlign: "center" }}> * Ta mère</Text>
-                <Text style={{ textAlign: "center" }}> * Ta soeur</Text>
+                <Text style={{ textAlign: "center" }}> * Résultast de l'année dernière</Text>
+                <Text style={{ textAlign: "center" }}> * Nouvelle interface</Text>
             </View>
         </View>
     );
@@ -310,7 +310,7 @@ export function modalChat(value, text, setChatText, localText, setLocalText, spo
                 style={{ flex: 1 }}
             >
                 <View style={{ flex: 1 }}>
-                    <View style={{ flex: 6, flexDirection: 'row' }}>
+                    <View style={{ flex: 6, flexDirection: 'row', backgroundColor: "darkgrey" }}>
                         <View style={{ flex: 5 }}>
                             <ScrollView style={{ marginTop: 20 }} ref={ref => { this.scrollView = ref }} onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
 
@@ -330,14 +330,14 @@ export function modalChat(value, text, setChatText, localText, setLocalText, spo
                                                 <View style={{flex: 1}}>
                                                     <Text>{date}</Text>
                                                 </View>
-                                                <View style={{flex: 1}}>
-                                                    <Text>{who}</Text>
-                                                </View>
                                             </View>
-                                                <View style={{flex: 4}}>
+                                                <View style={{flex: 6}}>
                                                     <View key={index} style={
-                                                        {borderRadius: 10, borderWidth:1, marginTop:5, paddingRight:5, paddingLeft:5, alignSelf: who == username ? "flex-end" : "flex-start", backgroundColor: who == username ? "#186edb" : "#04dd04"}}>
-                                                        <Text>{what}</Text>
+                                                        {borderRadius: 10, marginTop:5, padding:3, alignSelf: who == username ? "flex-end" : "flex-start", backgroundColor: who == username ? "#186edb" : "#ffffff"}}>
+                                                        {who == username ? <Text style={{color: "white"}}>{what}</Text> :
+                                                        <View><Text style={{fontSize: 10, color: "purple"}}>{who}</Text>
+                                                        <Text>{what}</Text></View>}
+                                                        
                                                     </View>
                                                 </View>
                                             </View>
