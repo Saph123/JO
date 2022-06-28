@@ -61,7 +61,7 @@ export function firstDay(secondsleft, setSecondsleft) {
                 <Text style={{ textAlign: "center", fontSize: 18 }}> son IBAN : FR76 3000 4031 0200 0067 1944 983</Text>
                 <Text style={{ textAlign: "center" }}> What's new?!</Text>
                 <Text style={{ textAlign: "center" }}> * Système de paris!</Text>
-                <Text style={{ textAlign: "center" }}> * Résultast de l'année dernière</Text>
+                <Text style={{ textAlign: "center" }}> * Résultats de l'année dernière</Text>
                 <Text style={{ textAlign: "center" }}> * Nouvelle interface</Text>
             </View>
         </View>
@@ -303,7 +303,6 @@ export function modalChat(value, text, setChatText, localText, setLocalText, spo
             animationType="slide"
             transparent={false}
             visible={value.chat}
-            supportedOrientations={['portrait', 'landscape']}
             onRequestClose={() => { value.setChat(false) }}
             onShow={() => { value.setNewMessage(false); initialLineNumber[sportname] = countLines(text); save("initialLineNumber", JSON.stringify(initialLineNumber)); }}
         >

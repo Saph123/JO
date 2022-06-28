@@ -35,7 +35,8 @@ export let adminlist = [
     "Ugo",
     "Pierrick"
 ]
-
+export let VerticalLineCanva = 50;
+export let HorizontalLineCanva = 30;
 export async function calcInitLines(){
     let result = await SecureStore.getItemAsync("initialLineNumber");
     if (result) {

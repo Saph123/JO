@@ -207,6 +207,26 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5
     },
+    palette: {
+        margin: 0,
+        flexDirection:"row",
+        backgroundColor: "white",
+        borderRadius: 20,
+        marginLeft:30,
+        width:"80%",
+        padding: 35,
+        alignSelf: "center",
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        zIndex:0,
+        maxHeight:60,
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+    },
     podium: {
         marginTop: 20,
         flex:1,
@@ -522,7 +542,8 @@ const styles = StyleSheet.create({
     bottomTabs: {
         marginLeft: 10,
         height: 60,
-        width: 60
+        width: 60,
+        marginBottom:5
     },
     dateTabsSelected: {
         flex: 1,

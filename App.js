@@ -12,6 +12,7 @@ import { SummaryScreen } from "./SummaryScreen.js";
 import { LastYearsResultsScreen } from "./LastYearsResultsScreen.js";
 import { SportDetailsScreen } from "./SportDetailsScreen.js";
 import { VanRommelScreen } from "./VanRommelScreen.js";
+import { CanvaScreen } from "./CanvaScreen.js";
 import { pushNotifScreen } from "./PushNotifScreen.js";
 import { LoginScreen } from "./LoginScreen.js";
 import { SportContext, ArbitreContext, ChatContext, calcInitLines, version, adminlist } from "./global.js"
@@ -148,6 +149,11 @@ function App() {
                             <Stack.Screen options={() => ({
                                 title: "Van Rommel"
                             })} name="VanRommel" component={VanRommelScreen} />
+
+                            <Stack.Screen options={() => ({
+                                title: "Canva"
+                            })} name="CanvaScreen" component={CanvaScreen} />
+
 
                         </Stack.Navigator>
                     </SportContext.Provider>
