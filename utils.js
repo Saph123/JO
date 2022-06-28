@@ -57,9 +57,11 @@ export function firstDay(secondsleft, setSecondsleft) {
             /></View>}
             <View key={"details"} style={{ justifyContent: "center" }}>
                 <Text style={{ textAlign: "center", fontSize: 24, fontWeight: "bold" }}> BIENVENUE!</Text>
+                <Text style={{ textAlign: "center", fontSize: 18 }}> Pensez à payer Ugo, 85€ par pers minimum</Text>
+                <Text style={{ textAlign: "center", fontSize: 18 }}> son IBAN : FR76 3000 4031 0200 0067 1944 983</Text>
                 <Text style={{ textAlign: "center" }}> What's new?!</Text>
                 <Text style={{ textAlign: "center" }}> * Système de paris!</Text>
-                <Text style={{ textAlign: "center" }}> * Ta mère</Text>
+                <Text style={{ textAlign: "center" }}> * Refonte graphique</Text>
                 <Text style={{ textAlign: "center" }}> * Ta soeur</Text>
             </View>
         </View>
