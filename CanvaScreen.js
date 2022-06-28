@@ -46,11 +46,12 @@ export function CanvaScreen() {
                   x: event.nativeEvent.locationX,
                   y: event.nativeEvent.locationY,
                 });}}
-                transparent={true}
+                transparent={false}
                 visible={palette}
                 onRequestClose={() => {setPalette(false);alert("kek")}}
             >
                 <View  style={styles.palette}>
+                    <Pressable style={{ flex: 1 }} onPress={() => colorset(color, setColor, id, setId, "black")}><View style={{borderColor: "black", borderWidth:1, width:20, height:20, backgroundColor:"black"}}></View></Pressable>
                     <Pressable style={{ flex: 1 }} onPress={() => colorset(color, setColor, id, setId, "red")}><View style={{borderColor: "black", borderWidth:1, width:20, height:20, backgroundColor:"red"}}></View></Pressable>
                     <Pressable style={{ flex: 1 }} onPress={() => colorset(color, setColor, id, setId, "yellow")}><View style={{borderColor: "black", borderWidth:1, width:20, height:20, backgroundColor:"yellow"}}></View></Pressable>
                     <Pressable style={{ flex: 1 }} onPress={() => colorset(color, setColor, id, setId, "blue")}><View style={{borderColor: "black", borderWidth:1, width:20, height:20, backgroundColor:"blue"}}></View></Pressable>
@@ -64,7 +65,7 @@ export function CanvaScreen() {
                 return (<View style={{ flex: 1, flexDirection: "row", zIndex:10, elevation:10 }}>
 
                     {arrayHorizontal.map((z, indexHorizontal) => {
-                        return (<Pressable key={indexVert * HorizontalLineCanva + indexHorizontal} onPress={() => {setId(indexVert * HorizontalLineCanva + indexHorizontal); setPalette(true) }} style={{ flex: 1, flexDirection: "column", borderColor: id == (indexVert * HorizontalLineCanva + indexHorizontal) ? "white": "grey", borderWidth: 1, backgroundColor: color[indexVert * HorizontalLineCanva + indexHorizontal] }}>
+                        return (<Pressable key={indexVert * HorizontalLineCanva + indexHorizontal} onPress={() => {setId(indexVert * HorizontalLineCanva + indexHorizontal); setPalette(true) }} style={{ flex: 1, flexDirection: "column", borderColor: "black",  borderWidth:id == (indexVert * HorizontalLineCanva + indexHorizontal) ? 1: 0, backgroundColor: color[indexVert * HorizontalLineCanva + indexHorizontal] }}>
                         </Pressable>)
                     }
                     )}
@@ -76,7 +77,7 @@ export function CanvaScreen() {
                 return (<View style={{ flex: 1, flexDirection: "row", zIndex:10, elevation:10 }}>
 
                     {arrayHorizontal.map((z, indexHorizontal) => {
-                        return (<Pressable key={indexVert * HorizontalLineCanva + indexHorizontal} onPress={() => {setId(indexVert * HorizontalLineCanva + indexHorizontal); setPalette(true) }} style={{ flex: 1, flexDirection: "column", borderColor: id == (indexVert * HorizontalLineCanva + indexHorizontal) ? "white": "grey", borderWidth: 1, backgroundColor: color[indexVert * HorizontalLineCanva + indexHorizontal] }}>
+                        return (<Pressable key={indexVert * HorizontalLineCanva + indexHorizontal} onPress={() => {setId(indexVert * HorizontalLineCanva + indexHorizontal) }} style={{ flex: 1, flexDirection: "column", borderColor: id == (indexVert * HorizontalLineCanva + indexHorizontal) ? "white": "grey", borderWidth: 1, backgroundColor: color[indexVert * HorizontalLineCanva + indexHorizontal] }}>
                         </Pressable>)
                     }
                     )}

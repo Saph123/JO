@@ -209,11 +209,11 @@ const styles = StyleSheet.create({
     },
     palette: {
         margin: 0,
+        borderColor:"black",
+        borderWidth:1,
         flexDirection:"row",
         backgroundColor: "white",
-        borderRadius: 20,
-        marginLeft:30,
-        width:"80%",
+        width:"100%",
         padding: 35,
         alignSelf: "center",
         alignItems: "center",
@@ -223,9 +223,7 @@ const styles = StyleSheet.create({
             height: 2
         },
         zIndex:0,
-        maxHeight:60,
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
+        maxHeight:50,
     },
     podium: {
         marginTop: 20,
