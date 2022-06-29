@@ -152,7 +152,7 @@ function App() {
 
                             <Stack.Screen options={() => ({
                                 title: "Canva"
-                            })} name="CanvaScreen" component={CanvaScreen} />
+                            })} name="CanvaScreen" initialParams={{ username: username }} component={CanvaScreen} />
 
 
                         </Stack.Navigator>
