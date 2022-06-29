@@ -18,9 +18,12 @@ const MedailleView = (props) => {
     return (
         locked ? <View style={[r.rank == rank ? styles.medailleopaque : styles.medailleabsent, , {backgroundColor: props.color == 1 ? "#A1BFF3" : "#CCE5FF", tintColor: props.color == 1 ? "#A1BFF3" : "#CCE5FF"}]}>
             <Image resizeMode="cover" resizeMethod="resize" source={props.metal} /></View> :
-            <View style={[r.rank == rank ? styles.medailleopaque : styles.medailletransparent, {backgroundColor: props.color == 1 ? "#A1BFF3" : "#CCE5FF", tintColor: props.color == 1 ? "#A1BFF3" : "#CCE5FF"}]}>
+            <View style={[r.rank == rank ? styles.medailleopaque : r.rank == -1 ? styles.medailleabsent : styles.medailletransparent, {backgroundColor: props.color == 1 ? "#A1BFF3" : "#CCE5FF", tintColor: props.color == 1 ? "#A1BFF3" : "#CCE5FF"}]}>
                 <TouchableOpacity
                     onPress={() => {
+                        if (r.rank == -1){
+                            return;
+                        }
                         props.setloading(true);
                         var count = 0;
                         for (var i = 0; i < props.liste.length; ++i) {

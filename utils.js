@@ -255,7 +255,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                             var templist = liste["Series"][series]["Teams"];
                             for (var i in liste["Series"][series]["Teams"]) {
                                 if (sportname == "Pizza") {
-                                    rank = templist[i]["score"].includes(username) ? 1 : 0;
+                                    rank = templist[i]["score"].includes(username) ? 1 : templist[i]["Players"].includes(username) ? -1 : 0;
                                     score = templist[i]["score"].length;
                                 }
                                 else {
