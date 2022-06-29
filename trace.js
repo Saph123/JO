@@ -460,11 +460,20 @@ function crement_score_team(teamnumber, curMatch, matchArray, setMatchArray, inc
     setMatchArray([...matchArray]);
 
 }
+function inTeam(username, team){
+    let re = new RegExp('\\b' + username  + "\\b");
+    if (re.exec(team) != null){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
 function matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, type, username, index) {
     return (
 
         <View key={index} style={r.over == 0 ? (type == "playoff" ? styles.match : styles.matchpoule) : (type == "playoff" ? styles.matchover : styles.matchpouleover)}>
-            <Text style={r.over == 2 ? styles.lose : (r.over == 0 ? (r.team1.includes(username) ? styles.teamUserIsIn : styles.teamnormal) : styles.teamnormal)}>{r.team1}</Text>
+            <Text style={r.over == 2 ? styles.lose : (r.over == 0 ? (inTeam(username,r.team1) ? styles.teamUserIsIn : styles.teamnormal) : styles.teamnormal)}>{r.team1}</Text>
             <View style={{ flex: 1, alignItems: 'center', flexDirection: "row", width: 150 }}>
                 <View style={{ flex: 1 }}><Text style={styles.score}>{r.team1 == "" ? "" : r.score}</Text></View>
                 {(r.team1 != "" && r.team2 != "" && autho) ?
@@ -484,7 +493,6 @@ function modalZoomMatch(username, sport, curMatchZoom, setCurrMatchZoom, match_a
             animationType="slide"
             transparent={true}
             visible={matchZoom}
-            supportedOrientations={['portrait', 'landscape']}
         >
             <View style={styles.matchZoomView}>
                 <Pressable style={styles.closeButton} onPress={() => { curMatchZoom.score = initScore; updateMatchArray(curMatchZoom, match_array, set_match_array); setMatchZoom(false) }}><Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} /></Pressable>
@@ -560,7 +568,6 @@ const Matchcomp = (props) => {
             // animationType=""
             transparent={false}
             visible={local_fetch}
-            supportedOrientations={['portrait', 'landscape']}
         ><View ><ActivityIndicator size="large" color="black" /></View></Modal>);
     }
 

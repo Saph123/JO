@@ -125,7 +125,6 @@ export function SportDetailsScreen({ route }) {
                                         animationType="slide"
                                         transparent={true}
                                         visible={value || regle}
-                                        supportedOrientations={['portrait', 'landscape']}
                                     >
                                         <View style={styles.modalView}>
                                             <ScrollView onScroll={() => setRegle(true)} onScrollEndDrag={() => setTimeout(() => setRegle(false), 2000)} >
