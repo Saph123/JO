@@ -19,7 +19,7 @@ export function CanvaScreen({ route }) {
     const navigation = useNavigation();
 
     React.useEffect(() => {
-        var canvaInterval = setInterval(() => fetchCanva(setLoading, setColor, setUserId, route.params.username, setCoolDown, color), 1000);
+        var canvaInterval = setInterval(() => fetchCanva(loading, setLoading, setColor, setUserId, route.params.username, setCoolDown, color), 1000);
         let tmpVert = [];
         let tmpHorizontal = [];
         let tmpcolor = [];
@@ -88,7 +88,7 @@ export function CanvaScreen({ route }) {
     )
 }
 
-function fetchCanva(setloading, setColor, setUserId, username, setCoolDown, color) {
+function fetchCanva(loading, setloading, setColor, setUserId, username, setCoolDown, color) {
     fetch("https://applijo.freeddns.org/canva/" + username).then(r => {
         if (r.status == 200) {
 
@@ -114,7 +114,10 @@ function fetchCanva(setloading, setColor, setUserId, username, setCoolDown, colo
             setColor(tmpcolor);
             setUserId(tmpname);
         }
-        setloading(false);
+        if(loading) {
+
+            setloading(false);
+        }
 
         setCoolDown(Math.round(cooldown));
     }
