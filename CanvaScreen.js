@@ -15,8 +15,6 @@ export function CanvaScreen({ route }) {
     const [loading, setLoading] = React.useState(true);
     const [x, setX] = React.useState(0);
     const [y, setY] = React.useState(0);
-    const [globalX, setGlobalX] = React.useState(0);
-    const [globalY, setGlobalY] = React.useState(0);
     const [coolDown, setCoolDown] = React.useState(0);
     const navigation = useNavigation();
 
@@ -45,7 +43,7 @@ export function CanvaScreen({ route }) {
     }
     return (
         <ReactNativeZoomableView
-            maxZoom={1.5}
+            maxZoom={2}
             minZoom={0.5}
             zoomStep={0.5}
             initialZoom={1}
@@ -55,8 +53,6 @@ export function CanvaScreen({ route }) {
                 width: "100%",
                 height: "100%",
                 backgroundColor: 'white',
-                top:globalY,
-                left:globalX
             }}
         >
             <View style={{ flex: 1, width: "100%", height: "100%" }}>
@@ -72,7 +68,7 @@ export function CanvaScreen({ route }) {
                     <Pressable style={{ zIndex: 1000, width: 40, height: 40, flex: 1, opacity: coolDown == 0 ? 1 : 0.1 }} onPress={() => colorset(color, setColor, id, setId, "white", route.params.username, setCoolDown, coolDown)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "white" }}></View></Pressable>
                     <Pressable style={{ zIndex: 1000, width: 40, height: 40, flex: 1, opacity: coolDown == 0 ? 1 : 0.1 }} onPress={() => colorset(color, setColor, id, setId, "pink", route.params.username, setCoolDown, coolDown)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "pink" }}></View></Pressable>
                     {coolDown == 0 ? <View></View> : <View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "white", borderRadius: 20, alignContent: "center", justifyContent: "center" }}><Text style={{ textAlign: "center", textAlignVertical: "center" }}>{coolDown}</Text></View>}
-                    <View style={{ position: "absolute", zIndex: 1000, top: y < 180 ? y - 60 : y - 160, left: (id % HorizontalLineCanva) < 5 ? -dimensions.width + 40 + x : x - 40, width: 100 }}><Text>{userId[id]}</Text></View>
+                    <View style={{ position: "absolute", zIndex: 1000, top: y < 180 ? y - 60 : y - 160, left: (id % HorizontalLineCanva) < 5 ? -dimensions.width + 40 + x : x - 40, width: 100 }}><Text>{userId[id] == "Whisky" ? "":userId[id]}</Text></View>
                 </View>}
 
                 {arrayVert.map((r, indexVert) => {
