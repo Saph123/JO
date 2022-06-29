@@ -93,7 +93,7 @@ export const Trace = (props) => {
                             <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
                                 <Row data={["Team", "P", "W", "L", "Points", "Diff"]} widthArr={[180, 35, 35, 35, 60, 50]} style={{ width: "100%", height: 40, backgroundColor: '#f1f8ff', fontSize: 16 }}></Row>
                                 {r.teams.sort((a, b) => a.points > b.points ? 1 : (a.points == b.points ? (a.diff > b.diff ? 1 : -1) : -1)).reverse().map(q =>
-                                    <Row key={q.name} data={[q.name, q.played, q.wins, q.loses, q.points, q.diff]} widthArr={[180, 35, 35, 35, 60, 50]} style={{ fontSize: 16, fontWeight: (q.name.includes(username) ? "bold" : "normal") }}></Row>)}
+                                    <Row key={q.name} data={[q.name, q.played, q.wins, q.loses, q.points, q.diff]} widthArr={[180, 35, 35, 35, 60, 50]} textStyle={{ fontSize: 16, fontWeight: (inTeam(username, q.name) ? "bold" : "normal") }}></Row>)}
                             </Table>
                         </View>
                         <View style={{ flex: 1, flexDirection: "column", justifyContent: "space-around" }}>
@@ -230,7 +230,7 @@ export const Trace = (props) => {
                             <View>
                                 <Text style={styles.showPlayers}>Athlete</Text>
                                 {props.all_teams.realListe.map(r =>
-                                    <Text key={r.username} style={r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers}>{r.username}</Text>
+                                    <Text key={r.username} style={inTeam(username, r.username) ? styles.showPlayersIsIn : styles.showPlayers}>{r.username}</Text>
                                 )
                                 }
                             </View>
@@ -299,7 +299,7 @@ export const Trace = (props) => {
                                                 return (
 
                                                     <View key={index}>
-                                                        <Text style={[r.username.includes(username) ? styles.showPlayersIsIn : styles.showPlayers, {backgroundColor: index%2 ? "#A1BFF3": "#CCE5FF"}]}>{r.username}</Text>
+                                                        <Text style={[inTeam(username, r.username) ? styles.showPlayersIsIn : styles.showPlayers, {backgroundColor: index%2 ? "#A1BFF3": "#CCE5FF"}]}>{r.username}</Text>
                                                     </View>
                                                 )
                                             }
@@ -479,7 +479,7 @@ function matchDetail(r, autho, setInitScore, setCurrMatchZoom, setMatchZoom, typ
                     </Pressable></View> : <View />
                 }
             </View>
-            <View><Text style={r.over == 1 ? styles.lose : (r.over == 0 ? (r.team2.includes(username) ? styles.teamUserIsIn : styles.teamnormal) : styles.teamnormal)}>{r.team2}</Text></View>
+            <View><Text style={r.over == 1 ? styles.lose : (r.over == 0 ? (inTeam(username, r.team2) ? styles.teamUserIsIn : styles.teamnormal) : styles.teamnormal)}>{r.team2}</Text></View>
 
         </View>)
 

@@ -9,6 +9,7 @@ export function CanvaScreen({route}) {
     const [palette, setPalette] = React.useState(true);
     const [id, setId] = React.useState(-1);
     const [color, setColor] = React.useState([]);
+    const [userId, setUserId] = React.useState([]);
     const [loading, setLoading] = React.useState(true);
     const [x, setX] = React.useState(0);
     const [y, setY] = React.useState(0);
@@ -16,7 +17,7 @@ export function CanvaScreen({route}) {
     const navigation = useNavigation();
 
     React.useEffect(() => {
-        var chatInterval = setInterval(() => fetchCanva(setLoading, setColor), 1000);
+        var chatInterval = setInterval(() => fetchCanva(setLoading, setColor, setUserId), 1000);
         let tmpVert = [];
         let tmpHorizontal = [];
         let tmpcolor = [];
@@ -48,7 +49,7 @@ export function CanvaScreen({route}) {
                     <Pressable style={{ flex: 1 }} onPress={() => colorset(color, setColor, id, setId, "brown",  route.params.username, setPower)}><View style={{ borderColor: "black", borderWidth: 1, width: 20, height: 20, backgroundColor: "brown" }}></View></Pressable>
                     <Pressable style={{ flex: 1 }} onPress={() => colorset(color, setColor, id, setId, "white",  route.params.username, setPower)}><View style={{ borderColor: "black", borderWidth: 1, width: 20, height: 20, backgroundColor: "white" }}></View></Pressable>
                     <Pressable style={{ flex: 1 }} onPress={() => colorset(color, setColor, id, setId, "pink",  route.params.username, setPower)}><View style={{ borderColor: "black", borderWidth: 1, width: 20, height: 20, backgroundColor: "pink" }}></View></Pressable>
-                    <View style={{position:"absolute",zIndex:1000, top: y < 180 ? y-60 :y-160, left:x-20, width:100 }}><Text>{"Whisky"}</Text></View>
+                    <View style={{position:"absolute",zIndex:1000, top: y < 180 ? y-60 :y-160, left:x-20, width:100 }}><Text>{userId[id]}</Text></View>
                 </View>}
                 
                 {arrayVert.map((r, indexVert) => {
@@ -77,10 +78,18 @@ function showUsername(username, id){
 return;
 }
 // }top:id%HorizontalLineCanva, left: id -(id%HorizontalLineCanva)
-function fetchCanva(setloading, setColor) {
+function fetchCanva(setloading, setColor, setUserId) {
     fetch("https://applijo.freeddns.org/canva").then(r => r.json()).then(data =>
     {
-        setColor(data);
+        let tmpcolor = [];
+        let tmpname = [];
+        for(let i =0; i < data.length; i++){
+            tmpcolor.push(data[i].color)
+            tmpname.push(data[i].name)
+        }
+        // console.log(data)
+        setColor(tmpcolor);
+        setUserId(tmpname);
         setloading(false);
     }
         ).catch(err => console.error(err))
