@@ -177,7 +177,7 @@ export function HomeScreen({ route, navigation }) {
     }
     return (
         <View style={{ flex: 1, backgroundColor: "black" }}>
-            <View style={{ backgroundColor: "white", flex: 1, marginTop: 10, flexDirection: "row" }}>
+            <View style={{ backgroundColor: "black", flex: 1, marginTop: 10, flexDirection: "row" }}>
                 <Pressable onPress={() => { setDisplayDay(mercredi) }} style={displayDay.getDay() === mercredi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === mercredi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>13 Juillet</Text></Pressable>
                 <Pressable onPress={() => { setDisplayDay(jeudi) }} style={displayDay.getDay() === jeudi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === jeudi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>14 Juillet</Text></Pressable>
                 <Pressable onPress={() => { setDisplayDay(vendredi) }} style={displayDay.getDay() === vendredi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === vendredi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>15 Juillet</Text></Pressable>
