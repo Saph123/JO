@@ -16,11 +16,11 @@ export function CanvaScreen({ route }) {
     const [loading, setLoading] = React.useState(true);
     const [x, setX] = React.useState(0);
     const [y, setY] = React.useState(0);
-    const [coolDown, setCoolDown] = React.useState(0);
     const navigation = useNavigation();
 
     React.useEffect(() => {
-        var canvaInterval = setInterval(() => fetchCanva(loading, setLoading, setColor, setUserId, route.params.username, setCoolDown, color), 1000);
+        fetchCanva(loading, setLoading, setColor, setUserId, route.params.username, true);
+        var canvaInterval = setInterval(() => fetchCanva(loading, setLoading, setColor, setUserId, route.params.username, false), 1000);
         let tmpVert = [];
         let tmpHorizontal = [];
         let tmpcolor = [];
@@ -34,6 +34,7 @@ export function CanvaScreen({ route }) {
         setArrayVert(tmpVert);
         setArrayHorizontal(tmpHorizontal);
         return () => {
+            globalcolor = new Array(VerticalLineCanva * HorizontalLineCanva);
             clearInterval(canvaInterval);
         }
     }, []);
@@ -43,54 +44,62 @@ export function CanvaScreen({ route }) {
 
     }
     return (
+        <View             style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: 1000,
+            height: 1000,
+        }}>
         <ReactNativeZoomableView
-            maxZoom={2}
+        key={'zoom'}
+            maxZoom={100}
             minZoom={0.5}
             zoomStep={0.5}
             initialZoom={1}
-            bindToBorders={true}
-            style={{
-                zIndex: 2000,
-                width: "100%",
-                height: "100%",
-                backgroundColor: 'white',
-            }}
-        >
-            <View style={{ flex: 1, width: "100%", height: "100%" }}>
+            bindToBorders={false}
 
-                {id == -1 ? <View></View> : <View style={{ position: "absolute", top: 30, left: (id % HorizontalLineCanva) < 5 ? dimensions.width - 40 : 0, zIndex: 1000 }}>
-                    <Pressable style={{ zIndex: 1000, width: 40, height: 40, flex: 1, opacity: coolDown == 0 ? 1 : 0.1 }} onPress={() => colorset(color, setColor, id, setId, "black", route.params.username, setCoolDown, coolDown)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "black" }}></View></Pressable>
-                    <Pressable style={{ zIndex: 1000, width: 40, height: 40, flex: 1, opacity: coolDown == 0 ? 1 : 0.1 }} onPress={() => colorset(color, setColor, id, setId, "red", route.params.username, setCoolDown, coolDown)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "red" }}></View></Pressable>
-                    <Pressable style={{ zIndex: 1000, width: 40, height: 40, flex: 1, opacity: coolDown == 0 ? 1 : 0.1 }} onPress={() => colorset(color, setColor, id, setId, "yellow", route.params.username, setCoolDown, coolDown)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "yellow" }}></View></Pressable>
-                    <Pressable style={{ zIndex: 1000, width: 40, height: 40, flex: 1, opacity: coolDown == 0 ? 1 : 0.1 }} onPress={() => colorset(color, setColor, id, setId, "blue", route.params.username, setCoolDown, coolDown)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "blue" }}></View></Pressable>
-                    <Pressable style={{ zIndex: 1000, width: 40, height: 40, flex: 1, opacity: coolDown == 0 ? 1 : 0.1 }} onPress={() => colorset(color, setColor, id, setId, "green", route.params.username, setCoolDown, coolDown)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "green" }}></View></Pressable>
-                    <Pressable style={{ zIndex: 1000, width: 40, height: 40, flex: 1, opacity: coolDown == 0 ? 1 : 0.1 }} onPress={() => colorset(color, setColor, id, setId, "cyan", route.params.username, setCoolDown, coolDown)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "cyan" }}></View></Pressable>
-                    <Pressable style={{ zIndex: 1000, width: 40, height: 40, flex: 1, opacity: coolDown == 0 ? 1 : 0.1 }} onPress={() => colorset(color, setColor, id, setId, "brown", route.params.username, setCoolDown, coolDown)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "brown" }}></View></Pressable>
-                    <Pressable style={{ zIndex: 1000, width: 40, height: 40, flex: 1, opacity: coolDown == 0 ? 1 : 0.1 }} onPress={() => colorset(color, setColor, id, setId, "white", route.params.username, setCoolDown, coolDown)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "white" }}></View></Pressable>
-                    <Pressable style={{ zIndex: 1000, width: 40, height: 40, flex: 1, opacity: coolDown == 0 ? 1 : 0.1 }} onPress={() => colorset(color, setColor, id, setId, "pink", route.params.username, setCoolDown, coolDown)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "pink" }}></View></Pressable>
-                    {coolDown == 0 ? <View></View> : <View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "white", borderRadius: 20, alignContent: "center", justifyContent: "center" }}><Text style={{ textAlign: "center", textAlignVertical: "center" }}>{coolDown}</Text></View>}
-                    <View style={{ position: "absolute", zIndex: 1000, top: y < 180 ? y - 60 : y - 160, left: (id % HorizontalLineCanva) < 5 ? -dimensions.width + 40 + x : x - 40, width: 100 }}><Text>{userId[id] == "Whisky" ? "":userId[id]}</Text></View>
+        >
+            <View key={'mainframe'} style={{ width: 1000, height: 1000 }}>
+
+                {id == -1 ? <View key={"kekalnd"}></View> : <View key={"morray"} style={{ position: "absolute", top: y, left: x - 40, zIndex: 1000 }}>
+                    <Pressable key={"k"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "black", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "black" }}></View></Pressable>
+                    <Pressable key={"ke"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "red", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "red" }}></View></Pressable>
+                    <Pressable key={"kk"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "yellow", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "yellow" }}></View></Pressable>
+                    <Pressable key={"ka"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "blue", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "blue" }}></View></Pressable>
+                    <Pressable key={"kb"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "green", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "green" }}></View></Pressable>
+                    <Pressable key={"kc"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "cyan", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "cyan" }}></View></Pressable>
+                    <Pressable key={"kd"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "brown", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "brown" }}></View></Pressable>
+                    <Pressable key={"kf"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "white", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "white" }}></View></Pressable>
+                    <Pressable key={"kgr"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "pink", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "pink" }}></View></Pressable>
+                    <View key={"name"} style={{ position: "absolute", zIndex: 1000, top: y, left: x }}><Text key={"textname"}>{userId[id] == "Whisky" ? "" : userId[id]}</Text></View>
                 </View>}
 
                 {arrayVert.map((r, indexVert) => {
-                    return (<View key={keys[indexVert]} style={{ flex: 1, flexDirection: "row", zIndex: 10, elevation: 10 }}>
 
-                        {arrayHorizontal.map((z, indexHorizontal) => {
+                    return (
 
-                            return (<Pressable  style={{ flex: 1, flexDirection: "column", borderColor: "black", borderWidth: id == (indexVert * HorizontalLineCanva + indexHorizontal) ? 1 : -1, backgroundColor: color[indexVert * HorizontalLineCanva + indexHorizontal] }} key={keys[VerticalLineCanva * (indexVert + 1) + indexHorizontal]} onPress={(e) => { setId(indexVert * HorizontalLineCanva + indexHorizontal); setX(e.nativeEvent.pageX); setY(e.nativeEvent.pageY); setPalette(true) }}>
+                        arrayHorizontal.map((z, indexHorizontal) => {
+
+                            return (<Pressable style={{ zindex: 1200, position: 'absolute', top: indexVert*10, left: indexHorizontal*10, width: 10, height: 10, borderColor: "black", borderWidth: id == (indexVert * HorizontalLineCanva + indexHorizontal) ? 1 : 0, backgroundColor: color[indexVert * HorizontalLineCanva + indexHorizontal] }} key={"(" + indexVert + ", "+ indexHorizontal} onPress={(e) => { setId(indexVert * HorizontalLineCanva + indexHorizontal); setX(indexHorizontal * 10); setY(indexVert * 10); setPalette(true) }}>
                             </Pressable>)
-                        }
-                        )}
-                    </View>)
+                        }))
                 })
                 }
-            </View></ReactNativeZoomableView>
+
+
+
+            </View>
+        </ReactNativeZoomableView>
+        </View>
 
     )
 }
-
-function fetchCanva(loading, setloading, setColor, setUserId, username, setCoolDown, color) {
-    fetch("https://applijo.freeddns.org/canva/" + username).then(r => {
+let globalcolor = new Array(HorizontalLineCanva * VerticalLineCanva);
+let previoushash = "0";
+let locaload = true;
+function fetchCanva(loading, setloading, setColor, setUserId, username, load) {
+    fetch("https://applijo.freeddns.org/canva").then(r => {
         if (r.status == 200) {
 
             return r.json();
@@ -99,43 +108,45 @@ function fetchCanva(loading, setloading, setColor, setUserId, username, setCoolD
 
 
     ).then(data => {
-        let cooldown = data[0];
         let canva = data[1];
         let tmpcolor = [];
         let tmpname = [];
         let nochange = true;
+        JSHash(canva.color, CONSTANTS.HashAlgorithms.sha256)
+            .then(hash => {
+                if (previoushash != hash || load) {
+                    console.log("change kek", hash, previoushash, locaload);
+                    previoushash = hash;
+                    for (let i = 0; i < canva.length; i++) {
+                        if (globalcolor[i] != canva[i].color) {
+                            nochange = false;
+                        }
+                        tmpcolor.push(canva[i].color)
+                        tmpname.push(canva[i].name)
+                    }
+                    if (!nochange) {
+                        setColor(tmpcolor);
+                        globalcolor = [...tmpcolor];
+                        setUserId(tmpname);
+                    }
 
-        let shasum = crypto.createHash('sha256');
-        shasum.update(color);
-        let colorsha1 = shasum.digest('hex');
-        shasum.update(canva.color);
-        let localcolorsha1 = shasum.digest('hex');
-        console.log(colorsha1, localcolorsha1);
-        for (let i = 0; i < canva.length; i++) {
-            if(color[i] != canva[i].color){
-                nochange = false;
-            }
-            tmpcolor.push(canva[i].color)
-            tmpname.push(canva[i].name)
-        }
-        if(!nochange){
-            console.log("change kek");
-            setColor(tmpcolor);
-            setUserId(tmpname);
-        }
-        if(loading) {
 
-            setloading(false);
-        }
+                        
+                    
+    
+                }
+                
+                if(load){
 
-        setCoolDown(Math.round(cooldown));
+                    setloading(false);
+                }
+            })
+            .catch(e => console.log(e));
     }
     ).catch(err => console.error("err", err))
 }
-function colorset(color, setColor, id, setId, localColor, username, setCoolDown, coolDown) {
-    if (coolDown != 0) {
-        return;
-    }
+function colorset(color, setColor, id, setId, localColor, username) {
+
     let tmpColors = color;
     tmpColors[id] = localColor;
     fetch("https://applijo.freeddns.org/canvasetcolor", { method: "POST", body: JSON.stringify({ "id": id, "color": localColor, "username": username }) }).then(r => {
@@ -143,7 +154,6 @@ function colorset(color, setColor, id, setId, localColor, username, setCoolDown,
         if (r.status == 200) {
 
             setColor(tmpColors);
-            setCoolDown(false);
         }
     })
     setId(-1);
