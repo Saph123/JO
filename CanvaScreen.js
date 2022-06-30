@@ -39,6 +39,11 @@ export function CanvaScreen({ route }) {
             clearInterval(canvaInterval);
         }
     }, []);
+    // {id == -1 ? <View key={"kekalnd"}></View> :
+    // <View key={"morray"} style={{ position: "absolute", top: y, left: x - 80, zIndex: 1000 }}>
+
+    //     <View key={"name"} style={{ position: "absolute", zIndex: 1000, top: y, left: x, width:100, height:50 }}><Text style={{textAlign:"left"}}  key={"textname"}>{userId[id] == "Whisky" ? "" : userId[id]}</Text></View>
+    // </View>}
     const dimensions = Dimensions.get('window');
     if (loading) {
         return (<ActivityIndicator size="large" color="#000000" />)
@@ -53,6 +58,20 @@ export function CanvaScreen({ route }) {
             width: 1000,
             height: 1000,
         }}>
+            <View style={{width: paletteColors.length / 2, height: 80, flexDirection:"row"}}>
+
+            {paletteColors.map((r, index) => {
+                        if(index %2 == 0){
+
+                            return(
+                                <View style={{flexDirection:"column", width:40, height:80}}>
+                        <Pressable key={r}  style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: r }} onPress={() => colorset(color, setColor, id, setId, r, route.params.username)}/>
+                        <Pressable key={paletteColors[index+1]}  style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: paletteColors[index+1] }} onPress={() => colorset(color, setColor, id, setId, paletteColors[index+1], route.params.username)}/>
+                        </View>
+                    )
+                }
+                })}
+            </View>
         <ReactNativeZoomableView
         
         key={'zoom'}
@@ -61,35 +80,20 @@ export function CanvaScreen({ route }) {
             zoomStep={0.5}
             initialZoom={1}
             bindToBorders={false}
-
+            onResponderMove={() => {}}
         >
             <View key={'mainframe'} style={{ width: 1000, height: 1000 }}>
 
-                {id == -1 ? <View key={"kekalnd"}></View> : <View key={"morray"} style={{ position: "absolute", top: y, left: x - 40, zIndex: 1000 }}> {paletteColors.map( r => {
-                    return(
-                        <Pressable key={r}  style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: r }} onPress={() => colorset(color, setColor, id, setId, r, route.params.username)}/>
-                    )
-                })}
-
-                    <View key={"name"} style={{ position: "absolute", zIndex: 1000, top: y, left: x, width:100, height:50 }}><Text style={{textAlign:"left"}}  key={"textname"}>{userId[id] == "Whisky" ? "" : userId[id]}</Text></View>
-                </View>}
+               
                 
-                    {/* <Pressable key={"ke"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "red", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "red" }}></View></Pressable>
-                    <Pressable key={"kk"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "yellow", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "yellow" }}></View></Pressable>
-                    <Pressable key={"ka"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "blue", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "blue" }}></View></Pressable>
-                    <Pressable key={"kb"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "green", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "green" }}></View></Pressable>
-                    <Pressable key={"kc"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "cyan", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "cyan" }}></View></Pressable>
-                    <Pressable key={"kd"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "brown", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "brown" }}></View></Pressable>
-                    <Pressable key={"kf"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "white", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "white" }}></View></Pressable>
-                    <Pressable key={"kgr"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "pink", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "pink" }}></View></Pressable> */}
                 {arrayVert.map((r, indexVert) => {
 
                     return (
 
                         arrayHorizontal.map((z, indexHorizontal) => {
 
-                            return (<Pressable style={{ zindex: 1200, position: 'absolute', top: indexVert*10, left: indexHorizontal*10, width: 10, height: 10, borderColor: "black", borderWidth: id == (indexVert * HorizontalLineCanva + indexHorizontal) ? 1 : 0, backgroundColor: color[indexVert * HorizontalLineCanva + indexHorizontal] }} key={"(" + indexVert + ", "+ indexHorizontal} onPress={(e) => { setId(indexVert * HorizontalLineCanva + indexHorizontal); setX(indexHorizontal * 10); setY(indexVert * 10); setPalette(true) }}>
-                            </Pressable>)
+                            return (<View style={{ zindex: 1200, position: 'absolute', top: indexVert*10, left: indexHorizontal*10, width: 10, height: 10, borderColor: "black", borderWidth: id == (indexVert * HorizontalLineCanva + indexHorizontal) ? 1 : 0, backgroundColor: color[indexVert * HorizontalLineCanva + indexHorizontal] }} key={"(" + indexVert + ", "+ indexHorizontal} onPress={(e) => { setId(indexVert * HorizontalLineCanva + indexHorizontal) }}>
+                            </View>)
                         }))
                 })
                 }
