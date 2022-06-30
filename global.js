@@ -35,6 +35,7 @@ export let adminlist = [
     "Ugo",
     "Pierrick"
 ]
+export let paletteColors = ["white", "purple", "darkblue", "blue", "lightblue", "green", "lightgreen", "yellow", "brown", "orange", "red","pink","lightgrey", "grey", "black"]
 export let VerticalLineCanva = 100;
 export let HorizontalLineCanva = 100;
 export async function calcInitLines(){

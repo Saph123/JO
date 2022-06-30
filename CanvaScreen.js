@@ -5,6 +5,7 @@ import { View, Modal, Pressable, ActivityIndicator, Text, Dimensions } from 'rea
 import { VerticalLineCanva, HorizontalLineCanva } from "./global";
 import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
 import { JSHash, JSHmac, CONSTANTS } from "react-native-hash";
+import { paletteColors } from "./global";
 export function CanvaScreen({ route }) {
     const keys = new Array(VerticalLineCanva * HorizontalLineCanva);
     const [arrayVert, setArrayVert] = React.useState([]);
@@ -44,7 +45,8 @@ export function CanvaScreen({ route }) {
 
     }
     return (
-        <View             style={{
+        <View 
+        style={{
             position: 'absolute',
             top: 0,
             left: 0,
@@ -52,9 +54,10 @@ export function CanvaScreen({ route }) {
             height: 1000,
         }}>
         <ReactNativeZoomableView
+        
         key={'zoom'}
             maxZoom={100}
-            minZoom={0.5}
+            minZoom={0.1}
             zoomStep={0.5}
             initialZoom={1}
             bindToBorders={false}
@@ -62,19 +65,23 @@ export function CanvaScreen({ route }) {
         >
             <View key={'mainframe'} style={{ width: 1000, height: 1000 }}>
 
-                {id == -1 ? <View key={"kekalnd"}></View> : <View key={"morray"} style={{ position: "absolute", top: y, left: x - 40, zIndex: 1000 }}>
-                    <Pressable key={"k"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "black", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "black" }}></View></Pressable>
-                    <Pressable key={"ke"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "red", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "red" }}></View></Pressable>
+                {id == -1 ? <View key={"kekalnd"}></View> : <View key={"morray"} style={{ position: "absolute", top: y, left: x - 40, zIndex: 1000 }}> {paletteColors.map( r => {
+                    return(
+                        <Pressable key={r}  style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: r }} onPress={() => colorset(color, setColor, id, setId, r, route.params.username)}/>
+                    )
+                })}
+
+                    <View key={"name"} style={{ position: "absolute", zIndex: 1000, top: y, left: x, width:100, height:50 }}><Text style={{textAlign:"left"}}  key={"textname"}>{userId[id] == "Whisky" ? "" : userId[id]}</Text></View>
+                </View>}
+                
+                    {/* <Pressable key={"ke"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "red", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "red" }}></View></Pressable>
                     <Pressable key={"kk"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "yellow", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "yellow" }}></View></Pressable>
                     <Pressable key={"ka"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "blue", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "blue" }}></View></Pressable>
                     <Pressable key={"kb"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "green", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "green" }}></View></Pressable>
                     <Pressable key={"kc"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "cyan", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "cyan" }}></View></Pressable>
                     <Pressable key={"kd"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "brown", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "brown" }}></View></Pressable>
                     <Pressable key={"kf"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "white", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "white" }}></View></Pressable>
-                    <Pressable key={"kgr"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "pink", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "pink" }}></View></Pressable>
-                    <View key={"name"} style={{ position: "absolute", zIndex: 1000, top: y, left: x }}><Text key={"textname"}>{userId[id] == "Whisky" ? "" : userId[id]}</Text></View>
-                </View>}
-
+                    <Pressable key={"kgr"} style={{ zIndex: 1000, width: 40, height: 40}} onPress={() => colorset(color, setColor, id, setId, "pink", route.params.username)}><View style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: "pink" }}></View></Pressable> */}
                 {arrayVert.map((r, indexVert) => {
 
                     return (
