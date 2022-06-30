@@ -323,8 +323,8 @@ export function modalChat(value, text, setChatText, localText, setLocalText, spo
                                         }
                                         var date = r.split("- ")[0]
                                         var who = r.replace(date + '-  ', "").split(" : ")[0]
+                                        var what = r.replace(date + '-  ' + who + " : ", "")
                                         date = date.replace(",", "")
-                                        var what = r.split(": ")[1]
                                         return(
                                             <View style={{flex: 1, flexDirection : "row"}}>
                                             <View style={{borderWidth:1, borderRadius: 4 ,flex: 1, flexDirection : "column", margin:2}}>
