@@ -4,8 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { View, Modal, Pressable, ActivityIndicator, Text, Dimensions } from 'react-native';
 import { VerticalLineCanva, HorizontalLineCanva } from "./global";
 import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
-import './shim.js'
-import crypto from 'crypto'
+import { JSHash, JSHmac, CONSTANTS } from "react-native-hash";
 export function CanvaScreen({ route }) {
     const keys = new Array(VerticalLineCanva * HorizontalLineCanva);
     const [arrayVert, setArrayVert] = React.useState([]);
