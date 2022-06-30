@@ -4,6 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import { View, Modal, Pressable, ActivityIndicator, Text, Dimensions } from 'react-native';
 import { VerticalLineCanva, HorizontalLineCanva } from "./global";
 import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
+import './shim.js'
+import crypto from 'crypto'
 export function CanvaScreen({ route }) {
     const keys = new Array(VerticalLineCanva * HorizontalLineCanva);
     const [arrayVert, setArrayVert] = React.useState([]);
@@ -103,6 +105,13 @@ function fetchCanva(loading, setloading, setColor, setUserId, username, setCoolD
         let tmpcolor = [];
         let tmpname = [];
         let nochange = true;
+
+        let shasum = crypto.createHash('sha256');
+        shasum.update(color);
+        let colorsha1 = shasum.digest('hex');
+        shasum.update(canva.color);
+        let localcolorsha1 = shasum.digest('hex');
+        console.log(colorsha1, localcolorsha1);
         for (let i = 0; i < canva.length; i++) {
             if(color[i] != canva[i].color){
                 nochange = false;
@@ -111,6 +120,7 @@ function fetchCanva(loading, setloading, setColor, setUserId, username, setCoolD
             tmpname.push(canva[i].name)
         }
         if(!nochange){
+            console.log("change kek");
             setColor(tmpcolor);
             setUserId(tmpname);
         }
