@@ -2,7 +2,6 @@ import styles from "./style";
 import * as React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { View, Modal, Pressable, ActivityIndicator, Text, Dimensions } from 'react-native';
-import { VerticalLineCanva, HorizontalLineCanva } from "./global";
 import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
 import { JSHash, JSHmac, CONSTANTS } from "react-native-hash";
 import { paletteColors } from "./global";
@@ -91,9 +90,10 @@ export function CanvaScreen({ route }) {
         </View>
     )
 }
-let previoushash = "0";
-let locaload = true;
+let HorizontalLineCanva = 100;
+let VerticalLineCanva = 100;
 let globalcolor = new Array(HorizontalLineCanva * VerticalLineCanva);
+
 function fetchCanva(setloading, setColor, setUserId, username, load) {
     fetch("https://applijo.freeddns.org/canva").then(r => {
         if (r.status == 200) {
@@ -104,7 +104,12 @@ function fetchCanva(setloading, setColor, setUserId, username, load) {
 
 
     ).then(data => {
-        let canva = data[1];
+        HorizontalLineCanva = data.lines_nb;
+        if(HorizontalLineCanva == 0){
+            HorizontalLineCanva = 100;
+        }
+        let canva = data.canva;
+        VerticalLineCanva = canva.length / HorizontalLineCanva;
         let tmpcolor = [];
         let tmpname = [];
         let nochange = true;
