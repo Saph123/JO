@@ -147,7 +147,6 @@ function fetchCanva(setloading, setColor, setUserId, setHorizontal, setVert) {
                 setUserId([...tmpname]);
                 setColor([...tmpcolor])
             }
-            console.log("false")
             setloading(false);
         }
         ).catch(err => console.error(err));
