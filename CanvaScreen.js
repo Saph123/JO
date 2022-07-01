@@ -24,7 +24,7 @@ export function CanvaScreen({ route }) {
     React.useEffect(() => {
         previoushash = "0";
         setLoading(true);
-        var canvaInterval = setInterval(() => fetchCanva(setLoading, setColor, setUserId, route.params.username, true), 1000);
+        var canvaInterval = setInterval(() => fetchCanva(setLoading, setColor, setUserId, route.params.username, true), 500);
 
         return () => {
             clearInterval(canvaInterval);
