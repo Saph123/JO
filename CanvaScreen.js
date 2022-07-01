@@ -112,7 +112,6 @@ function fetchCanva(setloading, setColor, setUserId, username, load) {
         VerticalLineCanva = canva.length / HorizontalLineCanva;
         let tmpcolor = [];
         let tmpname = [];
-        let nochange = true;
 
         let toupdate = false;
         for (let i = 0; i < canva.length; i++) {
