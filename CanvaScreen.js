@@ -4,6 +4,7 @@ import { View, Modal, Pressable, ActivityIndicator, Text, Dimensions } from 'rea
 import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
 import { modalChat, fetchChat } from "./utils.js"
 import { paletteColors, ChatContext, carreSize } from "./global";
+import { getTimestamp } from 'react-native-reanimated/lib/reanimated2/core.js';
 let globalid = -1;
 export function CanvaScreen({ route }) {
     const [color, setColor] = React.useState([]);
@@ -15,21 +16,25 @@ export function CanvaScreen({ route }) {
     const [selection, setSelection] = React.useState([-1, "black"]);
     const [arrayVert, setArrayVert] = React.useState([]);
     const [arrayHorizontal, setArrayHorizontal] = React.useState([]);
-    React.useEffect(() => {
+    React.useLayoutEffect(() => {
         chatcontext.setChatName("Canva");
         if (chatcontext.chatName == "Canva") {
             var chatInterval = setInterval(() => fetchChat("Canva", setChatText, chatcontext.setNewMessage), 3000);
         }
 
-        var canvaInterval = setInterval(() => fetchCanva(setLoading, setColor, setUserId, setArrayHorizontal, setArrayVert), 500);
+        var canvaInterval = setInterval(() => fetchCanva(setLoading, setColor, setUserId, setArrayHorizontal, setArrayVert), 1000);
         return () => {
             clearInterval(canvaInterval);
             clearInterval(chatInterval);
+            lastreq = 0;
+            globalcolor = [];
+            previouslines = 0;
+            previouscol = 0;
         }
     }, [chatcontext.chatName]);
 
     if (loading) {
-        return (<ActivityIndicator size="large" color="#000000" />)
+        return (<ActivityIndicator style={{ alignSelf: "center" }} size="large" color="#000000" />)
 
     }
     return (
@@ -39,8 +44,8 @@ export function CanvaScreen({ route }) {
                 position: 'absolute',
                 top: 0,
                 left: 0,
-                width:1000,
-                height:1080
+                width: 1000,
+                height: 1080
             }}>
             <ChatContext.Consumer>
                 {value => modalChat(value, chatText, setChatText, localText, setLocalText, "Canva", route.params.username)}
@@ -90,61 +95,63 @@ export function CanvaScreen({ route }) {
         </View>
     )
 }
+let lastreq = 0;
 let globalcolor = [];
 let previouslines = 0;
 let previouscol = 0;
 function fetchCanva(setloading, setColor, setUserId, setHorizontal, setVert) {
-    fetch("https://applijo.freeddns.org/canva").then(r => {
-        if (r.status == 200) {
-
-            return r.json();
+    if (new Date() - lastreq > 500) {
+        fetch("https://applijo.freeddns.org/canva").then(r => {
+            if (r.status == 200) {
+                lastreq = new Date()
+                return r.json();
+            }
         }
+
+
+        ).then(data => {
+
+            if (data.lines_nb != previouslines) {
+                setloading(true);
+                previouslines = data.lines_nb;
+                let tmp = []
+                for (let i = 0; i < previouslines; i++) {
+                    tmp.push(0)
+                }
+                setVert([...tmp]);
+
+            }
+            let canva = data.canva;
+            if (previouscol != canva.length / data.lines_nb) {
+                previouscol = canva.length / data.lines_nb;
+                let tmp = []
+                for (let i = 0; i < previouscol; i++) {
+                    tmp.push(0)
+                }
+                setHorizontal([...tmp]);
+            }
+            let tmpcolor = [];
+            let tmpname = [];
+
+            let toupdate = false;
+            for (let i = 0; i < canva.length; i++) {
+
+                if (canva[i].color != globalcolor[i]) {
+                    toupdate = true;
+                }
+                tmpcolor.push(canva[i].color);
+                tmpname.push(canva[i].name);
+            }
+            if (toupdate) {
+                globalcolor = tmpcolor;
+                setUserId([...tmpname]);
+                setColor([...tmpcolor])
+            }
+            console.log("false")
+            setloading(false);
+        }
+        ).catch(err => console.error(err));
     }
-
-
-    ).then(data => {
-
-        if (data.lines_nb != previouslines) {
-            previouslines = data.lines_nb;
-            let tmp = []
-            for (let i = 0; i < previouslines; i++) {
-                tmp.push(0)
-            }
-            console.log("setvert");
-            setVert([...tmp]);
-            
-        }
-        let canva = data.canva;
-        if (previouscol != canva.length / data.lines_nb) {
-            console.log("sethoriz");
-            previouscol = canva.length / data.lines_nb;
-            let tmp = []
-            for (let i = 0; i < previouscol; i++) {
-                tmp.push(0)
-            }
-            setHorizontal([...tmp]);
-        }
-        let tmpcolor = [];
-        let tmpname = [];
-
-        let toupdate = false;
-        for (let i = 0; i < canva.length; i++) {
-
-            if (canva[i].color != globalcolor[i]) {
-                toupdate = true;
-            }
-            tmpcolor.push(canva[i].color);
-            tmpname.push(canva[i].name);
-        }
-        if (toupdate) {
-            globalcolor = tmpcolor;
-            setUserId([...tmpname]);
-            setColor([...tmpcolor])
-        }
-
-        setloading(false);
-    }
-    ).catch(err => console.error(err))
 }
 function colorset(color, setColor, localColor, username, localid, setSelection) {
 
