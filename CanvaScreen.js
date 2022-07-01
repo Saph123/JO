@@ -1,36 +1,33 @@
-import styles from "./style";
 import * as React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { View, Modal, Pressable, ActivityIndicator, Text, Dimensions } from 'react-native';
 import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
-import { JSHash, JSHmac, CONSTANTS } from "react-native-hash";
-import { paletteColors } from "./global";
+import { modalChat, fetchChat } from "./utils.js"
+import { paletteColors, ChatContext, carreSize } from "./global";
 let globalid = -1;
 export function CanvaScreen({ route }) {
-    const keys = new Array(VerticalLineCanva * HorizontalLineCanva);
     const [color, setColor] = React.useState([]);
-
+    const chatcontext = React.useContext(ChatContext);
+    const [chatText, setChatText] = React.useState("");
+    const [localText, setLocalText] = React.useState("");
     const [userId, setUserId] = React.useState([]);
     const [loading, setLoading] = React.useState(true);
     const [selection, setSelection] = React.useState([-1, "black"]);
-    const navigation = useNavigation();
-    let arrayVert = new Array();
-    let arrayHorizontal = new Array();
-    for (let i = 0; i < HorizontalLineCanva; i++) {
-        arrayVert.push(0);
-        arrayHorizontal.push(0);
-    }
+    const [arrayVert, setArrayVert] = React.useState([]);
+    const [arrayHorizontal, setArrayHorizontal] = React.useState([]);
     React.useEffect(() => {
-        globalcolor = new Array(HorizontalLineCanva * VerticalLineCanva);
-        setLoading(true);
-        var canvaInterval = setInterval(() => fetchCanva(setLoading, setColor, setUserId, route.params.username, true), 500);
+        chatcontext.setChatName("Canva");
+        if (chatcontext.chatName == "Canva") {
+            var chatInterval = setInterval(() => fetchChat("Canva", setChatText, chatcontext.setNewMessage), 3000);
+        }
 
+        var canvaInterval = setInterval(() => fetchCanva(setLoading, setColor, setUserId, setArrayHorizontal, setArrayVert), 500);
         return () => {
             clearInterval(canvaInterval);
+            clearInterval(chatInterval);
         }
-    }, []);
+    }, [chatcontext.chatName]);
 
-    const dimensions = Dimensions.get('window');
     if (loading) {
         return (<ActivityIndicator size="large" color="#000000" />)
 
@@ -42,9 +39,13 @@ export function CanvaScreen({ route }) {
                 position: 'absolute',
                 top: 0,
                 left: 0,
-                width: 1000,
-                height: 1080,
+                width:1000,
+                height:1080
             }}>
+            <ChatContext.Consumer>
+                {value => modalChat(value, chatText, setChatText, localText, setLocalText, "Canva", route.params.username)}
+
+            </ChatContext.Consumer>
             <View key={"kekos"} style={{ width: paletteColors.length / 2, height: 80, flexDirection: "row" }}>
 
                 {paletteColors.map((r, index) => {
@@ -61,28 +62,27 @@ export function CanvaScreen({ route }) {
             </View>
             <ReactNativeZoomableView
                 renderToHardwareTextureAndroid={true}
-                
+
                 key={'zoom'}
                 maxZoom={100}
-                minZoom={0.1}
+                minZoom={0.5}
                 zoomStep={0.5}
-                initialZoom={1}
+                initialZoom={10}
                 bindToBorders={false}
 
             >
-                <View renderToHardwareTextureAndroid={true} key={'mainframe'} style={{ width: 1000, height: 1000 }}>
+                <View key={'mainframe'} style={{ width: carreSize * arrayHorizontal.length, height: carreSize * arrayVert.length }}>
                     {arrayVert.map((r, indexVert) => {
-
                         return (
                             arrayHorizontal.map((z, indexHorizontal) => {
-                                return (<Pixel setSelection={setSelection} indexVert={indexVert} indexHorizontal={indexHorizontal} backColor={color[indexVert * HorizontalLineCanva + indexHorizontal]}></Pixel>)
+                                return (<Pixel setSelection={setSelection} indexVert={indexVert} indexHorizontal={indexHorizontal} arrayHorizontal={arrayHorizontal} backColor={color[indexVert * arrayHorizontal.length + indexHorizontal]}></Pixel>)
                             }))
                     })
                     }
                     {selection[0] == -1 ? <View key={"kekalnd"}></View> : <View onMoveShouldSetResponder={false} onStartShouldSetResponder={false} key={"container"}>
-                        <View key={"carreselect"} style={{ eleveation:2000, zIndex: 2000, width: 10, height: 10, position: "absolute", backgroundColor: selection[1], top: Math.floor(selection[0] / HorizontalLineCanva) * 10, left: selection[0] % HorizontalLineCanva * 10, borderColor:  selection[1]  == "black" ? "white":"black", borderWidth: 1 }}></View>
-                        <View key={"name"} style={{ position: "absolute", elevation:2000, zIndex: 2000, top: Math.floor(selection[0] / HorizontalLineCanva) * 10 - 10 , left: (selection[0] % HorizontalLineCanva < (VerticalLineCanva - 10))? selection[0] % HorizontalLineCanva * 10 + 40 : selection[0] % HorizontalLineCanva * 10 - 40, width: 100, height: 50 }}>
-                            <Text style={{ textAlign: "left", color:"black", elevation:2000, zIndex: 2000 }} key={"textname"}>{userId[selection[0]] == "Whisky" ? "" : userId[selection[0]]}</Text>
+                        <View key={"carreselect"} style={{ eleveation: 2000, zIndex: 2000, width: carreSize, height: carreSize, position: "absolute", backgroundColor: selection[1], top: Math.floor(selection[0] / arrayHorizontal.length) * carreSize, left: selection[0] % arrayHorizontal.length * carreSize, borderColor: selection[1] == "black" ? "white" : "black", borderWidth: 1 }}></View>
+                        <View key={"name"} style={{ position: "absolute", elevation: 2000, zIndex: 2000, top: Math.floor(selection[0] / arrayHorizontal.length) * carreSize - carreSize, left: (selection[0] % arrayHorizontal.length < (arrayVert.length - carreSize)) ? selection[0] % arrayHorizontal.length * carreSize + 40 : selection[0] % arrayHorizontal.length * carreSize - 40, width: 100, height: 50 }}>
+                            <Text style={{ textAlign: "left", color: "black", elevation: 2000, zIndex: 2000 }} key={"textname"}>{userId[selection[0]] == "Whisky" ? "" : userId[selection[0]]}</Text>
                         </View>
                     </View>}
                 </View>
@@ -90,11 +90,10 @@ export function CanvaScreen({ route }) {
         </View>
     )
 }
-let HorizontalLineCanva = 100;
-let VerticalLineCanva = 100;
-let globalcolor = new Array(HorizontalLineCanva * VerticalLineCanva);
-
-function fetchCanva(setloading, setColor, setUserId, username, load) {
+let globalcolor = [];
+let previouslines = 0;
+let previouscol = 0;
+function fetchCanva(setloading, setColor, setUserId, setHorizontal, setVert) {
     fetch("https://applijo.freeddns.org/canva").then(r => {
         if (r.status == 200) {
 
@@ -104,12 +103,27 @@ function fetchCanva(setloading, setColor, setUserId, username, load) {
 
 
     ).then(data => {
-        HorizontalLineCanva = data.lines_nb;
-        if(HorizontalLineCanva == 0){
-            HorizontalLineCanva = 100;
+
+        if (data.lines_nb != previouslines) {
+            previouslines = data.lines_nb;
+            let tmp = []
+            for (let i = 0; i < previouslines; i++) {
+                tmp.push(0)
+            }
+            console.log("setvert");
+            setVert([...tmp]);
+            
         }
         let canva = data.canva;
-        VerticalLineCanva = canva.length / HorizontalLineCanva;
+        if (previouscol != canva.length / data.lines_nb) {
+            console.log("sethoriz");
+            previouscol = canva.length / data.lines_nb;
+            let tmp = []
+            for (let i = 0; i < previouscol; i++) {
+                tmp.push(0)
+            }
+            setHorizontal([...tmp]);
+        }
         let tmpcolor = [];
         let tmpname = [];
 
@@ -128,9 +142,7 @@ function fetchCanva(setloading, setColor, setUserId, username, load) {
             setColor([...tmpcolor])
         }
 
-        if (load) {
-            setloading(false);
-        }
+        setloading(false);
     }
     ).catch(err => console.error(err))
 }
@@ -145,9 +157,7 @@ function colorset(color, setColor, localColor, username, localid, setSelection) 
             setColor([...tmpColors]);
             setSelection([globalid, localColor])
         }
-        // globalid = -1;
     })
-    // setId(-1);
 }
 
 const Pixel = React.memo((props) => {
@@ -155,9 +165,10 @@ const Pixel = React.memo((props) => {
     const indexHorizontal = props.indexHorizontal;
     const backColor = props.backColor;
     const setSelection = props.setSelection;
+    const arrayHorizontal = props.arrayHorizontal;
     return (
 
-        <Pressable style={{ zindex: 1200, position: 'absolute', top: indexVert * 10, left: indexHorizontal * 10, width: 10, height: 10, backgroundColor: backColor }} key={(indexVert * HorizontalLineCanva + indexHorizontal)} onPress={() => { globalid = (indexVert * HorizontalLineCanva + indexHorizontal); setSelection([globalid, backColor]) }}>
+        <Pressable style={{ zindex: 1200, position: 'absolute', top: indexVert * carreSize, left: indexHorizontal * carreSize, width: carreSize, height: carreSize, backgroundColor: backColor }} key={(indexVert * arrayHorizontal.length + indexHorizontal)} onPress={() => { globalid = (indexVert * arrayHorizontal.length + indexHorizontal); setSelection([globalid, backColor]) }}>
         </Pressable>
     )
 })

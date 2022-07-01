@@ -151,7 +151,11 @@ function App() {
                             })} name="VanRommel" component={VanRommelScreen} />
 
                             <Stack.Screen options={() => ({
-                                title: "Canva"
+                                title: "Canva", headerRight: () => <View>
+                                <Pressable onPress={() => { setChat(true) }}>
+                                    <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", marginRight: 20 }} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
+                                </Pressable>
+                            </View>
                             })} name="CanvaScreen" initialParams={{ username: username }} component={CanvaScreen} />
 
 

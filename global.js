@@ -28,7 +28,7 @@ export let initialLineNumber = {
     "Clicker": 0,
     "Home": 0
 };
-
+export let carreSize = 2;
 export let adminlist = [
     "Max",
     "Antoine",
