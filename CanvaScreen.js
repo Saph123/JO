@@ -22,7 +22,7 @@ export function CanvaScreen({ route }) {
         arrayHorizontal.push(0);
     }
     React.useEffect(() => {
-        previoushash = "0";
+        globalcolor = new Array(HorizontalLineCanva * VerticalLineCanva);
         setLoading(true);
         var canvaInterval = setInterval(() => fetchCanva(setLoading, setColor, setUserId, route.params.username, true), 500);
 
@@ -39,7 +39,6 @@ export function CanvaScreen({ route }) {
     return (
         <View key={"haok"}
             renderToHardwareTextureAndroid={true}
-            shouldRasterizeIOS={true}
             style={{
                 position: 'absolute',
                 top: 0,
@@ -63,7 +62,7 @@ export function CanvaScreen({ route }) {
             </View>
             <ReactNativeZoomableView
                 renderToHardwareTextureAndroid={true}
-                shouldRasterizeIOS={true}
+                
                 key={'zoom'}
                 maxZoom={100}
                 minZoom={0.1}
@@ -72,13 +71,7 @@ export function CanvaScreen({ route }) {
                 bindToBorders={false}
 
             >
-                <View renderToHardwareTextureAndroid={true} shouldRasterizeIOS={true} key={'mainframe'} style={{ width: 1000, height: 1000 }}>
-                    {selection[0] == -1 ? <View key={"kekalnd"}></View> : <View key={"container"}>
-                        <View key={"carreselect"} style={{ zIndex: 2000, width: 10, height: 10, position: "absolute", backgroundColor: selection[1], top: Math.floor(selection[0] / HorizontalLineCanva) * 10, left: selection[0] % HorizontalLineCanva * 10, borderColor: "black", borderWidth: 1 }}></View>
-                        <View key={"name"} style={{ position: "absolute", zIndex: 2000, top: selection[0] / HorizontalLineCanva * 10 - 2, left: selection[0] % HorizontalLineCanva * 10 + 40, width: 100, height: 50 }}>
-                            <Text style={{ textAlign: "left" }} key={"textname"}>{userId[selection[0]] == "Whisky" ? "" : userId[selection[0]]}</Text>
-                        </View>
-                    </View>}
+                <View renderToHardwareTextureAndroid={true} key={'mainframe'} style={{ width: 1000, height: 1000 }}>
                     {arrayVert.map((r, indexVert) => {
 
                         return (
@@ -87,6 +80,12 @@ export function CanvaScreen({ route }) {
                             }))
                     })
                     }
+                    {selection[0] == -1 ? <View key={"kekalnd"}></View> : <View onMoveShouldSetResponder={false} onStartShouldSetResponder={false} key={"container"}>
+                        <View key={"carreselect"} style={{ eleveation:2000, zIndex: 2000, width: 10, height: 10, position: "absolute", backgroundColor: selection[1], top: Math.floor(selection[0] / HorizontalLineCanva) * 10, left: selection[0] % HorizontalLineCanva * 10, borderColor:  selection[1]  == "black" ? "white":"black", borderWidth: 1 }}></View>
+                        <View key={"name"} style={{ position: "absolute", elevation:2000, zIndex: 2000, top: Math.floor(selection[0] / HorizontalLineCanva) * 10 - 10 , left: (selection[0] % HorizontalLineCanva < (VerticalLineCanva - 10))? selection[0] % HorizontalLineCanva * 10 + 40 : selection[0] % HorizontalLineCanva * 10 - 40, width: 100, height: 50 }}>
+                            <Text style={{ textAlign: "left", color:"black", elevation:2000, zIndex: 2000 }} key={"textname"}>{userId[selection[0]] == "Whisky" ? "" : userId[selection[0]]}</Text>
+                        </View>
+                    </View>}
                 </View>
             </ReactNativeZoomableView >
         </View>
@@ -142,7 +141,7 @@ function colorset(color, setColor, localColor, username, localid, setSelection) 
             setColor([...tmpColors]);
             setSelection([globalid, localColor])
         }
-        globalid = -1;
+        // globalid = -1;
     })
     // setId(-1);
 }
