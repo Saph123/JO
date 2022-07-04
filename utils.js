@@ -298,6 +298,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
 
 
 export function modalChat(value, text, setChatText, localText, setLocalText, sportname, username) {
+    console.log(text);
     return (
         <Modal
             animationType="slide"

@@ -26,7 +26,8 @@ export let initialLineNumber = {
     "Petanque": 0,
     "Molky": 0,
     "Clicker": 0,
-    "Home": 0
+    "Home": 0,
+    "Canva":0
 };
 export let carreSize = 3;
 export let adminlist = [

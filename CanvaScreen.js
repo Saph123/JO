@@ -16,7 +16,7 @@ export function CanvaScreen({ route }) {
     const [selection, setSelection] = React.useState([-1, "black"]);
     const [arrayVert, setArrayVert] = React.useState([]);
     const [arrayHorizontal, setArrayHorizontal] = React.useState([]);
-    React.useLayoutEffect(() => {
+    React.useEffect(() => {
         chatcontext.setChatName("Canva");
         if (chatcontext.chatName == "Canva") {
             var chatInterval = setInterval(() => fetchChat("Canva", setChatText, chatcontext.setNewMessage), 3000);
@@ -72,7 +72,7 @@ export function CanvaScreen({ route }) {
                 maxZoom={100}
                 minZoom={0.5}
                 zoomStep={0.5}
-                initialZoom={10}
+                initialZoom={5}
                 bindToBorders={false}
 
             >
@@ -84,10 +84,10 @@ export function CanvaScreen({ route }) {
                             }))
                     })
                     }
-                    {selection[0] == -1 ? <View key={"kekalnd"}></View> : <View onMoveShouldSetResponder={false} onStartShouldSetResponder={false} key={"container"}>
-                        <View key={"carreselect"} style={{ eleveation: 2000, zIndex: 2000, width: carreSize, height: carreSize, position: "absolute", backgroundColor: selection[1], top: Math.floor(selection[0] / arrayHorizontal.length) * carreSize, left: selection[0] % arrayHorizontal.length * carreSize, borderColor: selection[1] == "black" ? "white" : "black", borderWidth: 1 }}></View>
-                        <View key={"name"} style={{ position: "absolute", elevation: 2000, zIndex: 2000, top: Math.floor(selection[0] / arrayHorizontal.length) * carreSize - carreSize, left: (selection[0] % arrayHorizontal.length < (arrayVert.length - carreSize)) ? selection[0] % arrayHorizontal.length * carreSize + 40 : selection[0] % arrayHorizontal.length * carreSize - 40, width: 100, height: 50 }}>
-                            <Text style={{ textAlign: "left", color: "black", elevation: 2000, zIndex: 2000 }} key={"textname"}>{userId[selection[0]] == "Whisky" ? "" : userId[selection[0]]}</Text>
+                    {selection[0] == -1 ? <View key={"kekalnd"}></View> : <View pointerEvents="none" key={"container"}>
+                        <View pointerEvents="none" key={"carreselect"} style={{ eleveation: 2000, zIndex: 2000, width: carreSize, height: carreSize, position: "absolute", backgroundColor: selection[1], top: Math.floor(selection[0] / arrayHorizontal.length) * carreSize, left: selection[0] % arrayHorizontal.length * carreSize, borderColor: selection[1] == "black" ? "white" : "black", borderWidth: 1 }}></View>
+                        <View pointerEvents="none" key={"name"} style={{ position: "absolute", elevation: 2000, zIndex: 2000, top: Math.floor(selection[0] / arrayHorizontal.length) * carreSize - carreSize, left: (selection[0] % arrayHorizontal.length < (arrayVert.length - carreSize)) ? selection[0] % arrayHorizontal.length * carreSize + carreSize*4 : selection[0] % arrayHorizontal.length * carreSize - carreSize*4, width: carreSize*10, height: carreSize*5 }}>
+                            <Text pointerEvents="none" style={{ textAlign: "left", color: "black", elevation: 2000, zIndex: 2000, fontSize:carreSize*2 }} key={"textname"}>{userId[selection[0]] == "Whisky" ? "" : userId[selection[0]]}</Text>
                         </View>
                     </View>}
                 </View>

@@ -1,7 +1,7 @@
 import styles from "./style.js";
 import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
-import { View, ScrollView, ActivityIndicator, Text, Modal, RefreshControl, Pressable, Image } from 'react-native';
+import { View, ScrollView, ActivityIndicator, Text, Modal, RefreshControl, Pressable, Image, KeyboardAvoidingView } from 'react-native';
 import { Trace } from "./trace.js";
 import { modalChat, fetchChat, fetch_matches, lutImg, fetch_sport_results } from './utils.js';
 import { ChatContext, ArbitreContext } from "./global.js";
@@ -24,7 +24,7 @@ export function SportDetailsScreen({ route }) {
     const [final, setFinal] = React.useState([]);
     const [realListe, setRealListe] = React.useState([]);
     const [betListe, setBetListe] = React.useState([]);
-    const [results, setResults] = React.useState({"1":{}, "2":{}, "3":{}});
+    const [results, setResults] = React.useState({ "1": {}, "2": {}, "3": {} });
     const [modifListe, setModifListe] = React.useState([]);
     const [seriesLevel, setSeriesLevel] = React.useState([0]);
     const [groups, setGroups] = React.useState([]);
@@ -65,12 +65,11 @@ export function SportDetailsScreen({ route }) {
         setloading(true);
         fetch_sport_results(route.params.sportname, setResults);
         fetch_matches(route.params.username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel, setModifListe, setBetListe, route.params.setLock).then(r => {
-        if(prev_status.status != "error" )
-        {
-            console.error(prev_status.status);
-            setStatus(prev_status);
-        }
-        setloading(false);
+            if (prev_status.status != "error") {
+                console.error(prev_status.status);
+                setStatus(prev_status);
+            }
+            setloading(false);
         });
 
         setRefreshing(false);
@@ -86,7 +85,7 @@ export function SportDetailsScreen({ route }) {
                 setloading(false);
                 setFirstTime(false);
             }).catch(err => { console.log(err); navigation.navigate('HomeScreen') });
-    }
+        }
         return () => {
             chatcontext.setChatName("");
             clearInterval(chatInterval);
@@ -97,8 +96,8 @@ export function SportDetailsScreen({ route }) {
         return (<ActivityIndicator size="large" color="#000000" />)
     }
     return (
-        <View style={{ flex: 1, flexDirection: "column", height: 50, backgroundColor:"#C9CBCD" }}>
-            <View style={{ flex: 1, flexDirection: "row" }}>
+        <View style={{ flex: 1, flexDirection: "column", height: 50, backgroundColor: "#C9CBCD" }}>
+            <View style={{ height: 50, flexDirection: "row" }} >
                 {status.states.map(r =>
                     <Pressable key={r} onPress={() => {
                         setloading(true);
@@ -110,7 +109,8 @@ export function SportDetailsScreen({ route }) {
                     }} style={r == status.status ?
                         { flex: 1, backgroundColor: "black", borderColor: "white", borderWidth: 5, alignItems: "center", borderBottomStartRadius: 15, borderBottomEndRadius: 15 } :
                         { flex: 1, backgroundColor: "black", borderColor: "grey", borderWidth: 5, alignItems: "center", borderBottomStartRadius: 15, borderBottomEndRadius: 15 }}><View>
-                            <Image style={styles.tabimage} resizeMode="contain" resizeMethod="auto" source={lutImg(r)} /></View></Pressable>)}</View>
+                            <Image style={styles.tabimage} resizeMode="contain" resizeMethod="auto" source={lutImg(r)} /></View></Pressable>)}
+            </View>
             <View style={{ flex: 10 }}>
                 <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} >
                     <ChatContext.Consumer>
@@ -144,7 +144,7 @@ export function SportDetailsScreen({ route }) {
                         }
                     </ArbitreContext.Consumer>
 
-                    <Trace status={status} username={route.params.username} sport={route.params.sportname} all_teams={all_teams} results={results} setStatus={setStatus} setLoading={setloading} onRefresh={onRefresh}/>
+                    <Trace status={status} username={route.params.username} sport={route.params.sportname} all_teams={all_teams} results={results} setStatus={setStatus} setLoading={setloading} onRefresh={onRefresh} />
                 </ScrollView>
             </View>
         </View>
