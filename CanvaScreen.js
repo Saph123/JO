@@ -39,27 +39,24 @@ export function CanvaScreen({ route }) {
     const [selection, setSelection] = React.useState([0, "black"]);
     const [coordX, setCoordX] = React.useState(0);
     const [coordY, setCoordY] = React.useState(0);
-    // const [refresh2, setRefresh2] = React.useState(false);
     const [refresh, setRefresh] = React.useState(0);
     const [refresh2, setRefresh2] = React.useState(1);
-    const [display, setDisplay] = React.useState(false);
+    const [lineNb, setLineNb] = React.useState(100);
+    const [colNb, setColNb] = React.useState(100);
+
     React.useEffect(() => {
         chatcontext.setChatName("Canva");
         if (chatcontext.chatName == "Canva") {
             var chatInterval = setInterval(() => fetchChat("Canva", setChatText, chatcontext.setNewMessage), 3000);
         }
-        // fetchCanva(setLoading, setColor, setUserId, setArrayHorizontal, setArrayVert);
-        // var canvaInterval = setInterval(() => fetchCanva(setLoading, setColor, setUserId, setArrayHorizontal, setArrayVert), 50000);
+        fetchSize(setLineNb, setColNb);
         var kekInterval = setInterval(() => refreshBase(setRefresh, setRefresh2), 1000);
-        // var kekInterval = setInterval(() => refreshBase(setRefresh2), 3000);
         setLoading(false);
         return () => {
             clearInterval(kekInterval);
             clearInterval(chatInterval);
-            lastreq = 0;
-            globalcolor = [];
-            previouslines = 0;
-            previouscol = 0;
+            cols_number = 0;
+            lines_number = 0;
         }
     }, [chatcontext.chatName]);
 
@@ -84,8 +81,8 @@ export function CanvaScreen({ route }) {
 
                         return (
                             <View key={"m:" + index} style={{ flexDirection: "column", width: 40, height: 80 }}>
-                                <Pressable key={r} style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: r }} onPress={() => colorset(color, setColor, r, route.params.username, coordX, coordY)} />
-                                <Pressable key={paletteColors[index + 1]} style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: paletteColors[index + 1] }} onPress={() => colorset(color, setColor, paletteColors[index + 1], route.params.username, coordX, coordY)} />
+                                <Pressable key={r} style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: r }} onPress={() => colorset(r, route.params.username, coordX, coordY)} />
+                                <Pressable key={paletteColors[index + 1]} style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: paletteColors[index + 1] }} onPress={() => colorset(paletteColors[index + 1], route.params.username, coordX, coordY)} />
                             </View>
                         )
                     }
@@ -104,18 +101,10 @@ export function CanvaScreen({ route }) {
 
             >
                 <View  key={'mainframe'} onStartShouldSetResponder={() => {return true}} onResponderStart={(e) => {setCoordX(Math.floor(e.nativeEvent.locationX/10)*10); setCoordY(Math.floor(e.nativeEvent.locationY/10)*10); fetchUsername(Math.floor(e.nativeEvent.locationX/10)*10, Math.floor(e.nativeEvent.locationY/10)*10, setUserId)}}>
-                <Canva refresh={refresh}></Canva>
-                <Canva refresh={refresh2}></Canva>
-                
-                {/* <Image   pointerEvents="none" source={{ cache:"force-cache" , uri: "https://applijo.freeddns.org/canvadev?" + (refresh ? new Date(): "") }} style={{opacity: refresh ? 1 : 0, position:"absolute", top:0, left:0, width:1000, height:1000, borderColor:"black", borderWidth:1 }}></Image>
-                <Image   pointerEvents="none" source={{ cache:"force-cache" , uri: "https://applijo.freeddns.org/canvadev?" + (refresh2? new Date() : "") }} style={{opacity: refresh2 ? 1 : 0, position:"absolute", top:0, left:0, width:1000, height:1000, borderColor:"black", borderWidth:1 }}></Image> */}
-                
-
+                <Canva lineNb={lineNb} colNb={colNb} refresh={refresh}></Canva>
+                <Canva lineNb={lineNb} colNb={colNb} refresh={refresh2}></Canva>
                     {selection[0] == -1 ? <View key={"kekalnd"}></View> : <View pointerEvents="none" key={"container"}>
                         <View pointerEvents="none" key={"carreselect"} style={{ elevation: 2000, zIndex: 2000, width: 10, height: 10, position: "absolute", backgroundColor: "white", top:coordY, left: coordX, borderColor: "black", borderWidth: 1 }}></View>
-                        <View pointerEvents="none" key={"name"} style={{ position: "absolute", elevation: 2000, zIndex: 2000, top:coordY, left: coordX + 30, width: carreSize * 10, height: carreSize * 5 }}>
-                            
-                         </View> 
                     </View>}
                 </View>
             </ReactNativeZoomableView >
@@ -125,28 +114,43 @@ export function CanvaScreen({ route }) {
         </View>
     )
 }
-let lastreq = 0;
-let globalcolor = [];
-let previouslines = 0;
-let previouscol = 0;
+let lines_number = 0;
+let cols_number = 0;
+
 function fetchUsername(x, y, setUserId) {
-    let localid = Math.floor(y/10) * 100 +Math.floor(x/10);
+    let localid = Math.floor(y/10) * lines_number +Math.floor(x/10);
         fetch("https://applijo.freeddns.org/canvausername/" + localid).then(r => {
             if (r.status == 200) {
-                lastreq = new Date()
                 return r.text();
             }
         }
-
-
         ).then(data => {
-            console.log(data);
             setUserId(data)
         })
 
 }
-function colorset(color, setColor, localColor, username, x, y) {
-    let localid = Math.floor(y/10) * 100 +Math.floor(x/10);
+function fetchSize(setLineNb, setColNb) {
+        fetch("https://applijo.freeddns.org/canvasize").then(r => {
+            if (r.status == 200) {
+                return r.json();
+            }
+        }
+        ).then(data => {
+            if(data.lines != undefined){
+                if(data.lines != lines_number){
+                    setLineNb(data.lines);
+                }
+                if(data.cols != cols_number){
+                    setColNb(data.cols);
+                }
+                lines_number = data.lines;
+                cols_number = data.cols
+            }
+        })
+
+}
+function colorset(localColor, username, x, y) {
+    let localid = Math.floor(y/10) * lines_number +Math.floor(x/10);
     fetch("https://applijo.freeddns.org/canvasetcolordev", { method: "POST", body: JSON.stringify({ "id": localid, "color": localColor, "username": username }) }).then(r => {
 
         if (r.status == 200) {
@@ -157,8 +161,10 @@ function colorset(color, setColor, localColor, username, x, y) {
 
 const Canva =  React.memo((props) => {
     const refresh = props.refresh;
+    const lineNb = props.lineNb;
+    const colNb = props.colNb;
     let date = new Date();
     return(
-        <Image   pointerEvents="none" source={{ cache:'reload', uri: "https://applijo.freeddns.org/canvadev?" + (date) }} style={{opacity:refresh, position:"absolute", top:0, left:0, width:1000, height:1000, borderColor:"black", borderWidth:1 }}></Image>
+        <Image   pointerEvents="none" source={{ cache:'reload', uri: "https://applijo.freeddns.org/canvadev?" + (date) }} style={{opacity:refresh, position:"absolute", top:0, left:0, width:colNb*10, height:lineNb*10, borderColor:"black", borderWidth:1 }}></Image>
     )
 })
