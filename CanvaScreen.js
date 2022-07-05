@@ -43,6 +43,7 @@ export function CanvaScreen({ route }) {
     const [refresh2, setRefresh2] = React.useState(1);
     const [lineNb, setLineNb] = React.useState(100);
     const [colNb, setColNb] = React.useState(100);
+    const [patch, setPatch] = React.useState([]);
 
     React.useEffect(() => {
         chatcontext.setChatName("Canva");
@@ -66,6 +67,7 @@ export function CanvaScreen({ route }) {
     }
     return (
         <View key={"haok"}
+            onStartShouldSetResponder={()=> {return false}}
             renderToHardwareTextureAndroid={true}
             style={{
                 flex: 1
@@ -81,8 +83,8 @@ export function CanvaScreen({ route }) {
 
                         return (
                             <View key={"m:" + index} style={{ flexDirection: "column", width: 40, height: 80 }}>
-                                <Pressable key={r} style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: r }} onPress={() => colorset(r, route.params.username, coordX, coordY)} />
-                                <Pressable key={paletteColors[index + 1]} style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: paletteColors[index + 1] }} onPress={() => colorset(paletteColors[index + 1], route.params.username, coordX, coordY)} />
+                                <Pressable key={r} style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: r }} onPress={() => colorset(r, route.params.username, coordX, coordY, setPatch, patch)} />
+                                {paletteColors[index+1] != undefined ? <Pressable key={paletteColors[index + 1]} style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: paletteColors[index + 1] }} onPress={() => colorset(paletteColors[index + 1], route.params.username, coordX, coordY, setPatch, patch)}/>: <View></View>}
                             </View>
                         )
                     }
@@ -91,7 +93,7 @@ export function CanvaScreen({ route }) {
             </View>
             <ReactNativeZoomableView
                 renderToHardwareTextureAndroid={true}
-
+                
                 key={'zoom'}
                 maxZoom={100}
                 minZoom={0.1}
@@ -100,15 +102,25 @@ export function CanvaScreen({ route }) {
                 bindToBorders={false}
 
             >
-                <View  key={'mainframe'} onStartShouldSetResponder={() => {return true}} onResponderStart={(e) => {setCoordX(Math.floor(e.nativeEvent.locationX/10)*10); setCoordY(Math.floor(e.nativeEvent.locationY/10)*10); fetchUsername(Math.floor(e.nativeEvent.locationX/10)*10, Math.floor(e.nativeEvent.locationY/10)*10, setUserId)}}>
+                <Pressable style={{width:colNb*10, height:lineNb*10}}  key={'mainframe'} onPress={(e) => {console.log(e.nativeEvent.locationX);setCoordX(Math.floor(e.nativeEvent.locationX/10)*10); setCoordY(Math.floor(e.nativeEvent.locationY/10)*10); fetchUsername(Math.floor(e.nativeEvent.locationX/10)*10, Math.floor(e.nativeEvent.locationY/10)*10, setUserId)}}>
                 <Canva lineNb={lineNb} colNb={colNb} refresh={refresh}></Canva>
                 <Canva lineNb={lineNb} colNb={colNb} refresh={refresh2}></Canva>
                     {selection[0] == -1 ? <View key={"kekalnd"}></View> : <View pointerEvents="none" key={"container"}>
-                        <View pointerEvents="none" key={"carreselect"} style={{ elevation: 2000, zIndex: 2000, width: 10, height: 10, position: "absolute", backgroundColor: "white", top:coordY, left: coordX, borderColor: "black", borderWidth: 1 }}></View>
+                        <View pointerEvents="none" key={"carreselect"} style={{ elevation: 1999, zIndex: 1999, width: 10, height: 10, position: "absolute", backgroundColor: "white", top:coordY, left: coordX, borderColor: "black", borderWidth: 1, opacity:0.5 }}></View>
                     </View>}
-                </View>
+                    {patch.map( r => {
+                        console.log(r.color, r.x, r.y);
+                        if(r!=undefined){
+
+                            return(<View pointerEvents="none" key={r.x + r.y + r.color + new Date()}
+                            style={{ zIndex: 2000, width: 10, height: 10, position: "absolute", backgroundColor: r.color, top:r.y, left: r.x, borderColor:r.color, borderWidth:1, shadowOpacity:0 }}>
+                    </View>)
+                    }
+                    })}
+
+                </Pressable>
             </ReactNativeZoomableView >
-                    <View style={{width:"100%", height:30}}>
+                    <View pointerEvents="none" style={{width:"100%", height:30}}>
                     <Text pointerEvents="none" style={{ textAlign: "center", color: "black", height:"100%", width:"100%", elevation: 2000, zIndex: 2000, fontSize: 20, flex:1, margin:0 }} key={"textname"}>{userId == "Whisky" ? "" : userId}</Text>
                     </View>
         </View>
@@ -149,12 +161,20 @@ function fetchSize(setLineNb, setColNb) {
         })
 
 }
-function colorset(localColor, username, x, y) {
+let globalpatch = [];
+function colorset(localColor, username, x, y, setPatch, patch) {
     let localid = Math.floor(y/10) * lines_number +Math.floor(x/10);
+     globalpatch = [];
+    if(patch != undefined){
+
+        globalpatch = [...patch];
+    }
+    globalpatch.push({color:localColor, x:x, y:y})
+    setPatch([...globalpatch]);
     fetch("https://applijo.freeddns.org/canvasetcolordev", { method: "POST", body: JSON.stringify({ "id": localid, "color": localColor, "username": username }) }).then(r => {
 
         if (r.status == 200) {
-
+            setTimeout(() => {globalpatch.shift();setPatch([...globalpatch])}, 20000)
         }
     })
 }
