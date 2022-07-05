@@ -1,11 +1,34 @@
 import * as React from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { View, Modal, Pressable, ActivityIndicator, Text, Dimensions } from 'react-native';
+import { View, Modal, Pressable, ActivityIndicator, Text, Dimensions, Image, Alert } from 'react-native';
 import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
 import { modalChat, fetchChat } from "./utils.js"
 import { paletteColors, ChatContext, carreSize } from "./global";
-import { getTimestamp } from 'react-native-reanimated/lib/reanimated2/core.js';
+import * as FileSystem from "expo-file-system";
 let globalid = -1;
+let globalIndex = 0;
+let globRefresh = 0;
+function refreshBase(setref, setRef2){
+    globRefresh += 1;
+    if(globRefresh % 4 == 0){
+        globRefresh = 0;
+    }
+    switch (globRefresh){
+        case 1:
+            setRef2(1);
+            break;
+            case 2:
+            setref(0);
+            break;
+            case 3:
+            setref(1);
+            break;
+            case 0:
+            setRef2(0);
+            break;
+        
+    }
+}
+
 export function CanvaScreen({ route }) {
     const [color, setColor] = React.useState([]);
     const chatcontext = React.useContext(ChatContext);
@@ -13,18 +36,25 @@ export function CanvaScreen({ route }) {
     const [localText, setLocalText] = React.useState("");
     const [userId, setUserId] = React.useState([]);
     const [loading, setLoading] = React.useState(true);
-    const [selection, setSelection] = React.useState([-1, "black"]);
-    const [arrayVert, setArrayVert] = React.useState([]);
-    const [arrayHorizontal, setArrayHorizontal] = React.useState([]);
+    const [selection, setSelection] = React.useState([0, "black"]);
+    const [coordX, setCoordX] = React.useState(0);
+    const [coordY, setCoordY] = React.useState(0);
+    // const [refresh2, setRefresh2] = React.useState(false);
+    const [refresh, setRefresh] = React.useState(0);
+    const [refresh2, setRefresh2] = React.useState(1);
+    const [display, setDisplay] = React.useState(false);
     React.useEffect(() => {
         chatcontext.setChatName("Canva");
         if (chatcontext.chatName == "Canva") {
             var chatInterval = setInterval(() => fetchChat("Canva", setChatText, chatcontext.setNewMessage), 3000);
         }
-
-        var canvaInterval = setInterval(() => fetchCanva(setLoading, setColor, setUserId, setArrayHorizontal, setArrayVert), 1000);
+        // fetchCanva(setLoading, setColor, setUserId, setArrayHorizontal, setArrayVert);
+        // var canvaInterval = setInterval(() => fetchCanva(setLoading, setColor, setUserId, setArrayHorizontal, setArrayVert), 50000);
+        var kekInterval = setInterval(() => refreshBase(setRefresh, setRefresh2), 1000);
+        // var kekInterval = setInterval(() => refreshBase(setRefresh2), 3000);
+        setLoading(false);
         return () => {
-            clearInterval(canvaInterval);
+            clearInterval(kekInterval);
             clearInterval(chatInterval);
             lastreq = 0;
             globalcolor = [];
@@ -41,11 +71,7 @@ export function CanvaScreen({ route }) {
         <View key={"haok"}
             renderToHardwareTextureAndroid={true}
             style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: 1000,
-                height: 1080
+                flex: 1
             }}>
             <ChatContext.Consumer>
                 {value => modalChat(value, chatText, setChatText, localText, setLocalText, "Canva", route.params.username)}
@@ -58,40 +84,44 @@ export function CanvaScreen({ route }) {
 
                         return (
                             <View key={"m:" + index} style={{ flexDirection: "column", width: 40, height: 80 }}>
-                                <Pressable key={r} style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: r }} onPress={() => colorset(color, setColor, r, route.params.username, globalid, setSelection)} />
-                                <Pressable key={paletteColors[index + 1]} style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: paletteColors[index + 1] }} onPress={() => colorset(color, setColor, paletteColors[index + 1], route.params.username, globalid, setSelection)} />
+                                <Pressable key={r} style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: r }} onPress={() => colorset(color, setColor, r, route.params.username, coordX, coordY)} />
+                                <Pressable key={paletteColors[index + 1]} style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: paletteColors[index + 1] }} onPress={() => colorset(color, setColor, paletteColors[index + 1], route.params.username, coordX, coordY)} />
                             </View>
                         )
                     }
                 })}
+
             </View>
             <ReactNativeZoomableView
                 renderToHardwareTextureAndroid={true}
 
                 key={'zoom'}
                 maxZoom={100}
-                minZoom={0.5}
+                minZoom={0.1}
                 zoomStep={0.5}
-                initialZoom={5}
+                initialZoom={1}
                 bindToBorders={false}
 
             >
-                <View key={'mainframe'} style={{ width: carreSize * arrayHorizontal.length, height: carreSize * arrayVert.length }}>
-                    {arrayVert.map((r, indexVert) => {
-                        return (
-                            arrayHorizontal.map((z, indexHorizontal) => {
-                                return (<Pixel setSelection={setSelection} indexVert={indexVert} indexHorizontal={indexHorizontal} arrayHorizontal={arrayHorizontal} backColor={color[indexVert * arrayHorizontal.length + indexHorizontal]}></Pixel>)
-                            }))
-                    })
-                    }
+                <View  key={'mainframe'} onStartShouldSetResponder={() => {return true}} onResponderStart={(e) => {setCoordX(Math.floor(e.nativeEvent.locationX/10)*10); setCoordY(Math.floor(e.nativeEvent.locationY/10)*10); fetchUsername(Math.floor(e.nativeEvent.locationX/10)*10, Math.floor(e.nativeEvent.locationY/10)*10, setUserId)}}>
+                <Canva refresh={refresh}></Canva>
+                <Canva refresh={refresh2}></Canva>
+                
+                {/* <Image   pointerEvents="none" source={{ cache:"force-cache" , uri: "https://applijo.freeddns.org/canvadev?" + (refresh ? new Date(): "") }} style={{opacity: refresh ? 1 : 0, position:"absolute", top:0, left:0, width:1000, height:1000, borderColor:"black", borderWidth:1 }}></Image>
+                <Image   pointerEvents="none" source={{ cache:"force-cache" , uri: "https://applijo.freeddns.org/canvadev?" + (refresh2? new Date() : "") }} style={{opacity: refresh2 ? 1 : 0, position:"absolute", top:0, left:0, width:1000, height:1000, borderColor:"black", borderWidth:1 }}></Image> */}
+                
+
                     {selection[0] == -1 ? <View key={"kekalnd"}></View> : <View pointerEvents="none" key={"container"}>
-                        <View pointerEvents="none" key={"carreselect"} style={{ eleveation: 2000, zIndex: 2000, width: carreSize, height: carreSize, position: "absolute", backgroundColor: selection[1], top: Math.floor(selection[0] / arrayHorizontal.length) * carreSize, left: selection[0] % arrayHorizontal.length * carreSize, borderColor: selection[1] == "black" ? "white" : "black", borderWidth: 1 }}></View>
-                        <View pointerEvents="none" key={"name"} style={{ position: "absolute", elevation: 2000, zIndex: 2000, top: Math.floor(selection[0] / arrayHorizontal.length) * carreSize - carreSize, left: (selection[0] % arrayHorizontal.length < (arrayVert.length - carreSize)) ? selection[0] % arrayHorizontal.length * carreSize + carreSize*4 : selection[0] % arrayHorizontal.length * carreSize - carreSize*4, width: carreSize*10, height: carreSize*5 }}>
-                            <Text pointerEvents="none" style={{ textAlign: "left", color: "black", elevation: 2000, zIndex: 2000, fontSize:carreSize*2 }} key={"textname"}>{userId[selection[0]] == "Whisky" ? "" : userId[selection[0]]}</Text>
-                        </View>
+                        <View pointerEvents="none" key={"carreselect"} style={{ elevation: 2000, zIndex: 2000, width: 10, height: 10, position: "absolute", backgroundColor: "white", top:coordY, left: coordX, borderColor: "black", borderWidth: 1 }}></View>
+                        <View pointerEvents="none" key={"name"} style={{ position: "absolute", elevation: 2000, zIndex: 2000, top:coordY, left: coordX + 30, width: carreSize * 10, height: carreSize * 5 }}>
+                            
+                         </View> 
                     </View>}
                 </View>
             </ReactNativeZoomableView >
+                    <View style={{width:"100%", height:30}}>
+                    <Text pointerEvents="none" style={{ textAlign: "center", color: "black", height:"100%", width:"100%", elevation: 2000, zIndex: 2000, fontSize: 20, flex:1, margin:0 }} key={"textname"}>{userId == "Whisky" ? "" : userId}</Text>
+                    </View>
         </View>
     )
 }
@@ -99,82 +129,36 @@ let lastreq = 0;
 let globalcolor = [];
 let previouslines = 0;
 let previouscol = 0;
-function fetchCanva(setloading, setColor, setUserId, setHorizontal, setVert) {
-    if (new Date() - lastreq > 500) {
-        fetch("https://applijo.freeddns.org/canva").then(r => {
+function fetchUsername(x, y, setUserId) {
+    let localid = Math.floor(y/10) * 100 +Math.floor(x/10);
+        fetch("https://applijo.freeddns.org/canvausername/" + localid).then(r => {
             if (r.status == 200) {
                 lastreq = new Date()
-                return r.json();
+                return r.text();
             }
         }
 
 
         ).then(data => {
+            console.log(data);
+            setUserId(data)
+        })
 
-            if (data.lines_nb != previouslines) {
-                setloading(true);
-                previouslines = data.lines_nb;
-                let tmp = []
-                for (let i = 0; i < previouslines; i++) {
-                    tmp.push(0)
-                }
-                setVert([...tmp]);
-
-            }
-            let canva = data.canva;
-            if (previouscol != canva.length / data.lines_nb) {
-                previouscol = canva.length / data.lines_nb;
-                let tmp = []
-                for (let i = 0; i < previouscol; i++) {
-                    tmp.push(0)
-                }
-                setHorizontal([...tmp]);
-            }
-            let tmpcolor = [];
-            let tmpname = [];
-
-            let toupdate = false;
-            for (let i = 0; i < canva.length; i++) {
-
-                if (canva[i].color != globalcolor[i]) {
-                    toupdate = true;
-                }
-                tmpcolor.push(canva[i].color);
-                tmpname.push(canva[i].name);
-            }
-            if (toupdate) {
-                globalcolor = tmpcolor;
-                setUserId([...tmpname]);
-                setColor([...tmpcolor])
-            }
-            setloading(false);
-        }
-        ).catch(err => console.error(err));
-    }
 }
-function colorset(color, setColor, localColor, username, localid, setSelection) {
-
-    let tmpColors = [...color];
-    tmpColors[localid] = localColor;
-    fetch("https://applijo.freeddns.org/canvasetcolor", { method: "POST", body: JSON.stringify({ "id": localid, "color": localColor, "username": username }) }).then(r => {
+function colorset(color, setColor, localColor, username, x, y) {
+    let localid = Math.floor(y/10) * 100 +Math.floor(x/10);
+    fetch("https://applijo.freeddns.org/canvasetcolordev", { method: "POST", body: JSON.stringify({ "id": localid, "color": localColor, "username": username }) }).then(r => {
 
         if (r.status == 200) {
 
-            setColor([...tmpColors]);
-            setSelection([globalid, localColor])
         }
     })
 }
 
-const Pixel = React.memo((props) => {
-    const indexVert = props.indexVert;
-    const indexHorizontal = props.indexHorizontal;
-    const backColor = props.backColor;
-    const setSelection = props.setSelection;
-    const arrayHorizontal = props.arrayHorizontal;
-    return (
-
-        <Pressable style={{ zindex: 1200, position: 'absolute', top: indexVert * carreSize, left: indexHorizontal * carreSize, width: carreSize, height: carreSize, backgroundColor: backColor }} key={(indexVert * arrayHorizontal.length + indexHorizontal)} onPress={() => { globalid = (indexVert * arrayHorizontal.length + indexHorizontal); setSelection([globalid, backColor]) }}>
-        </Pressable>
+const Canva =  React.memo((props) => {
+    const refresh = props.refresh;
+    let date = new Date();
+    return(
+        <Image   pointerEvents="none" source={{ cache:'reload', uri: "https://applijo.freeddns.org/canvadev?" + (date) }} style={{opacity:refresh, position:"absolute", top:0, left:0, width:1000, height:1000, borderColor:"black", borderWidth:1 }}></Image>
     )
 })
