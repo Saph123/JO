@@ -50,20 +50,14 @@ export function CanvaScreen({ route }) {
         }
         fetchSize(setLineNb, setColNb, lineNb, colNb);
         var kekInterval = setInterval(() => refreshBase(setRefresh, setRefresh2), 3000);
-        // setLoading(false);
+        setLoading(false);
         return () => {
             clearInterval(kekInterval);
             clearInterval(chatInterval);
             lines_number = 0;
         }
     }, [chatcontext.chatName, lineNb, colNb]);
-    React.useLayoutEffect(() =>
-    {
-        setLoading(false);
 
-    }
-    
-    );
     if (loading) {
         return (<ActivityIndicator style={{ alignSelf: "center" }} size="large" color="#000000" />)
 

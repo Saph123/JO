@@ -36,7 +36,7 @@ export let adminlist = [
     "Ugo",
     "Pierrick"
 ]
-export let paletteColors = ["white", "purple", "darkblue", "blue", "lightblue", "green", "lightgreen", "yellow", "brown", "orange", "red","pink","lightgrey", "grey", "black"]
+export let paletteColors = ["white", "purple", "darkblue", "blue", "lightblue", "green", "lightgreen", "yellow", "#8B4513", "orange", "red","pink","lightgrey", "grey", "black"]
 export async function calcInitLines(){
     let result = await SecureStore.getItemAsync("initialLineNumber");
     if (result) {
