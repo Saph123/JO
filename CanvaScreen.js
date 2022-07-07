@@ -41,8 +41,8 @@ export function CanvaScreen({ route }) {
     const [coordY, setCoordY] = React.useState(0);
     const [refresh, setRefresh] = React.useState(0);
     const [refresh2, setRefresh2] = React.useState(1);
-    const [lineNb, setLineNb] = React.useState(100);
-    const [colNb, setColNb] = React.useState(100);
+    const [lineNb, setLineNb] = React.useState(200);
+    const [colNb, setColNb] = React.useState(200);
     const [patch, setPatch] = React.useState([]);
 
     React.useEffect(() => {
@@ -50,8 +50,8 @@ export function CanvaScreen({ route }) {
         if (chatcontext.chatName == "Canva") {
             var chatInterval = setInterval(() => fetchChat("Canva", setChatText, chatcontext.setNewMessage), 3000);
         }
-        fetchSize(setLineNb, setColNb);
-        var kekInterval = setInterval(() => refreshBase(setRefresh, setRefresh2), 1000);
+        fetchSize(setLineNb, setColNb, lineNb, colNb);
+        var kekInterval = setInterval(() => refreshBase(setRefresh, setRefresh2), 3000);
         setLoading(false);
         return () => {
             clearInterval(kekInterval);
@@ -125,8 +125,7 @@ export function CanvaScreen({ route }) {
         </View>
     )
 }
-let lines_number = 0;
-let cols_number = 0;
+let lines_number = 200;
 
 function fetchUsername(x, y, setUserId) {
     let localid = Math.floor(y / 10) * lines_number + Math.floor(x / 10);
@@ -140,7 +139,7 @@ function fetchUsername(x, y, setUserId) {
     })
 
 }
-function fetchSize(setLineNb, setColNb) {
+function fetchSize(setLineNb, setColNb, lineNb, colNb) {
     fetch("https://applijo.freeddns.org/canvasize").then(r => {
         if (r.status == 200) {
             return r.json();
@@ -148,14 +147,13 @@ function fetchSize(setLineNb, setColNb) {
     }
     ).then(data => {
         if (data.lines != undefined) {
-            if (data.lines != lines_number) {
+            if (data.lines != lineNb) {
                 setLineNb(data.lines);
             }
-            if (data.cols != cols_number) {
+            if (data.cols != colNb) {
                 setColNb(data.cols);
             }
             lines_number = data.lines;
-            cols_number = data.cols
         }
     })
 
@@ -180,11 +178,15 @@ function colorset(localColor, username, x, y, setPatch, patch) {
         globalpatch.push({ color: localColor, x: x, y: y })
 
     }
+    if(globalpatch.length > 20){
+        globalpatch.shift();
+    }
     setPatch([...globalpatch]);
+    setTimeout(() => { globalpatch.shift(); setPatch([...globalpatch]) }, 20000); // we remove anyway to avoid lagz
     fetch("https://applijo.freeddns.org/canvasetcolordev", { method: "POST", body: JSON.stringify({ "id": localid, "color": localColor, "username": username }) }).then(r => {
 
         if (r.status == 200) {
-            setTimeout(() => { globalpatch.shift(); setPatch([...globalpatch]) }, 20000)
+            
         }
     })
 }
