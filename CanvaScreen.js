@@ -73,21 +73,7 @@ export function CanvaScreen({ route }) {
                 {value => modalChat(value, chatText, setChatText, localText, setLocalText, "Canva", route.params.username)}
 
             </ChatContext.Consumer>
-            <View key={"kekos"} style={{ width: paletteColors.length / 2, height: 80, flexDirection: "row" }}>
 
-                {paletteColors.map((r, index) => {
-                    if (index % 2 == 0) {
-
-                        return (
-                            <View key={"m:" + index} style={{ flexDirection: "column", width: 40, height: 80 }}>
-                                <Pressable key={r} style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: r }} onPress={() => colorset(r, route.params.username, coordX, coordY, setPatch, patch)} />
-                                {paletteColors[index + 1] != undefined ? <Pressable key={paletteColors[index + 1]} style={{ borderColor: "black", borderWidth: 1, width: 40, height: 40, backgroundColor: paletteColors[index + 1] }} onPress={() => colorset(paletteColors[index + 1], route.params.username, coordX, coordY, setPatch, patch)} /> : <View></View>}
-                            </View>
-                        )
-                    }
-                })}
-
-            </View>
             <ReactNativeZoomableView
                 renderToHardwareTextureAndroid={true}
 
@@ -117,7 +103,23 @@ export function CanvaScreen({ route }) {
                 </Pressable>
             </ReactNativeZoomableView >
             <View pointerEvents="none" style={{ width: "100%", height: 30 }}>
-                <Text pointerEvents="none" style={{ textAlign: "center", color: "black", height: "100%", width: "100%", elevation: 2000, zIndex: 2000, fontSize: 20, flex: 1, margin: 0 }} key={"textname"}>{"(" + (Math.floor(coordX/10)) + "," + Math.floor(coordY/10) + ")" + (userId == "Whisky" ? "" : userId)}</Text>
+                <Text pointerEvents="none" style={{ textAlign: "center", color: "black", height: "100%", width: "100%", elevation: 2000, zIndex: 2000, fontSize: 20, flex: 1, margin: 0 }} key={"textname"}>{"(" + (Math.floor(coordX / 10)) + "," + Math.floor(coordY / 10) + ")" + (userId == "Whisky" ? "" : userId)}</Text>
+            </View>
+            <View key={"kekos"} style={{ flexDirection: "row", height:180 }}>
+
+                {paletteColors.map((r, index) => {
+                    if (index % 3 == 0) {
+                        // console.log(paletteColors[index + 2])
+                        return (
+                            <View key={"m:" + index} style={{ flexDirection: "column", flex:1 }}>
+                                <Pressable key={r} style={{ borderColor: "black", borderWidth: 1, flex:1, backgroundColor: r }} onPress={() => colorset(r, route.params.username, coordX, coordY, setPatch, patch)} />
+                                {paletteColors[index + 1] != undefined ? <Pressable key={paletteColors[index + 1]} style={{ borderColor: "black", borderWidth: 1, flex:1, backgroundColor: paletteColors[index + 1] }} onPress={() => colorset(paletteColors[index + 1], route.params.username, coordX, coordY, setPatch, patch)} /> : <View></View>}
+                                {paletteColors[index + 2] != undefined ? <Pressable key={paletteColors[index + 2]} style={{ borderColor: "black", borderWidth: 1, flex:1, backgroundColor: paletteColors[index + 2] }} onPress={() => colorset(paletteColors[index + 2], route.params.username, coordX, coordY, setPatch, patch)} /> : <View></View>}
+                            </View>
+                        )
+                    }
+                })}
+
             </View>
         </View>
     )
@@ -144,7 +146,7 @@ function fetchSize(setLineNb, setColNb, lineNb, colNb) {
     }
     ).then(data => {
         if (data.lines != undefined) {
-            
+
             if (data.lines != lineNb) {
                 setLineNb(data.lines);
             }
@@ -179,7 +181,7 @@ function colorset(localColor, username, x, y, setPatch, patch) {
     fetch("https://applijo.freeddns.org/canvasetcolor", { method: "POST", body: JSON.stringify({ "id": localid, "color": localColor, "username": username }) }).then(r => {
 
         if (r.status == 200) {
-            
+
         }
     })
 }
