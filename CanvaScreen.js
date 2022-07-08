@@ -42,6 +42,7 @@ export function CanvaScreen({ route }) {
     const [lineNb, setLineNb] = React.useState(200);
     const [colNb, setColNb] = React.useState(200);
     const [patch, setPatch] = React.useState([]);
+    const [livepatch, setLivePatch] = React.useState([]);
 
     React.useEffect(() => {
         chatcontext.setChatName("Canva");
@@ -49,10 +50,11 @@ export function CanvaScreen({ route }) {
             var chatInterval = setInterval(() => fetchChat("Canva", setChatText, chatcontext.setNewMessage), 3000);
         }
         fetchSize(setLineNb, setColNb, lineNb, colNb);
-        var kekInterval = setInterval(() => refreshBase(setRefresh, setRefresh2), 3000);
+        var refreshInterval = setInterval(() => refreshBase(setRefresh, setRefresh2), 3000);
+        var liveInterval = setInterval(() => fetchLive(setLivePatch), 1000);
         setLoading(false);
         return () => {
-            clearInterval(kekInterval);
+            clearInterval(refreshInterval);
             clearInterval(chatInterval);
             lines_number = 0;
         }
@@ -89,16 +91,24 @@ export function CanvaScreen({ route }) {
                     <Canva lineNb={lineNb} colNb={colNb} refresh={refresh}></Canva>
                     <Canva lineNb={lineNb} colNb={colNb} refresh={refresh2}></Canva>
                     {selection[0] == -1 ? <View key={"kekalnd"}></View> : <View pointerEvents="none" key={"container"}>
-                        <View pointerEvents="none" key={"carreselect"} style={{ elevation: 1999, zIndex: 1999, width: 10, height: 10, position: "absolute", backgroundColor: "white", top: coordY, left: coordX, borderColor: "black", borderWidth: 1, opacity: 0.5 }}></View>
                     </View>}
                     {patch.map((r, index) => {
                         if (r != undefined) {
-
+                            
                             return (<View pointerEvents="none" key={r.x + r.y + r.color + new Date() + index}
-                                style={{ zIndex: 2000, width: 10, height: 10, position: "absolute", backgroundColor: r.color, top: r.y, left: r.x, borderColor: r.color, borderWidth: 1, shadowOpacity: 0 }}>
+                            style={{ zIndex: 2000, width: 10, height: 10, position: "absolute", backgroundColor: r.color, top: r.y, left: r.x, borderColor: r.color, borderWidth: 1, shadowOpacity: 0 }}>
                             </View>)
                         }
                     })}
+                    {livepatch.map((r, index) => {
+                        if (r != undefined) {
+                            
+                            return (<View pointerEvents="none" key={r.x + r.y + r.color + new Date() + index}
+                            style={{ zIndex: 2000, width: 10, height: 10, position: "absolute", backgroundColor: r.color, top: r.y, left: r.x, borderColor: r.color, borderWidth: 1, shadowOpacity: 0 }}>
+                            </View>)
+                        }
+                    })}
+                        <View pointerEvents="none" key={"carreselect"} style={{ elevation: 1999, zIndex: 1999, width: 10, height: 10, position: "absolute", backgroundColor: "white", top: coordY, left: coordX, borderColor: "black", borderWidth: 1, opacity: 0.5 }}></View>
 
                 </Pressable>
             </ReactNativeZoomableView >
@@ -125,7 +135,8 @@ export function CanvaScreen({ route }) {
     )
 }
 let lines_number = 200;
-
+let cols_number= 200;
+let livepatch = [];
 function fetchUsername(x, y, setUserId) {
     let localid = Math.floor(y / 10) * lines_number + Math.floor(x / 10);
     fetch("https://applijo.freeddns.org/canvausername/" + localid).then(r => {
@@ -135,6 +146,33 @@ function fetchUsername(x, y, setUserId) {
     }
     ).then(data => {
         setUserId(data)
+    })
+
+}
+function fetchLive(setPatch) {
+    fetch("https://applijo.freeddns.org/canvalive").then(r => {
+        if (r.status == 200) {
+            return r.json();
+        }
+
+    }
+    ).then(data => {
+        // livepatch = []
+        if (data.live.length > 0)
+        {
+
+        for(let i = 0; i  < data.live.length; i++){
+            let localid = Math.floor(y / 10) * lines_number + Math.floor(x / 10);
+            let x = data.live[i].id % cols_number
+            let y = data.live[i].id / lines_number
+            x = x * 10
+            y = Math.floor(y) * 10
+            livepatch.push({ color: data.live[i].color, x: x, y: y })
+        }
+
+            setPatch([...livepatch]);
+            setTimeout(() => { livepatch.splice(0, data.live.length);setPatch([...livepatch]) }, 10000); // we remove anyway to avoid lagz
+        }
     })
 
 }
@@ -154,6 +192,7 @@ function fetchSize(setLineNb, setColNb, lineNb, colNb) {
                 setColNb(data.cols);
             }
             lines_number = data.lines;
+            cols_number = data.cols;
         }
     })
 
