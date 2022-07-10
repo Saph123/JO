@@ -9,7 +9,7 @@ import { Planning } from './planning';
 import { version, initialLineNumber, adminlist } from "./global.js"
 import CountDown from 'react-native-countdown-component';
 import { createNativeWrapper } from "react-native-gesture-handler";
-
+import * as Haptics from 'expo-haptics';
 class Liste {
     constructor(username, score, rank = 0, level = 0) {
         this.username = username;
@@ -391,7 +391,7 @@ export function eventView(currentEvents, eventsDone, sportname, navigation, setC
             <View key={sportname} style={{ flex: 1, margin: -1, flexDirection: "row", borderColor: "black", borderWidth: 2, borderTopWidth: 0 }}>
                 <View style={{ alignSelf: "center", width: 70, height: "100%", flexDirection: "column", justifyContent: "center", borderRightWidth: 2, borderRightColor: "black" }}><Text style={{ textAlign: "center", fontWeight: "bold" }}>{timeBegin.getHours() + "H" + timeBegin.getMinutes().toString().padStart(2, "0")}</Text></View>
                 <Pressable delayLongPress={5000} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
-                    onPress={() => { sportlist().includes(sportname) ? setCurrentSport(sportname) : "", sportlist().includes(sportname) ? navigation.navigate(navigateTo, { sportname: sportname }) : "" }}
+                    onPress={() => {vibrateLight(); sportlist().includes(sportname) ? setCurrentSport(sportname) : "", sportlist().includes(sportname) ? navigation.navigate(navigateTo, { sportname: sportname }) : "" }}
                 >
                     <Image style={[styles.sportimage, { tintColor: "black" }]} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
                 </Pressable>
@@ -665,4 +665,7 @@ export function lock_unlock(lock, setLock, sportname) {
     }
     ).catch(err => console.error(err))
 
+}
+export function vibrateLight(){
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 }

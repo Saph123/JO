@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { View, Modal, Pressable, ActivityIndicator, Text, Dimensions, Image, Alert } from 'react-native';
 import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
-import { modalChat, fetchChat } from "./utils.js"
+import { modalChat, fetchChat, vibrateLight } from "./utils.js"
 import { paletteColors, ChatContext, carreSize } from "./global";
 import * as FileSystem from "expo-file-system";
+
 let globRefresh = 0;
 function refreshBase(setref, setRef2) {
     globRefresh += 1;
@@ -87,7 +88,7 @@ export function CanvaScreen({ route }) {
                 bindToBorders={false}
 
             >
-                <Pressable style={{ width: colNb * 10, height: lineNb * 10 }} key={'mainframe' + lineNb} onPress={(e) => { setCoordX(Math.floor(e.nativeEvent.locationX / 10) * 10); setCoordY(Math.floor(e.nativeEvent.locationY / 10) * 10); fetchUsername(Math.floor(e.nativeEvent.locationX / 10) * 10, Math.floor(e.nativeEvent.locationY / 10) * 10, setUserId) }}>
+                <Pressable style={{ width: colNb * 10, height: lineNb * 10 }} key={'mainframe' + lineNb} onPress={(e) => {vibrateLight(); setCoordX(Math.floor(e.nativeEvent.locationX / 10) * 10); setCoordY(Math.floor(e.nativeEvent.locationY / 10) * 10); fetchUsername(Math.floor(e.nativeEvent.locationX / 10) * 10, Math.floor(e.nativeEvent.locationY / 10) * 10, setUserId) }}>
                     <Canva lineNb={lineNb} colNb={colNb} refresh={refresh}></Canva>
                     <Canva lineNb={lineNb} colNb={colNb} refresh={refresh2}></Canva>
                     {selection[0] == -1 ? <View key={"kekalnd"}></View> : <View pointerEvents="none" key={"container"}>
@@ -123,8 +124,8 @@ export function CanvaScreen({ route }) {
                         return (
                             <View key={"m:" + index} style={{ flexDirection: "column", flex:1 }}>
                                 <Pressable key={r} style={{ borderColor: "black", borderWidth: 1, flex:1, backgroundColor: r }} onPress={() => colorset(r, route.params.username, coordX, coordY, setPatch, patch)} />
-                                {paletteColors[index + 1] != undefined ? <Pressable key={paletteColors[index + 1]} style={{ borderColor: "black", borderWidth: 1, flex:1, backgroundColor: paletteColors[index + 1] }} onPress={() => colorset(paletteColors[index + 1], route.params.username, coordX, coordY, setPatch, patch)} /> : <View></View>}
-                                {paletteColors[index + 2] != undefined ? <Pressable key={paletteColors[index + 2]} style={{ borderColor: "black", borderWidth: 1, flex:1, backgroundColor: paletteColors[index + 2] }} onPress={() => colorset(paletteColors[index + 2], route.params.username, coordX, coordY, setPatch, patch)} /> : <View></View>}
+                                {paletteColors[index + 1] != undefined ? <Pressable key={paletteColors[index + 1]} style={{ borderColor: "black", borderWidth: 1, flex:1, backgroundColor: paletteColors[index + 1] }} onPress={() => colorset(paletteColors[index + 1], route.params.username, coordX, coordY, setPatch, patch, lineNb, colNb, setLineNb, setColNb)} /> : <View></View>}
+                                {paletteColors[index + 2] != undefined ? <Pressable key={paletteColors[index + 2]} style={{ borderColor: "black", borderWidth: 1, flex:1, backgroundColor: paletteColors[index + 2] }} onPress={() => colorset(paletteColors[index + 2], route.params.username, coordX, coordY, setPatch, patch, lineNb, colNb, setLineNb, setColNb)} /> : <View></View>}
                             </View>
                         )
                     }
@@ -135,10 +136,10 @@ export function CanvaScreen({ route }) {
     )
 }
 let lines_number = 200;
-let cols_number= 200;
+let cols_number= 400;
 let livepatch = [];
 function fetchUsername(x, y, setUserId) {
-    let localid = Math.floor(y / 10) * lines_number + Math.floor(x / 10);
+    let localid = Math.floor(y / 10) * cols_number + Math.floor(x / 10);
     fetch("https://applijo.freeddns.org/canvausername/" + localid).then(r => {
         if (r.status == 200) {
             return r.text();
@@ -164,7 +165,7 @@ function fetchLive(setPatch) {
         for(let i = 0; i  < data.live.length; i++){
             let localid = Math.floor(y / 10) * lines_number + Math.floor(x / 10);
             let x = data.live[i].id % cols_number
-            let y = data.live[i].id / lines_number
+            let y = data.live[i].id / cols_number
             x = x * 10
             y = Math.floor(y) * 10
             livepatch.push({ color: data.live[i].color, x: x, y: y })
@@ -198,8 +199,9 @@ function fetchSize(setLineNb, setColNb, lineNb, colNb) {
 
 }
 let globalpatch = [];
-function colorset(localColor, username, x, y, setPatch, patch) {
-    let localid = Math.floor(y / 10) * lines_number + Math.floor(x / 10);
+function colorset(localColor, username, x, y, setPatch, patch, lineNb, colNb, setLineNb, setColNb) {
+    vibrateLight();
+    let localid = Math.floor(y / 10) * cols_number + Math.floor(x / 10);
     if (localColor == "#8B4513") {
         console.log(localColor);
         localColor = "brown";
@@ -217,10 +219,10 @@ function colorset(localColor, username, x, y, setPatch, patch) {
 
     setPatch([...globalpatch]);
     setTimeout(() => { globalpatch.shift(); setPatch([...globalpatch]) }, 20000); // we remove anyway to avoid lagz
-    fetch("https://applijo.freeddns.org/canvasetcolor", { method: "POST", body: JSON.stringify({ "id": localid, "color": localColor, "username": username }) }).then(r => {
+    fetch("https://applijo.freeddns.org/canvasetcolor", { method: "POST", body: JSON.stringify({ "id": localid, "color": localColor, "username": username, "lines":lines_number, "cols": cols_number }) }).then(r => {
 
-        if (r.status == 200) {
-
+        if (r.status != 200) {
+            fetchSize(setLineNb, setColNb, lineNb, colNb);
         }
     })
 }

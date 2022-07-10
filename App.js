@@ -5,7 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Audio } from 'expo-av';
 import * as Notifications from 'expo-notifications';
-import { getValueFor, lock_unlock } from './utils.js';
+import { getValueFor, lock_unlock, vibrateLight } from './utils.js';
 
 import { HomeScreen } from "./HomeScreen.js";
 import { SummaryScreen } from "./SummaryScreen.js";
@@ -114,7 +114,7 @@ function App() {
                                 title: currentSport, headerRight: () =>
                                     <View style={{ flexDirection: "row" }}>
                                         <View style={{ flex: 1, marginRight: 15 }}>
-                                            <Pressable onPress={() => { setChat(true) }}>
+                                            <Pressable onPress={() => { vibrateLight();setChat(true) }}>
                                                 <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", }} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
                                             </Pressable>
                                         </View>
@@ -133,7 +133,7 @@ function App() {
                             })} initialParams={{ sportname: currentSport, username: username, setLock:setLock }} name="SportDetails" component={SportDetailsScreen} />
                             <Stack.Screen options={() => ({
                                 title: "Tableau des médailles", headerRight: () => <View>
-                                    <Pressable onPress={() => { setChat(true) }}>
+                                    <Pressable onPress={() => { vibrateLight();setChat(true) }}>
                                         <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", marginRight: 20 }} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
                                     </Pressable>
                                 </View>
@@ -152,7 +152,7 @@ function App() {
 
                             <Stack.Screen options={() => ({
                                 title: "Canva", headerRight: () => <View>
-                                <Pressable onPress={() => { setChat(true) }}>
+                                <Pressable onPress={() => { vibrateLight();setChat(true) }}>
                                     <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white", marginRight: 20 }} source={newMessage ? require('./assets/chatnewmessage.png') : require('./assets/chat.png')} />
                                 </Pressable>
                             </View>

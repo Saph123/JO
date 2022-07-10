@@ -6,7 +6,7 @@ import { Audio } from 'expo-av';
 import { getNextEventseconds, Planning } from "./planning.js";
 import * as Notifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
-import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo, firstDay } from './utils.js';
+import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo, firstDay, vibrateLight } from './utils.js';
 import { SportContext, ChatContext, adminlist } from "./global.js"
 export function HomeScreen({ route, navigation }) {
     const [loading, setLoading] = React.useState(1);
@@ -167,7 +167,7 @@ export function HomeScreen({ route, navigation }) {
                 <Text style={{ fontWeight: "bold" }}>Tu dois te connecter d'abord!</Text>
                 <Text style={{ fontWeight: "bold" }}>Demande à Max tes identifiants</Text>
                 <Pressable style={styles.loginbutton}
-                    onPress={() => { navigation.navigate('LoginScreen') }}
+                    onPress={() => {vibrateLight(); navigation.navigate('LoginScreen') }}
                 >
                     <Text style={styles.texthomebutton}>Login</Text>
                 </Pressable>
@@ -178,10 +178,10 @@ export function HomeScreen({ route, navigation }) {
     return (
         <View style={{ flex: 1, backgroundColor: "black" }}>
             <View style={{ backgroundColor: "black", height: 50, marginTop: 10, flexDirection: "row" }}>
-                <Pressable onPress={() => { setDisplayDay(mercredi) }} style={displayDay.getDay() === mercredi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === mercredi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>13 Juillet</Text></Pressable>
-                <Pressable onPress={() => { setDisplayDay(jeudi) }} style={displayDay.getDay() === jeudi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === jeudi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>14 Juillet</Text></Pressable>
-                <Pressable onPress={() => { setDisplayDay(vendredi) }} style={displayDay.getDay() === vendredi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === vendredi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>15 Juillet</Text></Pressable>
-                <Pressable onPress={() => { setDisplayDay(samedi) }} style={displayDay.getDay() === samedi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === samedi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>16 Juillet</Text></Pressable>
+                <Pressable onPress={() => {vibrateLight(); setDisplayDay(mercredi) }} style={displayDay.getDay() === mercredi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === mercredi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>13 Juillet</Text></Pressable>
+                <Pressable onPress={() => {vibrateLight(); setDisplayDay(jeudi) }} style={displayDay.getDay() === jeudi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === jeudi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>14 Juillet</Text></Pressable>
+                <Pressable onPress={() => {vibrateLight(); setDisplayDay(vendredi) }} style={displayDay.getDay() === vendredi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === vendredi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>15 Juillet</Text></Pressable>
+                <Pressable onPress={() => {vibrateLight(); setDisplayDay(samedi) }} style={displayDay.getDay() === samedi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === samedi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>16 Juillet</Text></Pressable>
             </View>
             <View style={{ flex: 15, marginTop: 10, backgroundColor: "white" }}>
 
@@ -224,22 +224,22 @@ export function HomeScreen({ route, navigation }) {
                 </ScrollView>
             </View>
             <View style={{ backgroundColor: "black", height: 65, flexDirection: "row", borderColor: "black", borderWidth: 1, justifyContent: "space-between" }}>
-                <Pressable style={styles.bottomTabs} onPress={playcluedo}>
+                <Pressable style={styles.bottomTabs} onPress={() => {vibrateLight();playcluedo()}}>
                     <Image style={{ tintColor: "white", height: 45 }} resizeMode="contain" source={require('./assets/cluedo.png')} />
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >Cluedo</Text>
                 </Pressable>
-                <Pressable style={styles.bottomTabs} onPress={() => { navigation.navigate('SummaryScreen') }}>
+                <Pressable style={styles.bottomTabs} onPress={() => {vibrateLight(); navigation.navigate('SummaryScreen') }}>
                     <Image style={{ tintColor: "white", height: 45 }} resizeMode="contain" source={require('./assets/summary.png')} />
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >Classements</Text>
                 </Pressable>
                 <Pressable style={styles.bottomTabs}
-                    onPress={() => { navigation.navigate('LoginScreen', { pushtoken: expoPushToken }) }}
+                    onPress={() => {vibrateLight(); navigation.navigate('LoginScreen', { pushtoken: expoPushToken }) }}
                 >
                     <Image style={{ tintColor: "white", height: 45 }} resizeMode="contain" source={require('./assets/person.png')} />
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >Mon profil</Text>
                 </Pressable>
                 <Pressable style={styles.bottomTabs}
-                    onPress={() => { navigation.navigate('CanvaScreen') }}
+                    onPress={() => {vibrateLight(); navigation.navigate('CanvaScreen') }}
                 >
                     <Image style={{ tintColor: "white", height: 45 }} resizeMode="contain" source={require('./assets/palette.png')} />
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >Canva</Text>
@@ -247,7 +247,7 @@ export function HomeScreen({ route, navigation }) {
 
                 {adminlist.includes(username) ?
                     <Pressable style={styles.bottomTabs}
-                        onPress={() => { navigation.navigate('pushNotifScreen') }}
+                        onPress={() => { vibrateLight(); navigation.navigate('pushNotifScreen') }}
                     >
                         <Image style={{ tintColor: "white", height: 45 }} resizeMode="contain" source={require('./assets/wrench.png')} />
                         <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >Outils</Text>

@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
 import { View, ScrollView, ActivityIndicator, Text, Modal, RefreshControl, Pressable, Image, KeyboardAvoidingView } from 'react-native';
 import { Trace } from "./trace.js";
-import { modalChat, fetchChat, fetch_matches, lutImg, fetch_sport_results } from './utils.js';
+import { modalChat, fetchChat, fetch_matches, lutImg, fetch_sport_results, vibrateLight } from './utils.js';
 import { ChatContext, ArbitreContext } from "./global.js";
 
 const wait = (timeout) => {
@@ -100,6 +100,7 @@ export function SportDetailsScreen({ route }) {
             <View style={{ height: 50, flexDirection: "row" }} >
                 {status.states.map(r =>
                     <Pressable key={r} onPress={() => {
+                        vibrateLight();
                         setloading(true);
                         setStatus((current) => {
                             current.status = r;
