@@ -64,6 +64,7 @@ export function SummaryScreen() {
             <View style={{ flex: 1, flexDirection: "row" }}>
                 {status.states.map(r =>
                     <Pressable key={r} onPress={() => {
+                        vibrateLight();
                         setLoading(true);
                         setStatus((current) => {
                             current.status = r;
