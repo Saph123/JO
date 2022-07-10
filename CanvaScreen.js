@@ -82,9 +82,9 @@ export function CanvaScreen({ route }) {
 
                 key={'zoom'}
                 maxZoom={100}
-                minZoom={0.1}
+                minZoom={0.01}
                 zoomStep={0.5}
-                initialZoom={1}
+                initialZoom={0.1}
                 bindToBorders={false}
 
             >
