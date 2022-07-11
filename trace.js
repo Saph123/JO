@@ -6,8 +6,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Svg, Polyline } from 'react-native-svg';
 import { Table, Row } from 'react-native-table-component';
 import 'react-native-url-polyfill/auto';
-import { version } from "./global"
-import { updateTeams, pushbets, pushpizza } from "./utils";
+import { version, adminlist } from "./global"
+import { updateTeams, pushbets, pushpizza, toggleLockBets } from "./utils";
 
 
 const MedailleView = (props) => {
@@ -149,6 +149,11 @@ export const Trace = (props) => {
                     <View style={{ marginTop: 10 }}>
                         <Text style={{ textAlign: "center", textAlignVertical: "center", fontSize: 25 }} >Sélectionnez votre favori!</Text>
                     </View>
+                    {adminlist.includes(username) ? 
+                    <Pressable style={({ pressed }) => [{ opacity:pressed ? 0.2 : 1 }, styles.betScore]} onPress={() => { toggleLockBets(sport); props.onRefresh()}}>
+                        <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white" }} resizeMethod="auto" resizeMode='cover' source={status == "paris_locked" ? require('./assets/lock.png'): require("./assets/unlock.png")} />
+                    </Pressable> : <View></View>}
+                    
                     {props.all_teams.betListe.map(r =>
                         <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", }}>
                             <View style={[styles.bet, { alignSelf: "center" }]}>

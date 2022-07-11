@@ -669,6 +669,19 @@ export function lock_unlock(lock, setLock, sportname) {
     ).catch(err => console.error(err))
 
 }
+
 export function vibrateLight(){
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+}
+
+export function toggleLockBets(sportname) {
+    const controller = new AbortController();
+    fetch("https://applijo.freeddns.org/lockBets", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sportname }) }).then(r => {
+        if (r.status != 200)
+        {
+            let msg = "Server reply :" + r.status
+            alert(msg);
+        }
+    }
+    ).catch(err => console.error(err))
 }
