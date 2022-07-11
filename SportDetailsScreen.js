@@ -25,7 +25,7 @@ export function SportDetailsScreen({ route }) {
     const [realListe, setRealListe] = React.useState([]);
     const [betListe, setBetListe] = React.useState([]);
     const [results, setResults] = React.useState({ "1": {}, "2": {}, "3": {} });
-    const [modifListe, setModifListe] = React.useState([]);
+    const [modifListe, setModifListe] = React.useState({"Teams": [], "Others": []});
     const [seriesLevel, setSeriesLevel] = React.useState([0]);
     const [groups, setGroups] = React.useState([]);
     const [groupmatches, setmatchesgroup] = React.useState([]);

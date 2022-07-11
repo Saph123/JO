@@ -493,11 +493,14 @@ export async function fetch_teams(sportname) {
     let fetch_teams = {}
 
     fetch_teams = await fetch("https://applijo.freeddns.org/teams/" + sportname + ".json").then(response => response.json()).then(data => {
-        let local_liste = [];
+        let local_liste = {"Teams": [],"Others": []};
         for (var i in data["Teams"]) {
-            local_liste.push(new Liste(data["Teams"][i]["Players"], data["Teams"][i]["Players"], 0, 0));
+            local_liste["Teams"].push(new Liste(data["Teams"][i]["Players"], data["Teams"][i]["Players"], 0, 0));
         }
-        local_liste.push(new Liste("", "", 0, 0));
+        for (var i in data["Others"]) {
+            local_liste["Others"].push(new Liste(data["Others"][i]["Players"], data["Others"][i]["Players"], 0, 0));
+        }
+        local_liste["Teams"].push(new Liste("", "", 0, 0));
         return local_liste;
     }).catch(err => console.log(err));
     return fetch_teams;

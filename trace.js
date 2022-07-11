@@ -114,19 +114,25 @@ export const Trace = (props) => {
                     <View style={{ flexDirection: "row", marginTop: 22 }}>
                         <View>
                             <Text style={[styles.showPlayers, { height: 60 }]}>Équipe/Athlète</Text>
-                            {props.all_teams.modifListe.map(r =>
+                            {props.all_teams.modifListe["Teams"].map(r =>
                                 <TextInput key={r.username} onChangeText={(text) => { r.username = text; }} style={styles.showPlayers}>{r.username}</TextInput>
                             )
                             }
                         </View>
                         <View style={{ width: 60, height: 60, backgroundColor: "lightgrey", justifyContent: "center" }}>
                             <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => { // Function to save only the results!
-                                props.all_teams.setModifListe([...props.all_teams.modifListe]);
-                                updateTeams(sport, props.all_teams.modifListe);
+                                updateTeams(sport, props.all_teams.modifListe["Teams"]);
                             }
                             }>
                                 <Image resizeMode="cover" resizeMethod="resize" style={{ alignSelf: "center" }} source={require('./assets/save.png')}></Image>
                             </Pressable>
+                        </View>
+                        <View>
+                            <Text style={[styles.showPlayers, { height: 60, minWidth: 20 }]}>Non inscrits</Text>
+                            {props.all_teams.modifListe["Others"].map(r =>
+                                <Text key={r.username} style={[styles.showPlayers, {minWidth: 20}]}>{r.username}</Text>
+                            )
+                            }
                         </View>
                     </View>
                 </ScrollView>
