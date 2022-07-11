@@ -3,7 +3,7 @@ import * as React from 'react';
 import { View, ActivityIndicator, Text, Image, Modal, Pressable } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { fetch_global_results, fetch_global_bets_results } from "./trace.js";
-import { modalChat, fetchChat, addth, getValueFor, lutImg } from './utils.js';
+import { modalChat, fetchChat, addth, getValueFor, lutImg, vibrateLight } from './utils.js';
 import { ChatContext } from "./global";
 
 
