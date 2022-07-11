@@ -201,6 +201,7 @@ function fetchSize(setLineNb, setColNb, lineNb, colNb) {
 let globalpatch = [];
 function colorset(localColor, username, x, y, setPatch, patch, lineNb, colNb, setLineNb, setColNb) {
     vibrateLight();
+    // globalpatch = [];
     let localid = Math.floor(y / 10) * cols_number + Math.floor(x / 10);
     if (localColor == "#8B4513") {
         console.log(localColor);
@@ -218,7 +219,7 @@ function colorset(localColor, username, x, y, setPatch, patch, lineNb, colNb, se
     }
 
     setPatch([...globalpatch]);
-    setTimeout(() => { globalpatch.shift(); setPatch([...globalpatch]) }, 20000); // we remove anyway to avoid lagz
+    setTimeout(() => { globalpatch.shift(); setPatch([...globalpatch]) }, 2000); // we remove anyway to avoid lagz
     fetch("https://applijo.freeddns.org/canvasetcolor", { method: "POST", body: JSON.stringify({ "id": localid, "color": localColor, "username": username, "lines":lines_number, "cols": cols_number }) }).then(r => {
 
         if (r.status != 200) {
