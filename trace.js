@@ -242,16 +242,16 @@ export const Trace = (props) => {
 
                         <View style={{ flexDirection: "row", marginTop: 22 }}>
                             <View>
-                                <Text style={styles.showPlayers}>Athlete</Text>
-                                {props.all_teams.realListe.map(r =>
-                                    <Text key={r.username} style={inTeam(username, r.username) ? styles.showPlayersIsIn : styles.showPlayers}>{r.username}</Text>
+                                <Text style={[styles.showPlayers, { height: 60, backgroundColor: "#A1BFF3", fontSize:18, fontStyle:"italic" }]}>Athlete</Text>
+                                {props.all_teams.realListe.map((r, index) =>
+                                    <Text key={r.username} style={[inTeam(username, r.username) ? styles.showPlayersIsIn : styles.showPlayers, {backgroundColor: index%2 ? "#A1BFF3": "#CCE5FF"}]}>{r.username}</Text>
                                 )
                                 }
                             </View>
                             <View>
-                                <Text style={styles.inputScore}>Score/Temps</Text>
-                                {props.all_teams.realListe.map(r =>
-                                    <Text key={r.username} style={styles.inputScore}>{r.score}</Text>
+                                <Text style={[styles.inputScore, { height: 60, backgroundColor: "#A1BFF3", fontSize:18, fontStyle:"italic"  }]}>Score/Temps</Text>
+                                {props.all_teams.realListe.map((r, index) =>
+                                    <Text key={r.username} style={[styles.inputScore, {backgroundColor: index%2 ? "#A1BFF3": "#CCE5FF"}]}>{r.score}</Text>
                                 )
                                 }
                             </View>
