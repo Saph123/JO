@@ -114,8 +114,8 @@ export function ClickerScreen() {
 }
 
 function fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, firsttime, setHH) {
-    fetch("https://applijo.freeddns.org/teams/Clicker_HH.json").then(response => response.json()).then(data => { if (data.HH) { setHH(2) } else { setHH(1) } }).catch(err => console.log(err, " in HH"));
-    fetch("https://applijo.freeddns.org/teams/Clicker.json").then(response => response.json()).then(data => {
+    fetch("https://pierrickperso.ddnsfree.com:42124/teams/Clicker_HH.json").then(response => response.json()).then(data => { if (data.HH) { setHH(2) } else { setHH(1) } }).catch(err => console.log(err, " in HH"));
+    fetch("https://pierrickperso.ddnsfree.com:42124/teams/Clicker.json").then(response => response.json()).then(data => {
 
         let clicks = [];
         let players = [];
@@ -151,7 +151,7 @@ function pushClicker(setUserNames, setCount, setRanks, setMyIndex, setSpeed, set
         setSpeed(0);
     }
     previousValueClicker = newvalueclicker;
-    fetch("https://applijo.freeddns.org/clicker", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "bosondehiggz": newvalueclicker, "kekw_alpha": recentClicks, "seedA": locationX, "seedB": locationY, "anticheatsystem": Math.random() * 200, "antirejeu": Math.random() * 1000000, "1million": "larmina" + String(Math.random()), "tabloid": globalX, "KEKW": globalY, "NAAB": globalZ, "woot": presses }) }).then((answer) => {
+    fetch("https://pierrickperso.ddnsfree.com:42124/clicker", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "bosondehiggz": newvalueclicker, "kekw_alpha": recentClicks, "seedA": locationX, "seedB": locationY, "anticheatsystem": Math.random() * 200, "antirejeu": Math.random() * 1000000, "1million": "larmina" + String(Math.random()), "tabloid": globalX, "KEKW": globalY, "NAAB": globalZ, "woot": presses }) }).then((answer) => {
         presses = []
         if (answer.status == 200) {
             fetch_clicker(setUserNames, setCount, setRanks, setMyIndex, false, setHH);

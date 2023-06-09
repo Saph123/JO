@@ -162,7 +162,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
 
     let allok = false
     while (!allok) {
-        allok = await fetch("https://applijo.freeddns.org/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
+        allok = await fetch("https://pierrickperso.ddnsfree.com:42124/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
             for (var authouser in data['arbitre']) {
                 if (data['arbitre'][authouser] == "All") {
                     setAutho(true);
@@ -193,7 +193,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
             setStatus(data);
             let status = data;
             if (status['states'].includes("poules")) {
-                fetch("https://applijo.freeddns.org/teams/" + sportname + "_poules.json").then(response => response.json()).then(data => {
+                fetch("https://pierrickperso.ddnsfree.com:42124/teams/" + sportname + "_poules.json").then(response => response.json()).then(data => {
 
                     var i = 0;
                     let array_groups = [];
@@ -220,7 +220,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                 }).catch((err => { console.error("oui", err); allok = false }));
             }
             if (status['states'].includes("playoff")) {
-                fetch("https://applijo.freeddns.org/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => {
+                fetch("https://pierrickperso.ddnsfree.com:42124/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => {
 
                     let level = [];
                     let local_array_match = [[]];
@@ -243,7 +243,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
             if (status['states'].includes("final")) { // gestion listes (trail/tong)
 
                 let liste = {};
-                fetch("https://applijo.freeddns.org/teams/" + sportname + "_series.json").then(response => response.json()).then(data => {
+                fetch("https://pierrickperso.ddnsfree.com:42124/teams/" + sportname + "_series.json").then(response => response.json()).then(data => {
                     liste = data;
                     let local_liste = [];
                     let local_final = [];
@@ -480,7 +480,7 @@ export function sportlist() {
     ]
 }
 export function fetchChat(sportname, setChatText, setNewMessage) {
-    fetch("https://applijo.freeddns.org/Chatalere/" + sportname + ".txt").then(response => response.text()).then(r => {
+    fetch("https://pierrickperso.ddnsfree.com:42124/Chatalere/" + sportname + ".txt").then(response => response.text()).then(r => {
         if (initialLineNumber[sportname] != countLines(r) && countLines(r) > 1) {
             setNewMessage(true);
         }
@@ -492,7 +492,7 @@ export function fetchChat(sportname, setChatText, setNewMessage) {
 export async function fetch_teams(sportname) {
     let fetch_teams = {}
 
-    fetch_teams = await fetch("https://applijo.freeddns.org/teams/" + sportname + ".json").then(response => response.json()).then(data => {
+    fetch_teams = await fetch("https://pierrickperso.ddnsfree.com:42124/teams/" + sportname + ".json").then(response => response.json()).then(data => {
         let local_liste = {"Teams": [],"Others": []};
         for (var i in data["Teams"]) {
             local_liste["Teams"].push(new Liste(data["Teams"][i]["Players"], data["Teams"][i]["Players"], 0, 0));
@@ -508,7 +508,7 @@ export async function fetch_teams(sportname) {
 
 export async function fetch_sport_results(sportname, setResults) {
     let lists;
-    lists = await fetch("https://applijo.freeddns.org/results/sports/" + sportname + "_summary.json").then(response => response.json()).then(data => {
+    lists = await fetch("https://pierrickperso.ddnsfree.com:42124/results/sports/" + sportname + "_summary.json").then(response => response.json()).then(data => {
         let results = { "1": {}, "2": {}, "3": {} }
         for (var i in data) {
             results["1"][i] = [];
@@ -524,7 +524,7 @@ export async function fetch_sport_results(sportname, setResults) {
 }
 
 function pushChat(sportname, text, username) {
-    fetch("https://applijo.freeddns.org/Chatalere/" + sportname + ".txt", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "text": text }) }).then(res => {
+    fetch("https://pierrickperso.ddnsfree.com:42124/Chatalere/" + sportname + ".txt", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "text": text }) }).then(res => {
         if (res.status == 200) {
             initialLineNumber[sportname]++;
             save("initialLineNumber", JSON.stringify(initialLineNumber));
@@ -543,7 +543,7 @@ export function updateTeams(sport, teams) {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     // // push to server
-    fetch("https://applijo.freeddns.org/updateTeams", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sport, "teams": teams }) }).then(r => {
+    fetch("https://pierrickperso.ddnsfree.com:42124/updateTeams", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sport, "teams": teams }) }).then(r => {
         if (r.status == 200) {
             alert("Saved", "Saved to server!", ["Ok"])
         }
@@ -561,7 +561,7 @@ export function pushbets(username, sport, vote) {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     // // push to server
-    fetch("https://applijo.freeddns.org/pushBets", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "sport": sport, "bets": vote }) }).then(r => {
+    fetch("https://pierrickperso.ddnsfree.com:42124/pushBets", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "sport": sport, "bets": vote }) }).then(r => {
         if (r.status == 200) {
             return true;
         }
@@ -580,7 +580,7 @@ export function pushpizza(username, vote) {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     // // push to server
-    fetch("https://applijo.freeddns.org/pushpizza", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "vote": vote }) }).then(r => {
+    fetch("https://pierrickperso.ddnsfree.com:42124/pushpizza", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "vote": vote }) }).then(r => {
         if (r.status == 200) {
             return true;
         }
@@ -603,7 +603,7 @@ export async function pushtoken(token, username) {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     // // push to server
-    fetch("https://applijo.freeddns.org/pushtoken", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "token": token, "username": username }) }).then(r => {
+    fetch("https://pierrickperso.ddnsfree.com:42124/pushtoken", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "token": token, "username": username }) }).then(r => {
         return;
     }).catch((err) => { console.log("Maybe it's normal") });
 }
@@ -614,7 +614,7 @@ export async function pushcluedo() {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     // // push to server
     getValueFor("username").then(username =>
-        fetch("https://applijo.freeddns.org/cluedo", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "cluedo": username }) }).then(r => {
+        fetch("https://pierrickperso.ddnsfree.com:42124/cluedo", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "cluedo": username }) }).then(r => {
 
 
         }).catch((err) => { console.log("Maybe it's normal") })
@@ -626,7 +626,7 @@ export async function askPushNotif(username, title, body, to) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     // // push to server
-    fetch("https://applijo.freeddns.org/pushnotif", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "title": title, "body": body, "to": to }) }).then(r => {
+    fetch("https://pierrickperso.ddnsfree.com:42124/pushnotif", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "title": title, "body": body, "to": to }) }).then(r => {
         return
     }).catch((err) => { console.log(err, "Maybe it's normal") });
 }
@@ -634,7 +634,7 @@ export async function askPushNotif(username, title, body, to) {
 export async function fetch_teams_bet(sportname, username) {
     let fetch_teams = {}
 
-    fetch_teams = await fetch("https://applijo.freeddns.org/bets/" + sportname + ".json").then(response => response.json()).then(data => {
+    fetch_teams = await fetch("https://pierrickperso.ddnsfree.com:42124/bets/" + sportname + ".json").then(response => response.json()).then(data => {
         let local_liste = [];
         for (var i in data["Teams"]) {
             local_liste.push(new Liste(data["Teams"][i]["Players"], data["Teams"][i]["TotalVotes"], data["Teams"][i]["Votes"].includes(username) ? 1 : 0, 0));
@@ -656,7 +656,7 @@ export function lock_unlock(lock, setLock, sportname) {
         type = "lock";
     }
     const timeoutId = setTimeout(() => controller.abort(), 10000);
-    fetch("https://applijo.freeddns.org/locksport", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sportname, "type": type }) }).then(r => {
+    fetch("https://pierrickperso.ddnsfree.com:42124/locksport", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sportname, "type": type }) }).then(r => {
         if (r.status == 200) {
 
             setLock(!lock);
@@ -676,7 +676,7 @@ export function vibrateLight(){
 
 export function toggleLockBets(sportname) {
     const controller = new AbortController();
-    fetch("https://applijo.freeddns.org/lockBets", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sportname }) }).then(r => {
+    fetch("https://pierrickperso.ddnsfree.com:42124/lockBets", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sportname }) }).then(r => {
         if (r.status != 200)
         {
             let msg = "Server reply :" + r.status

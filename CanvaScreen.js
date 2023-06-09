@@ -140,7 +140,7 @@ let cols_number= 400;
 let livepatch = [];
 function fetchUsername(x, y, setUserId) {
     let localid = Math.floor(y / 10) * cols_number + Math.floor(x / 10);
-    fetch("https://applijo.freeddns.org/canvausername/" + localid).then(r => {
+    fetch("https://pierrickperso.ddnsfree.com:42124/canvausername/" + localid).then(r => {
         if (r.status == 200) {
             return r.text();
         }
@@ -151,7 +151,7 @@ function fetchUsername(x, y, setUserId) {
 
 }
 function fetchLive(setPatch) {
-    fetch("https://applijo.freeddns.org/canvalive").then(r => {
+    fetch("https://pierrickperso.ddnsfree.com:42124/canvalive").then(r => {
         if (r.status == 200) {
             return r.json();
         }
@@ -178,7 +178,7 @@ function fetchLive(setPatch) {
 
 }
 function fetchSize(setLineNb, setColNb, lineNb, colNb) {
-    fetch("https://applijo.freeddns.org/canvasizedev").then(r => {
+    fetch("https://pierrickperso.ddnsfree.com:42124/canvasizedev").then(r => {
         if (r.status == 200) {
             return r.json();
         }
@@ -220,7 +220,7 @@ function colorset(localColor, username, x, y, setPatch, patch, lineNb, colNb, se
 
     setPatch([...globalpatch]);
     setTimeout(() => { globalpatch.shift(); setPatch([...globalpatch]) }, 2000); // we remove anyway to avoid lagz
-    fetch("https://applijo.freeddns.org/canvasetcolor", { method: "POST", body: JSON.stringify({ "id": localid, "color": localColor, "username": username, "lines":lines_number, "cols": cols_number }) }).then(r => {
+    fetch("https://pierrickperso.ddnsfree.com:42124/canvasetcolor", { method: "POST", body: JSON.stringify({ "id": localid, "color": localColor, "username": username, "lines":lines_number, "cols": cols_number }) }).then(r => {
 
         if (r.status != 200) {
             fetchSize(setLineNb, setColNb, lineNb, colNb);
@@ -234,6 +234,6 @@ const Canva = React.memo((props) => {
     const colNb = props.colNb;
     let date = new Date();
     return (
-        <Image pointerEvents="none" source={{ cache: 'reload', uri: "https://applijo.freeddns.org/canvadev?" + (date) }} style={{ opacity: refresh, position: "absolute", top: 0, left: 0, width: colNb * 10, height: lineNb * 10, borderColor: "black", borderWidth: 1 }}></Image>
+        <Image pointerEvents="none" source={{ cache: 'reload', uri: "https://pierrickperso.ddnsfree.com:42124/canvadev?" + (date) }} style={{ opacity: refresh, position: "absolute", top: 0, left: 0, width: colNb * 10, height: lineNb * 10, borderColor: "black", borderWidth: 1 }}></Image>
     )
 })
