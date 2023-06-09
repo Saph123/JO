@@ -360,10 +360,10 @@ const styles = StyleSheet.create({
         margin: 8,
     },
     eventDone: {
-        flex: 1,
+        // flex: 1,
         backgroundColor: "#ADADAD",
-        // width: 70,
-        // height: 70,
+        width: 70,
+        height: 70,
         borderWidth: 1,
         borderColor: 'black',
         borderRadius: 10,

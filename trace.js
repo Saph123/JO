@@ -256,7 +256,7 @@ export const Trace = (props) => {
                                 }
                             </View>
                             <View>
-                                <View style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
+                                <View style={{ width: 20, height: 60, backgroundColor: "lightgrey" }}></View>
                                 {props.all_teams.realListe.map((r, index) => {
                                     if (r.rank == 1) {
                                         return (
