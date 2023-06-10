@@ -100,6 +100,7 @@ export function ShifumiScreen({ route }) {
 }
 
 export function ShifumiPost(username, sign, setSpecs, setPlayers) {
+    console.log(sign);
     fetch("https://pierrickperso.ddnsfree.com:42124/shifumi", { method: "POST", body: JSON.stringify({ "username": username, "sign": sign }) }).then(response => response.json()).then(
         data => {setSpecs(data.specs);
          setPlayers(data.active_players);}
