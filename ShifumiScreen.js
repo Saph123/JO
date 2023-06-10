@@ -24,7 +24,6 @@ export function ShifumiScreen({ route }) {
                 <Text style={{ textAlign: "center" }}>Choisis un signe, gros porc (baisse les yeux)</Text>
             </View>
             <View style={{ flex: 4, flexDirection: "column", width: "100%", borderColor: "black", borderWidth: 1, marginBottom: 30 }}>
-                <ScrollView style={{ flex: 1, width: "100%", alignSelf: "flex-start" }}>
                     <KeyboardAvoidingView
                         behavior={Platform.OS === "ios" ? "padding" : "height"}
                         style={{ flex: 1 }}
@@ -32,7 +31,7 @@ export function ShifumiScreen({ route }) {
                         <View style={{ flex: 1 }}>
                             <View style={{ flex: 6, flexDirection: 'row', backgroundColor: "white" }}>
                                 <View style={{ flex: 5 }}>
-                                    <ScrollView style={{ marginTop: 20 }} ref={ref => { this.scrollView = ref }} onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
+                                    <ScrollView style={{ flex: 4 }} ref={ref => { this.scrollView = ref }} onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
 
                                         <View style={{ flex: 10, flexDirection: "column" }}>
                                             {localChat.split("\n").map((r, index) => {
@@ -66,7 +65,7 @@ export function ShifumiScreen({ route }) {
                                     </ScrollView>
                                 </View>
                             </View>
-                            <View style={{ flexDirection: "row", flex: 1 }}>
+                            <View style={{ flexDirection: "row",  height:50 }}>
                                 <TextInput onSubmitEditing={() => { pushChat("Shifumi", localInputText, route.params.username); setChatText(localChat + "\n" + route.params.username + ":" + localInputText); setInputText(""); }} style={{ borderWidth: 1, flex: 1, borderRadius: 8 }} value={localInputText} onChangeText={(txt) => setInputText(txt)} />
                                 <Pressable onPress={() => { pushChat("Shifumi", localInputText, route.params.username); setChatText(localChat + "\n" + route.params.username + ":" + localInputText); setInputText(""); }}>
                                     <Image style={{ width: 50, height: 50 }} source={require('./assets/sendmessage.png')} />
@@ -75,7 +74,6 @@ export function ShifumiScreen({ route }) {
                             </View>
                         </View>
                     </KeyboardAvoidingView>
-                </ScrollView>
                 {/* <View style={{ minHeight: 30, flexDirection: "row" }}>
                     <TextInput onSubmitEditing={() => { pushChat(sportname, localText, username); setChatText(text + "\n" + username + ":" + localText); setLocalText(""); }} style={{ borderWidth: 1, flex: 1, borderRadius: 8 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
                     <Pressable onPress={() => { pushChat(sportname, localText, username); setChatText(text + "\n" + username + ":" + localText); setLocalText(""); }}>
