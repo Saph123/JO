@@ -540,7 +540,7 @@ export async function fetch_sport_results(sportname, setResults) {
     }).catch(err => console.log(err));
 }
 
-function pushChat(sportname, text, username) {
+export function pushChat(sportname, text, username) {
     fetch("https://pierrickperso.ddnsfree.com:42124/Chatalere/" + sportname + ".txt", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "text": text }) }).then(res => {
         if (res.status == 200) {
             initialLineNumber[sportname]++;
