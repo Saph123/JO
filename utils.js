@@ -492,17 +492,31 @@ export function fetchChat(sportname, setChatText, setNewMessage) {
 
 }
 
-export function fetchKiller(username, setKills, setAlive, setMission, setTarget) {
+export function fetchKiller(username, setKills, setAlive, setMission, setTarget, setArbitre) {
     fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username).then(response => response.json()).then(data => {
-        console.log(data)
-        setKills(data["kills"])
-        setAlive(data["is_alive"])
-        if (data["is_alive"])
+        setArbitre(data["is_arbitre"])
+        if (!data["is_arbitre"])
         {
-            setMission(data["how_to_kill"])
-            setTarget(data["target"])
-        }
+
+            setKills(data["kills"])
+            setAlive(data["is_alive"])
+            if (data["is_alive"])
+            {
+                setMission(data["how_to_kill"])
+                setTarget(data["target"])
+            }
+        } 
     }).catch(err => console.error("killer", err));
+
+}
+
+export function die(username, setAlive) {
+    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST" }).then(res => {
+        if (res.status == 200) {
+            setAlive(false)
+            return;
+        }
+    }).catch(err => console.log(err, "in die"));
 
 }
 
