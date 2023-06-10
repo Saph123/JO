@@ -26,7 +26,7 @@ export function ShifumiScreen({ route }) {
             <View style={{ flex: 4, flexDirection: "column", width: "100%", borderColor: "black", borderWidth: 1, marginBottom: 30 }}>
                     <KeyboardAvoidingView
                         behavior={Platform.OS === "ios" ? "padding" : "height"}
-                        style={{ flex: 1 }}
+                        style={{ height:"100%" }}
                     >
                         <View style={{ flex: 1 }}>
                             <View style={{ flex: 6, flexDirection: 'row', backgroundColor: "white" }}>
@@ -52,7 +52,7 @@ export function ShifumiScreen({ route }) {
                                                         <View style={{ flex: 6 }}>
                                                             <View key={index} style={
                                                                 { borderRadius: 10, marginTop: 5, padding: 3, alignSelf: who == route.params.username ? "flex-end" : "flex-start", backgroundColor: who == route.params.username ? "#186edb" : "#ffffff" }}>
-                                                                {who == route.params.username ? <Text style={{ color: "white" }}>{what}</Text> :
+                                                                {who == route.params.username ? <Text style={{ color: "pink" }}>{what}</Text> :
                                                                     <View><Text style={{ fontSize: 10, color: "purple" }}>{who}</Text>
                                                                         <Text>{what}</Text></View>}
 
@@ -74,12 +74,6 @@ export function ShifumiScreen({ route }) {
                             </View>
                         </View>
                     </KeyboardAvoidingView>
-                {/* <View style={{ minHeight: 30, flexDirection: "row" }}>
-                    <TextInput onSubmitEditing={() => { pushChat(sportname, localText, username); setChatText(text + "\n" + username + ":" + localText); setLocalText(""); }} style={{ borderWidth: 1, flex: 1, borderRadius: 8 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
-                    <Pressable onPress={() => { pushChat(sportname, localText, username); setChatText(text + "\n" + username + ":" + localText); setLocalText(""); }}>
-                        <Image style={{ width: 50, height: 50 }} source={require('./assets/sendmessage.png')} />
-                    </Pressable>
-                </View> */}
             </View>
             <View style={{ flex: 1, alignItems: "center", alignContent: "center", flexDirection: "row" }}>
                 <Pressable style={{ flex: 1, backgroundColor: "lightblue", borderColor: "black", borderWidth: 1, height: "100%", borderRadius: 25, marginRight: 10 }}>
