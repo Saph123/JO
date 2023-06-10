@@ -229,7 +229,7 @@ export function HomeScreen({ route, navigation }) {
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >Cluedo</Text>
                 </Pressable>
                 <Pressable style={styles.bottomTabs} onPress={() => {vibrateLight(); navigation.navigate('ShifumiScreen') }}>
-                    <Image style={{ tintColor: "white", height: 35, marginBottom: 2 }} resizeMode="contain" source={require('./assets/summary.png')} />
+                    <Image style={{ tintColor: "white", height: 35, marginBottom: 2 }} resizeMode="contain" source={require('./assets/shifumi.png')} />
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >ShiFUmi</Text>
                 </Pressable>
                 <Pressable style={styles.bottomTabs}
