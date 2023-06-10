@@ -450,6 +450,8 @@ export function lutImg(imgname) {
         results: require('./assets/podium.png'),
         "Remise des prix": require('./assets/podium.png'),
         "Rangement": require('./assets/sweep.png'),
+        "résumé": require('./assets/memo.png'),
+        "en cours": require('./assets/target.png'),
     };
     return lut[imgname];
 }

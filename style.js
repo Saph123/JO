@@ -538,9 +538,9 @@ const styles = StyleSheet.create({
         textAlignVertical: "center",
     },
     bottomTabs: {
-        marginLeft: 10,
-        height: 60,
-        width: 60,
+        marginLeft: 5,
+        height: 40,
+        width: "15%",
         marginBottom:5
     },
     dateTabsSelected: {

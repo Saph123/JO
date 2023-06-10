@@ -223,33 +223,39 @@ export function HomeScreen({ route, navigation }) {
                     {/* <View style={{ height: 60 }}></View> */}
                 </ScrollView>
             </View>
-            <View style={{ backgroundColor: "black", height: 65, flexDirection: "row", borderColor: "black", borderWidth: 1, justifyContent: "space-between" }}>
+            <View style={{backgroundColor: "black", height: 65, flexDirection: "row", borderColor: "black", borderWidth: 1, justifyContent: "space-between" }}>
                 <Pressable style={styles.bottomTabs} onPress={() => {vibrateLight();playcluedo()}}>
-                    <Image style={{ tintColor: "white", height: 45 }} resizeMode="contain" source={require('./assets/cluedo.png')} />
+                    <Image style={{ tintColor: "white", height: 35, marginBottom: 2 }} resizeMode="contain" source={require('./assets/cluedo.png')} />
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >Cluedo</Text>
                 </Pressable>
                 <Pressable style={styles.bottomTabs} onPress={() => {vibrateLight(); navigation.navigate('SummaryScreen') }}>
-                    <Image style={{ tintColor: "white", height: 45 }} resizeMode="contain" source={require('./assets/summary.png')} />
+                    <Image style={{ tintColor: "white", height: 35, marginBottom: 2 }} resizeMode="contain" source={require('./assets/summary.png')} />
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >Classements</Text>
                 </Pressable>
                 <Pressable style={styles.bottomTabs}
                     onPress={() => {vibrateLight(); navigation.navigate('LoginScreen', { pushtoken: expoPushToken }) }}
                 >
-                    <Image style={{ tintColor: "white", height: 45 }} resizeMode="contain" source={require('./assets/person.png')} />
+                    <Image style={{ tintColor: "white", height: 35, marginBottom: 2 }} resizeMode="contain" source={require('./assets/person.png')} />
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >Mon profil</Text>
                 </Pressable>
                 <Pressable style={styles.bottomTabs}
                     onPress={() => {vibrateLight(); navigation.navigate('CanvaScreen') }}
                 >
-                    <Image style={{ tintColor: "white", height: 45 }} resizeMode="contain" source={require('./assets/palette.png')} />
+                    <Image style={{ tintColor: "white", height: 35, marginBottom: 2 }} resizeMode="contain" source={require('./assets/palette.png')} />
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >Canva</Text>
+                </Pressable>
+                <Pressable style={styles.bottomTabs}
+                    onPress={() => {vibrateLight(); navigation.navigate('KillerScreen') }}
+                >
+                    <Image style={{ tintColor: "white", height: 35, marginBottom: 2 }} resizeMode="contain" source={require('./assets/target.png')} />
+                    <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >Killer</Text>
                 </Pressable>
 
                 {adminlist.includes(username) ?
                     <Pressable style={styles.bottomTabs}
                         onPress={() => { vibrateLight(); navigation.navigate('pushNotifScreen') }}
                     >
-                        <Image style={{ tintColor: "white", height: 45 }} resizeMode="contain" source={require('./assets/wrench.png')} />
+                        <Image style={{ tintColor: "white", height: 35, marginBottom: 2 }} resizeMode="contain" source={require('./assets/wrench.png')} />
                         <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >Outils</Text>
                     </Pressable>
 

@@ -15,6 +15,7 @@ import { VanRommelScreen } from "./VanRommelScreen.js";
 import { CanvaScreen } from "./CanvaScreen.js";
 import { pushNotifScreen } from "./PushNotifScreen.js";
 import { LoginScreen } from "./LoginScreen.js";
+import { KillerScreen } from "./Killer.js";
 import { SportContext, ArbitreContext, ChatContext, calcInitLines, version, adminlist } from "./global.js"
 
 Notifications.setNotificationHandler({
@@ -147,8 +148,11 @@ function App() {
                             })} initialParams={{ username: username }} name="pushNotifScreen" component={pushNotifScreen} />
 
                             <Stack.Screen options={() => ({
-                                title: "Van Rommel"
-                            })} name="VanRommel" component={VanRommelScreen} />
+                                title: "Killer"
+                            })} initialParams={{ username: username }} name="KillerScreen" component={KillerScreen} />
+                            <Stack.Screen options={() => ({
+                                title: "Killer"
+                            })} name="Killer" component={KillerScreen} />
 
                             <Stack.Screen options={() => ({
                                 title: "Canva", headerRight: () => <View>
