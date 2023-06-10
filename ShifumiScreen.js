@@ -7,7 +7,11 @@ export function ShifumiScreen({ route }) {
     const [localInputText, setInputText] = React.useState("");
     const [newMessage, setNewMessage] = React.useState("");
     React.useEffect(() => {
-        var chatInterval = setInterval(() => fetchChat("Shifumi", setChatText, setNewMessage), 1000);
+        var chatInterval = setInterval(() => fetchChat("Shifumi" + route.params.username, setChatText, setNewMessage), 1000);
+
+        return () => {
+            clearInterval(chatInterval);
+        }
     }, []);
     return (
         <View style={{ flex: 1, alignItems: "center", alignContent: "center", flexDirection: "column" }}>
@@ -51,8 +55,8 @@ export function ShifumiScreen({ route }) {
                                                         </View>
                                                         <View style={{ flex: 6 }}>
                                                             <View key={index} style={
-                                                                { borderRadius: 10, marginTop: 5, padding: 3, alignSelf: who == route.params.username ? "flex-end" : "flex-start", backgroundColor: who == route.params.username ? "#186edb" : "#ffffff" }}>
-                                                                {who == route.params.username ? <Text style={{ color: "pink" }}>{what}</Text> :
+                                                                { borderRadius: 10, marginTop: 5, padding: 3, alignSelf: who == route.params.username ? "flex-end" : "flex-start", backgroundColor: who == route.params.username ? "#186edb" : "lightblue" }}>
+                                                                {who == route.params.username ? <Text style={{ color: "white" }}>{what}</Text> :
                                                                     <View><Text style={{ fontSize: 10, color: "purple" }}>{who}</Text>
                                                                         <Text>{what}</Text></View>}
 
@@ -75,7 +79,7 @@ export function ShifumiScreen({ route }) {
                         </View>
                     </KeyboardAvoidingView>
             </View>
-            <View style={{ flex: 1, alignItems: "center", alignContent: "center", flexDirection: "row" }}>
+            <View style={{ flex: 1, alignItems: "center", alignContent: "center", flexDirection: "row", marginBottom:30 }}>
                 <Pressable style={{ flex: 1, backgroundColor: "lightblue", borderColor: "black", borderWidth: 1, height: "100%", borderRadius: 25, marginRight: 10 }}>
                     <Image style={{ alignSelf: "center", tintColor: "black", height: 50, width: 50, marginTop: 5 }} resizeMode="contain" source={require('./assets/paper.png')} /></Pressable>
                 <Pressable style={{ flex: 1, backgroundColor: "lightblue", borderColor: "black", borderWidth: 1, height: "100%", borderRadius: 25, marginRight: 10 }}>
