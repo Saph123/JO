@@ -15,6 +15,7 @@ import { VanRommelScreen } from "./VanRommelScreen.js";
 import { CanvaScreen } from "./CanvaScreen.js";
 import { pushNotifScreen } from "./PushNotifScreen.js";
 import { LoginScreen } from "./LoginScreen.js";
+import { ShifumiScreen } from "./ShifumiScreen.js";
 import { KillerScreen } from "./Killer.js";
 import { SportContext, ArbitreContext, ChatContext, calcInitLines, version, adminlist } from "./global.js"
 
@@ -147,6 +148,9 @@ function App() {
                                 title: "Notif tool"
                             })} initialParams={{ username: username }} name="pushNotifScreen" component={pushNotifScreen} />
 
+                            <Stack.Screen options={() => ({
+                                title: "ShiFuMi"
+                            })} initialParams={{ username: username }} name="ShifumiScreen" component={ShifumiScreen} />
                             <Stack.Screen options={() => ({
                                 title: "Killer"
                             })} initialParams={{ username: username }} name="KillerScreen" component={KillerScreen} />
