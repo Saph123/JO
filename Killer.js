@@ -10,13 +10,14 @@ export function KillerScreen({ route }) {
     const [alive, setAlive] = React.useState(true)
     const [target, setTarget] = React.useState("")
     const [mission, setMission] = React.useState("")
+    const [discovered, setDiscovered] = React.useState(false)
     let init = true;
     React.useEffect(() => {
-        if (init == true){
+        if (init == true) {
             fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setArbitre)
             init = false
         }
-        
+
     }, []);
 
     return (
@@ -35,41 +36,58 @@ export function KillerScreen({ route }) {
                             <Image style={styles.tabimage} resizeMode="contain" resizeMethod="auto" source={lutImg(r)} /></View></Pressable>)}
             </View>
                 :
-            <View></View>}
+                <View></View>}
             {tabs.status == "en cours" ?
                 <ScrollView style={{ height: "100%" }}>
-                    <View style={{ position: "absolute", alignSelf: "center" }}>
+                    {discovered ? <View style={{ position: "absolute", alignSelf: "center" }}>
                         <Image style={{ width: 300, resizeMode: "center", height: 319, top: "50%" }} source={require('./assets/piepie.jpeg')} />
                     </View>
-                    <View style={{ alignItems: "center" }}>
-                        <Image style={{ width: "95%", resizeMode: 'contain' }} source={require('./assets/wanted.png')} />
-                    </View>
-                    <View style={{ borderWidth: 1}}>
-                        <Text style={{fontSize:30, alignSelf: "center", fontWeight: "bold" }}>{target}</Text>
-                    </View>
+                        :
+                        <View style={{ position: "absolute", alignSelf: "center" }}>
+                            <Image style={{ width: 300, resizeMode: "center", height: 319, top: "50%" }} source={require('./assets/point_inter.png')} />
+                        </View>
+                    }
+                    <Pressable onPress={() => setDiscovered(true)}>
+                        <View style={{ alignItems: "center", paddingBottom: 10 }}>
+                            <Image style={{ width: "95%", resizeMode: 'contain' }} source={require('./assets/wanted.png')} />
+                        </View>
+                    </Pressable>
+                    {discovered ?
                     <View>
-
+                        <View>
+                            <Text style={{ fontSize: 30, alignSelf: "center", fontWeight: "bold" }}>{target}</Text>
+                        </View>
+                        <View style={{ borderTopWidth: 1, padding: 5 }}>
+                            <Text style={{ fontSize: 30, alignSelf: "center", fontWeight: "bold" }}>Mission</Text>
+                        </View>
+                        <View style={{ backgroundColor: "white", padding: 15, borderRadius: 20, width: "50%", alignSelf: "center" }}>
+                            <Text style={{ fontSize: 15, alignSelf: "center" }}>{mission}</Text>
+                        </View>
+                        <View style={{ height: 100 }}></View>
                     </View>
+                    :
+                    <View></View>}
                 </ScrollView>
                 :
                 <View style={{ flex: 2, flexDirection: "column" }}>
                     <View style={{ flex: 1, flexDirection: "row", marginTop: "5%", justifyContent: "center" }}>
-                        <View style={{width: "100%"}}>
-                            <View style={{ marginTop: 10, flex: 1, flexDirection: "row", justifyContent: "center" }}>
+                        <View style={{ width: "100%" }}>
+                            <View style={{ marginTop: 10, flex: 1, flexDirection: "column", justifyContent: "center" }}>
                                 <Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>Etat:</Text>
-                            </View>
-                            <View style={{ flex: 3 }}>
-                                <View style={{ flex: 1 }}>
-                                    <Text style={{ textAlign: "center", fontWeight: "bold" }}>{alive ? "Toujours en vie" : "Mort"}</Text>
-                                </View>
-                                <View style={{ flex: 1 }}>
+                                <View style={{ flex: 3 }}>
+                                    <View style={{ flex: 1 }}>
+                                        <Text style={{ textAlign: "center", fontWeight: "bold" }}>{alive ? "Toujours en vie" : ""}</Text>
+                                    </View>
                                     {alive ?
-                                    <View style={styles.killbutton}>
-                                        <Pressable onPress={() => {Alert.alert("Confirmer votre mort", "", [{ text: "Confirmer", onPress: () => die(route.params.username, setAlive)}, { text: "Annuler" }])}}><Text>Omar m'a tuer</Text></Pressable>
-                                    </View> : <View></View>}
+                                        <View style={{ flex: 1 }}>
+                                            <View style={styles.killbutton}>
+                                                <Pressable onPress={() => { Alert.alert("Confirmer votre mort", "", [{ text: "Confirmer", onPress: () => die(route.params.username, setAlive) }, { text: "Annuler" }]) }}><Text>Omar m'a tuer</Text></Pressable>
+                                            </View>
+                                        </View>
+                                        : <View></View>}
                                 </View>
+                                {alive ? <View></View> : <View style={{ flex: 10 }}><Image style={{ width: "100%" }} source={require('./assets/wasted.png')}></Image></View>}
                             </View>
-                        {alive ? <View></View> : <View style={{flex : 4}}><Image style={{ width: "100%"}} source={require('./assets/gameover.jpeg')}></Image></View>}
                         </View>
                     </View>
                     <View style={{ flex: 1 }}>
