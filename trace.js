@@ -391,7 +391,7 @@ export const Trace = (props) => {
 
 }
 
-function result_view(results) {
+export function result_view(results) {
     return (
         <View style={styles.podium}>
             <Text style={{ textAlign: "center" }}>{results}</Text>

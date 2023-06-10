@@ -150,9 +150,6 @@ function App() {
                             <Stack.Screen options={() => ({
                                 title: "Killer"
                             })} initialParams={{ username: username }} name="KillerScreen" component={KillerScreen} />
-                            <Stack.Screen options={() => ({
-                                title: "Killer"
-                            })} name="Killer" component={KillerScreen} />
 
                             <Stack.Screen options={() => ({
                                 title: "Canva", headerRight: () => <View>

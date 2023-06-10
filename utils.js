@@ -481,6 +481,7 @@ export function sportlist() {
         "Home"
     ]
 }
+
 export function fetchChat(sportname, setChatText, setNewMessage) {
     fetch("https://pierrickperso.ddnsfree.com:42124/Chatalere/" + sportname + ".txt").then(response => response.text()).then(r => {
         if (initialLineNumber[sportname] != countLines(r) && countLines(r) > 1) {
@@ -488,6 +489,20 @@ export function fetchChat(sportname, setChatText, setNewMessage) {
         }
         setChatText(r);
     }).catch(err => console.error("chatalerr", err));
+
+}
+
+export function fetchKiller(username, setKills, setAlive, setMission, setTarget) {
+    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username).then(response => response.json()).then(data => {
+        console.log(data)
+        setKills(data["kills"])
+        setAlive(data["is_alive"])
+        if (data["is_alive"])
+        {
+            setMission(data["how_to_kill"])
+            setTarget(data["target"])
+        }
+    }).catch(err => console.error("killer", err));
 
 }
 

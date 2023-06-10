@@ -246,6 +246,35 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5
     },
+    kills: {
+        margin:1,
+        height: 30,
+        borderColor: "black",
+        // minWidth:80,
+        backgroundColor: "white",
+        padding: 5,
+        alignItems: "center",
+    },
+    killbutton: {
+        marginTop: 10,
+        // margin:10,
+        maxWidth: 300,
+        height: 30,
+        // minWidth:80,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 5,
+        alignSelf: "center",
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5
+    },
     bet: {
         margin: 20,
         flex:1,
