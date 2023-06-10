@@ -29,10 +29,10 @@ export function HomeScreen({ route, navigation }) {
     const chatcontext = React.useContext(ChatContext);
     let planning = new Planning();
     let now = new Date(Date.now());
-    var mercredi = new Date('2022-07-13T00:00:00+02:00');
-    var jeudi = new Date('2022-07-14T00:00:00+02:00');
-    var vendredi = new Date('2022-07-15T00:00:00+02:00');
-    var samedi = new Date('2022-07-16T00:00:00+02:00');
+    var jeudi = new Date('2023-07-13T00:00:00+02:00');
+    var vendredi = new Date('2023-07-14T00:00:00+02:00');
+    var samedi = new Date('2023-07-15T00:00:00+02:00');
+    var dimanche = new Date('2023-07-16T00:00:00+02:00');
     async function playcluedo() {
         pushcluedo().then(r => console.log("pushing cluedo")).catch((err) => console.error("cluedo", err));
         if (soundstatus == undefined) {
@@ -61,17 +61,17 @@ export function HomeScreen({ route, navigation }) {
     React.useEffect(() => {
         switch (now.getDay()) {
 
-            case jeudi.getDay():
-                setDisplayDay(jeudi);
-                break
             case vendredi.getDay():
                 setDisplayDay(vendredi);
                 break
             case samedi.getDay():
                 setDisplayDay(samedi);
                 break
+            case dimanche.getDay():
+                setDisplayDay(dimanche);
+                break
             default:
-                setDisplayDay(mercredi);
+                setDisplayDay(jeudi);
         }
         getValueFor("username").then(r => { setusername(r); setLoading(0) }).catch(() => setLoading(0));
         chatcontext.setChatName("Home");
@@ -178,10 +178,10 @@ export function HomeScreen({ route, navigation }) {
     return (
         <View style={{ flex: 1, backgroundColor: "black" }}>
             <View style={{ backgroundColor: "black", height: 50, marginTop: 10, flexDirection: "row" }}>
-                <Pressable onPress={() => {vibrateLight(); setDisplayDay(mercredi) }} style={displayDay.getDay() === mercredi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === mercredi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>13 Juillet</Text></Pressable>
-                <Pressable onPress={() => {vibrateLight(); setDisplayDay(jeudi) }} style={displayDay.getDay() === jeudi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === jeudi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>14 Juillet</Text></Pressable>
-                <Pressable onPress={() => {vibrateLight(); setDisplayDay(vendredi) }} style={displayDay.getDay() === vendredi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === vendredi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>15 Juillet</Text></Pressable>
-                <Pressable onPress={() => {vibrateLight(); setDisplayDay(samedi) }} style={displayDay.getDay() === samedi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === samedi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>16 Juillet</Text></Pressable>
+                <Pressable onPress={() => {vibrateLight(); setDisplayDay(jeudi) }} style={displayDay.getDay() === jeudi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === jeudi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>13 Juillet</Text></Pressable>
+                <Pressable onPress={() => {vibrateLight(); setDisplayDay(vendredi) }} style={displayDay.getDay() === vendredi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === vendredi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>14 Juillet</Text></Pressable>
+                <Pressable onPress={() => {vibrateLight(); setDisplayDay(samedi) }} style={displayDay.getDay() === samedi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === samedi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>15 Juillet</Text></Pressable>
+                <Pressable onPress={() => {vibrateLight(); setDisplayDay(dimanche) }} style={displayDay.getDay() === dimanche.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === dimanche.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>16 Juillet</Text></Pressable>
             </View>
             <View style={{ flex: 15, marginTop: 10, backgroundColor: "white" }}>
 
@@ -199,7 +199,7 @@ export function HomeScreen({ route, navigation }) {
                                 <View style={{ flex: 1 }}>
                                     {planning["listeevent"].map(r => {
                                         if (r.timeBegin.getDay() == displayDay.getDay()) {
-                                            if (displayDay.getDay() == mercredi.getDay()) {
+                                            if (displayDay.getDay() == jeudi.getDay()) {
                                                 {
                                                     return (
                                                         firstDay(secondsleft, setSecondsleft)
