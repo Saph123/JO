@@ -10,9 +10,10 @@ export function ShifumiScreen({ route }) {
     const [specs, setSpecs] = React.useState([]);
     const [activePlayers, setPlayers] = React.useState([]);
     const [sign, setSign] = React.useState("puit");
+    const [status, setStatus] = React.useState("");
     React.useEffect(() => {
         var chatInterval = setInterval(() => fetchChat("Shifumi", setChatText, setNewMessage), 1000);
-        var shiFuMiInterval = setInterval(() => ShifumiPost(route.params.username, globalSign, setSpecs, setPlayers), 1000);
+        var shiFuMiInterval = setInterval(() => ShifumiPost(route.params.username, globalSign, setSpecs, setPlayers, setStatus), 1000);
 
         return () => {
             clearInterval(chatInterval);
@@ -33,8 +34,7 @@ export function ShifumiScreen({ route }) {
                 </View>
             </View>
             <View style={{ flex: 1, flexDirection: "column", backgroundColor: "lightblue", width: "100%", borderColor: "black", borderWidth: 1 }}>
-                <Text style={{ textAlign: "center" }}>La partie ds dans 10 sec!</Text>
-                <Text style={{ textAlign: "center" }}>Choisis un signe, gros porc (baisse les yeux)</Text>
+                <Text style={{ textAlign: "center" }}>{status}</Text>
             </View>
             <View style={{ flex: 4, flexDirection: "column", width: "100%", borderColor: "black", borderWidth: 1, marginBottom: 30 }}>
                 <KeyboardAvoidingView
@@ -124,13 +124,18 @@ export function ShifumiScreen({ route }) {
     )
 }
 
-export function ShifumiPost(username, sign, setSpecs, setPlayers) {
-    console.log(sign);
+export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus) {
     fetch("https://pierrickperso.ddnsfree.com:42124/shifumi", { method: "POST", body: JSON.stringify({ "username": username, "sign": sign }) }).then(response => response.json()).then(
         data => {
             setSpecs(data.specs);
             setPlayers(data.active_players);
-            // setStatus(data.status);
+            console.log(data)
+            if (data.voting_in > 0){
+                setStatus("La partie commence dans " + Math.floor(data.voting_in) + " secondes");
+            }
+            else{
+                setStatus(data.last_winner + " remporte la partie!\nEn attente de joueurs!")
+            }
         }
     ).catch(
         err => console.error("shifumierr", err));
