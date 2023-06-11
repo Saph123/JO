@@ -13,7 +13,7 @@ export function ShifumiScreen({ route }) {
     const [status, setStatus] = React.useState("");
     React.useEffect(() => {
         var chatInterval = setInterval(() => fetchChat("Shifumi", setChatText, setNewMessage), 1000);
-        var shiFuMiInterval = setInterval(() => ShifumiPost(route.params.username, globalSign, setSpecs, setPlayers, setStatus), 1000);
+        var shiFuMiInterval = setInterval(() => ShifumiPost(route.params.username, globalSign, setSpecs, setPlayers, setStatus, setSign), 1000);
 
         return () => {
             clearInterval(chatInterval);
@@ -124,18 +124,26 @@ export function ShifumiScreen({ route }) {
     )
 }
 
-export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus) {
+export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, setSign) {
     fetch("https://pierrickperso.ddnsfree.com:42124/shifumi", { method: "POST", body: JSON.stringify({ "username": username, "sign": sign }) }).then(response => response.json()).then(
         data => {
             setSpecs(data.specs);
             setPlayers(data.active_players);
             console.log(data)
             if (data.voting_in > 0){
-                setStatus("La partie commence dans " + Math.floor(data.voting_in) + " secondes");
+                
+                setStatus(data.last_winner + " a remporté la dernière partie!\nLa prochaine partie commence dans " + Math.floor(data.voting_in) + " secondes");
             }
             else{
-                setStatus(data.last_winner + " remporte la partie!\nEn attente de joueurs!")
+                if (data.last_winner == "draw" || data.last_winner == "Whisky"){
+                    setStatus("Match nul!\nEn attente de joueurs!")
+                }
+                else{
+
+                    setStatus(data.last_winner + " remporte la partie!\nEn attente de joueurs!")
+                }
             }
+
         }
     ).catch(
         err => console.error("shifumierr", err));
