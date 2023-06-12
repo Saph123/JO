@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
     },
     kills: {
         margin:1,
-        height: 30,
+        minHeight: 30,
         borderColor: "black",
         // minWidth:80,
         backgroundColor: "white",

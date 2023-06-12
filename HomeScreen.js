@@ -99,6 +99,9 @@ export function HomeScreen({ route, navigation }) {
                     navigation.navigate('ClickerScreen');
                 }
             }
+            else if (message.title == "Nouvelle victime") {
+                Alert.alert(message.title, message.body, [{ text: "Voir prochaine victime", onPress: () => navigation.navigate('KillerScreen') }, { text: "Balec" }])
+            }
             else {
                 Alert.alert(message.title, message.body, [{ text: "Ok" }])
             }
@@ -167,7 +170,7 @@ export function HomeScreen({ route, navigation }) {
                 <Text style={{ fontWeight: "bold" }}>Tu dois te connecter d'abord!</Text>
                 <Text style={{ fontWeight: "bold" }}>Demande à Max tes identifiants</Text>
                 <Pressable style={styles.loginbutton}
-                    onPress={() => {vibrateLight(); navigation.navigate('LoginScreen') }}
+                    onPress={() => { vibrateLight(); navigation.navigate('LoginScreen') }}
                 >
                     <Text style={styles.texthomebutton}>Login</Text>
                 </Pressable>
@@ -178,10 +181,10 @@ export function HomeScreen({ route, navigation }) {
     return (
         <View style={{ flex: 1, backgroundColor: "black" }}>
             <View style={{ backgroundColor: "black", height: 50, marginTop: 10, flexDirection: "row" }}>
-                <Pressable onPress={() => {vibrateLight(); setDisplayDay(jeudi) }} style={displayDay.getDay() === jeudi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === jeudi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>13 Juillet</Text></Pressable>
-                <Pressable onPress={() => {vibrateLight(); setDisplayDay(vendredi) }} style={displayDay.getDay() === vendredi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === vendredi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>14 Juillet</Text></Pressable>
-                <Pressable onPress={() => {vibrateLight(); setDisplayDay(samedi) }} style={displayDay.getDay() === samedi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === samedi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>15 Juillet</Text></Pressable>
-                <Pressable onPress={() => {vibrateLight(); setDisplayDay(dimanche) }} style={displayDay.getDay() === dimanche.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === dimanche.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>16 Juillet</Text></Pressable>
+                <Pressable onPress={() => { vibrateLight(); setDisplayDay(jeudi) }} style={displayDay.getDay() === jeudi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === jeudi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>13 Juillet</Text></Pressable>
+                <Pressable onPress={() => { vibrateLight(); setDisplayDay(vendredi) }} style={displayDay.getDay() === vendredi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === vendredi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>14 Juillet</Text></Pressable>
+                <Pressable onPress={() => { vibrateLight(); setDisplayDay(samedi) }} style={displayDay.getDay() === samedi.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === samedi.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>15 Juillet</Text></Pressable>
+                <Pressable onPress={() => { vibrateLight(); setDisplayDay(dimanche) }} style={displayDay.getDay() === dimanche.getDay() ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay.getDay() === dimanche.getDay() ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>16 Juillet</Text></Pressable>
             </View>
             <View style={{ flex: 15, marginTop: 10, backgroundColor: "white" }}>
 
@@ -223,29 +226,29 @@ export function HomeScreen({ route, navigation }) {
                     {/* <View style={{ height: 60 }}></View> */}
                 </ScrollView>
             </View>
-            <View style={{backgroundColor: "black", height: 65, flexDirection: "row", borderColor: "black", borderWidth: 1, justifyContent: "space-between" }}>
-                <Pressable style={styles.bottomTabs} onPress={() => {vibrateLight();playcluedo()}}>
+            <View style={{ backgroundColor: "black", height: 65, flexDirection: "row", borderColor: "black", borderWidth: 1, justifyContent: "space-between" }}>
+                <Pressable style={styles.bottomTabs} onPress={() => { vibrateLight(); playcluedo() }}>
                     <Image style={{ tintColor: "white", height: 35, marginBottom: 2 }} resizeMode="contain" source={require('./assets/cluedo.png')} />
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >Cluedo</Text>
                 </Pressable>
-                <Pressable style={styles.bottomTabs} onPress={() => {vibrateLight(); navigation.navigate('ShifumiScreen') }}>
+                <Pressable style={styles.bottomTabs} onPress={() => { vibrateLight(); navigation.navigate('ShifumiScreen') }}>
                     <Image style={{ tintColor: "white", height: 35, marginBottom: 2 }} resizeMode="contain" source={require('./assets/shifumi.png')} />
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >ShiFUmi</Text>
                 </Pressable>
                 <Pressable style={styles.bottomTabs}
-                    onPress={() => {vibrateLight(); navigation.navigate('LoginScreen', { pushtoken: expoPushToken }) }}
+                    onPress={() => { vibrateLight(); navigation.navigate('LoginScreen', { pushtoken: expoPushToken }) }}
                 >
                     <Image style={{ tintColor: "white", height: 35, marginBottom: 2 }} resizeMode="contain" source={require('./assets/person.png')} />
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >Mon profil</Text>
                 </Pressable>
                 <Pressable style={styles.bottomTabs}
-                    onPress={() => {vibrateLight(); navigation.navigate('CanvaScreen') }}
+                    onPress={() => { vibrateLight(); navigation.navigate('CanvaScreen') }}
                 >
                     <Image style={{ tintColor: "white", height: 35, marginBottom: 2 }} resizeMode="contain" source={require('./assets/palette.png')} />
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >Canva</Text>
                 </Pressable>
                 <Pressable style={styles.bottomTabs}
-                    onPress={() => {vibrateLight(); navigation.navigate('KillerScreen') }}
+                    onPress={() => { vibrateLight(); navigation.navigate('KillerScreen') }}
                 >
                     <Image style={{ tintColor: "white", height: 35, marginBottom: 2 }} resizeMode="contain" source={require('./assets/target.png')} />
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >Killer</Text>

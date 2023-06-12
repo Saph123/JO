@@ -452,6 +452,7 @@ export function lutImg(imgname) {
         "Rangement": require('./assets/sweep.png'),
         "résumé": require('./assets/memo.png'),
         "en cours": require('./assets/target.png'),
+        "waiting": require('./assets/wait.png'),
     };
     return lut[imgname];
 }
@@ -492,12 +493,16 @@ export function fetchChat(sportname, setChatText, setNewMessage) {
 
 }
 
-export function fetchKiller(username, setKills, setAlive, setMission, setTarget, setArbitre) {
+export function fetchKiller(username, setKills, setAlive, setMission, setTarget, setArbitre, setTab) {
     fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username).then(response => response.json()).then(data => {
+        console.log(data)
         setArbitre(data["is_arbitre"])
+        if (data["started"])
+        {
+            setTab({states: ["résumé", "en cours"], status : "résumé"})
+        }
         if (!data["is_arbitre"])
         {
-
             setKills(data["kills"])
             setAlive(data["is_alive"])
             if (data["is_alive"])
@@ -509,7 +514,17 @@ export function fetchKiller(username, setKills, setAlive, setMission, setTarget,
     }).catch(err => console.error("killer", err));
 
 }
+export function updateMission(missions, username) {
+    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "missions", "missions": missions }) }).then(res => {
+        if (res.status == 200) {
+            alert("Saved", "Saved to server!", ["Ok"])
+        }
+        else {
+            alert("Wrong login or password!");
+        }
+    }).catch(err => console.log(err, "in update missions"));
 
+}
 export function die(username, setAlive) {
     fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST" }).then(res => {
         if (res.status == 200) {

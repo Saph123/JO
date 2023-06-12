@@ -1,25 +1,28 @@
 import styles from "./style.js";
 import * as React from 'react';
-import { View, Pressable, Image, ScrollView, Text, Alert, RefreshControl } from 'react-native';
-import { die, lutImg, vibrateLight, fetchKiller } from './utils.js';
+import { View, Pressable, Image, ScrollView, Text, Alert, TextInput } from 'react-native';
+import { die, lutImg, vibrateLight, fetchKiller, updateMission } from './utils.js';
 
 export function KillerScreen({ route }) {
-    const [tabs, setTab] = React.useState({ states: ["résumé", "en cours"], status: "résumé" });
+    const [tabs, setTab] = React.useState({ states: ["waiting"], status: "waiting" });
     const [arbitre, setArbitre] = React.useState(false)
-    const [kills, setKills] = React.useState([])
+    const [kills, setKills] = React.useState([{name: "", mission: "", date: ""}])
     const [alive, setAlive] = React.useState(true)
     const [target, setTarget] = React.useState("")
     const [mission, setMission] = React.useState("")
     const [discovered, setDiscovered] = React.useState(false)
+    const [missions, setMissions] = React.useState([""])
     let init = true;
+    let missions_list = [""];
     React.useEffect(() => {
         if (init == true) {
-            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setArbitre)
+            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setArbitre, setTab)
             init = false
         }
 
     }, []);
-
+    if (!arbitre)
+    {
     return (
         <View style={{ flex: 1, flexDirection: "column", height: 50, backgroundColor: "#C9CBCD" }}>
             {alive ? <View style={{ height: 50, flexDirection: "row" }}>
@@ -68,7 +71,7 @@ export function KillerScreen({ route }) {
                     :
                     <View></View>}
                 </ScrollView>
-                :
+                : tabs.status == "résumé" ?
                 <View style={{ flex: 2, flexDirection: "column" }}>
                     <View style={{ flex: 1, flexDirection: "row", marginTop: "5%", justifyContent: "center" }}>
                         <View style={{ width: "100%" }}>
@@ -97,13 +100,39 @@ export function KillerScreen({ route }) {
                         <ScrollView style={{ flex: 1, flexDirection: "column", marginTop: "5%" }}>
                             {kills.length > 0 ? kills.map(r =>
                                 <View style={styles.kills}>
-                                    <Text style={{ textAlign: "center" }}>{r}</Text>
+                                    <Text style={{ textAlign: "center" }}>{r.name} ({r.date}):{"\n"}{r.mission}</Text>
                                 </View>) : <View></View>}
                         </ScrollView>
 
                     </View>
-                </View>}
+                </View> : <View><Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>En attente du démarrage de la partie</Text></View>}
         </View>
-    )
+    )}
+    else
+    {
+        return (
+            <ScrollView>
+                <ScrollView horizontal={true} directionalLockEnabled={false}>
+                    <View style={{ flexDirection: "row", marginTop: 22 }}>
+                        <View>
+                            <Text style={[styles.showPlayers, { height: 60 }]}>Mission</Text>
+                            {missions_list.map(r =>
+                                <TextInput key={r} multiline={true} onChangeText={(text) => { missions_list.push(text)}} style={[styles.showPlayers, { height : 90, width: 200, textAlignVertical: "top", textAlign : "left"}]}>{r}</TextInput>
+                            )
+                            }
+                        </View>
+                        <View style={{ width: 60, height: 60, backgroundColor: "lightgrey", justifyContent: "center" }}>
+                            <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => {
+                                updateMission(missions_list, route.params.username);
+                            }
+                            }>
+                                <Image resizeMode="cover" resizeMethod="resize" style={{ alignSelf: "center" }} source={require('./assets/save.png')}></Image>
+                            </Pressable>
+                        </View>
+                    </View>
+                </ScrollView>
+            </ScrollView>
+            )
+        }
 
 }
