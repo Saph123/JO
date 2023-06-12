@@ -141,6 +141,9 @@ export function HomeScreen({ route, navigation }) {
                     navigation.navigate('ClickerScreen');
                 }
             }
+            else if (message.title == "Nouvelle victime") {
+                Alert.alert(message.title, message.body, [{ text: "Voir prochaine victime", onPress: () => navigation.navigate('KillerScreen') }, { text: "Balec" }])
+            }
             else {
                 Alert.alert(message.title, message.body, [{ text: "Ok" }])
             }

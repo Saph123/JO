@@ -497,18 +497,22 @@ export function fetchKiller(username, setKills, setAlive, setMission, setTarget,
     fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username).then(response => response.json()).then(data => {
         console.log(data)
         setArbitre(data["is_arbitre"])
-        if (data["started"])
-        {
-            setTab({states: ["résumé", "en cours"], status : "résumé"})
-        }
         if (!data["is_arbitre"])
         {
             setKills(data["kills"])
             setAlive(data["is_alive"])
             if (data["is_alive"])
             {
+                if (data["started"])
+                {
+                    setTab({states: ["en cours", "résumé"], status : "en cours"})
+                }
                 setMission(data["how_to_kill"])
                 setTarget(data["target"])
+            }
+            else
+            {
+                setTab({states: ["résumé", "en cours"], status : "résumé"})
             }
         } 
     }).catch(err => console.error("killer", err));
