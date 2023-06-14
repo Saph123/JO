@@ -315,30 +315,29 @@ export function modalChat(value, text, setChatText, localText, setLocalText, spo
                         <View style={{ flex: 5 }}>
                             <ScrollView style={{ marginTop: 20 }} ref={ref => { this.scrollView = ref }} onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
 
-                                <View style={{flex: 10, flexDirection : "column"}}>
+                                <View style={{ flex: 10, flexDirection: "column" }}>
                                     {text.split("\n").map((r, index) => {
-                                        if (index == 0)
-                                        {
+                                        if (index == 0) {
                                             return
                                         }
                                         var date = r.split("- ")[0]
                                         var who = r.replace(date + '-  ', "").split(" : ")[0]
                                         var what = r.replace(date + '-  ' + who + " : ", "")
                                         date = date.replace(",", "")
-                                        return(
-                                            <View style={{flex: 1, flexDirection : "row"}}>
-                                            <View style={{borderWidth:1, borderRadius: 4 ,flex: 1, flexDirection : "column", margin:2}}>
-                                                <View style={{flex: 1}}>
-                                                    <Text>{date}</Text>
+                                        return (
+                                            <View style={{ flex: 1, flexDirection: "row" }}>
+                                                <View style={{ borderWidth: 1, borderRadius: 4, flex: 1, flexDirection: "column", margin: 2 }}>
+                                                    <View style={{ flex: 1 }}>
+                                                        <Text>{date}</Text>
+                                                    </View>
                                                 </View>
-                                            </View>
-                                                <View style={{flex: 6}}>
+                                                <View style={{ flex: 6 }}>
                                                     <View key={index} style={
-                                                        {borderRadius: 10, marginTop:5, padding:3, alignSelf: who == username ? "flex-end" : "flex-start", backgroundColor: who == username ? "#186edb" : "#ffffff"}}>
-                                                        {who == username ? <Text style={{color: "white"}}>{what}</Text> :
-                                                        <View><Text style={{fontSize: 10, color: "purple"}}>{who}</Text>
-                                                        <Text>{what}</Text></View>}
-                                                        
+                                                        { borderRadius: 10, marginTop: 5, padding: 3, alignSelf: who == username ? "flex-end" : "flex-start", backgroundColor: who == username ? "#186edb" : "#ffffff" }}>
+                                                        {who == username ? <Text style={{ color: "white" }}>{what}</Text> :
+                                                            <View><Text style={{ fontSize: 10, color: "purple" }}>{who}</Text>
+                                                                <Text>{what}</Text></View>}
+
                                                     </View>
                                                 </View>
                                             </View>
@@ -348,11 +347,11 @@ export function modalChat(value, text, setChatText, localText, setLocalText, spo
                             </ScrollView>
                         </View>
                         <Pressable style={{ flex: 1, marginTop: 30, marginLeft: 20 }} onPress={() => value.setChat(false)}>
-                            <Image style={{ width: 28, height: 23 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/close-button.png')} />
+                            <Image style={{ width: 28, height: 23 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/remove.png')} />
                         </Pressable>
                     </View>
                     <View style={{ flexDirection: "row", flex: 1 }}>
-                        <TextInput onSubmitEditing={() => { pushChat(sportname, localText, username); setChatText(text + "\n" + username + ":" + localText); setLocalText(""); }} style={{ borderWidth: 1, flex: 1, borderRadius:8 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
+                        <TextInput onSubmitEditing={() => { pushChat(sportname, localText, username); setChatText(text + "\n" + username + ":" + localText); setLocalText(""); }} style={{ borderWidth: 1, flex: 1, borderRadius: 8 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
                         <Pressable onPress={() => { pushChat(sportname, localText, username); setChatText(text + "\n" + username + ":" + localText); setLocalText(""); }}>
                             <Image style={{ width: 50, height: 50 }} source={require('./assets/sendmessage.png')} />
                         </Pressable>
@@ -391,7 +390,7 @@ export function eventView(currentEvents, eventsDone, sportname, navigation, setC
             <View key={sportname} style={{ flex: 1, margin: -1, flexDirection: "row", borderColor: "black", borderWidth: 2, borderTopWidth: 0 }}>
                 <View style={{ alignSelf: "center", width: 70, height: "100%", flexDirection: "column", justifyContent: "center", borderRightWidth: 2, borderRightColor: "black" }}><Text style={{ textAlign: "center", fontWeight: "bold" }}>{timeBegin.getHours() + "H" + timeBegin.getMinutes().toString().padStart(2, "0")}</Text></View>
                 <Pressable delayLongPress={5000} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
-                    onPress={() => {vibrateLight(); sportlist().includes(sportname) ? setCurrentSport(sportname) : "", sportlist().includes(sportname) ? navigation.navigate(navigateTo, { sportname: sportname }) : "" }}
+                    onPress={() => { vibrateLight(); sportlist().includes(sportname) ? setCurrentSport(sportname) : "", sportlist().includes(sportname) ? navigation.navigate(navigateTo, { sportname: sportname }) : "" }}
                 >
                     <Image style={[styles.sportimage, { tintColor: "black" }]} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
                 </Pressable>
@@ -440,6 +439,8 @@ export function lutImg(imgname) {
         "100mRicard": require('./assets/sports/100mricard.png'),
         Petanque: require('./assets/sports/petanque.png'),
         Molky: require('./assets/sports/molkky.png'),
+        Crepes: require('./assets/sports/bretagne.png'),
+        "Cache-cache": require('./assets/sports/cachecache.png'),
         paris: require('./assets/paris.png'),
         paris_locked: require('./assets/paris.png'),
         poules: require('./assets/poules.png'),
@@ -451,6 +452,8 @@ export function lutImg(imgname) {
         "Remise des prix": require('./assets/podium.png'),
         "Rangement": require('./assets/sweep.png'),
         "résumé": require('./assets/memo.png'),
+        "kills": require('./assets/memo.png'),
+        "people": require('./assets/group.png'),
         "en cours": require('./assets/target.png'),
         "waiting": require('./assets/wait.png'),
     };
@@ -493,35 +496,53 @@ export function fetchChat(sportname, setChatText, setNewMessage) {
 
 }
 
-export function fetchKiller(username, setKills, setAlive, setMission, setTarget, setArbitre, setTab) {
+export function fetchKiller(username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText) {
     fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username).then(response => response.json()).then(data => {
-        console.log(data)
-        setArbitre(data["is_arbitre"])
-        if (!data["is_arbitre"])
-        {
+        if (data["over"]) {
+            setTab({ states: ["results"], status: "results" })
+        }
+        else if (!data["is_arbitre"]) {
             setKills(data["kills"])
             setAlive(data["is_alive"])
-            if (data["is_alive"])
-            {
-                if (data["started"])
-                {
-                    setTab({states: ["en cours", "résumé"], status : "en cours"})
+            if (data["is_alive"]) {
+                if (data["started"]) {
+                    setTab({ states: ["en cours", "résumé"], status: "en cours" })
                 }
                 setMission(data["how_to_kill"])
                 setTarget(data["target"])
             }
-            else
-            {
-                setTab({states: ["résumé", "en cours"], status : "résumé"})
+            else {
+                setTab({ states: ["résumé", "en cours"], status: "résumé" })
             }
-        } 
+        }
+        else {
+            // data["missions"]["available"] = [{title: ""}].concat(data["missions"]["available"])
+            setMissionAsRef(data["missions"])
+            let nb_missions =  data["missions"]["available"].length
+            for (let index = 0; index < data["missions"]["available"].length; index++)
+            {
+                if (data["missions"]["available"][index].title == "")
+                {
+                    nb_missions--; 
+                }                
+            }
+            setMotivText(nb_missions + "/25")
+            if (data["started"]) {
+                setTab({ states: ["people", "kills"], status: "people" })
+            }
+            else {
+                setTab({ states: ["kills"], status: "kills" })
+            }
+        }
     }).catch(err => console.error("killer", err));
 
 }
-export function updateMission(missions, username) {
+export function updateMission(missions, username, setRefresh, setShouldSave) {
     fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "missions", "missions": missions }) }).then(res => {
         if (res.status == 200) {
             alert("Saved", "Saved to server!", ["Ok"])
+            setRefresh(true)
+            setShouldSave(false)
         }
         else {
             alert("Wrong login or password!");
@@ -529,10 +550,11 @@ export function updateMission(missions, username) {
     }).catch(err => console.log(err, "in update missions"));
 
 }
-export function die(username, setAlive) {
+export function die(username, setAlive, setRefresh) {
     fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST" }).then(res => {
         if (res.status == 200) {
             setAlive(false)
+            setRefresh(true)
             return;
         }
     }).catch(err => console.log(err, "in die"));
@@ -543,7 +565,7 @@ export async function fetch_teams(sportname) {
     let fetch_teams = {}
 
     fetch_teams = await fetch("https://pierrickperso.ddnsfree.com:42124/teams/" + sportname + ".json").then(response => response.json()).then(data => {
-        let local_liste = {"Teams": [],"Others": []};
+        let local_liste = { "Teams": [], "Others": [] };
         for (var i in data["Teams"]) {
             local_liste["Teams"].push(new Liste(data["Teams"][i]["Players"], data["Teams"][i]["Players"], 0, 0));
         }
@@ -720,15 +742,14 @@ export function lock_unlock(lock, setLock, sportname) {
 
 }
 
-export function vibrateLight(){
+export function vibrateLight() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 }
 
 export function toggleLockBets(sportname) {
     const controller = new AbortController();
     fetch("https://pierrickperso.ddnsfree.com:42124/lockBets", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sportname }) }).then(r => {
-        if (r.status != 200)
-        {
+        if (r.status != 200) {
             let msg = "Server reply :" + r.status
             alert(msg);
         }

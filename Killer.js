@@ -1,28 +1,31 @@
 import styles from "./style.js";
 import * as React from 'react';
-import { View, Pressable, Image, ScrollView, Text, Alert, TextInput } from 'react-native';
+import { View, Pressable, Image, ScrollView, Text, Alert, TextInput, Modal } from 'react-native';
 import { die, lutImg, vibrateLight, fetchKiller, updateMission } from './utils.js';
 
 export function KillerScreen({ route }) {
     const [tabs, setTab] = React.useState({ states: ["waiting"], status: "waiting" });
-    const [arbitre, setArbitre] = React.useState(false)
-    const [kills, setKills] = React.useState([{name: "", mission: "", date: ""}])
+    const [kills, setKills] = React.useState([{ name: "", mission: "", date: "" }])
     const [alive, setAlive] = React.useState(true)
     const [target, setTarget] = React.useState("")
     const [mission, setMission] = React.useState("")
     const [discovered, setDiscovered] = React.useState(false)
-    const [missions, setMissions] = React.useState([""])
-    let init = true;
-    let missions_list = [""];
+    const [missions, setMissionAsRef] = React.useState({ available: [{ title: "" }], assigned: [{ title: "", to: "" }] })
+    const [refresh, setRefresh] = React.useState(true)
+    const [modifMission, setModifMission] = React.useState(false)
+    const [currentMisson, setCurrentMission] = React.useState({ title: "" })
+    const [modifyingMission, setModifyingMission] = React.useState(false)
+    const [temp_mission, setTempMission] = React.useState("")
+    const [shouldSave, setShouldSave] = React.useState(false)
+    const [motiv_text, setMotivText] = React.useState("")
+    let missions_list = missions;
     React.useEffect(() => {
-        if (init == true) {
-            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setArbitre, setTab)
-            init = false
-        }
+        if (refresh == true) {
+            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText)
+            setRefresh(false)
+            }
 
     }, []);
-    if (!arbitre)
-    {
     return (
         <View style={{ flex: 1, flexDirection: "column", height: 50, backgroundColor: "#C9CBCD" }}>
             {alive ? <View style={{ height: 50, flexDirection: "row" }}>
@@ -56,83 +59,153 @@ export function KillerScreen({ route }) {
                         </View>
                     </Pressable>
                     {discovered ?
-                    <View>
                         <View>
-                            <Text style={{ fontSize: 30, alignSelf: "center", fontWeight: "bold" }}>{target}</Text>
+                            <View>
+                                <Text style={{ fontSize: 30, alignSelf: "center", fontWeight: "bold" }}>{target}</Text>
+                            </View>
+                            <View style={{ borderTopWidth: 1, padding: 5 }}>
+                                <Text style={{ fontSize: 30, alignSelf: "center", fontWeight: "bold" }}>Mission</Text>
+                            </View>
+                            <View style={{ backgroundColor: "white", padding: 15, borderRadius: 20, width: "50%", alignSelf: "center" }}>
+                                <Text style={{ fontSize: 15, alignSelf: "center" }}>{mission}</Text>
+                            </View>
+                            <View style={{ height: 100 }}></View>
                         </View>
-                        <View style={{ borderTopWidth: 1, padding: 5 }}>
-                            <Text style={{ fontSize: 30, alignSelf: "center", fontWeight: "bold" }}>Mission</Text>
-                        </View>
-                        <View style={{ backgroundColor: "white", padding: 15, borderRadius: 20, width: "50%", alignSelf: "center" }}>
-                            <Text style={{ fontSize: 15, alignSelf: "center" }}>{mission}</Text>
-                        </View>
-                        <View style={{ height: 100 }}></View>
-                    </View>
-                    :
-                    <View></View>}
+                        :
+                        <View></View>}
                 </ScrollView>
                 : tabs.status == "résumé" ?
-                <View style={{ flex: 2, flexDirection: "column" }}>
-                    <View style={{ flex: 1, flexDirection: "row", marginTop: "5%", justifyContent: "center" }}>
-                        <View style={{ width: "100%" }}>
-                            <View style={{ marginTop: 10, flex: 1, flexDirection: "column", justifyContent: "center" }}>
-                                <Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>Etat:</Text>
-                                <View style={{ flex: 3 }}>
-                                    <View style={{ flex: 1 }}>
-                                        <Text style={{ textAlign: "center", fontWeight: "bold" }}>{alive ? "Toujours en vie" : ""}</Text>
-                                    </View>
-                                    {alive ?
+                    <View style={{ flex: 2, flexDirection: "column" }}>
+                        <View style={{ flex: 1, flexDirection: "row", marginTop: "5%", justifyContent: "center" }}>
+                            <View style={{ width: "100%" }}>
+                                <View style={{ marginTop: 10, flex: 1, flexDirection: "column", justifyContent: "center" }}>
+                                    <Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>Etat:</Text>
+                                    <View style={{ flex: 3 }}>
                                         <View style={{ flex: 1 }}>
-                                            <View style={styles.killbutton}>
-                                                <Pressable onPress={() => { Alert.alert("Confirmer votre mort", "", [{ text: "Confirmer", onPress: () => die(route.params.username, setAlive) }, { text: "Annuler" }]) }}><Text>Omar m'a tuer</Text></Pressable>
-                                            </View>
+                                            <Text style={{ textAlign: "center", fontWeight: "bold" }}>{alive ? "Toujours en vie" : ""}</Text>
                                         </View>
-                                        : <View></View>}
+                                        {alive ?
+                                            <View style={{ flex: 1 }}>
+                                                <View style={styles.killbutton}>
+                                                    <Pressable onPress={() => { Alert.alert("Confirmer votre mort", "", [{ text: "Confirmer", onPress: () => die(route.params.username, setAlive, setRefresh) }, { text: "Annuler" }]) }}><Text>Omar m'a tuer</Text></Pressable>
+                                                </View>
+                                            </View>
+                                            : <View></View>}
+                                    </View>
+                                    {alive ? <View></View> : <View style={{ flex: 10 }}><Image style={{ width: "100%" }} source={require('./assets/wasted.png')}></Image></View>}
                                 </View>
-                                {alive ? <View></View> : <View style={{ flex: 10 }}><Image style={{ width: "100%" }} source={require('./assets/wasted.png')}></Image></View>}
                             </View>
                         </View>
-                    </View>
-                    <View style={{ flex: 1 }}>
-                        <View style={{ marginTop: 10 }}>
-                            <Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>Killed:</Text>
-                        </View>
-                        <ScrollView style={{ flex: 1, flexDirection: "column", marginTop: "5%" }}>
-                            {kills.length > 0 ? kills.map(r =>
-                                <View style={styles.kills}>
-                                    <Text style={{ textAlign: "center" }}>{r.name} ({r.date}):{"\n"}{r.mission}</Text>
-                                </View>) : <View></View>}
-                        </ScrollView>
+                        <View style={{ flex: 1 }}>
+                            <View style={{ marginTop: 10 }}>
+                                <Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>Killed:</Text>
+                            </View>
+                            <ScrollView style={{ flex: 1, flexDirection: "column", marginTop: "5%" }}>
+                                {kills.length > 0 ? kills.map(r =>
+                                    <View style={styles.kills}>
+                                        <Text style={{ textAlign: "center" }}>{r.name} ({r.date}):{"\n"}{r.mission}</Text>
+                                    </View>) : <View></View>}
+                            </ScrollView>
 
+                        </View>
                     </View>
-                </View> : <View><Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>En attente du démarrage de la partie</Text></View>}
+                    : tabs.status == "waiting" ?
+                        <View><Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>En attente du démarrage de la partie</Text></View>
+                        : tabs.status == "kills" ?
+                            <View>
+                                <Modal
+                                    animationType="slide"
+                                    transparent={true}
+                                    visible={modifMission} style={{ paddingTop: "30%" }}>
+                                    <View style={[styles.matchZoomView, { minHeight: 300 }]}>
+                                        <Pressable style={[styles.closeButton, { marginBottom: 15 }]} onPress={() => { setModifMission(false) }}><Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/remove.png')} /></Pressable>
+                                        <View style={{ flex: 1, flexDirection: "column" }}>
+                                            <View style={{ flex: 3, justifyContent: "center", alignItems: "center" }}>
+                                                {
+                                                    modifyingMission == false && temp_mission != "" ?
+                                                    <Text key={temp_mission} style={{ minHeight: 30, width: 200, textAlignVertical: "center", textAlign: "left", padding: 5, paddingRight: 35, borderWidth: 1, borderColor: "#E0E0E0", marginLeft: 5, borderRadius: 10 }}>{temp_mission}</Text>
+                                                    :
+                                                    <TextInput onChangeText={text => {setTempMission(text); setModifyingMission(true)}}  onEndEditing={() => {setModifyingMission(false)}} autoFocus={true} placeholder="Tapez ici" key={currentMisson.title} style={{ minHeight: 90, width: 200, textAlignVertical: "center", textAlign: "left", padding: 5, paddingRight: 35, borderWidth: 1, borderColor: "#E0E0E0", marginLeft: 5, borderRadius: 10 }}>{currentMisson.title}</TextInput>
+                                                }
+                                            </View>
+                                            <View style={{ flex: 1, flexDirection: "row" }}>
+                                                <Pressable style={[styles.closeButton, { flex: 1 }]} onPress={() => {
+                                                    currentMisson.title = temp_mission;
+                                                    setModifMission(false);
+                                                    setShouldSave(true);
+                                                    }}>
+                                                    <Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/check-mark.png')} />
+                                                </Pressable>
+                                                <Pressable style={[styles.closeButton, { flex: 1 }]} onPress={() => {
+                                                    setModifyingMission(true);
+                                                    }}>
+                                                    <Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={lutImg("modif")} />
+                                                </Pressable>
+                                                <Pressable style={[styles.closeButton, { flex: 1 }]} onPress={() => {
+                                                    let missions = missions_list;
+                                                    missions["available"].splice(missions["available"].indexOf(currentMisson), 1);
+                                                    ; setModifMission(false)
+                                                    setShouldSave(true);
+                                                }}>
+                                                    <Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/delete.png')} />
+                                                </Pressable>
+                                            </View>
+                                        </View>
+                                    </View>
+                                </Modal>
+                                <View>
+                                    <View style={{ flexDirection: "row", marginTop: 22 }}>
+                                        <ScrollView style={{ flex: 1, borderRightWidth: 1, borderColor: "#E0E0E0" }}>
+                                            <Text style={[styles.showPlayers, { height: 60, width: 200 }]}>Missions ({motiv_text})</Text>
+                                            {missions_list["available"].map(r =>
+                                                <Pressable onPress={() => { setTempMission(r.title); setCurrentMission(r); setModifMission(true) }}>
+                                                    <Text key={r.title} style={{ minHeight: 30, width: 200, textAlignVertical: "center", textAlign: "left", padding: 5, paddingRight: 35, borderWidth: 1, borderColor: "#E0E0E0", marginLeft: 5 }}>{r.title}</Text>
+                                                </Pressable>
+                                            )
+                                            }
+                                            <View style={{ paddingTop: 50 }}></View>
+                                        </ScrollView>
+                                        <View style={{ flex: 1 }}>
+                                            <View style={{ width: 100, height: 60, backgroundColor: shouldSave ? "red" :  "white", justifyContent: "center", borderRadius: 30, borderWidth: 2, marginLeft: 5, marginBottom: 5 }}>
+                                                <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => {
+                                                    updateMission(missions_list, route.params.username, setRefresh, setShouldSave);
+                                                    let nb_missions =  missions_list["available"].length
+                                                    for (let index = 0; index < missions_list["available"].length; index++)
+                                                    {
+                                                        if (missions_list["available"][index].title == "")
+                                                        {
+                                                            nb_missions--; 
+                                                        }                
+                                                    }
+                                                    setMotivText(nb_missions + "/25")
+                                                }
+                                                }>
+                                                    <Text>Sauvegarder</Text>
+                                                </Pressable>
+                                            </View>
+                                            <View style={{ width: 100, height: 60, backgroundColor: "white", justifyContent: "center", borderRadius: 30, borderWidth: 2, marginLeft: 5, marginBottom: 5 }}>
+                                                <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => {
+                                                    let missions = missions_list;
+                                                    missions["available"].push({ title: "" })
+                                                    setMissionAsRef(missions);
+                                                    setRefresh(true);
+                                                    setTempMission("");
+                                                    setCurrentMission(missions.available[missions.available.length - 1]);
+                                                    setModifMission(true)
+                                                }
+                                                }>
+                                                    <Text>Ajouter une mission</Text>
+                                                </Pressable>
+                                            </View>
+                                        </View>
+                                    </View>
+                                </View>
+                            </View>
+                            : tabs.status == "people" ?
+                                <ScrollView></ScrollView>
+                                : <View></View>
+            }
         </View>
-    )}
-    else
-    {
-        return (
-            <ScrollView>
-                <ScrollView horizontal={true} directionalLockEnabled={false}>
-                    <View style={{ flexDirection: "row", marginTop: 22 }}>
-                        <View>
-                            <Text style={[styles.showPlayers, { height: 60 }]}>Mission</Text>
-                            {missions_list.map(r =>
-                                <TextInput key={r} multiline={true} onChangeText={(text) => { missions_list.push(text)}} style={[styles.showPlayers, { height : 90, width: 200, textAlignVertical: "top", textAlign : "left"}]}>{r}</TextInput>
-                            )
-                            }
-                        </View>
-                        <View style={{ width: 60, height: 60, backgroundColor: "lightgrey", justifyContent: "center" }}>
-                            <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => {
-                                updateMission(missions_list, route.params.username);
-                            }
-                            }>
-                                <Image resizeMode="cover" resizeMethod="resize" style={{ alignSelf: "center" }} source={require('./assets/save.png')}></Image>
-                            </Pressable>
-                        </View>
-                    </View>
-                </ScrollView>
-            </ScrollView>
-            )
-        }
-
+    )
 }
+
