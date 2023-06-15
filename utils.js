@@ -496,7 +496,7 @@ export function fetchChat(sportname, setChatText, setNewMessage) {
 
 }
 
-export function fetchKiller(username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText) {
+export function fetchKiller(username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers) {
     fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username).then(response => response.json()).then(data => {
         if (data["over"]) {
             setTab({ states: ["results"], status: "results" })
@@ -516,21 +516,33 @@ export function fetchKiller(username, setKills, setAlive, setMission, setTarget,
             }
         }
         else {
-            // data["missions"]["available"] = [{title: ""}].concat(data["missions"]["available"])
             setMissionAsRef(data["missions"])
-            let nb_missions =  data["missions"]["available"].length
-            for (let index = 0; index < data["missions"]["available"].length; index++)
-            {
-                if (data["missions"]["available"][index].title == "")
-                {
-                    nb_missions--; 
-                }                
+            let nb_missions = data["missions"].length
+            for (let index = 0; index < data["missions"].length; index++) {
+                if (data["missions"][index].title == "") {
+                    nb_missions--;
+                }
             }
             setMotivText(nb_missions + "/25")
             if (data["started"]) {
                 setTab({ states: ["people", "kills"], status: "people" })
+                let players = { left: [], middle: [], right: [] }
+                for (let index = 0; index < data["participants"].length; index++) {
+                    let player = data["participants"][index]
+                    if (index % 3 == 0) {
+                        players["left"].push({ name: player["name"], mission: player["how_to_kill"], alive: player["is_alive"] })
+                    }
+                    else if (index % 3 == 1) {
+                        players["middle"].push({ name: player["name"], mission: player["how_to_kill"], alive: player["is_alive"] })
+                    }
+                    else if (index % 3 == 2) {
+                        players["right"].push({ name: player["name"], mission: player["how_to_kill"], alive: player["is_alive"] })
+                    }
+                }
+                setPlayers(players)
             }
             else {
+                setMotivText(nb_missions + "/25")
                 setTab({ states: ["kills"], status: "kills" })
             }
         }
@@ -755,4 +767,22 @@ export function toggleLockBets(sportname) {
         }
     }
     ).catch(err => console.error(err))
+}
+
+
+export function personView(person) {
+    return (
+
+        <View style={{ width: 100, height: 170, margin: 10 }}>
+            <View style={{ height: 150, padding: 5 }}>
+
+                <Image style={{ position: "absolute", height: 150, resizeMode: "contain" }} source={require("./assets/piepie.jpeg")}></Image>
+            </View>
+            {person.alive == false ?
+                <Image style={{ position: "absolute", height: 150 }} source={require("./assets/dead2.png")}>
+
+                </Image> : null}
+            <Text style={{ height: 20, textAlign: "center", fontWeight: "bold" }}>{person.name}</Text>
+        </View>
+    )
 }

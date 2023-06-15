@@ -1,7 +1,7 @@
 import styles from "./style.js";
 import * as React from 'react';
 import { View, Pressable, Image, ScrollView, Text, Alert, TextInput, Modal } from 'react-native';
-import { die, lutImg, vibrateLight, fetchKiller, updateMission } from './utils.js';
+import { die, lutImg, vibrateLight, fetchKiller, updateMission, personView } from './utils.js';
 
 export function KillerScreen({ route }) {
     const [tabs, setTab] = React.useState({ states: ["waiting"], status: "waiting" });
@@ -10,7 +10,8 @@ export function KillerScreen({ route }) {
     const [target, setTarget] = React.useState("")
     const [mission, setMission] = React.useState("")
     const [discovered, setDiscovered] = React.useState(false)
-    const [missions, setMissionAsRef] = React.useState({ available: [{ title: "" }], assigned: [{ title: "", to: "" }] })
+    const [missions, setMissionAsRef] = React.useState([{ title: "" }])
+    const [players, setPlayers] = React.useState({ left: [], middle: [], right: [] })
     const [refresh, setRefresh] = React.useState(true)
     const [modifMission, setModifMission] = React.useState(false)
     const [currentMisson, setCurrentMission] = React.useState({ title: "" })
@@ -21,9 +22,9 @@ export function KillerScreen({ route }) {
     let missions_list = missions;
     React.useEffect(() => {
         if (refresh == true) {
-            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText)
+            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers)
             setRefresh(false)
-            }
+        }
 
     }, []);
     return (
@@ -123,9 +124,9 @@ export function KillerScreen({ route }) {
                                             <View style={{ flex: 3, justifyContent: "center", alignItems: "center" }}>
                                                 {
                                                     modifyingMission == false && temp_mission != "" ?
-                                                    <Text key={temp_mission} style={{ minHeight: 30, width: 200, textAlignVertical: "center", textAlign: "left", padding: 5, paddingRight: 35, borderWidth: 1, borderColor: "#E0E0E0", marginLeft: 5, borderRadius: 10 }}>{temp_mission}</Text>
-                                                    :
-                                                    <TextInput onChangeText={text => {setTempMission(text); setModifyingMission(true)}}  onEndEditing={() => {setModifyingMission(false)}} autoFocus={true} placeholder="Tapez ici" key={currentMisson.title} style={{ minHeight: 90, width: 200, textAlignVertical: "center", textAlign: "left", padding: 5, paddingRight: 35, borderWidth: 1, borderColor: "#E0E0E0", marginLeft: 5, borderRadius: 10 }}>{currentMisson.title}</TextInput>
+                                                        <Text key={temp_mission} style={{ minHeight: 30, width: 200, textAlignVertical: "center", textAlign: "left", padding: 5, paddingRight: 35, borderWidth: 1, borderColor: "#E0E0E0", marginLeft: 5, borderRadius: 10 }}>{temp_mission}</Text>
+                                                        :
+                                                        <TextInput onChangeText={text => { setTempMission(text); setModifyingMission(true) }} onEndEditing={() => { setModifyingMission(false) }} autoFocus={true} placeholder="Tapez ici" key={currentMisson.title} style={{ minHeight: 90, width: 200, textAlignVertical: "center", textAlign: "left", padding: 5, paddingRight: 35, borderWidth: 1, borderColor: "#E0E0E0", marginLeft: 5, borderRadius: 10 }}>{currentMisson.title}</TextInput>
                                                 }
                                             </View>
                                             <View style={{ flex: 1, flexDirection: "row" }}>
@@ -133,18 +134,18 @@ export function KillerScreen({ route }) {
                                                     currentMisson.title = temp_mission;
                                                     setModifMission(false);
                                                     setShouldSave(true);
-                                                    }}>
+                                                }}>
                                                     <Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/check-mark.png')} />
                                                 </Pressable>
                                                 <Pressable style={[styles.closeButton, { flex: 1 }]} onPress={() => {
                                                     setModifyingMission(true);
-                                                    }}>
+                                                }}>
                                                     <Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={lutImg("modif")} />
                                                 </Pressable>
                                                 <Pressable style={[styles.closeButton, { flex: 1 }]} onPress={() => {
                                                     let missions = missions_list;
-                                                    missions["available"].splice(missions["available"].indexOf(currentMisson), 1);
-                                                    ; setModifMission(false)
+                                                    missions.splice(missions.indexOf(currentMisson), 1);
+                                                    setModifMission(false);
                                                     setShouldSave(true);
                                                 }}>
                                                     <Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/delete.png')} />
@@ -156,8 +157,8 @@ export function KillerScreen({ route }) {
                                 <View>
                                     <View style={{ flexDirection: "row", marginTop: 22 }}>
                                         <ScrollView style={{ flex: 1, borderRightWidth: 1, borderColor: "#E0E0E0" }}>
-                                            <Text style={[styles.showPlayers, { height: 60, width: 200 }]}>Missions ({motiv_text})</Text>
-                                            {missions_list["available"].map(r =>
+                                            <Text style={[styles.showPlayers, { height: 60, width: 200, fontWeight: "bold", fontSize: 18 }]}>Missions{"\n"}({motiv_text})</Text>
+                                            {missions_list.map(r =>
                                                 <Pressable onPress={() => { setTempMission(r.title); setCurrentMission(r); setModifMission(true) }}>
                                                     <Text key={r.title} style={{ minHeight: 30, width: 200, textAlignVertical: "center", textAlign: "left", padding: 5, paddingRight: 35, borderWidth: 1, borderColor: "#E0E0E0", marginLeft: 5 }}>{r.title}</Text>
                                                 </Pressable>
@@ -166,16 +167,14 @@ export function KillerScreen({ route }) {
                                             <View style={{ paddingTop: 50 }}></View>
                                         </ScrollView>
                                         <View style={{ flex: 1 }}>
-                                            <View style={{ width: 100, height: 60, backgroundColor: shouldSave ? "red" :  "white", justifyContent: "center", borderRadius: 30, borderWidth: 2, marginLeft: 5, marginBottom: 5 }}>
+                                            <View style={{ width: 100, height: 60, backgroundColor: shouldSave ? "red" : "white", justifyContent: "center", borderRadius: 30, borderWidth: 2, marginLeft: 5, marginBottom: 5 }}>
                                                 <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => {
                                                     updateMission(missions_list, route.params.username, setRefresh, setShouldSave);
-                                                    let nb_missions =  missions_list["available"].length
-                                                    for (let index = 0; index < missions_list["available"].length; index++)
-                                                    {
-                                                        if (missions_list["available"][index].title == "")
-                                                        {
-                                                            nb_missions--; 
-                                                        }                
+                                                    let nb_missions = missions_list.length
+                                                    for (let index = 0; index < missions_list.length; index++) {
+                                                        if (missions_list[index].title == "") {
+                                                            nb_missions--;
+                                                        }
                                                     }
                                                     setMotivText(nb_missions + "/25")
                                                 }
@@ -186,11 +185,11 @@ export function KillerScreen({ route }) {
                                             <View style={{ width: 100, height: 60, backgroundColor: "white", justifyContent: "center", borderRadius: 30, borderWidth: 2, marginLeft: 5, marginBottom: 5 }}>
                                                 <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => {
                                                     let missions = missions_list;
-                                                    missions["available"].push({ title: "" })
+                                                    missions.push({ title: "" })
                                                     setMissionAsRef(missions);
                                                     setRefresh(true);
                                                     setTempMission("");
-                                                    setCurrentMission(missions.available[missions.available.length - 1]);
+                                                    setCurrentMission(missions[missions.length - 1]);
                                                     setModifMission(true)
                                                 }
                                                 }>
@@ -202,7 +201,28 @@ export function KillerScreen({ route }) {
                                 </View>
                             </View>
                             : tabs.status == "people" ?
-                                <ScrollView></ScrollView>
+                                <ScrollView>
+                                    <View style={{ flexDirection: "row", justifyContent :"space-between" }}>
+                                        <View style={{ flex: 1}}>
+                                            {players["left"].map(r =>
+                                                personView(r)
+                                            )
+                                            }
+                                        </View>
+                                        <View style={{ flex: 1}}>
+                                            {players["middle"].map(r =>
+                                                personView(r)
+                                            )
+                                            }
+                                        </View>
+                                        <View style={{ flex: 1}}>
+                                            {players["right"].map(r =>
+                                                personView(r)
+                                            )
+                                            }
+                                        </View>
+                                    </View>
+                                </ScrollView>
                                 : <View></View>
             }
         </View>
