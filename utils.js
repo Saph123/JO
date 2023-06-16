@@ -770,19 +770,22 @@ export function toggleLockBets(sportname) {
 }
 
 
-export function personView(person) {
+export function personView(person, setFocus, setFocusOn, setTempMission) {
     return (
 
         <View style={{ width: 100, height: 170, margin: 10 }}>
-            <View style={{ height: 150 }}>
+            <Pressable onPress={() => {setFocus(true); setFocusOn(person); setTempMission(person.mission); console.log(person)}}>
 
-                <Image style={{ height: 150, width: 100, borderRadius: 10 }} source={{ cache: 'reload', uri: "https://pierrickperso.ddnsfree.com:42124/photo/" + person.name }} />
-            </View>
-            {person.alive == false ?
-                <Image style={{ position: "absolute", height: 150 }} source={require("./assets/dead2.png")}>
+                <View style={{ height: 150 }}>
 
-                </Image> : null}
-            <Text style={{ height: 20, textAlign: "center", fontWeight: "bold" }}>{person.name}</Text>
+                    <Image style={{ height: 150, width: 100, borderRadius: 10 }} source={{ cache: 'reload', uri: "https://pierrickperso.ddnsfree.com:42124/photo/" + person.name }} />
+                </View>
+                {person.alive == false ?
+                    <Image style={{ position: "absolute", height: 150 }} source={require("./assets/dead2.png")}>
+
+                    </Image> : null}
+                <Text style={{ height: 20, textAlign: "center", fontWeight: "bold" }}>{person.name}</Text>
+            </Pressable>
         </View>
     )
 }

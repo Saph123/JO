@@ -19,6 +19,8 @@ export function KillerScreen({ route }) {
     const [temp_mission, setTempMission] = React.useState("")
     const [shouldSave, setShouldSave] = React.useState(false)
     const [motiv_text, setMotivText] = React.useState("")
+    const [focus, setFocus] = React.useState(false)
+    const [focusOn, setFocusOn] = React.useState("")
     let missions_list = missions;
     React.useEffect(() => {
         if (refresh == true) {
@@ -46,8 +48,8 @@ export function KillerScreen({ route }) {
                 <View></View>}
             {tabs.status == "en cours" ?
                 <ScrollView style={{ height: "100%" }}>
-                    <View style={{ position: "absolute", top: 218, left: 0, right: 0, bottom:0, alignItems: "center"}}>
-                        <Image style={{height: 201, width: 134}} source={discovered ? {cache: 'reload', uri: "https://pierrickperso.ddnsfree.com:42124/photo/" + target}: require('./assets/point_inter.png')} />
+                    <View style={{ position: "absolute", top: 218, left: 0, right: 0, bottom: 0, alignItems: "center" }}>
+                        <Image style={{ height: 201, width: 134 }} source={discovered ? { cache: 'reload', uri: "https://pierrickperso.ddnsfree.com:42124/photo/" + target } : require('./assets/point_inter.png')} />
                     </View>
                     <Pressable onPress={() => setDiscovered(true)}>
                         <View style={{ alignItems: "center", paddingBottom: 10 }}>
@@ -196,28 +198,63 @@ export function KillerScreen({ route }) {
                                 </View>
                             </View>
                             : tabs.status == "people" ?
-                                <ScrollView>
-                                    <View style={{ flexDirection: "row", justifyContent :"space-between" }}>
-                                        <View style={{ flex: 1}}>
-                                            {players["left"].map(r =>
-                                                personView(r)
-                                            )
-                                            }
+                                <View>
+                                    <Modal
+                                        animationType="slide"
+                                        transparent={true}
+                                        visible={focus} style={{ paddingTop: "30%" }}>
+                                        <View style={[styles.matchZoomView, { minHeight: 300 }]}>
+                                            <Pressable style={[styles.closeButton, { marginBottom: 15 }]} onPress={() => { setFocus(false) }}><Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/remove.png')} /></Pressable>
+                                            <View style={{ flex: 1, flexDirection: "column" }}>
+                                                <View style={{ flex: 3, justifyContent: "center", alignItems: "center" }}>
+                                                    <View><Text>Mission</Text></View>
+                                                    {
+                                                        modifyingMission == false?
+                                                            <Text key={temp_mission} style={{ minHeight: 30, width: 200, textAlignVertical: "center", textAlign: "left", padding: 5, paddingRight: 35, borderWidth: 1, borderColor: "#E0E0E0", marginLeft: 5, borderRadius: 10 }}>{temp_mission}</Text>
+                                                            :
+                                                            <TextInput onChangeText={text => { setTempMission(text); setModifyingMission(true) }} onEndEditing={() => { setModifyingMission(false) }} autoFocus={true} placeholder="Tapez ici" key={focusOn.mission} style={{ minHeight: 90, width: 200, textAlignVertical: "center", textAlign: "left", padding: 5, paddingRight: 35, borderWidth: 1, borderColor: "#E0E0E0", marginLeft: 5, borderRadius: 10 }}>{focusOn.mission}</TextInput>
+                                                    }
+                                                </View>
+                                                <View style={{ flex: 1, flexDirection: "row" }}>
+                                                    <Pressable style={[styles.closeButton, { flex: 1 }]} onPress={() => {
+                                                        focusOn.mission = temp_mission;
+                                                        setFocus(false);
+                                                        setShouldSave(true);
+                                                    }}>
+                                                        <Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/check-mark.png')} />
+                                                    </Pressable>
+                                                    <Pressable style={[styles.closeButton, { flex: 1 }]} onPress={() => {
+                                                        setModifyingMission(true);
+                                                    }}>
+                                                        <Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={lutImg("modif")} />
+                                                    </Pressable>
+                                                </View>
+                                            </View>
                                         </View>
-                                        <View style={{ flex: 1}}>
-                                            {players["middle"].map(r =>
-                                                personView(r)
-                                            )
-                                            }
+                                    </Modal>
+                                    <ScrollView>
+                                        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                                            <View style={{ flex: 1 }}>
+                                                {players["left"].map(r =>
+                                                    personView(r, setFocus, setFocusOn, setTempMission)
+                                                )
+                                                }
+                                            </View>
+                                            <View style={{ flex: 1 }}>
+                                                {players["middle"].map(r =>
+                                                    personView(r, setFocus, setFocusOn, setTempMission)
+                                                )
+                                                }
+                                            </View>
+                                            <View style={{ flex: 1 }}>
+                                                {players["right"].map(r =>
+                                                    personView(r, setFocus, setFocusOn, setTempMission)
+                                                )
+                                                }
+                                            </View>
                                         </View>
-                                        <View style={{ flex: 1}}>
-                                            {players["right"].map(r =>
-                                                personView(r)
-                                            )
-                                            }
-                                        </View>
-                                    </View>
-                                </ScrollView>
+                                    </ScrollView>
+                                </View>
                                 : <View></View>
             }
         </View>
