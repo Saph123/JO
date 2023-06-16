@@ -776,7 +776,7 @@ export function personView(person) {
         <View style={{ width: 100, height: 170, margin: 10 }}>
             <View style={{ height: 150, padding: 5 }}>
 
-                <Image style={{ position: "absolute", height: 150, resizeMode: "contain" }} source={require("./assets/piepie.jpeg")}></Image>
+                <Image key={person.name} style={{ position: "absolute", height: 150, resizeMode: "contain" }} source={{ uri: "https://pierrickperso.ddnsfree.com:42124/photo/" + person.name}}></Image>
             </View>
             {person.alive == false ?
                 <Image style={{ position: "absolute", height: 150 }} source={require("./assets/dead2.png")}>

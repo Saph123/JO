@@ -47,7 +47,7 @@ export function KillerScreen({ route }) {
             {tabs.status == "en cours" ?
                 <ScrollView style={{ height: "100%" }}>
                     <View style={{ position: "absolute", top: 218, left: 0, right: 0, bottom:0, alignItems: "center"}}>
-                        <Image style={{height: 201, width: 134}} source={discovered ? require('./assets/piepie.jpeg'): require('./assets/point_inter.png')} />
+                        <Image style={{height: 201, width: 134}} source={discovered ? {cache: 'reload', uri: "https://pierrickperso.ddnsfree.com:42124/photo/" + target}: require('./assets/point_inter.png')} />
                     </View>
                     <Pressable onPress={() => setDiscovered(true)}>
                         <View style={{ alignItems: "center", paddingBottom: 10 }}>
