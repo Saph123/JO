@@ -46,14 +46,9 @@ export function KillerScreen({ route }) {
                 <View></View>}
             {tabs.status == "en cours" ?
                 <ScrollView style={{ height: "100%" }}>
-                    {discovered ? <View style={{ position: "absolute", alignSelf: "center" }}>
-                        <Image style={{ width: 300, resizeMode: "center", height: 319, top: "50%" }} source={require('./assets/piepie.jpeg')} />
+                    <View style={{ position: "absolute", top: 218, left: 0, right: 0, bottom:0, alignItems: "center"}}>
+                        <Image style={{height: 201, width: 134}} source={discovered ? require('./assets/piepie.jpeg'): require('./assets/point_inter.png')} />
                     </View>
-                        :
-                        <View style={{ position: "absolute", alignSelf: "center" }}>
-                            <Image style={{ width: 300, resizeMode: "center", height: 319, top: "50%" }} source={require('./assets/point_inter.png')} />
-                        </View>
-                    }
                     <Pressable onPress={() => setDiscovered(true)}>
                         <View style={{ alignItems: "center", paddingBottom: 10 }}>
                             <Image style={{ width: "95%", resizeMode: 'contain' }} source={require('./assets/wanted.png')} />
