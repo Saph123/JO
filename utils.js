@@ -530,13 +530,13 @@ export function fetchKiller(username, setKills, setAlive, setMission, setTarget,
                 for (let index = 0; index < data["participants"].length; index++) {
                     let player = data["participants"][index]
                     if (index % 3 == 0) {
-                        players["left"].push({ name: player["name"], mission: player["how_to_kill"], alive: player["is_alive"] })
+                        players["left"].push({ name: player["name"], mission: player["how_to_kill"], alive: player["is_alive"], death: player["is_alive"] == false ? player["death"] : "" })
                     }
                     else if (index % 3 == 1) {
-                        players["middle"].push({ name: player["name"], mission: player["how_to_kill"], alive: player["is_alive"] })
+                        players["middle"].push({ name: player["name"], mission: player["how_to_kill"], alive: player["is_alive"], death: player["is_alive"] == false ? player["death"] : "" })
                     }
                     else if (index % 3 == 2) {
-                        players["right"].push({ name: player["name"], mission: player["how_to_kill"], alive: player["is_alive"] })
+                        players["right"].push({ name: player["name"], mission: player["how_to_kill"], alive: player["is_alive"], death: player["is_alive"] == false ? player["death"] : "" })
                     }
                 }
                 setPlayers(players)
@@ -549,6 +549,7 @@ export function fetchKiller(username, setKills, setAlive, setMission, setTarget,
     }).catch(err => console.error("killer", err));
 
 }
+
 export function updateMission(missions, username, setRefresh, setShouldSave) {
     fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "missions", "missions": missions }) }).then(res => {
         if (res.status == 200) {
@@ -562,6 +563,7 @@ export function updateMission(missions, username, setRefresh, setShouldSave) {
     }).catch(err => console.log(err, "in update missions"));
 
 }
+
 export function die(username, setAlive, setRefresh) {
     fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST" }).then(res => {
         if (res.status == 200) {
@@ -570,6 +572,24 @@ export function die(username, setAlive, setRefresh) {
             return;
         }
     }).catch(err => console.log(err, "in die"));
+
+}
+
+export function kill(username, personToKill, giveCredit, setFocus) {
+    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "kill", "to_kill": {name: personToKill, give_credit: giveCredit} })}).then(res => {
+        if (res.status == 200) {
+            setFocus(false);
+        }
+    }).catch(err => console.log(err, "in kill"));
+
+}
+
+export function endKiller(username, setTab) {
+    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "end_killer" })}).then(res => {
+        if (res.status == 200) {
+            setTab({states: ["results"], status: "results"});
+        }
+    }).catch(err => console.log(err, "in end killer"));
 
 }
 
@@ -770,22 +790,19 @@ export function toggleLockBets(sportname) {
 }
 
 
-export function personView(person, setFocus, setFocusOn, setTempMission) {
+export function personView(person) {
     return (
-
         <View style={{ width: 100, height: 170, margin: 10 }}>
-            <Pressable onPress={() => {setFocus(true); setFocusOn(person); setTempMission(person.mission); console.log(person)}}>
 
-                <View style={{ height: 150 }}>
+            <View style={{ height: 150 }}>
 
-                    <Image style={{ height: 150, width: 100, borderRadius: 10 }} source={{ cache: 'reload', uri: "https://pierrickperso.ddnsfree.com:42124/photo/" + person.name }} />
-                </View>
-                {person.alive == false ?
-                    <Image style={{ position: "absolute", height: 150 }} source={require("./assets/dead2.png")}>
+                <Image style={{ height: 150, width: 100, borderRadius: 10 }} source={{ cache: 'reload', uri: "https://pierrickperso.ddnsfree.com:42124/photo/" + person.name }} />
+            </View>
+            {person.alive == false ?
+                <Image style={{ position: "absolute", height: 150 }} source={require("./assets/dead2.png")}>
 
-                    </Image> : null}
-                <Text style={{ height: 20, textAlign: "center", fontWeight: "bold" }}>{person.name}</Text>
-            </Pressable>
+                </Image> : null}
+            <Text style={{ height: 20, textAlign: "center", fontWeight: "bold" }}>{person.name}</Text>
         </View>
     )
 }
