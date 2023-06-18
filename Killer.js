@@ -26,21 +26,25 @@ export function KillerScreen({ route }) {
     const [localText, setLocalText] = React.useState("");
     const [newMessage, setNewMessage] = React.useState("");
     const [keyboardHeight, setKeyboardHeight] = React.useState(0);
-
+    const ref = React.useRef()
     let missions_list = missions;
     React.useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
-          'keyboardDidShow',
-          e => {
-            setKeyboardHeight(e.endCoordinates.height);
-          }
+            'keyboardDidShow',
+            e => {
+                setKeyboardHeight(e.endCoordinates.height);
+                setTimeout(() => {
+
+                    ref.current.scrollToEnd({ animated: false })
+                }, 1);
+            }
         );
-    
+
         const keyboardDidHideListener = Keyboard.addListener(
-          'keyboardDidHide',
-          () => {
-            setKeyboardHeight(0);
-          }
+            'keyboardDidHide',
+            () => {
+                setKeyboardHeight(0);
+            }
         );
         if (refresh == true) {
             fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setChatText, setNewMessage)
@@ -70,7 +74,7 @@ export function KillerScreen({ route }) {
                 :
                 <View></View>}
             {tabs.status == "en cours" ?
-                <ScrollView style={{ height: "100%" }}>
+                <ScrollView style={{ height: "100%" }} ref={ref}>
                     <View style={{ position: "absolute", top: 218, left: 0, right: 0, bottom: 0, alignItems: "center" }}>
                         <Image style={{ height: 201, width: 134 }} source={discovered ? { cache: 'reload', uri: "https://pierrickperso.ddnsfree.com:42124/photo/" + target } : require('./assets/point_inter.png')} />
                     </View>
@@ -91,11 +95,8 @@ export function KillerScreen({ route }) {
                                 <Text style={{ fontSize: 15, alignSelf: "center" }}>{mission}</Text>
                             </View>
                             <View style={{ height: 100 }}></View>
-                            <View style={{ height: 300, left:0, right:0, bottom:0, paddingBottom:keyboardHeight, width: "100%" }}>
+                            <View style={{ height: 300 + keyboardHeight, left: 0, right: 0, bottom: 0, paddingBottom: keyboardHeight + 10, width: "100%" }}>
                                 {chatView(null, chatText, setChatText, localText, setLocalText, "killer/" + target, "Killer", false)}
-                            </View>
-                            <View style={{height: keyboardHeight}}>
-
                             </View>
                         </View>
                         :
