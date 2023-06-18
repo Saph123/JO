@@ -134,7 +134,7 @@ export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, set
             let allowed = false;
             for(let i=0; i < data.active_players.length;i++){
                 if(data.active_players[i] == username){
-                    console.log("I'm allowed to play!");
+                    console.log(data.active_players);
                     allowed = true;
                 }
             }
