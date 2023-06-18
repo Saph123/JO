@@ -26,7 +26,7 @@ export function KillerScreen({ route }) {
     const [localText, setLocalText] = React.useState("");
     const [newMessage, setNewMessage] = React.useState("");
     const [keyboardHeight, setKeyboardHeight] = React.useState(0);
-    const ref = React.useRef()
+    const ref = React.useRef(null)
     let missions_list = missions;
     React.useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
@@ -34,8 +34,9 @@ export function KillerScreen({ route }) {
             e => {
                 setKeyboardHeight(e.endCoordinates.height);
                 setTimeout(() => {
-
-                    ref.current.scrollToEnd({ animated: false })
+                    if (ref.current != undefined) {
+                        ref.current.scrollToEnd({ animated: false })
+                    }
                 }, 1);
             }
         );
