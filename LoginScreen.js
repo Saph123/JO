@@ -191,24 +191,23 @@ export function LoginScreen({ route, navigation }) {
                     <View style={{ flex: 1, alignContent: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                         <View style={{ flex: 1 }}>
                             <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Mes activités </Text></View>
-                            {events.map(r => {
 
-
+                            {events.map(r => {                                
                                 return planning["listeevent"].map(q => {
                                     if (q.eventname == r) {
-
+                                        
                                         return (
-                                            <SportContext.Consumer>
+                                            <SportContext.Consumer key={q}>
                                                 {value => {
                                                     return eventView(eventsInProgress, eventsDone, r, navigation, value.setCurrentSport, "SportDetails", q.timeBegin, true)
                                                 }
-                                                }
+                                            }
                                             </SportContext.Consumer>
                                         )
                                     }
-
-
-
+                                    
+                                    
+                                    
                                 });
                             })}
 
@@ -219,7 +218,7 @@ export function LoginScreen({ route, navigation }) {
                                 return planning["listeevent"].map(q => {
                                     if (q.eventname == r) {
                                         return (
-                                            <SportContext.Consumer>
+                                            <SportContext.Consumer key={q}>
                                                 {value => { return eventView(eventsInProgress, eventsDone, r, navigation, value.setCurrentSport, "SportDetails", q.timeBegin, true) }
                                                 }
                                             </SportContext.Consumer>

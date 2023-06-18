@@ -58,7 +58,7 @@ export function ShifumiScreen({ route }) {
                                             var what = r.replace(date + '-  ' + who + " : ", "")
                                             date = date.replace(",", "")
                                             return (
-                                                <View style={{ flex: 1, flexDirection: "row" }}>
+                                                <View key={r + index} style={{ flex: 1, flexDirection: "row" }}>
                                                     <View style={{ borderWidth: 1, borderRadius: 4, flex: 1, flexDirection: "column", margin: 2 }}>
                                                         <View style={{ flex: 1 }}>
                                                             <Text>{date}</Text>

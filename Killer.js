@@ -1,8 +1,7 @@
 import styles from "./style.js";
 import * as React from 'react';
 import { View, Pressable, Image, ScrollView, Text, Alert, TextInput, Modal } from 'react-native';
-import { die, lutImg, vibrateLight, fetchKiller, updateMission, personView, kill, endKiller } from './utils.js';
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { die, lutImg, vibrateLight, fetchKiller, updateMission, personView, kill, endKiller, changeMission} from './utils.js';
 
 export function KillerScreen({ route }) {
     const [tabs, setTab] = React.useState({ states: ["waiting"], status: "waiting" });
@@ -12,7 +11,7 @@ export function KillerScreen({ route }) {
     const [mission, setMission] = React.useState("")
     const [discovered, setDiscovered] = React.useState(false)
     const [missions, setMissionAsRef] = React.useState([{ title: "" }])
-    const [players, setPlayers] = React.useState({ left: [], middle: [], right: [] })
+    const [players, setPlayers] = React.useState({ left: [], middle: [], right: [], everyone: [] })
     const [refresh, setRefresh] = React.useState(true)
     const [currentMisson, setCurrentMission] = React.useState({ title: "" })
     const [modifyingMission, setModifyingMission] = React.useState(false)
@@ -22,10 +21,11 @@ export function KillerScreen({ route }) {
     const [focus, setFocus] = React.useState(false)
     const [focusOn, setFocusOn] = React.useState("")
     const [giveCredit, setGiveCredit] = React.useState(false)
+    const [gameOver, setGameOver] = React.useState(false)
     let missions_list = missions;
     React.useEffect(() => {
         if (refresh == true) {
-            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers)
+            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver)
             setRefresh(false)
         }
 
@@ -101,7 +101,7 @@ export function KillerScreen({ route }) {
                             </View>
                             <ScrollView style={{ flex: 1, flexDirection: "column", marginTop: "5%" }}>
                                 {kills.length > 0 ? kills.map(r =>
-                                    <View style={styles.kills}>
+                                    <View key={r.name} style={styles.kills}>
                                         <Text style={{ textAlign: "center" }}>{r.name} ({r.date}):{"\n"}{r.mission}</Text>
                                     </View>) : <View></View>}
                             </ScrollView>
@@ -149,15 +149,15 @@ export function KillerScreen({ route }) {
                                             </View>
                                         </View>
                                     </View>
-                                    <TouchableWithoutFeedback style={{ height: "100%" }} onPress={() => { setFocus(false); setModifyingMission(false) }}>
-                                    </TouchableWithoutFeedback>
+                                    <Pressable style={{ height: "100%" }} onPress={() => { setFocus(false); setModifyingMission(false) }}>
+                                    </Pressable>
                                 </Modal>
                                 <View>
                                     <View style={{ flexDirection: "row", marginTop: 22 }}>
                                         <ScrollView style={{ flex: 1, borderRightWidth: 1, borderColor: "#E0E0E0" }}>
                                             <Text style={[styles.showPlayers, { height: 60, width: 200, fontWeight: "bold", fontSize: 18 }]}>Missions{"\n"}({motiv_text})</Text>
                                             {missions_list.map(r =>
-                                                <Pressable onPress={() => { setTempMission(r.title); setCurrentMission(r); setFocus(true) }}>
+                                                <Pressable key={r.title} onPress={() => { setTempMission(r.title); setCurrentMission(r); setFocus(true) }}>
                                                     <Text key={r.title} style={{ minHeight: 30, width: 200, textAlignVertical: "center", textAlign: "left", padding: 5, paddingRight: 35, borderWidth: 1, borderColor: "#E0E0E0", marginLeft: 5 }}>{r.title}</Text>
                                                 </Pressable>
                                             )
@@ -188,7 +188,7 @@ export function KillerScreen({ route }) {
                                                     setRefresh(true);
                                                     setTempMission("");
                                                     setCurrentMission(missions[missions.length - 1]);
-                                                    setModifMission(true)
+                                                    setFocus(true)
                                                 }
                                                 }>
                                                     <Text>Ajouter une mission</Text>
@@ -209,8 +209,8 @@ export function KillerScreen({ route }) {
                                             <View style={{ flexDirection: "row" }}>
                                                 <View style={{ flex: 1 }}>
 
-                                                    {personView(focusOn)}
-                                                    {focusOn.alive ?
+                                                    {personView(focusOn.name, true)}
+                                                    {focusOn.alive & !gameOver ?
                                                         <View>
                                                             <View style={{ flexDirection: "row" }}>
                                                                 <Pressable onPress={() => setGiveCredit(!giveCredit)} style={{ width: 22, height: 22, borderRadius: 5, borderWidth: 1, marginRight: 5 }}>
@@ -237,7 +237,7 @@ export function KillerScreen({ route }) {
                                                     }
                                                 </View>
                                                 <View style={{ flex: 1, flexDirection: "column" }}>
-                                                    {focusOn.alive ? <View>
+                                                    {focusOn.alive & !gameOver ? <View>
 
                                                         <View style={{ alignItems: "center" }}>
                                                             <View><Text>Mission</Text></View>
@@ -255,31 +255,57 @@ export function KillerScreen({ route }) {
                                                                 focusOn.mission = temp_mission;
                                                                 setFocus(false);
                                                                 setShouldSave(true);
-                                                                setGiveCredit(false)
-                                                                setModifyingMission(false)
+                                                                setGiveCredit(false);
+                                                                setModifyingMission(false);
+                                                                changeMission(route.params.username, focusOn);
                                                             }}>
                                                                 <Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/check-mark.png')} />
                                                             </Pressable>
                                                         </View>
                                                     </View>
-                                                        :
-                                                        <View style={{ alignSelf: "center", justifyContent: "space-around", alignItems: "center", flex: 1 }}>
-                                                            <Text style={{ textAlign: "center" }}>Mort:{"\n"}{focusOn.death}</Text>
-                                                            <Text style={{ textAlign: "center" }}>Cause du décès:{"\n"}{focusOn.mission}</Text>
-                                                        </View>
+                                                        : !focusOn.alive ?
+                                                            <View style={{ alignSelf: "center", justifyContent: "space-around", alignItems: "center", flex: 1 }}>
+                                                                <Text style={{ textAlign: "center" }}>Mort:{"\n"}{focusOn.death}</Text>
+                                                                <Text style={{ textAlign: "center" }}>Cause du décès:{"\n"}{focusOn.mission}</Text>
+                                                            </View>
+                                                            : <View>
+                                                                <View style={{ alignItems: "center" }}>
+                                                                    <View><Text>Mission</Text></View>
+                                                                    {
+                                                                        <View style={{ minHeight: 30, width: "100%", textAlignVertical: "center", textAlign: "left", padding: 5, paddingRight: 35, borderWidth: 1, borderColor: "#E0E0E0", marginLeft: 5, borderRadius: 10 }}>
+                                                                            <Text key={temp_mission}>{temp_mission}</Text>
+                                                                        </View>
+                                                                    }
+                                                                </View>
+                                                            </View>
                                                     }
                                                 </View>
                                             </View>
+                                            {focusOn["nbr_of_kills"] > 0 ?
+                                                <ScrollView style={{ maxHeight: 250, borderWidth: 1, borderRadius: 20, paddingLeft: 10, paddingRight: 10, paddingTop: 5 }}>
+
+                                                    <Text style={{ height: 20, textAlign: "center", fontWeight: "bold" }}>Victimes:</Text>
+                                                    {focusOn.kills.map(kill =>
+                                                        <View key={kill.name} style={{ flexDirection: "row" }}>
+
+                                                            {personView(kill.name, false)}
+                                                            <Text style={{ marginTop: 30, maxWidth: 100, textAlign: "center", textAlignVertical: "center" }}>{kill.date + "\n\n" + kill.mission}</Text>
+                                                        </View>
+                                                    )
+                                                    }
+                                                </ScrollView>
+                                                : null}
                                         </View>
-                                        <TouchableWithoutFeedback style={{ height: "100%" }} onPress={() => { setFocus(false); setGiveCredit(false); setModifyingMission(false) }}>
-                                        </TouchableWithoutFeedback>
+                                        <Pressable style={{ height: "100%" }} onPress={() => { setFocus(false); setGiveCredit(false); setModifyingMission(false) }}>
+                                            <View style={{ height: "100%" }}></View>
+                                        </Pressable>
                                     </Modal>
                                     <ScrollView style={{ marginTop: 10, marginBottom: 50 }}>
                                         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                                             <View style={{ flex: 1 }}>
                                                 {players["left"].map(r =>
                                                     <Pressable key={r.name} onPress={() => { setFocus(true); setFocusOn(r); setTempMission(r.mission) }}>
-                                                        {personView(r)}
+                                                        {personView(r.name, r.alive)}
                                                     </Pressable>
                                                 )
                                                 }
@@ -287,7 +313,7 @@ export function KillerScreen({ route }) {
                                             <View style={{ flex: 1 }}>
                                                 {players["middle"].map(r =>
                                                     <Pressable key={r.name} onPress={() => { setFocus(true); setFocusOn(r); setTempMission(r.mission) }}>
-                                                        {personView(r)}
+                                                        {personView(r.name, r.alive)}
                                                     </Pressable>
                                                 )
                                                 }
@@ -295,26 +321,60 @@ export function KillerScreen({ route }) {
                                             <View style={{ flex: 1 }}>
                                                 {players["right"].map(r =>
                                                     <Pressable key={r.name} onPress={() => { setFocus(true); setFocusOn(r); setTempMission(r.mission) }}>
-                                                        {personView(r)}
+                                                        {personView(r.name, r.alive)}
                                                     </Pressable>
                                                 )
                                                 }
                                             </View>
                                         </View>
-                                        <Pressable onPress={() => {
-                                            Alert.alert("Confirmer ?", "Cette action est définitive", [{
-                                                text: "Confirmer", onPress: () => {
-                                                    endKiller(route.params.username, setTab);
-                                                }
-                                            }, { text: "Annuler" }])
-                                        }}>
-                                            <View style={[styles.killbutton, { marginTop: 20, marginBottom: 50, minHeight: 50 }]}>
-                                                <Text style={{ fontSize: 30, fontWeight: "bold" }}> Mettre fin à la partie </Text>
-                                            </View>
-                                        </Pressable>
+                                        {
+                                            gameOver ? null :
+                                                <Pressable onPress={() => {
+                                                    Alert.alert("Confirmer ?", "Cette action est définitive", [{
+                                                        text: "Confirmer", onPress: () => {
+                                                            endKiller(route.params.username, setTab);
+                                                        }
+                                                    }, { text: "Annuler" }])
+                                                }}>
+                                                    <View style={[styles.killbutton, { marginTop: 20, marginBottom: 50, minHeight: 50 }]}>
+                                                        <Text style={{ fontSize: 30, fontWeight: "bold" }}> Mettre fin à la partie </Text>
+                                                    </View>
+                                                </Pressable>
+                                        }
                                     </ScrollView>
                                 </View>
-                                : <View></View>
+                                : tabs.status == "results" ?
+                                    <View style={{ flex: 2, flexDirection: "row" }}>
+                                        <View style={{ flex: 1, borderEndWidth: 2 }}>
+                                            <Text style={{ textAlign: "center", fontSize: 20, fontWeight: "bold", marginBottom: 10, marginTop: 10 }}>Survie</Text>
+                                            <View style={{ borderBottomWidth: 2, marginBottom: 10 }}></View>
+                                            <ScrollView>
+                                                {
+                                                    players.everyone.sort((a, b) => a.rank - b.rank).map(player =>
+                                                        <View key={player.name} style={{ flexDirection: "row", alignSelf: "center" }}>
+                                                            {player.rank < 4 ?
+                                                                <Image style={{ marginRight: 10, flex: 1, maxWidth: 20 }} source={player.rank == 1 ? require("./assets/or.png") : player.rank == 2 ? require("./assets/argent.png") : require("./assets/bronze.png")} /> : <View style={{ height: 30, width: 30 }}></View>}
+                                                            <Text key={player.name} style={{ height: 30, marginTop: 5, width: 100 }}>{player.name}</Text>
+                                                        </View>
+                                                    )}
+                                            </ScrollView>
+                                        </View>
+                                        <View style={{ flex: 1 }}>
+                                            <Text style={{ textAlign: "center", fontSize: 20, fontWeight: "bold", marginBottom: 10, marginTop: 10 }}>Kills</Text>
+                                            <View style={{ borderBottomWidth: 2, marginBottom: 10 }}></View>
+                                            <ScrollView>
+                                                {
+                                                    players.everyone.sort((a, b) => b.nbr_of_kills - a.nbr_of_kills).map(player =>
+                                                        <View key={player.name} style={{ flexDirection: "row", alignSelf: "center" }}>
+                                                            {player.rank < 4 ?
+                                                                <Image style={{ marginRight: 10, flex: 1, maxWidth: 20 }} source={player.rank == 1 ? require("./assets/or.png") : player.rank == 2 ? require("./assets/argent.png") : require("./assets/bronze.png")} /> : <View style={{ height: 30, width: 30 }}></View>}
+                                                            <Text key={player.name} style={{ height: 30, marginTop: 5, width: 100 }}>{player.name} {player.nbr_of_kills}</Text>
+                                                        </View>
+                                                    )}
+                                            </ScrollView>
+                                        </View>
+                                    </View>
+                                    : <View></View>
             }
         </View>
     )

@@ -393,7 +393,7 @@ export const Trace = (props) => {
 
 export function result_view(results) {
     return (
-        <View style={styles.podium}>
+        <View key={results} style={styles.podium}>
             <Text style={{ textAlign: "center" }}>{results}</Text>
         </View>)
 }
@@ -593,7 +593,7 @@ const Matchcomp = (props) => {
                 <View style={styles.bracket}>
                     {match_array.map((r, index) => {
                         if (index % 2) {
-                            return (draw_svg());
+                            return (draw_svg(index));
                         }
                     })
                     }
@@ -603,9 +603,9 @@ const Matchcomp = (props) => {
     );
 
 }
-function draw_svg() {
+function draw_svg(index) {
     return (
-        <View style={{ flex: 1, marginTop: 30, marginBottom: 30, minWidth: 100 }}>
+        <View key={index} style={{ flex: 1, marginTop: 30, marginBottom: 30, minWidth: 100 }}>
             <Svg height="100%" width="100%" viewBox="0 0 100 1000">
                 <Polyline
                     points="0,250 50,250 50,750 0,750 50,750 50,500 100,500"

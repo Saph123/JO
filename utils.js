@@ -116,7 +116,7 @@ export async function registerForPushNotificationsAsync() {
             alert('Failed to get push token for push notification!');
             return;
         }
-        token = (await Notifications.getExpoPushTokenAsync()).data;
+        token = (await Notifications.getExpoPushTokenAsync({projectId: "da62a0e3-7efc-4944-9e8b-b411e0fbfcdb"})).data;
 
     } else {
         alert('Must use physical device for Push Notifications');
@@ -325,7 +325,7 @@ export function modalChat(value, text, setChatText, localText, setLocalText, spo
                                         var what = r.replace(date + '-  ' + who + " : ", "")
                                         date = date.replace(",", "")
                                         return (
-                                            <View style={{ flex: 1, flexDirection: "row" }}>
+                                            <View key={r + index} style={{ flex: 1, flexDirection: "row" }}>
                                                 <View style={{ borderWidth: 1, borderRadius: 4, flex: 1, flexDirection: "column", margin: 2 }}>
                                                     <View style={{ flex: 1 }}>
                                                         <Text>{date}</Text>
@@ -496,10 +496,27 @@ export function fetchChat(sportname, setChatText, setNewMessage) {
 
 }
 
-export function fetchKiller(username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers) {
+export function fetchKiller(username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver) {
     fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username).then(response => response.json()).then(data => {
         if (data["over"]) {
-            setTab({ states: ["results"], status: "results" })
+            setTab({ states: ["results", "people"], status: "results" })
+            let players = { left: [], middle: [], right: [], everyone: [] }
+            for (let index = 0; index < data["participants"].length; index++) {
+                let player = data["participants"][index]
+                if (index % 3 == 0) {
+                    players["left"].push({ name: player["name"], mission: player["how_to_kill"], alive: player["is_alive"], kills: player["kills"], death: player["is_alive"] == false ? player["death"] : "", nbr_of_kills: player["kills"].length })
+                }
+                else if (index % 3 == 1) {
+                    players["middle"].push({ name: player["name"], mission: player["how_to_kill"], alive: player["is_alive"], kills: player["kills"], death: player["is_alive"] == false ? player["death"] : "", nbr_of_kills: player["kills"].length })
+                }
+                else if (index % 3 == 2) {
+                    players["right"].push({ name: player["name"], mission: player["how_to_kill"], alive: player["is_alive"], kills: player["kills"], death: player["is_alive"] == false ? player["death"] : "", nbr_of_kills: player["kills"].length })
+                }
+                players["everyone"].push({ name: player["name"], rank: player["rank"], nbr_of_kills: player["kills"].length })
+            }
+            console.log(players)
+            setPlayers(players)
+            setGameOver(true)
         }
         else if (!data["is_arbitre"]) {
             setKills(data["kills"])
@@ -576,7 +593,7 @@ export function die(username, setAlive, setRefresh) {
 }
 
 export function kill(username, personToKill, giveCredit, setFocus) {
-    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "kill", "to_kill": {name: personToKill, give_credit: giveCredit} })}).then(res => {
+    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "kill", "to_kill": { name: personToKill, give_credit: giveCredit } }) }).then(res => {
         if (res.status == 200) {
             setFocus(false);
         }
@@ -585,9 +602,18 @@ export function kill(username, personToKill, giveCredit, setFocus) {
 }
 
 export function endKiller(username, setTab) {
-    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "end_killer" })}).then(res => {
+    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "end_killer" }) }).then(res => {
         if (res.status == 200) {
-            setTab({states: ["results"], status: "results"});
+            setTab({ states: ["results"], status: "results" });
+        }
+    }).catch(err => console.log(err, "in end killer"));
+
+}
+
+export function changeMission(username, person) {
+    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "modify_mission", target: {name: person.name, mission: person.mission} }) }).then(res => {
+        if (!res.status == 200) {
+            alert("Error", "Please try again later")
         }
     }).catch(err => console.log(err, "in end killer"));
 
@@ -790,19 +816,19 @@ export function toggleLockBets(sportname) {
 }
 
 
-export function personView(person) {
+export function personView(name, alive) {
     return (
         <View style={{ width: 100, height: 170, margin: 10 }}>
 
             <View style={{ height: 150 }}>
 
-                <Image style={{ height: 150, width: 100, borderRadius: 10 }} source={{ cache: 'reload', uri: "https://pierrickperso.ddnsfree.com:42124/photo/" + person.name }} />
+                <Image style={{ height: 150, width: 100, borderRadius: 10 }} source={{ cache: 'reload', uri: "https://pierrickperso.ddnsfree.com:42124/photo/" + name }} />
             </View>
-            {person.alive == false ?
+            {alive == false ?
                 <Image style={{ position: "absolute", height: 150 }} source={require("./assets/dead2.png")}>
 
                 </Image> : null}
-            <Text style={{ height: 20, textAlign: "center", fontWeight: "bold" }}>{person.name}</Text>
+            <Text style={{ height: 20, textAlign: "center", fontWeight: "bold" }}>{name}</Text>
         </View>
     )
 }
