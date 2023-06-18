@@ -116,7 +116,7 @@ export async function registerForPushNotificationsAsync() {
             alert('Failed to get push token for push notification!');
             return;
         }
-        token = (await Notifications.getExpoPushTokenAsync({projectId: "da62a0e3-7efc-4944-9e8b-b411e0fbfcdb"})).data;
+        token = (await Notifications.getExpoPushTokenAsync({ projectId: "da62a0e3-7efc-4944-9e8b-b411e0fbfcdb" })).data;
 
     } else {
         alert('Must use physical device for Push Notifications');
@@ -296,6 +296,75 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
     }
 }
 
+export function chatView(value, text, setChatText, localText, setLocalText, sportname, username, canBeClosed) {
+    function setNewMessageMock(value) {
+        return
+    }
+    return (
+        <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={{ flex: 1 }}
+        >
+            <View style={{ flex: 1 }}>
+                <View style={{ flex: 6, flexDirection: 'row', backgroundColor: "darkgrey" }}>
+                    <View style={{ flex: 5 }}>
+                        <ScrollView nestedScrollEnabled={true} style={{ marginTop: 20 }} ref={ref => { this.scrollView = ref }} onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
+
+                            <View style={{ flex: 10, flexDirection: "column" }}>
+                                {text.split("\n").map((r, index) => {
+                                    if (index == 0) {
+                                        return
+                                    }
+                                    var date = r.split("- ")[0]
+                                    var who = r.replace(date + '-  ', "").split(" : ")[0]
+                                    var what = r.replace(date + '-  ' + who + " : ", "")
+                                    date = date.replace(",", "")
+                                    return (
+                                        <View key={r + index} style={{ flex: 1, flexDirection: "row" }}>
+                                            <View style={{ borderWidth: 1, borderRadius: 4, flex: 1, flexDirection: "column", margin: 2 }}>
+                                                <View style={{ flex: 1 }}>
+                                                    <Text>{date}</Text>
+                                                </View>
+                                            </View>
+                                            <View style={{ flex: 6 }}>
+                                                <View key={index} style={
+                                                    { borderRadius: 10, marginTop: 5, padding: 3, alignSelf: who == username ? "flex-end" : "flex-start", backgroundColor: who == username ? "#186edb" : "#ffffff" }}>
+                                                    {who == username ? <Text style={{ color: "white" }}>{what}</Text> :
+                                                        <View><Text style={{ fontSize: 10, color: "purple" }}>{who}</Text>
+                                                            <Text>{what}</Text></View>}
+
+                                                </View>
+                                            </View>
+                                        </View>
+                                    )
+                                })}
+                            </View>
+                        </ScrollView>
+                    </View>
+                    {canBeClosed ?
+                        <Pressable style={{ flex: 1, marginTop: 30, marginLeft: 20 }} onPress={() => value.setChat(false)}>
+                            <Image style={{ width: 28, height: 23 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/remove.png')} />
+                        </Pressable> : null
+                    }
+                </View>
+                <View style={{ flexDirection: "row", flex: 1 }}>
+                    <TextInput onSubmitEditing={() => {
+                        pushChat(sportname, localText, username);
+                        fetchChat(sportname, setChatText, setNewMessageMock)
+                        setLocalText("");
+                    }} style={{ borderWidth: 1, flex: 1, borderRadius: 8, minHeight:50 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
+                    <Pressable onPress={() => {
+                        pushChat(sportname, localText, username);
+                        fetchChat(sportname, setChatText, setNewMessageMock)
+                        setLocalText("");
+                    }}>
+                        <Image style={{ width: 50, height: 50 }} source={require('./assets/sendmessage.png')} />
+                    </Pressable>
+
+                </View>
+            </View>
+        </KeyboardAvoidingView>)
+}
 
 export function modalChat(value, text, setChatText, localText, setLocalText, sportname, username) {
     return (
@@ -306,59 +375,7 @@ export function modalChat(value, text, setChatText, localText, setLocalText, spo
             onRequestClose={() => { value.setChat(false) }}
             onShow={() => { value.setNewMessage(false); initialLineNumber[sportname] = countLines(text); save("initialLineNumber", JSON.stringify(initialLineNumber)); }}
         >
-            <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={{ flex: 1 }}
-            >
-                <View style={{ flex: 1 }}>
-                    <View style={{ flex: 6, flexDirection: 'row', backgroundColor: "darkgrey" }}>
-                        <View style={{ flex: 5 }}>
-                            <ScrollView style={{ marginTop: 20 }} ref={ref => { this.scrollView = ref }} onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
-
-                                <View style={{ flex: 10, flexDirection: "column" }}>
-                                    {text.split("\n").map((r, index) => {
-                                        if (index == 0) {
-                                            return
-                                        }
-                                        var date = r.split("- ")[0]
-                                        var who = r.replace(date + '-  ', "").split(" : ")[0]
-                                        var what = r.replace(date + '-  ' + who + " : ", "")
-                                        date = date.replace(",", "")
-                                        return (
-                                            <View key={r + index} style={{ flex: 1, flexDirection: "row" }}>
-                                                <View style={{ borderWidth: 1, borderRadius: 4, flex: 1, flexDirection: "column", margin: 2 }}>
-                                                    <View style={{ flex: 1 }}>
-                                                        <Text>{date}</Text>
-                                                    </View>
-                                                </View>
-                                                <View style={{ flex: 6 }}>
-                                                    <View key={index} style={
-                                                        { borderRadius: 10, marginTop: 5, padding: 3, alignSelf: who == username ? "flex-end" : "flex-start", backgroundColor: who == username ? "#186edb" : "#ffffff" }}>
-                                                        {who == username ? <Text style={{ color: "white" }}>{what}</Text> :
-                                                            <View><Text style={{ fontSize: 10, color: "purple" }}>{who}</Text>
-                                                                <Text>{what}</Text></View>}
-
-                                                    </View>
-                                                </View>
-                                            </View>
-                                        )
-                                    })}
-                                </View>
-                            </ScrollView>
-                        </View>
-                        <Pressable style={{ flex: 1, marginTop: 30, marginLeft: 20 }} onPress={() => value.setChat(false)}>
-                            <Image style={{ width: 28, height: 23 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/remove.png')} />
-                        </Pressable>
-                    </View>
-                    <View style={{ flexDirection: "row", flex: 1 }}>
-                        <TextInput onSubmitEditing={() => { pushChat(sportname, localText, username); setChatText(text + "\n" + username + ":" + localText); setLocalText(""); }} style={{ borderWidth: 1, flex: 1, borderRadius: 8 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
-                        <Pressable onPress={() => { pushChat(sportname, localText, username); setChatText(text + "\n" + username + ":" + localText); setLocalText(""); }}>
-                            <Image style={{ width: 50, height: 50 }} source={require('./assets/sendmessage.png')} />
-                        </Pressable>
-
-                    </View>
-                </View>
-            </KeyboardAvoidingView>
+            {chatView(value, text, setChatText, localText, setLocalText, sportname, username, true)}
 
         </Modal>
 
@@ -496,7 +513,7 @@ export function fetchChat(sportname, setChatText, setNewMessage) {
 
 }
 
-export function fetchKiller(username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver) {
+export function fetchKiller(username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setChatText, setNewMessage) {
     fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username).then(response => response.json()).then(data => {
         if (data["over"]) {
             setTab({ states: ["results", "people"], status: "results" })
@@ -527,6 +544,7 @@ export function fetchKiller(username, setKills, setAlive, setMission, setTarget,
                 }
                 setMission(data["how_to_kill"])
                 setTarget(data["target"])
+                fetchChat("killer/" + data["target"], setChatText, setNewMessage);
             }
             else {
                 setTab({ states: ["résumé", "en cours"], status: "résumé" })
@@ -611,7 +629,7 @@ export function endKiller(username, setTab) {
 }
 
 export function changeMission(username, person) {
-    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "modify_mission", target: {name: person.name, mission: person.mission} }) }).then(res => {
+    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "modify_mission", target: { name: person.name, mission: person.mission } }) }).then(res => {
         if (!res.status == 200) {
             alert("Error", "Please try again later")
         }

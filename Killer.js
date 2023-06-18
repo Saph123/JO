@@ -1,7 +1,7 @@
 import styles from "./style.js";
 import * as React from 'react';
-import { View, Pressable, Image, ScrollView, Text, Alert, TextInput, Modal } from 'react-native';
-import { die, lutImg, vibrateLight, fetchKiller, updateMission, personView, kill, endKiller, changeMission} from './utils.js';
+import { View, Pressable, Image, ScrollView, Text, Alert, TextInput, Modal, Keyboard } from 'react-native';
+import { die, lutImg, vibrateLight, fetchKiller, updateMission, personView, kill, endKiller, changeMission, chatView, fetchChat } from './utils.js';
 
 export function KillerScreen({ route }) {
     const [tabs, setTab] = React.useState({ states: ["waiting"], status: "waiting" });
@@ -22,11 +22,33 @@ export function KillerScreen({ route }) {
     const [focusOn, setFocusOn] = React.useState("")
     const [giveCredit, setGiveCredit] = React.useState(false)
     const [gameOver, setGameOver] = React.useState(false)
+    const [chatText, setChatText] = React.useState("");
+    const [localText, setLocalText] = React.useState("");
+    const [newMessage, setNewMessage] = React.useState("");
+    const [keyboardHeight, setKeyboardHeight] = React.useState(0);
+
     let missions_list = missions;
     React.useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener(
+          'keyboardDidShow',
+          e => {
+            setKeyboardHeight(e.endCoordinates.height);
+          }
+        );
+    
+        const keyboardDidHideListener = Keyboard.addListener(
+          'keyboardDidHide',
+          () => {
+            setKeyboardHeight(0);
+          }
+        );
         if (refresh == true) {
-            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver)
+            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setChatText, setNewMessage)
             setRefresh(false)
+        }
+        return () => {
+            keyboardDidShowListener.remove();
+            keyboardDidHideListener.remove();
         }
 
     }, []);
@@ -69,6 +91,12 @@ export function KillerScreen({ route }) {
                                 <Text style={{ fontSize: 15, alignSelf: "center" }}>{mission}</Text>
                             </View>
                             <View style={{ height: 100 }}></View>
+                            <View style={{ height: 300, left:0, right:0, bottom:0, paddingBottom:keyboardHeight, width: "100%" }}>
+                                {chatView(null, chatText, setChatText, localText, setLocalText, "killer/" + target, "Killer", false)}
+                            </View>
+                            <View style={{height: keyboardHeight}}>
+
+                            </View>
                         </View>
                         :
                         <View></View>}
