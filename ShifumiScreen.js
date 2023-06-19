@@ -4,6 +4,7 @@ import { modalChat, fetchChat, pushChat } from "./utils.js"
 
 var globalSign = "puit";
 var globalPartyId = -1;
+var globalTour = 0;
 export function ShifumiScreen({ route }) {
     const [localChat, setChatText] = React.useState("");
     const [localInputText, setInputText] = React.useState("");
@@ -11,11 +12,11 @@ export function ShifumiScreen({ route }) {
     const [specs, setSpecs] = React.useState([]);
     const [activePlayers, setPlayers] = React.useState([]);
     const [sign, setSign] = React.useState("puit");
-    const [allowed, setAllowed] = React.useState(true);
+    const [notAllowed, setNotAllowed] = React.useState(true);
     const [status, setStatus] = React.useState("");
     React.useEffect(() => {
         var chatInterval = setInterval(() => fetchChat("Shifumi", setChatText, setNewMessage), 1000);
-        var shiFuMiInterval = setInterval(() => ShifumiPost(route.params.username, globalSign, setSpecs, setPlayers, setStatus, setSign, setAllowed), 1000);
+        var shiFuMiInterval = setInterval(() => ShifumiPost(route.params.username, globalSign, setSpecs, setPlayers, setStatus, setSign, setNotAllowed), 1000);
 
         return () => {
             clearInterval(chatInterval);
@@ -82,16 +83,19 @@ export function ShifumiScreen({ route }) {
                         </View>
                         <View style={{ flexDirection: "row", height: 50 }}>
                             <TextInput onSubmitEditing={() => { pushChat("Shifumi", localInputText, route.params.username); setChatText(localChat + "\n" + route.params.username + ":" + localInputText); setInputText(""); }} style={{ borderWidth: 1, flex: 1, borderRadius: 8 }} value={localInputText} onChangeText={(txt) => setInputText(txt)} />
+
                             <Pressable onPress={() => { pushChat("Shifumi", localInputText, route.params.username); setChatText(localChat + "\n" + route.params.username + ":" + localInputText); setInputText(""); }}>
                                 <Image style={{ width: 50, height: 50 }} source={require('./assets/sendmessage.png')} />
                             </Pressable>
+
 
                         </View>
                     </View>
                 </KeyboardAvoidingView>
             </View>
+
             <View style={{ flex: 1, alignItems: "center", alignContent: "center", flexDirection: "row", marginBottom: 30 }}>
-                <Pressable onPress={() => {
+                <Pressable disabled={notAllowed} onPress={() => {
                     if (globalSign != "Papier") {
 
                         globalSign = "Papier"; setSign("Papier")
@@ -99,9 +103,9 @@ export function ShifumiScreen({ route }) {
                     else {
                         globalSign = "puit"; setSign("puit");
                     }
-                }} style={{ flex: 1, backgroundColor: globalSign == "Papier" ? "red":"lightblue", borderColor: "black", borderWidth: 1, height: "100%", borderRadius: 25, marginRight: 10, minHeight:50 }}>
+                }} style={{ flex: 1, backgroundColor: notAllowed ? "grey" : globalSign == "Papier" ? "red" : "lightblue", borderColor: "black", borderWidth: 1, height: "100%", borderRadius: 25, marginRight: 10, minHeight: 50 }}>
                     <Image style={{ alignSelf: "center", tintColor: "black", height: 50, width: 50, marginTop: 5 }} resizeMode="contain" source={require('./assets/paper.png')} /></Pressable>
-                <Pressable onPress={() => {
+                <Pressable disabled={notAllowed} onPress={() => {
                     if (globalSign != "Pierre") {
 
                         globalSign = "Pierre"; setSign("Pierre")
@@ -109,9 +113,9 @@ export function ShifumiScreen({ route }) {
                     else {
                         globalSign = "puit"; setSign("puit");
                     }
-                }} style={{ flex: 1, backgroundColor: globalSign == "Pierre" ? "red":"lightblue", borderColor: "black", borderWidth: 1, height: "100%", borderRadius: 25, marginRight: 10, minHeight:50 }}>
+                }} style={{ flex: 1, backgroundColor: notAllowed ? "grey" : globalSign == "Pierre" ? "red" : "lightblue", borderColor: "black", borderWidth: 1, height: "100%", borderRadius: 25, marginRight: 10, minHeight: 50 }}>
                     <Image style={{ alignSelf: "center", tintColor: "black", height: 50, width: 50, marginTop: 5 }} resizeMode="contain" source={require('./assets/fist.png')} /></Pressable>
-                <Pressable onPress={() => {
+                <Pressable disabled={notAllowed} onPress={() => {
                     if (globalSign != "Ciseaux") {
 
                         globalSign = "Ciseaux"; setSign("Ciseaux")
@@ -119,53 +123,77 @@ export function ShifumiScreen({ route }) {
                     else {
                         globalSign = "puit"; setSign("puit");
                     }
-                }} style={{ flex: 1, backgroundColor: globalSign == "Ciseaux" ? "red":"lightblue", borderColor: "black", borderWidth: 1, height: "100%", borderRadius: 25, marginRight: 10, minHeight:50 }}>
+                }} style={{ flex: 1, backgroundColor: notAllowed ? "grey" : globalSign == "Ciseaux" ? "red" : "lightblue", borderColor: "black", borderWidth: 1, height: "100%", borderRadius: 25, marginRight: 10, minHeight: 50 }}>
                     <Image style={{ alignSelf: "center", tintColor: "black", height: 50, width: 50, marginTop: 5, transform: [{ rotate: '270deg' }] }} resizeMode="contain" source={require('./assets/scissors.png')} /></Pressable>
+
+
+
             </View>
+
         </View>
     )
 }
 
-export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, setSign, setAllowed) {
-    fetch("https://pierrickperso.ddnsfree.com:42124/shifumi", { method: "POST", body: JSON.stringify({ "username": username, "sign": sign, "party_id":globalPartyId }) }).then(response => response.json()).then(
+export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, setSign, setNotAllowed) {
+    fetch("https://pierrickperso.ddnsfree.com:42124/shifumi", { method: "POST", body: JSON.stringify({ "username": username, "sign": sign, "party_id": globalPartyId }) }).then(response => response.json()).then(
         data => {
             setSpecs(data.specs);
             setPlayers(data.active_players);
-            let allowed = false;
-            for(let i=0; i < data.active_players.length;i++){
-                if(data.active_players[i] == username){
-                    console.log(data.active_players);
-                    allowed = true;
+            console.log(data.last_winner);
+            let notAllowed = true;
+            let txt = "";
+
+            console.log(data);
+
+            if (data.active_players.length == 0) {
+                notAllowed = false;
+                txt = "En attente de joueurs!";
+
+            }
+            else{
+                txt = "Partie en cours entre : "
+                for (let i = 0; i < data.active_players.length; i++) {
+                    if (data.active_players[i] == username) {
+                        notAllowed = false;
+                    }
+                    txt += data.active_players[i] + ", "
                 }
+                txt += "\n Tour numéro : " + data.tour
             }
-            if(data.active_players.length == 0){
-                console.log("Everyone is allowed to play");
-                allowed = true;
+            if(!data.game_in_progress){
+                setNotAllowed(false);
             }
-            setAllowed(allowed);
-            console.log(globalPartyId, data.party_id)
-            if(globalPartyId != data.party_id){
+            else{
+
+                setNotAllowed(notAllowed);
+            }
+            if (globalPartyId != data.party_id) {
                 setSign("puit");
                 globalSign = "puit";
             }
+            if (globalTour != data.tour){
+                setSign("puit");
+                globalSign = "puit";
+            }
+            globalTour = data.tour;
             globalPartyId = data.party_id;
-
-            if (data.voting_in > 0){
-                if (data.last_winner == "draw" || data.last_winner == "Whisky"){
-                    setStatus("La prochaine partie commence dans " + Math.floor(data.voting_in) + " secondes")
+            console.log(txt);
+            if (data.voting_in > 0) {
+                if (data.last_winner == "draw" || data.last_winner == "Whisky") {
+                    setStatus(txt + "\n" + "La prochaine partie commence dans " + Math.floor(data.voting_in) + " secondes")
                 }
-                else{
+                else {
 
-                    setStatus(data.last_winner + " a remporté la dernière partie!\nLa prochaine partie commence dans " + Math.floor(data.voting_in) + " secondes");
+                    setStatus(txt + "\n" + data.last_winner + " a remporté la dernière partie!\nLa prochaine partie commence dans " + Math.floor(data.voting_in) + " secondes");
                 }
             }
-            else{
-                if (data.last_winner == "draw" || data.last_winner == "Whisky"){
-                    setStatus("Match nul!\nEn attente de joueurs!")
+            else {
+                if (data.last_winner == "draw" || data.last_winner == "Whisky") {
+                    setStatus(txt + "\n" + "Match nul!\n")
                 }
-                else{
-                    
-                    setStatus(data.last_winner + " a remporté la dernière partie!\nEn attente de joueurs!")
+                else {
+
+                    setStatus(txt + "\n" + data.last_winner + " a remporté la dernière partie!\n")
                 }
             }
 
