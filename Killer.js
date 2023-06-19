@@ -54,9 +54,7 @@ export function KillerScreen({ route }) {
             fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setChatText, setNewMessage, setLifetime).then(start => {
                 timer = setInterval(() => {
                     let now = new Date()
-                    console.log(now)
                     let startDate = new Date(start*1000)
-                    console.log(startDate)
                     let diff = new Date(now - startDate)
                     let days = String(diff.getDate() -1) + "j "
                     let hours = diff.getHours() + "h "
