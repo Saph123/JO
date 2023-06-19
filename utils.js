@@ -513,7 +513,7 @@ export function fetchChat(sportname, setChatText, setNewMessage) {
 
 }
 
-export function fetchKiller(username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setChatText, setNewMessage) {
+export async function fetchKiller(username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setChatText, setNewMessage, setLifetime, setStart) {
     fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username).then(response => response.json()).then(data => {
         if (data["over"]) {
             setTab({ states: ["results", "people"], status: "results" })
@@ -536,6 +536,7 @@ export function fetchKiller(username, setKills, setAlive, setMission, setTarget,
             setGameOver(true)
         }
         else if (!data["is_arbitre"]) {
+            setStart(data["start_date"])
             setKills(data["kills"])
             setAlive(data["is_alive"])
             if (data["is_alive"]) {
@@ -547,6 +548,7 @@ export function fetchKiller(username, setKills, setAlive, setMission, setTarget,
                 fetchChat("killer/" + data["target"], setChatText, setNewMessage);
             }
             else {
+                setLifetime(data["lifetime"])
                 setTab({ states: ["résumé", "en cours"], status: "résumé" })
             }
         }

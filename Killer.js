@@ -26,6 +26,9 @@ export function KillerScreen({ route }) {
     const [localText, setLocalText] = React.useState("");
     const [newMessage, setNewMessage] = React.useState("");
     const [keyboardHeight, setKeyboardHeight] = React.useState(0);
+    const [timeAlive, setTimeAlive] = React.useState("")
+    const [lifetime, setLifetime] = React.useState("")
+    const [start, setStart] = React.useState(0)
     const ref = React.useRef(null)
     let missions_list = missions;
     React.useEffect(() => {
@@ -48,12 +51,25 @@ export function KillerScreen({ route }) {
             }
         );
         if (refresh == true) {
-            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setChatText, setNewMessage)
+            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setChatText, setNewMessage, setLifetime, setStart).then(r => {
+            })
+            console.log(start)
+            var timer = setInterval(() => {
+                let now = new Date()
+                let startDate = new Date(start)
+                let diff = new Date(now - startDate)
+                let days = diff.getDate() + "j "
+                let hours = diff.getHours() + "h "
+                let minutes = diff.getMinutes() + "min "
+                let seconds = diff.getSeconds() + "s"
+                setTimeAlive(days + hours + minutes + seconds)
+            }, 1000);
             setRefresh(false)
-        }
-        return () => {
-            keyboardDidShowListener.remove();
-            keyboardDidHideListener.remove();
+            return () => {
+                keyboardDidShowListener.remove();
+                keyboardDidHideListener.remove();
+                clearInterval(timer)
+            }
         }
 
     }, []);
@@ -63,6 +79,8 @@ export function KillerScreen({ route }) {
                 {tabs.states.map(r =>
                     <Pressable key={r} onPress={() => {
                         vibrateLight();
+                        let chatName = r == "en cours" ? "killer/" + target : "killer/" + route.params.username
+                        fetchChat(chatName, setChatText, setNewMessage)
                         setTab((current) => {
                             current.status = r;
                             return { ...current }
@@ -96,7 +114,7 @@ export function KillerScreen({ route }) {
                                 <Text style={{ fontSize: 15, alignSelf: "center" }}>{mission}</Text>
                             </View>
                             <View style={{ height: 100 }}></View>
-                            <View style={{ height: 300 + keyboardHeight, left: 0, right: 0, bottom: 0, paddingBottom: keyboardHeight + 10, width: "100%" }}>
+                            <View style={{ height: 300 + keyboardHeight, left: 0, right: 0, bottom: 0, paddingBottom: keyboardHeight + 10, width: "100%", borderWidth: 1 }}>
                                 {chatView(null, chatText, setChatText, localText, setLocalText, "killer/" + target, "Killer", false)}
                             </View>
                         </View>
@@ -105,37 +123,45 @@ export function KillerScreen({ route }) {
                 </ScrollView>
                 : tabs.status == "résumé" ?
                     <View style={{ flex: 2, flexDirection: "column" }}>
-                        <View style={{ flex: 1, flexDirection: "row", marginTop: "5%", justifyContent: "center" }}>
-                            <View style={{ width: "100%" }}>
-                                <View style={{ marginTop: 10, flex: 1, flexDirection: "column", justifyContent: "center" }}>
-                                    <Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>Etat:</Text>
-                                    <View style={{ flex: 3 }}>
-                                        <View style={{ flex: 1 }}>
-                                            <Text style={{ textAlign: "center", fontWeight: "bold" }}>{alive ? "Toujours en vie" : ""}</Text>
+                        <View style={{ flex: 2, flexDirection: "row" }}>
+                            <View style={{ flex: 1, flexDirection: "column", marginTop: 10 }}>
+                                <Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>Etat:</Text>
+                                <Text style={{ textAlign: "center", fontWeight: "bold", marginTop: 10 }}>
+                                    {alive ? "En vie depuis:\n\n" + timeAlive : "Temps de vie:\n\n" + lifetime}
+                                </Text>
+                                {alive ?
+                                    <View style={{ marginTop: 10 }}>
+                                        <View style={styles.killbutton}>
+                                            <Pressable onPress={() => {
+                                                Alert.alert("Confirmer votre mort", "", [{
+                                                    text: "Confirmer", onPress: () => {
+                                                        die(route.params.username, setAlive, setRefresh);
+                                                        setLifetime(timeAlive);
+                                                    }
+                                                }, { text: "Annuler" }])
+                                            }}><Text>Omar m'a tuer</Text></Pressable>
                                         </View>
-                                        {alive ?
-                                            <View style={{ flex: 1 }}>
-                                                <View style={styles.killbutton}>
-                                                    <Pressable onPress={() => { Alert.alert("Confirmer votre mort", "", [{ text: "Confirmer", onPress: () => die(route.params.username, setAlive, setRefresh) }, { text: "Annuler" }]) }}><Text>Omar m'a tuer</Text></Pressable>
-                                                </View>
-                                            </View>
-                                            : <View></View>}
                                     </View>
-                                    {alive ? <View></View> : <View style={{ flex: 10 }}><Image style={{ width: "100%" }} source={require('./assets/wasted.png')}></Image></View>}
+                                    : <View></View>}
+                                {alive ? <View></View> : <View><Image style={{ width: "100%", resizeMode: "contain" }} source={require('./assets/wasted.png')}></Image></View>}
+                            </View>
+                            <View style={{ flex: 1 }}>
+                                <View style={{ marginTop: 10 }}>
+                                    <Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>Kills:</Text>
                                 </View>
+                                {kills.length > 0 ?
+                                    <ScrollView style={{ flex: 1, flexDirection: "column", marginTop: "5%", borderWidth: 1, borderRadius: 10 }}>
+                                        {kills.map(r =>
+                                            <View key={r.name} style={[styles.kills, { borderRadius: 10, margin: 5 }]}>
+                                                <Text style={{ textAlign: "center" }}>{r.name + "\n" + r.date}:{"\n"}{r.mission}</Text>
+                                            </View>)}
+                                    </ScrollView>
+                                    : <View><Text style={{ textAlign: "center", marginTop: 20 }}>Personne...</Text></View>}
+
                             </View>
                         </View>
-                        <View style={{ flex: 1 }}>
-                            <View style={{ marginTop: 10 }}>
-                                <Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>Killed:</Text>
-                            </View>
-                            <ScrollView style={{ flex: 1, flexDirection: "column", marginTop: "5%" }}>
-                                {kills.length > 0 ? kills.map(r =>
-                                    <View key={r.name} style={styles.kills}>
-                                        <Text style={{ textAlign: "center" }}>{r.name} ({r.date}):{"\n"}{r.mission}</Text>
-                                    </View>) : <View></View>}
-                            </ScrollView>
-
+                        <View style={{ height: 300 + keyboardHeight, left: 0, right: 0, bottom: 0, paddingBottom: keyboardHeight + 10, width: "100%", borderWidth: 1 }}>
+                            {chatView(null, chatText, setChatText, localText, setLocalText, "killer/" + route.params.username, route.params.username, false)}
                         </View>
                     </View>
                     : tabs.status == "waiting" ?
