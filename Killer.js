@@ -28,7 +28,6 @@ export function KillerScreen({ route }) {
     const [keyboardHeight, setKeyboardHeight] = React.useState(0);
     const [timeAlive, setTimeAlive] = React.useState("")
     const [lifetime, setLifetime] = React.useState("")
-    const [start, setStart] = React.useState(0)
     const ref = React.useRef(null)
     let missions_list = missions;
     React.useEffect(() => {
@@ -50,19 +49,21 @@ export function KillerScreen({ route }) {
                 setKeyboardHeight(0);
             }
         );
+        var timer
         if (refresh == true) {
-            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setChatText, setNewMessage, setLifetime, setStart).then(r => {
-            })
-            console.log(start)
-            var timer = setInterval(() => {
-                let now = new Date()
-                let startDate = new Date(start)
-                let diff = new Date(now - startDate)
-                let days = diff.getDate() + "j "
-                let hours = diff.getHours() + "h "
-                let minutes = diff.getMinutes() + "min "
-                let seconds = diff.getSeconds() + "s"
-                setTimeAlive(days + hours + minutes + seconds)
+            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setChatText, setNewMessage, setLifetime).then(start => {
+                timer = setInterval(() => {
+                    let now = new Date()
+                    console.log(now)
+                    let startDate = new Date(start*1000)
+                    console.log(startDate)
+                    let diff = new Date(now - startDate)
+                    let days = String(diff.getDate() -1) + "j "
+                    let hours = diff.getHours() + "h "
+                    let minutes = diff.getMinutes() + "min "
+                    let seconds = diff.getSeconds() + "s"
+                    setTimeAlive(days + hours + minutes + seconds)
+                })
             }, 1000);
             setRefresh(false)
             return () => {
@@ -160,9 +161,12 @@ export function KillerScreen({ route }) {
 
                             </View>
                         </View>
-                        <View style={{ height: 300 + keyboardHeight, left: 0, right: 0, bottom: 0, paddingBottom: keyboardHeight + 10, width: "100%", borderWidth: 1 }}>
+                        {alive?
+
+                            <View style={{ height: 300 + keyboardHeight, left: 0, right: 0, bottom: 0, paddingBottom: keyboardHeight + 10, width: "100%", borderWidth: 1 }}>
                             {chatView(null, chatText, setChatText, localText, setLocalText, "killer/" + route.params.username, route.params.username, false)}
-                        </View>
+                        </View> : null
+                        }
                     </View>
                     : tabs.status == "waiting" ?
                         <View><Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>En attente du démarrage de la partie</Text></View>
