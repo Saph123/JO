@@ -513,7 +513,7 @@ export function fetchChat(sportname, setChatText, setNewMessage) {
 
 }
 
-export async function fetchKiller(username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setChatText, setNewMessage, setLifetime) {
+export async function fetchKiller(username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setChatText, setNewMessage, setLifetime, setNbMissions) {
     let start = fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username).then(response => response.json()).then(data => {
         if (data["over"]) {
             setTab({ states: ["results", "people"], status: "results" })
@@ -529,9 +529,8 @@ export async function fetchKiller(username, setKills, setAlive, setMission, setT
                 else if (index % 3 == 2) {
                     players["right"].push({ name: player["name"], mission: player["how_to_kill"], alive: player["is_alive"], kills: player["kills"], death: player["is_alive"] == false ? player["death"] : "", nbr_of_kills: player["kills"].length })
                 }
-                players["everyone"].push({ name: player["name"], rank: player["rank"], nbr_of_kills: player["kills"].length })
+                players["everyone"].push({ name: player["name"], rank: player["rank"], nbr_of_kills: player["kills"].length, kills_rank: player["kills_rank"] })
             }
-            console.log(players)
             setPlayers(players)
             setGameOver(true)
         }
@@ -542,9 +541,13 @@ export async function fetchKiller(username, setKills, setAlive, setMission, setT
                 if (data["started"]) {
                     setTab({ states: ["en cours", "résumé"], status: "en cours" })
                 }
+                else{
+                    setNbMissions(data["missions"])
+                }
                 setMission(data["how_to_kill"])
                 setTarget(data["target"])
                 fetchChat("killer/" + data["target"], setChatText, setNewMessage);
+
             }
             else {
                 setLifetime(data["lifetime"])
@@ -598,6 +601,17 @@ export function updateMission(missions, username, setRefresh, setShouldSave) {
             alert("Wrong login or password!");
         }
     }).catch(err => console.log(err, "in update missions"));
+
+}
+
+export function startKiller(username) {
+    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version,  "start_killer": true }) }).then(res => {
+        if (res.status == 200) {
+        }
+        else {
+            alert("Couldn't start killer!");
+        }
+    }).catch(err => console.log(err, "start killer"));
 
 }
 

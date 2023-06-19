@@ -1,7 +1,8 @@
 import styles from "./style.js";
 import * as React from 'react';
 import { View, Pressable, Image, ScrollView, Text, Alert, TextInput, Modal, Keyboard } from 'react-native';
-import { die, lutImg, vibrateLight, fetchKiller, updateMission, personView, kill, endKiller, changeMission, chatView, fetchChat } from './utils.js';
+import { die, lutImg, vibrateLight, fetchKiller, updateMission, personView, kill, endKiller, changeMission, chatView, fetchChat, startKiller } from './utils.js';
+import { adminlist } from "./global.js";
 
 export function KillerScreen({ route }) {
     const [tabs, setTab] = React.useState({ states: ["waiting"], status: "waiting" });
@@ -28,6 +29,7 @@ export function KillerScreen({ route }) {
     const [keyboardHeight, setKeyboardHeight] = React.useState(0);
     const [timeAlive, setTimeAlive] = React.useState("")
     const [lifetime, setLifetime] = React.useState("")
+    const [nbMissions, setNbMissions] = React.useState(0)
     const ref = React.useRef(null)
     let missions_list = missions;
     React.useEffect(() => {
@@ -51,13 +53,13 @@ export function KillerScreen({ route }) {
         );
         var timer
         if (refresh == true) {
-            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setChatText, setNewMessage, setLifetime).then(start => {
+            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setChatText, setNewMessage, setLifetime, setNbMissions).then(start => {
                 timer = setInterval(() => {
                     let now = new Date()
-                    let startDate = new Date(start*1000)
+                    let startDate = new Date(start * 1000)
                     let diff = new Date(now - startDate)
-                    let days = String(diff.getDate() -1) + "j "
-                    let hours = diff.getHours() + "h "
+                    let days = String(diff.getDate() - 1) + "j "
+                    let hours = (diff.getHours() - 1) + "h "
                     let minutes = diff.getMinutes() + "min "
                     let seconds = diff.getSeconds() + "s"
                     setTimeAlive(days + hours + minutes + seconds)
@@ -159,15 +161,34 @@ export function KillerScreen({ route }) {
 
                             </View>
                         </View>
-                        {alive?
+                        {alive ?
 
                             <View style={{ height: 300 + keyboardHeight, left: 0, right: 0, bottom: 0, paddingBottom: keyboardHeight + 10, width: "100%", borderWidth: 1 }}>
-                            {chatView(null, chatText, setChatText, localText, setLocalText, "killer/" + route.params.username, route.params.username, false)}
-                        </View> : null
+                                {chatView(null, chatText, setChatText, localText, setLocalText, "killer/" + route.params.username, route.params.username, false)}
+                            </View> : null
                         }
                     </View>
                     : tabs.status == "waiting" ?
-                        <View><Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>En attente du démarrage de la partie</Text></View>
+                        <View>
+                            <Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>En attente du démarrage de la partie</Text>
+
+                            {adminlist.includes(route.params.username) ?
+                                <Pressable style={[styles.killbutton, { height: 70, justifyContent: "center", marginTop: 50, paddingLeft: 10, paddingRight: 10 }]} onPress={() => {
+                                    Alert.alert("Démarrer ?", "", [{
+                                        text: "Confirmer", onPress: () => {
+                                            startKiller(route.params.username);
+                                            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setChatText, setNewMessage, setLifetime, setNbMissions)
+                                            setTab({ states: ["résumé", "en cours"], status: "en cours" })
+                                        }
+                                    }, { text: "Annuler" }])
+                                }}>
+                                    <Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>
+                                        Démarrer la partie
+                                    </Text>
+                                    <Text>{nbMissions}/25</Text>
+                                </Pressable> : null
+                            }
+                        </View>
                         : tabs.status == "kills" ?
                             <View>
                                 <Modal
@@ -424,8 +445,8 @@ export function KillerScreen({ route }) {
                                                 {
                                                     players.everyone.sort((a, b) => b.nbr_of_kills - a.nbr_of_kills).map(player =>
                                                         <View key={player.name} style={{ flexDirection: "row", alignSelf: "center" }}>
-                                                            {player.rank < 4 ?
-                                                                <Image style={{ marginRight: 10, flex: 1, maxWidth: 20 }} source={player.rank == 1 ? require("./assets/or.png") : player.rank == 2 ? require("./assets/argent.png") : require("./assets/bronze.png")} /> : <View style={{ height: 30, width: 30 }}></View>}
+                                                            {player.kills_rank < 4 ?
+                                                                <Image style={{ marginRight: 10, flex: 1, maxWidth: 20 }} source={player.kills_rank == 1 ? require("./assets/or.png") : player.kills_rank == 2 ? require("./assets/argent.png") : require("./assets/bronze.png")} /> : <View style={{ height: 30, width: 30 }}></View>}
                                                             <Text key={player.name} style={{ height: 30, marginTop: 5, width: 100 }}>{player.name} {player.nbr_of_kills}</Text>
                                                         </View>
                                                     )}
