@@ -513,8 +513,8 @@ export function fetchChat(sportname, setChatText, setNewMessage) {
 
 }
 
-export async function fetchKiller(username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setChatText, setNewMessage, setLifetime, setStart) {
-    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username).then(response => response.json()).then(data => {
+export async function fetchKiller(username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setChatText, setNewMessage, setLifetime) {
+    let start = fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username).then(response => response.json()).then(data => {
         if (data["over"]) {
             setTab({ states: ["results", "people"], status: "results" })
             let players = { left: [], middle: [], right: [], everyone: [] }
@@ -536,7 +536,6 @@ export async function fetchKiller(username, setKills, setAlive, setMission, setT
             setGameOver(true)
         }
         else if (!data["is_arbitre"]) {
-            setStart(data["start_date"])
             setKills(data["kills"])
             setAlive(data["is_alive"])
             if (data["is_alive"]) {
@@ -583,8 +582,9 @@ export async function fetchKiller(username, setKills, setAlive, setMission, setT
                 setTab({ states: ["kills"], status: "kills" })
             }
         }
+        return data["start_date"]
     }).catch(err => console.error("killer", err));
-
+    return start
 }
 
 export function updateMission(missions, username, setRefresh, setShouldSave) {
