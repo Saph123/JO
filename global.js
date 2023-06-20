@@ -27,7 +27,7 @@ export let initialLineNumber = {
     "Molky": 0,
     "Clicker": 0,
     "Home": 0,
-    "Canva":0
+    "Canva": 0
 };
 export let carreSize = 3;
 export let adminlist = [
@@ -36,8 +36,9 @@ export let adminlist = [
     "Ugo",
     "Pierrick"
 ]
-export let paletteColors = ["white", "purple", "darkblue", "blue", "lightblue", "green", "lightgreen", "yellow", "#8B4513", "orange", "red","pink","lightgrey", "grey", "black"]
-export async function calcInitLines(){
+
+export let paletteColors = ["white", "purple", "darkblue", "blue", "lightblue", "green", "lightgreen", "yellow", "#8B4513", "orange", "red", "pink", "lightgrey", "grey", "black"]
+export async function calcInitLines() {
     let result = await SecureStore.getItemAsync("initialLineNumber");
     if (result) {
         initialLineNumber = JSON.parse(result);

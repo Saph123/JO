@@ -18,7 +18,6 @@ export function HomeScreen({ route, navigation }) {
     const [soundstatus, setSound] = React.useState();
     const [boules, setBoules] = React.useState(false);
     const [displayDay, setDisplayDay] = React.useState(new Date('2022-07-13T00:00:00+02:00'));
-
     const notificationListener = React.useRef();
     const videoBoule = React.useRef();
     const [notification, setNotification] = React.useState(false);
