@@ -8,7 +8,6 @@ import * as SecureStore from 'expo-secure-store';
 import { Planning } from './planning';
 import { version, initialLineNumber, adminlist } from "./global.js"
 import CountDown from 'react-native-countdown-component';
-import { createNativeWrapper } from "react-native-gesture-handler";
 import * as Haptics from 'expo-haptics';
 class Liste {
     constructor(username, score, rank = 0, level = 0) {
@@ -45,6 +44,43 @@ class Match {
 }
 
 export function firstDay(secondsleft, setSecondsleft) {
+    let all_players = [[
+        "Antoine",
+        "Armand",
+        "Beranger",
+        "Bifteck",
+        "Boulbi",
+        "Brice",
+        "Bryan",
+        "Chachav",
+        "Chloe",
+        "Clement",
+        "Emma"],
+    [
+        "Florent",
+        "Girex",
+        "Gui",
+        "Guillaume",
+        "Hugo",
+        "Jason",
+        "Jess",
+        "Jo",
+        "Keke",
+        "Mams",
+        "Mathias"],
+    [
+        "Max",
+        "Mimo",
+        "LaGuille",
+        "Lapinou",
+        "Leo",
+        "Pierrick",
+        "Quentin",
+        "Reminem",
+        "Shmav",
+        "Thomas",
+        "Ugo"]
+    ]
 
     return (
         <View key={secondsleft}>
@@ -59,10 +95,31 @@ export function firstDay(secondsleft, setSecondsleft) {
                 <Text style={{ textAlign: "center", fontSize: 24, fontWeight: "bold" }}> BIENVENUE!</Text>
                 <Text style={{ textAlign: "center", fontSize: 18 }}>1605 Chemin des Pierres, 38440 Meyssiez, France</Text>
                 <Text style={{ textAlign: "center" }}> What's new?!</Text>
-                <Text style={{ textAlign: "center" }}> * Système de paris!</Text>
-                <Text style={{ textAlign: "center" }}> * Résultats de l'année dernière</Text>
-                <Text style={{ textAlign: "center" }}> * Nouvelle interface</Text>
-                <Text style={{ textAlign: "center" }}> * Canva</Text>
+                <Text style={{ textAlign: "center" }}> * Killer</Text>
+                <Text style={{ textAlign: "center" }}> * Shifumi</Text>
+            </View>
+            <View style={{ marginBottom: 10, marginTop: 50 }}>
+                <Text style={{ fontSize: 20, fontWeight: "bold", textAlign: "center" }}>Athlètes présents cette année:</Text>
+            </View>
+            <View style={{ flexDirection: "row" }}>
+                <View style={{ flex: 1, flexDirection: "column" }}>
+                    {
+                        all_players[0].map((r) => (
+                            personView(r))
+                        )}
+                </View>
+                <View style={{ flex: 1, flexDirection: "column" }}>
+                    {
+                        all_players[1].map((r) => (
+                            personView(r))
+                        )}
+                </View>
+                <View style={{ flex: 1, flexDirection: "column" }}>
+                    {
+                        all_players[2].map((r) => (
+                            personView(r))
+                        )}
+                </View>
             </View>
         </View>
     );
@@ -352,7 +409,7 @@ export function chatView(value, text, setChatText, localText, setLocalText, spor
                         pushChat(sportname, localText, username);
                         fetchChat(sportname, setChatText, setNewMessageMock)
                         setLocalText("");
-                    }} style={{ borderWidth: 1, flex: 1, borderRadius: 8, minHeight:50 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
+                    }} style={{ borderWidth: 1, flex: 1, borderRadius: 8, minHeight: 50 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
                     <Pressable onPress={() => {
                         pushChat(sportname, localText, username);
                         fetchChat(sportname, setChatText, setNewMessageMock)
@@ -400,14 +457,15 @@ export function addth(rank) {
 
 
 export function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentSport, navigateTo, timeBegin, summary = false) {
-
+    let now = new Date()
+    let planning = new Planning()
     if (!summary) {
         return (
 
             <View key={sportname} style={{ flex: 1, margin: -1, flexDirection: "row", borderColor: "black", borderWidth: 2, borderTopWidth: 0 }}>
                 <View style={{ alignSelf: "center", width: 70, height: "100%", flexDirection: "column", justifyContent: "center", borderRightWidth: 2, borderRightColor: "black" }}><Text style={{ textAlign: "center", fontWeight: "bold" }}>{timeBegin.getHours() + "H" + timeBegin.getMinutes().toString().padStart(2, "0")}</Text></View>
                 <Pressable delayLongPress={5000} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
-                    onPress={() => { vibrateLight(); sportlist().includes(sportname) ? setCurrentSport(sportname) : "", sportlist().includes(sportname) ? navigation.navigate(navigateTo, { sportname: sportname }) : "" }}
+                    onPress={() => { vibrateLight(); sportlist().includes(sportname) ? setCurrentSport(sportname) : "", sportlist().includes(sportname) ? navigation.navigate(navigateTo, { sportname: sportname }) : now > planning["listeevent"][planning["listeevent"].length - 1].timeBegin ? navigation.navigate("SummaryScreen") : "" }}
                 >
                     <Image style={[styles.sportimage, { tintColor: "black" }]} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
                 </Pressable>
@@ -541,7 +599,7 @@ export async function fetchKiller(username, setKills, setAlive, setMission, setT
                 if (data["started"]) {
                     setTab({ states: ["en cours", "résumé"], status: "en cours" })
                 }
-                else{
+                else {
                     setNbMissions(data["missions"])
                 }
                 setMission(data["how_to_kill"])
@@ -605,7 +663,7 @@ export function updateMission(missions, username, setRefresh, setShouldSave) {
 }
 
 export function startKiller(username) {
-    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version,  "start_killer": true }) }).then(res => {
+    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "start_killer": true }) }).then(res => {
         if (res.status == 200) {
         }
         else {
@@ -616,7 +674,7 @@ export function startKiller(username) {
 }
 
 export function die(username, setAlive, setRefresh) {
-    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST" }).then(res => {
+    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version }) }).then(res => {
         if (res.status == 200) {
             setAlive(false)
             setRefresh(true)
@@ -852,16 +910,11 @@ export function toggleLockBets(sportname) {
 
 export function personView(name, alive) {
     return (
-        <View style={{ width: 100, height: 170, margin: 10 }}>
-
+        <View key={name} style={{ width: 100, height: 170, margin: 10 }}>
             <View style={{ height: 150 }}>
-
                 <Image style={{ height: 150, width: 100, borderRadius: 10 }} source={{ cache: 'reload', uri: "https://pierrickperso.ddnsfree.com:42124/photo/" + name }} />
             </View>
-            {alive == false ?
-                <Image style={{ position: "absolute", height: 150 }} source={require("./assets/dead2.png")}>
-
-                </Image> : null}
+            {alive == false ? <Image style={{ position: "absolute", height: 150 }} source={require("./assets/dead2.png")} /> : null}
             <Text style={{ height: 20, textAlign: "center", fontWeight: "bold" }}>{name}</Text>
         </View>
     )

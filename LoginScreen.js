@@ -1,7 +1,7 @@
 import styles from "./style";
 import * as React from 'react';
 import { View, TextInput, Text, Image, Linking, Pressable, ScrollView, ActivityIndicator } from 'react-native';
-import { getValueFor, save, videoHandler, pushtoken, manageEvents, eventView } from './utils';
+import { getValueFor, save, videoHandler, pushtoken, manageEvents, eventView, personView } from './utils';
 import { SportContext, version } from "./global.js"
 import { fetch_activities, fetch_global_results } from "./trace.js";
 import { Planning } from "./planning.js";
@@ -28,6 +28,7 @@ export function LoginScreen({ route, navigation }) {
     const controller = new AbortController()
     // 5 second timeout:
     let planning = new Planning();
+    let now = new Date()
     let localusername = "";
     React.useEffect(() => {
         getValueFor("username").then(user => {
@@ -150,64 +151,71 @@ export function LoginScreen({ route, navigation }) {
                     </Pressable>
                 </View>
                 <View style={{ flex: 1 }}>
-                    <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Mes médailles </Text></View>
-                    <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                        <Text style={styles.medailleNumber}>{goldMedals}</Text>
-                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
-                    </View>
-                    <View style={{ alignItems: "center" }}>
-                        {goldWins.map(r => {
-                            return (
-                                <Text key={r}>{r}</Text>
-                            )
-                        })}
-                    </View>
-                    <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                        <Text style={styles.medailleNumber}>{silverMedals}</Text>
-                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
-                    </View>
-                    <View style={{ alignItems: "center" }}>
-                        {silverWins.map(r => {
-                            return (
-                                <Text key={r}>{r}</Text>
-                            )
-                        })}
-                    </View>
-                    <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                        <Text style={styles.medailleNumber}>{bronzeMedals}</Text>
-                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
-                    </View>
-                    <View style={{ alignItems: "center" }}>
-                        {bronzeWins.map(r => {
-                            return (
-                                <Text key={r}>{r}</Text>
-                            )
-                        })}
-                    </View>
-                    <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Mon rang </Text></View>
-                    <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                        <Text style={styles.medailleNumber}>{rank}</Text>
+                    <View style={{ flexDirection: "row", justifyContent:"space-evenly" }}>
+                        <View style={{justifyContent: "center" }}>
+                            {personView(userName)}
+                        </View>
+                        <View>
+                            <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Mes médailles </Text></View>
+                            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                                <Text style={styles.medailleNumber}>{goldMedals}</Text>
+                                <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
+                            </View>
+                            <View style={{ alignItems: "center" }}>
+                                {goldWins.map(r => {
+                                    return (
+                                        <Text key={r}>{r}</Text>
+                                    )
+                                })}
+                            </View>
+                            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                                <Text style={styles.medailleNumber}>{silverMedals}</Text>
+                                <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
+                            </View>
+                            <View style={{ alignItems: "center" }}>
+                                {silverWins.map(r => {
+                                    return (
+                                        <Text key={r}>{r}</Text>
+                                    )
+                                })}
+                            </View>
+                            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                                <Text style={styles.medailleNumber}>{bronzeMedals}</Text>
+                                <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
+                            </View>
+                            <View style={{ alignItems: "center" }}>
+                                {bronzeWins.map(r => {
+                                    return (
+                                        <Text key={r}>{r}</Text>
+                                    )
+                                })}
+                            </View>
+                            <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Mon rang </Text></View>
+                            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                                <Text style={styles.medailleNumber}>{now > planning["listeevent"][planning["listeevent"].length - 1].timeBegin ? rank : "?"}</Text>
+                            </View>
+                        </View>
                     </View>
                     <View style={{ flex: 1, alignContent: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                         <View style={{ flex: 1 }}>
                             <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Mes activités </Text></View>
 
-                            {events.map(r => {                                
+                            {events.map(r => {
                                 return planning["listeevent"].map(q => {
                                     if (q.eventname == r) {
-                                        
+
                                         return (
                                             <SportContext.Consumer key={q}>
                                                 {value => {
                                                     return eventView(eventsInProgress, eventsDone, r, navigation, value.setCurrentSport, "SportDetails", q.timeBegin, true)
                                                 }
-                                            }
+                                                }
                                             </SportContext.Consumer>
                                         )
                                     }
-                                    
-                                    
-                                    
+
+
+
                                 });
                             })}
 
