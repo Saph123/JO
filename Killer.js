@@ -55,13 +55,13 @@ export function KillerScreen({ route }) {
         if (refresh == true) {
             fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setChatText, setNewMessage, setLifetime, setNbMissions).then(start => {
                 timer = setInterval(() => {
-                    let now = new Date()
-                    let startDate = new Date(start * 1000)
-                    let diff = new Date(now - startDate)
-                    let days = String(diff.getDate() - 1) + "j "
-                    let hours = (diff.getHours() - 1) + "h "
-                    let minutes = diff.getMinutes() + "min "
-                    let seconds = diff.getSeconds() + "s"
+                    let now = new Date().getTime()
+                    let startDate = start * 1000
+                    let diff = parseInt((now - startDate) / 1000)
+                    let days = parseInt(diff / 86400) + "j "
+                    let hours = parseInt((diff % 86400)/ 3600) + "h "
+                    let minutes = parseInt((diff % 3600) / 60) + "min "
+                    let seconds = parseInt(diff % 60) + "s"
                     setTimeAlive(days + hours + minutes + seconds)
                 })
             }, 1000);
