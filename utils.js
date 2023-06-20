@@ -102,24 +102,17 @@ export function firstDay(secondsleft, setSecondsleft) {
                 <Text style={{ fontSize: 20, fontWeight: "bold", textAlign: "center" }}>Athlètes présents cette année:</Text>
             </View>
             <View style={{ flexDirection: "row" }}>
-                <View style={{ flex: 1, flexDirection: "column" }}>
-                    {
-                        all_players[0].map((r) => (
-                            personView(r))
-                        )}
-                </View>
-                <View style={{ flex: 1, flexDirection: "column" }}>
-                    {
-                        all_players[1].map((r) => (
-                            personView(r))
-                        )}
-                </View>
-                <View style={{ flex: 1, flexDirection: "column" }}>
-                    {
-                        all_players[2].map((r) => (
-                            personView(r))
-                        )}
-                </View>
+                {
+                    all_players.map(sublist => (
+                        <View key={sublist} style={{ flex: 1, flexDirection: "column" }}>
+                            {
+                                sublist.map((r) => (
+                                    personView(r)
+                                )
+                                )}
+                        </View>
+                    ))
+                }
             </View>
         </View>
     );
