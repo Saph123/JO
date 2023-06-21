@@ -22,6 +22,7 @@ export function KillerScreen({ route }) {
     const [focus, setFocus] = React.useState(false)
     const [focusOn, setFocusOn] = React.useState("")
     const [giveCredit, setGiveCredit] = React.useState(false)
+    const [counterKill, setCounterKill] = React.useState(false)
     const [gameOver, setGameOver] = React.useState(false)
     const [chatText, setChatText] = React.useState("");
     const [localText, setLocalText] = React.useState("");
@@ -59,7 +60,7 @@ export function KillerScreen({ route }) {
                     let startDate = start * 1000
                     let diff = parseInt((now - startDate) / 1000)
                     let days = parseInt(diff / 86400) + "j "
-                    let hours = parseInt((diff % 86400)/ 3600) + "h "
+                    let hours = parseInt((diff % 86400) / 3600) + "h "
                     let minutes = parseInt((diff % 3600) / 60) + "min "
                     let seconds = parseInt(diff % 60) + "s"
                     setTimeAlive(days + hours + minutes + seconds)
@@ -114,6 +115,16 @@ export function KillerScreen({ route }) {
                             <View style={{ backgroundColor: "white", padding: 15, borderRadius: 20, width: "50%", alignSelf: "center" }}>
                                 <Text style={{ fontSize: 15, alignSelf: "center" }}>{mission}</Text>
                             </View>
+                            <View style={styles.killbutton}>
+                                <Pressable onPress={() => {
+                                    Alert.alert("Confirmer votre mort", "", [{
+                                        text: "Confirmer", onPress: () => {
+                                            die(route.params.username, setAlive, setRefresh, true);
+                                            setLifetime(timeAlive);
+                                        }
+                                    }, { text: "Annuler" }])
+                                }}><Text>Je me suis fait griller</Text></Pressable>
+                            </View>
                             <View style={{ height: 100 }}></View>
                             <View style={{ height: 300 + keyboardHeight, left: 0, right: 0, bottom: 0, paddingBottom: keyboardHeight + 10, width: "100%", borderWidth: 1 }}>
                                 {chatView(null, chatText, setChatText, localText, setLocalText, "killer/" + target, "Killer", false)}
@@ -136,11 +147,11 @@ export function KillerScreen({ route }) {
                                             <Pressable onPress={() => {
                                                 Alert.alert("Confirmer votre mort", "", [{
                                                     text: "Confirmer", onPress: () => {
-                                                        die(route.params.username, setAlive, setRefresh);
+                                                        die(route.params.username, setAlive, setRefresh, false);
                                                         setLifetime(timeAlive);
                                                     }
                                                 }, { text: "Annuler" }])
-                                            }}><Text>Omar m'a tuer</Text></Pressable>
+                                            }}><Text>Je suis mort</Text></Pressable>
                                         </View>
                                     </View>
                                     : <View></View>}
@@ -299,12 +310,20 @@ export function KillerScreen({ route }) {
                                                                     <Text>Attribuer le kill</Text>
                                                                 </Pressable>
                                                             </View>
+                                                            <View style={{ flexDirection: "row", marginTop: 20 }}>
+                                                                <Pressable onPress={() => { !counterKill ? setGiveCredit(true) : ""; setCounterKill(!counterKill) }} style={{ width: 22, height: 22, borderRadius: 5, borderWidth: 1, marginRight: 5 }}>
+                                                                    {counterKill ? <Image source={require("./assets/check.png")}></Image> : null}
+                                                                </Pressable>
+                                                                <Pressable onPress={() => { !counterKill ? setGiveCredit(true) : ""; setCounterKill(!counterKill) }} style={{ flex: 1, marginTop: 2 }}>
+                                                                    <Text>Contre kill</Text>
+                                                                </Pressable>
+                                                            </View>
 
                                                             <View style={[styles.killbutton, { width: 150, marginTop: 20 }]}>
                                                                 <Pressable onPress={() => {
                                                                     Alert.alert("Confirmer ?", "Cette action est définitive", [{
                                                                         text: "Confirmer", onPress: () => {
-                                                                            kill(route.params.username, focusOn.name, giveCredit, setFocus);
+                                                                            kill(route.params.username, focusOn.name, giveCredit, counterKill, setFocus);
                                                                             focusOn.alive = false;
                                                                             focusOn.death = "À l'instant"
                                                                         }
@@ -335,6 +354,7 @@ export function KillerScreen({ route }) {
                                                                 setFocus(false);
                                                                 setShouldSave(true);
                                                                 setGiveCredit(false);
+                                                                setCounterKill(false);
                                                                 setModifyingMission(false);
                                                                 changeMission(route.params.username, focusOn);
                                                             }}>
@@ -375,7 +395,7 @@ export function KillerScreen({ route }) {
                                                 </ScrollView>
                                                 : null}
                                         </View>
-                                        <Pressable style={{ height: "100%" }} onPress={() => { setFocus(false); setGiveCredit(false); setModifyingMission(false) }}>
+                                        <Pressable style={{ height: "100%" }} onPress={() => { setFocus(false); setGiveCredit(false); setCounterKill(false); setModifyingMission(false) }}>
                                             <View style={{ height: "100%" }}></View>
                                         </Pressable>
                                     </Modal>

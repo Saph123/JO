@@ -666,8 +666,8 @@ export function startKiller(username) {
 
 }
 
-export function die(username, setAlive, setRefresh) {
-    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version }) }).then(res => {
+export function die(username, setAlive, setRefresh, counterKill = fasle) {
+    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "counter_kill": counterKill }) }).then(res => {
         if (res.status == 200) {
             setAlive(false)
             setRefresh(true)
@@ -677,8 +677,8 @@ export function die(username, setAlive, setRefresh) {
 
 }
 
-export function kill(username, personToKill, giveCredit, setFocus) {
-    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "kill", "to_kill": { name: personToKill, give_credit: giveCredit } }) }).then(res => {
+export function kill(username, personToKill, giveCredit, counterKill, setFocus) {
+    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "kill", "counter_kill": counterKill, "to_kill": { name: personToKill, give_credit: giveCredit } }) }).then(res => {
         if (res.status == 200) {
             setFocus(false);
         }
