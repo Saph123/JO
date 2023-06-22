@@ -207,7 +207,7 @@ export function videoHandler(setVideoVisible, videoVisible, video, videoSource, 
         </Modal>
     )
 }
-export async function fetch_matches(username, setAutho, setStatus, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel, setModifListe, setBetListe, setLock) {
+export async function fetch_matches(username, setAutho, setStatus, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel, setModifListe, setBetListe, setLock, setAuthoVote, setVoteListe) {
 
 
     let allok = false
@@ -215,9 +215,6 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
         allok = await fetch("https://pierrickperso.ddnsfree.com:42124/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
             for (var authouser in data['arbitre']) {
                 if (data['arbitre'][authouser] == "All") {
-                    setAutho(true);
-                }
-                else if (sportname == "Pizza" && !data["locked"]) {
                     setAutho(true);
                 }
                 else if (data['arbitre'][authouser] == username) {
@@ -337,6 +334,29 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                         setSeriesLevel([...new Set(temp_level_series)]); // unique levels
                         setRealListe(local_liste);
                     }
+                    allok = true;
+                }).catch(err => { console.log(err, "err in list"); allok = false; });
+
+            }
+            if (status['states'].includes("votes")) { // gestion listes (trail/tong)
+                if (data["can_vote"].includes(username) || data["can_vote"].includes("all"))
+                {
+                    setAuthoVote(true)
+                }
+                let liste = {};
+                fetch("https://pierrickperso.ddnsfree.com:42124/teams/" + sportname + "_votes.json").then(response => response.json()).then(data => {
+                    liste = data;
+                    let local_final = [];
+                    var score = 0;
+                    rank = 0;
+                    var templist = liste["Teams"]
+                    for (var i in liste["Teams"]) {
+                        rank = templist[i]["votes"].includes(username) ? 1 : templist[i]["Players"].includes(username) ? -1 : 0;
+                        score = templist[i]["votes"].length;
+                        local_final.push(new Liste(templist[i]["Players"], score, rank, 0));
+                    }
+                    setVoteListe(local_final)
+                    setSeriesLevel([0])
                     allok = true;
                 }).catch(err => { console.log(err, "err in list"); allok = false; });
 
@@ -508,6 +528,7 @@ export function lutImg(imgname) {
         Petanque: require('./assets/sports/petanque.png'),
         Molky: require('./assets/sports/molkky.png'),
         Crepes: require('./assets/sports/bretagne.png'),
+        Fairplay: require('./assets/sports/fairplay.png'),
         "Cache-cache": require('./assets/sports/cachecache.png'),
         paris: require('./assets/paris.png'),
         paris_locked: require('./assets/paris.png'),
@@ -524,6 +545,7 @@ export function lutImg(imgname) {
         "people": require('./assets/group.png'),
         "en cours": require('./assets/target.png'),
         "waiting": require('./assets/wait.png'),
+        "votes": require('./assets/vote.png'),
     };
     return lut[imgname];
 }
@@ -550,6 +572,8 @@ export function sportlist() {
         "Ventriglisse",
         "100mRicard",
         "Petanque",
+        "Rangement",
+        "Fairplay",
         "Home"
     ]
 }
@@ -788,14 +812,14 @@ export function pushbets(username, sport, vote) {
     return;
 }
 
-export function pushpizza(username, vote) {
+export function pushvote(username, vote, sportname) {
 
     // 5 second timeout:
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     // // push to server
-    fetch("https://pierrickperso.ddnsfree.com:42124/pushpizza", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "vote": vote }) }).then(r => {
+    fetch("https://pierrickperso.ddnsfree.com:42124/pushvote", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "vote": vote, "sportname" : sportname}) }).then(r => {
         if (r.status == 200) {
             return true;
         }
