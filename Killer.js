@@ -295,7 +295,7 @@ export function KillerScreen({ route }) {
                                         transparent={true}
                                         visible={focus} style={{ paddingTop: "30%" }}>
                                         <View style={[styles.matchZoomView, { minHeight: 300 }]}>
-                                            <Pressable style={[styles.closeButton, { marginBottom: 15 }]} onPress={() => { setFocus(false); setGiveCredit(false); setModifyingMission(false) }}><Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/remove.png')} /></Pressable>
+                                            <Pressable style={[styles.closeButton, { marginBottom: 15 }]} onPress={() => { setFocus(false); setGiveCredit(false); setCounterKill(false); setModifyingMission(false) }}><Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/remove.png')} /></Pressable>
                                             <View style={{ flexDirection: "row" }}>
                                                 <View style={{ flex: 1 }}>
 
@@ -303,10 +303,10 @@ export function KillerScreen({ route }) {
                                                     {focusOn.alive & !gameOver ?
                                                         <View>
                                                             <View style={{ flexDirection: "row" }}>
-                                                                <Pressable onPress={() => setGiveCredit(!giveCredit)} style={{ width: 22, height: 22, borderRadius: 5, borderWidth: 1, marginRight: 5 }}>
+                                                                <Pressable onPress={() => {giveCredit ? setCounterKill(false) : ""; setGiveCredit(!giveCredit)}} style={{ width: 22, height: 22, borderRadius: 5, borderWidth: 1, marginRight: 5 }}>
                                                                     {giveCredit ? <Image source={require("./assets/check.png")}></Image> : null}
                                                                 </Pressable>
-                                                                <Pressable onPress={() => setGiveCredit(!giveCredit)} style={{ flex: 1, marginTop: 2 }}>
+                                                                <Pressable onPress={() => {giveCredit ? setCounterKill(false) : ""; setGiveCredit(!giveCredit)}} style={{ flex: 1, marginTop: 2 }}>
                                                                     <Text>Attribuer le kill</Text>
                                                                 </Pressable>
                                                             </View>
