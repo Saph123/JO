@@ -207,7 +207,7 @@ export function HomeScreen({ route, navigation }) {
                                             if (displayDay.getDay() == jeudi.getDay()) {
                                                 {
                                                     return (
-                                                        firstDay(secondsleft, setSecondsleft)
+                                                        firstDay(secondsleft, setSecondsleft, navigation, username)
                                                     )
                                                 }
                                             }

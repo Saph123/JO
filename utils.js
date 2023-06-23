@@ -43,7 +43,7 @@ class Match {
     }
 }
 
-export function firstDay(secondsleft, setSecondsleft) {
+export function firstDay(secondsleft, setSecondsleft, navigation, username) {
     let all_players = [[
         "Antoine",
         "Armand",
@@ -106,8 +106,16 @@ export function firstDay(secondsleft, setSecondsleft) {
                     all_players.map(sublist => (
                         <View key={sublist} style={{ flex: 1, flexDirection: "column" }}>
                             {
-                                sublist.map((r) => (
-                                    personView(r)
+                                sublist.map((person) => (
+                                    <Pressable key={person} onPress={() => {
+                                        if (username != person) {
+                                            navigation.navigate("PokeScreen", { username: username, other_user: person })
+                                        }
+                                    }}>
+                                        {
+                                            personView(person)
+                                        }
+                                    </Pressable>
                                 )
                                 )}
                         </View>
@@ -339,8 +347,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
 
             }
             if (status['states'].includes("votes")) { // gestion listes (trail/tong)
-                if (data["can_vote"].includes(username) || data["can_vote"].includes("all"))
-                {
+                if (data["can_vote"].includes(username) || data["can_vote"].includes("all")) {
                     setAuthoVote(true)
                 }
                 let liste = {};
@@ -728,6 +735,21 @@ export function changeMission(username, person) {
 
 }
 
+export function getPokeInfo(username, otherUser) {
+    let info = fetch("https://pierrickperso.ddnsfree.com:42124/poke/" + username + "-" + otherUser).then(res => res.json()).then(data => {
+        return data
+    }).catch(err => console.log(err, "in get poke info"));
+    return info
+}
+
+export function sendPoke(username, otherUser) {
+    let ret = fetch("https://pierrickperso.ddnsfree.com:42124/poke/" + username + "-" + otherUser, { method: "POST" }).then(res => {
+        if (!res.status == 200) {
+            alert("Error", "Please try again later")
+        }
+    }).catch(err => console.log(err, "in end killer"));
+    return ret
+}
 export async function fetch_teams(sportname) {
     let fetch_teams = {}
 
@@ -819,7 +841,7 @@ export function pushvote(username, vote, sportname) {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     // // push to server
-    fetch("https://pierrickperso.ddnsfree.com:42124/pushvote", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "vote": vote, "sportname" : sportname}) }).then(r => {
+    fetch("https://pierrickperso.ddnsfree.com:42124/pushvote", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "vote": vote, "sportname": sportname }) }).then(r => {
         if (r.status == 200) {
             return true;
         }

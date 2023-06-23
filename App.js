@@ -13,6 +13,7 @@ import { LastYearsResultsScreen } from "./LastYearsResultsScreen.js";
 import { SportDetailsScreen } from "./SportDetailsScreen.js";
 import { VanRommelScreen } from "./VanRommelScreen.js";
 import { CanvaScreen } from "./CanvaScreen.js";
+import { PokeScreen } from './PokeScreen.js';
 import { pushNotifScreen } from "./PushNotifScreen.js";
 import { LoginScreen } from "./LoginScreen.js";
 import { ShifumiScreen } from "./ShifumiScreen.js";
@@ -154,6 +155,9 @@ function App() {
                             <Stack.Screen options={() => ({
                                 title: "Killer"
                             })} initialParams={{ username: username }} name="KillerScreen" component={KillerScreen} />
+                            <Stack.Screen options={() => ({
+                                title: "Poke"
+                            })} initialParams={{ username: username, other_user: username }} name="PokeScreen" component={PokeScreen} />
 
                             <Stack.Screen options={() => ({
                                 title: "Canva", headerRight: () => <View>
