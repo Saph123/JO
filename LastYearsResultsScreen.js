@@ -1,9 +1,8 @@
 import styles from "./style";
 import * as React from 'react';
 import { View, ActivityIndicator, Text, Image, ScrollView } from 'react-native';
-import { Planning } from "./planning.js";
 import { fetch_global_results, fetch_activities } from "./trace.js";
-import { getValueFor, manageEvents, eventView, addth } from './utils.js';
+import { manageEvents, eventView, addth } from './utils.js';
 import {SportContext} from "./global.js"
 
 export function LastYearsResultsScreen({ route, navigation }) {
@@ -19,8 +18,6 @@ export function LastYearsResultsScreen({ route, navigation }) {
     const [events, setEvents] = React.useState([]);
     const [eventsDone, setEventsDone] = React.useState([]);
     const [eventsInProgress, setEventsInProgess] = React.useState([]);
-    var planning = new Planning();
-    var now = Date.now();
 
 
     React.useEffect(() => {

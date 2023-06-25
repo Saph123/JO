@@ -1,7 +1,7 @@
 import styles from "./style.js";
 import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
-import { View, ScrollView, ActivityIndicator, Text, Modal, RefreshControl, Pressable, Image, KeyboardAvoidingView } from 'react-native';
+import { View, ScrollView, ActivityIndicator, Text, Modal, RefreshControl, Pressable, Image } from 'react-native';
 import { Trace } from "./trace.js";
 import { modalChat, fetchChat, fetch_matches, lutImg, fetch_sport_results, vibrateLight } from './utils.js';
 import { ChatContext, ArbitreContext } from "./global.js";

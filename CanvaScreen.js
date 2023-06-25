@@ -3,7 +3,6 @@ import { View, Modal, Pressable, ActivityIndicator, Text, Dimensions, Image, Ale
 import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
 import { modalChat, fetchChat, vibrateLight } from "./utils.js"
 import { paletteColors, ChatContext, carreSize } from "./global";
-import * as FileSystem from "expo-file-system";
 
 let globRefresh = 0;
 function refreshBase(setref, setRef2) {
@@ -29,7 +28,6 @@ function refreshBase(setref, setRef2) {
 }
 
 export function CanvaScreen({ route }) {
-    const [color, setColor] = React.useState([]);
     const chatcontext = React.useContext(ChatContext);
     const [chatText, setChatText] = React.useState("");
     const [localText, setLocalText] = React.useState("");

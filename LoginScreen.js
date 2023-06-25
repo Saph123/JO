@@ -29,7 +29,6 @@ export function LoginScreen({ route, navigation }) {
     // 5 second timeout:
     let planning = new Planning();
     let now = new Date()
-    let localusername = "";
     React.useEffect(() => {
         getValueFor("username").then(user => {
             setuserName(user);

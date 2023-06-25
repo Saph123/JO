@@ -61,8 +61,6 @@ export const Trace = (props) => {
     const status = props.all_teams.status.status;
     const [loading, setloading] = React.useState(true);
     const [year, setYear] = React.useState(2022);
-    const [second, setSecond] = React.useState(0);
-    const navigation = useNavigation();
     React.useEffect(() => {
         setloading(false)
 
