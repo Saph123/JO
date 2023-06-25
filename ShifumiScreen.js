@@ -51,29 +51,36 @@ export function ShifumiScreen({ route }) {
         }
     }, []);
     return (
-            <View style={{ flex: 1, alignItems: "center", alignContent: "center", flexDirection: "column" }}>
-                <View style={{ flex: 4, alignItems: "center", alignContent: "center", flexDirection: "row" }}>
-                    <View style={{ flex: 1, alignContent: "center", alignSelf: "flex-start", width: "100%" }}>
-                        <View style={{ flex: 1, alignSelf: "center", width: "100%", borderWidth: 1, borderColor: 'black' }}><Text style={{ borderColor: "black", borderWidth: 1, textAlign: "center" }}>Joueurs</Text>
-                            {activePlayers.map(r => <View key={r}><Text>{r}</Text></View>)}
-                        </View>
-                        <View style={{ flex: 1, alignSelf: "flex-start", width: "100%", height: "100%", borderColor: "black", borderWidth: 1 }}>
-                            <Text style={{ borderColor: "black", borderWidth: 1, textAlign: "center" }}>Spectateurs</Text>
-                            {specs.map(r => <View key={r}><Text>{r}</Text></View>)}
-                        </View>
-                    </View>
-                    <View style={{ flex: 1, width: "100%", height: "100%", borderColor: "black", borderWidth: 1 }}><Text style={{ borderColor: "black", borderWidth: 1, textAlign: "center" }}>Scores</Text>
-                        <Text>{scores}</Text>
-                    </View>
+        <View style={{ flex: 1, alignItems: "center", alignContent: "center", flexDirection: "column" }}>
+            <View style={{ flex: 4, alignItems: "center", alignContent: "center", flexDirection: "row" }}>
+                <View style={{ flex: 1, alignContent: "center", alignSelf: "flex-start", width: "100%" }}>
+                    <View style={{ flex: 1, alignSelf: "center", width: "100%", borderWidth: 1, borderColor: 'black' }}><Text style={{ borderColor: "black", borderWidth: 1, textAlign: "center" }}>Joueurs</Text>
+                        <ScrollView>
 
+                            {activePlayers.map(r => <View key={r}><Text>{r}</Text></View>)}
+                        </ScrollView>
+                    </View>
+                    <View style={{ flex: 1, alignSelf: "flex-start", width: "100%", height: "100%", borderColor: "black", borderWidth: 1 }}>
+                        <Text style={{ borderColor: "black", borderWidth: 1, textAlign: "center" }}>Spectateurs</Text>
+                        <ScrollView>
+                            {specs.map(r => <View key={r}><Text>{r}</Text></View>)}
+                        </ScrollView>
+                    </View>
                 </View>
-                <View style={{ flex: 1, flexDirection: "column", backgroundColor: "lightblue", width: "100%", borderColor: "black", borderWidth: 1 }}>
-                    <Text style={{ textAlign: "center" }}>{status}</Text>
+                <View style={{ flex: 1, width: "100%", height: "100%", borderColor: "black", borderWidth: 1 }}><Text style={{ borderColor: "black", borderWidth: 1, textAlign: "center" }}>Scores</Text>
+                    <ScrollView>
+                        <Text>{scores}</Text>
+                    </ScrollView>
                 </View>
-                <View style={{ flex: 4, left: 0, right: 0, bottom: 0, paddingBottom: Platform.OS === "ios" ? keyboardHeight +10 : 0, width: "100%", marginBottom: 30 }}>
-                    {chatView(localChat, setChatText, localInputText, setInputText, "Shifumi", route.params.username, false)}
-                </View>
-                {hideSigns == false ?
+
+            </View>
+            <View style={{ flex: 1, flexDirection: "column", backgroundColor: "lightblue", width: "100%", borderColor: "black", borderWidth: 1 }}>
+                <Text style={{ textAlign: "center" }}>{status}</Text>
+            </View>
+            <View style={{ flex: 4, left: 0, right: 0, bottom: 0, paddingBottom: Platform.OS === "ios" ? keyboardHeight + 10 : 0, width: "100%", marginBottom: 30 }}>
+                {chatView(localChat, setChatText, localInputText, setInputText, "Shifumi", route.params.username, false)}
+            </View>
+            {hideSigns == false ?
                 <View style={{ flex: 1, alignItems: "center", alignContent: "center", flexDirection: "row", marginBottom: 30 }}>
                     <Pressable disabled={notAllowed} onPress={() => {
                         if (globalSign != "Papier") {
@@ -110,7 +117,7 @@ export function ShifumiScreen({ route }) {
 
                 </View> : null}
 
-            </View>
+        </View>
     )
 }
 
