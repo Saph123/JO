@@ -373,7 +373,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
     }
 }
 
-export function chatView(text, setChatText, localText, setLocalText, sportname, username, canBeClosed) {
+export function chatView(text, setChatText, localText, setLocalText, sportname, username, canBeClosed, value=null) {
     function setNewMessageMock(value) {
         return
     }
@@ -452,7 +452,7 @@ export function modalChat(value, text, setChatText, localText, setLocalText, spo
             onRequestClose={() => { value.setChat(false) }}
             onShow={() => { value.setNewMessage(false); initialLineNumber[sportname] = countLines(text); save("initialLineNumber", JSON.stringify(initialLineNumber)); }}
         >
-            {chatView(text, setChatText, localText, setLocalText, sportname, username, true)}
+            {chatView(text, setChatText, localText, setLocalText, sportname, username, true, value)}
 
         </Modal>
 
