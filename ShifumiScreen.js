@@ -14,9 +14,10 @@ export function ShifumiScreen({ route }) {
     const [sign, setSign] = React.useState("puit");
     const [notAllowed, setNotAllowed] = React.useState(true);
     const [status, setStatus] = React.useState("");
+    const [scores, setScores] = React.useState("");
     React.useEffect(() => {
-        var chatInterval = setInterval(() => fetchChat("Shifumi", setChatText, setNewMessage), 1000);
-        var shiFuMiInterval = setInterval(() => ShifumiPost(route.params.username, globalSign, setSpecs, setPlayers, setStatus, setSign, setNotAllowed), 1000);
+        var chatInterval = setInterval(() => fetchChat("Shifumi", setChatText, setNewMessage), 500);
+        var shiFuMiInterval = setInterval(() => ShifumiPost(route.params.username, globalSign, setSpecs, setPlayers, setStatus, setSign, setNotAllowed, setScores), 1000);
 
         return () => {
             clearInterval(chatInterval);
@@ -30,11 +31,15 @@ export function ShifumiScreen({ route }) {
                     <View style={{ flex: 1, alignSelf: "center", width: "100%", borderWidth: 1, borderColor: 'black' }}><Text style={{ borderColor: "black", borderWidth: 1, textAlign: "center" }}>Joueurs</Text>
                         {activePlayers.map(r => <View><Text>{r}</Text></View>)}
                     </View>
+                    <View style={{ flex: 1, alignSelf: "flex-start", width: "100%", height: "100%", borderColor: "black", borderWidth: 1 }}>
+                        <Text style={{ borderColor: "black", borderWidth: 1, textAlign: "center" }}>Spectateurs</Text>
+                        {specs.map(r => <View><Text>{r}</Text></View>)}
+                    </View>
                 </View>
-                <View style={{ flex: 1, alignSelf: "flex-start", width: "100%", height: "100%", borderColor: "black", borderWidth: 1 }}>
-                    <Text style={{ borderColor: "black", borderWidth: 1, textAlign: "center" }}>Spectateurs</Text>
-                    {specs.map(r => <View><Text>{r}</Text></View>)}
+                <View style={{ flex: 1, width: "100%", height: "100%", borderColor: "black", borderWidth: 1 }}><Text style={{ borderColor: "black", borderWidth: 1, textAlign: "center" }}>Scores</Text>
+                <Text>{scores}</Text>
                 </View>
+
             </View>
             <View style={{ flex: 1, flexDirection: "column", backgroundColor: "lightblue", width: "100%", borderColor: "black", borderWidth: 1 }}>
                 <Text style={{ textAlign: "center" }}>{status}</Text>
@@ -134,23 +139,39 @@ export function ShifumiScreen({ route }) {
     )
 }
 
-export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, setSign, setNotAllowed) {
-    fetch("https://pierrickperso.ddnsfree.com:42124/shifumi", { method: "POST", body: JSON.stringify({ "username": username, "sign": sign, "party_id": globalPartyId }) }).then(response => response.json()).then(
+export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, setSign, setNotAllowed, setScores) {
+    fetch("https://pierrickperso.ddnsfree.com:42124/shifumi", { method: "POST", body: JSON.stringify({ "username": username, "sign": sign, "party_id": globalPartyId, "tour": globalTour }) }).then(response => response.json()).then(
         data => {
             setSpecs(data.specs);
             setPlayers(data.active_players);
-            console.log(data.last_winner);
+            score_txt = ""
+            var localScores = [];
+            // localScores.sort((a,b) => a > b);
+            // console.log(data.scores)
+            for( let i in data.scores){
+                localScores.push([i, data.scores[i]]);
+            }
+            localScores.sort((a, b) => b[1] - a[1]);
+            for (let name in localScores){
+                score_txt += localScores[name][0] + ":" + localScores[name][1] + "\n"
+
+            }
+            // score_txt += i + ":";
+            // score_txt += data.scores[i] + "\n";
+            setScores(score_txt)
             let notAllowed = true;
             let txt = "";
 
-            console.log(data);
 
             if (data.active_players.length == 0) {
                 notAllowed = false;
-                txt = "En attente de joueurs!";
-
+                txt = "";
+                for (let i = 0; i < data.leaver.length; i++) {
+                    txt += data.leaver[i] + " s'est barré comme un FDP!\n"
+                }
             }
-            else{
+
+            else {
                 txt = "Partie en cours entre : "
                 for (let i = 0; i < data.active_players.length; i++) {
                     if (data.active_players[i] == username) {
@@ -158,12 +179,14 @@ export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, set
                     }
                     txt += data.active_players[i] + ", "
                 }
+
                 txt += "\n Tour numéro : " + data.tour
             }
-            if(!data.game_in_progress){
+
+            if (!data.game_in_progress) {
                 setNotAllowed(false);
             }
-            else{
+            else {
 
                 setNotAllowed(notAllowed);
             }
@@ -171,20 +194,19 @@ export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, set
                 setSign("puit");
                 globalSign = "puit";
             }
-            if (globalTour != data.tour){
+            if (globalTour != data.tour) {
                 setSign("puit");
                 globalSign = "puit";
             }
             globalTour = data.tour;
             globalPartyId = data.party_id;
-            console.log(txt);
             if (data.voting_in > 0) {
                 if (data.last_winner == "draw" || data.last_winner == "Whisky") {
                     setStatus(txt + "\n" + "La prochaine partie commence dans " + Math.floor(data.voting_in) + " secondes")
                 }
                 else {
 
-                    setStatus(txt + "\n" + data.last_winner + " a remporté la dernière partie!\nLa prochaine partie commence dans " + Math.floor(data.voting_in) + " secondes");
+                    setStatus(txt + "\nLa prochaine partie commence dans " + Math.floor(data.voting_in) + " secondes");
                 }
             }
             else {
