@@ -18,25 +18,19 @@ export function PokeScreen({ route }) {
         })
         setLoading(false)
 
-        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-            if (AppState.currentState === "active") {
-                let message = notification.request.content
-                if (message.title == "Poke") {
-
-                    if (message.body.indexOf(route.params.other_user) != -1) {
-                        getPokeInfo(route.params.username, route.params.other_user).then(info => {
-                            setCanSend(info["can_send"])
-                            setScore(info["score"])
-                        })
-                    }
-
-                }
-            }
-        });
+        let timer = setInterval(() => {
+            getPokeInfo(route.params.username, route.params.other_user).then(info => {
+                setCanSend(info["can_send"])
+                setScore(info["score"])
+            })
+            
+        }, 100);
 
         return () => {
-            Notifications.removeNotificationSubscription(notificationListener.current);
+            clearInterval(timer)
         }
+
+
     }, []);
     if (loading) {
         return (<ActivityIndicator size="large" color="#000000" />)
