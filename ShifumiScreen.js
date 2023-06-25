@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { View, Text, Pressable, ScrollView, TextInput, Image, KeyboardAvoidingView } from 'react-native';
-import { modalChat, fetchChat, pushChat } from "./utils.js"
+import { View, Text, Pressable, Image, Keyboard } from 'react-native';
+import { fetchChat, chatView } from "./utils.js"
+import { ScrollView } from 'react-native-gesture-handler';
 
 var globalSign = "puit";
 var globalPartyId = -1;
@@ -15,127 +16,101 @@ export function ShifumiScreen({ route }) {
     const [notAllowed, setNotAllowed] = React.useState(true);
     const [status, setStatus] = React.useState("");
     const [scores, setScores] = React.useState("");
+    const [keyboardHeight, setKeyboardHeight] = React.useState(0);
+    const [hideSigns, setHideSigns] = React.useState(false)
+    const ref = React.useRef(null)
     React.useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener(
+            'keyboardDidShow',
+            e => {
+                setKeyboardHeight(e.endCoordinates.height);
+                setHideSigns(true)
+                setTimeout(() => {
+                    if (ref.current != undefined) {
+                        ref.current.scrollToEnd({ animated: false })
+                    }
+                }, 1);
+            }
+        );
+
+        const keyboardDidHideListener = Keyboard.addListener(
+            'keyboardDidHide',
+            () => {
+                setKeyboardHeight(0);
+                setHideSigns(false)
+            }
+        );
         var chatInterval = setInterval(() => fetchChat("Shifumi", setChatText, setNewMessage), 500);
         var shiFuMiInterval = setInterval(() => ShifumiPost(route.params.username, globalSign, setSpecs, setPlayers, setStatus, setSign, setNotAllowed, setScores), 1000);
 
         return () => {
             clearInterval(chatInterval);
             clearInterval(shiFuMiInterval);
+            keyboardDidShowListener.remove();
+            keyboardDidHideListener.remove();
         }
     }, []);
     return (
-        <View style={{ flex: 1, alignItems: "center", alignContent: "center", flexDirection: "column" }}>
-            <View style={{ flex: 4, alignItems: "center", alignContent: "center", flexDirection: "row" }}>
-                <View style={{ flex: 1, alignContent: "center", alignSelf: "flex-start", width: "100%" }}>
-                    <View style={{ flex: 1, alignSelf: "center", width: "100%", borderWidth: 1, borderColor: 'black' }}><Text style={{ borderColor: "black", borderWidth: 1, textAlign: "center" }}>Joueurs</Text>
-                        {activePlayers.map(r => <View><Text>{r}</Text></View>)}
-                    </View>
-                    <View style={{ flex: 1, alignSelf: "flex-start", width: "100%", height: "100%", borderColor: "black", borderWidth: 1 }}>
-                        <Text style={{ borderColor: "black", borderWidth: 1, textAlign: "center" }}>Spectateurs</Text>
-                        {specs.map(r => <View><Text>{r}</Text></View>)}
-                    </View>
-                </View>
-                <View style={{ flex: 1, width: "100%", height: "100%", borderColor: "black", borderWidth: 1 }}><Text style={{ borderColor: "black", borderWidth: 1, textAlign: "center" }}>Scores</Text>
-                <Text>{scores}</Text>
-                </View>
-
-            </View>
-            <View style={{ flex: 1, flexDirection: "column", backgroundColor: "lightblue", width: "100%", borderColor: "black", borderWidth: 1 }}>
-                <Text style={{ textAlign: "center" }}>{status}</Text>
-            </View>
-            <View style={{ flex: 4, flexDirection: "column", width: "100%", borderColor: "black", borderWidth: 1, marginBottom: 30 }}>
-                <KeyboardAvoidingView
-                    behavior={Platform.OS === "ios" ? "padding" : "height"}
-                    style={{ height: "100%" }}
-                >
-                    <View style={{ flex: 1 }}>
-                        <View style={{ flex: 6, flexDirection: 'row', backgroundColor: "white" }}>
-                            <View style={{ flex: 5 }}>
-                                <ScrollView style={{ flex: 4 }} ref={ref => { this.scrollView = ref }} onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
-
-                                    <View style={{ flex: 10, flexDirection: "column" }}>
-                                        {localChat.split("\n").map((r, index) => {
-                                            if (index == 0) {
-                                                return
-                                            }
-                                            var date = r.split("- ")[0]
-                                            var who = r.replace(date + '-  ', "").split(" : ")[0]
-                                            var what = r.replace(date + '-  ' + who + " : ", "")
-                                            date = date.replace(",", "")
-                                            return (
-                                                <View key={r + index} style={{ flex: 1, flexDirection: "row" }}>
-                                                    <View style={{ borderWidth: 1, borderRadius: 4, flex: 1, flexDirection: "column", margin: 2 }}>
-                                                        <View style={{ flex: 1 }}>
-                                                            <Text>{date}</Text>
-                                                        </View>
-                                                    </View>
-                                                    <View style={{ flex: 6 }}>
-                                                        <View key={index} style={
-                                                            { borderRadius: 10, marginTop: 5, padding: 3, alignSelf: who == route.params.username ? "flex-end" : "flex-start", backgroundColor: who == route.params.username ? "#186edb" : "lightblue" }}>
-                                                            {who == route.params.username ? <Text style={{ color: "white" }}>{what}</Text> :
-                                                                <View><Text style={{ fontSize: 10, color: "purple" }}>{who}</Text>
-                                                                    <Text>{what}</Text></View>}
-
-                                                        </View>
-                                                    </View>
-                                                </View>
-                                            )
-                                        })}
-                                    </View>
-                                </ScrollView>
-                            </View>
+            <View style={{ flex: 1, alignItems: "center", alignContent: "center", flexDirection: "column" }}>
+                <View style={{ flex: 4, alignItems: "center", alignContent: "center", flexDirection: "row" }}>
+                    <View style={{ flex: 1, alignContent: "center", alignSelf: "flex-start", width: "100%" }}>
+                        <View style={{ flex: 1, alignSelf: "center", width: "100%", borderWidth: 1, borderColor: 'black' }}><Text style={{ borderColor: "black", borderWidth: 1, textAlign: "center" }}>Joueurs</Text>
+                            {activePlayers.map(r => <View key={r}><Text>{r}</Text></View>)}
                         </View>
-                        <View style={{ flexDirection: "row", height: 50 }}>
-                            <TextInput onSubmitEditing={() => { pushChat("Shifumi", localInputText, route.params.username); setChatText(localChat + "\n" + route.params.username + ":" + localInputText); setInputText(""); }} style={{ borderWidth: 1, flex: 1, borderRadius: 8 }} value={localInputText} onChangeText={(txt) => setInputText(txt)} />
-
-                            <Pressable onPress={() => { pushChat("Shifumi", localInputText, route.params.username); setChatText(localChat + "\n" + route.params.username + ":" + localInputText); setInputText(""); }}>
-                                <Image style={{ width: 50, height: 50 }} source={require('./assets/sendmessage.png')} />
-                            </Pressable>
-
-
+                        <View style={{ flex: 1, alignSelf: "flex-start", width: "100%", height: "100%", borderColor: "black", borderWidth: 1 }}>
+                            <Text style={{ borderColor: "black", borderWidth: 1, textAlign: "center" }}>Spectateurs</Text>
+                            {specs.map(r => <View key={r}><Text>{r}</Text></View>)}
                         </View>
                     </View>
-                </KeyboardAvoidingView>
+                    <View style={{ flex: 1, width: "100%", height: "100%", borderColor: "black", borderWidth: 1 }}><Text style={{ borderColor: "black", borderWidth: 1, textAlign: "center" }}>Scores</Text>
+                        <Text>{scores}</Text>
+                    </View>
+
+                </View>
+                <View style={{ flex: 1, flexDirection: "column", backgroundColor: "lightblue", width: "100%", borderColor: "black", borderWidth: 1 }}>
+                    <Text style={{ textAlign: "center" }}>{status}</Text>
+                </View>
+                <View style={{ flex: 4, left: 0, right: 0, bottom: 0, paddingBottom: Platform.OS === "ios" ? keyboardHeight +10 : 0, width: "100%", marginBottom: 30 }}>
+                    {chatView(localChat, setChatText, localInputText, setInputText, "Shifumi", route.params.username, false)}
+                </View>
+                {hideSigns == false ?
+                <View style={{ flex: 1, alignItems: "center", alignContent: "center", flexDirection: "row", marginBottom: 30 }}>
+                    <Pressable disabled={notAllowed} onPress={() => {
+                        if (globalSign != "Papier") {
+
+                            globalSign = "Papier"; setSign("Papier")
+                        }
+                        else {
+                            globalSign = "puit"; setSign("puit");
+                        }
+                    }} style={{ flex: 1, backgroundColor: notAllowed ? "grey" : globalSign == "Papier" ? "red" : "lightblue", borderColor: "black", borderWidth: 1, height: "100%", borderRadius: 25, marginRight: 10, minHeight: 60 }}>
+                        <Image style={{ alignSelf: "center", tintColor: "black", height: 50, width: 50, marginTop: 5 }} resizeMode="contain" source={require('./assets/paper.png')} /></Pressable>
+                    <Pressable disabled={notAllowed} onPress={() => {
+                        if (globalSign != "Pierre") {
+
+                            globalSign = "Pierre"; setSign("Pierre")
+                        }
+                        else {
+                            globalSign = "puit"; setSign("puit");
+                        }
+                    }} style={{ flex: 1, backgroundColor: notAllowed ? "grey" : globalSign == "Pierre" ? "red" : "lightblue", borderColor: "black", borderWidth: 1, height: "100%", borderRadius: 25, marginRight: 10, minHeight: 60 }}>
+                        <Image style={{ alignSelf: "center", tintColor: "black", height: 50, width: 50, marginTop: 5 }} resizeMode="contain" source={require('./assets/fist.png')} /></Pressable>
+                    <Pressable disabled={notAllowed} onPress={() => {
+                        if (globalSign != "Ciseaux") {
+
+                            globalSign = "Ciseaux"; setSign("Ciseaux")
+                        }
+                        else {
+                            globalSign = "puit"; setSign("puit");
+                        }
+                    }} style={{ flex: 1, backgroundColor: notAllowed ? "grey" : globalSign == "Ciseaux" ? "red" : "lightblue", borderColor: "black", borderWidth: 1, height: "100%", borderRadius: 25, marginRight: 10, minHeight: 60 }}>
+                        <Image style={{ alignSelf: "center", tintColor: "black", height: 50, width: 50, marginTop: 5, transform: [{ rotate: '270deg' }] }} resizeMode="contain" source={require('./assets/scissors.png')} /></Pressable>
+
+
+
+                </View> : null}
+
             </View>
-
-            <View style={{ flex: 1, alignItems: "center", alignContent: "center", flexDirection: "row", marginBottom: 30 }}>
-                <Pressable disabled={notAllowed} onPress={() => {
-                    if (globalSign != "Papier") {
-
-                        globalSign = "Papier"; setSign("Papier")
-                    }
-                    else {
-                        globalSign = "puit"; setSign("puit");
-                    }
-                }} style={{ flex: 1, backgroundColor: notAllowed ? "grey" : globalSign == "Papier" ? "red" : "lightblue", borderColor: "black", borderWidth: 1, height: "100%", borderRadius: 25, marginRight: 10, minHeight: 50 }}>
-                    <Image style={{ alignSelf: "center", tintColor: "black", height: 50, width: 50, marginTop: 5 }} resizeMode="contain" source={require('./assets/paper.png')} /></Pressable>
-                <Pressable disabled={notAllowed} onPress={() => {
-                    if (globalSign != "Pierre") {
-
-                        globalSign = "Pierre"; setSign("Pierre")
-                    }
-                    else {
-                        globalSign = "puit"; setSign("puit");
-                    }
-                }} style={{ flex: 1, backgroundColor: notAllowed ? "grey" : globalSign == "Pierre" ? "red" : "lightblue", borderColor: "black", borderWidth: 1, height: "100%", borderRadius: 25, marginRight: 10, minHeight: 50 }}>
-                    <Image style={{ alignSelf: "center", tintColor: "black", height: 50, width: 50, marginTop: 5 }} resizeMode="contain" source={require('./assets/fist.png')} /></Pressable>
-                <Pressable disabled={notAllowed} onPress={() => {
-                    if (globalSign != "Ciseaux") {
-
-                        globalSign = "Ciseaux"; setSign("Ciseaux")
-                    }
-                    else {
-                        globalSign = "puit"; setSign("puit");
-                    }
-                }} style={{ flex: 1, backgroundColor: notAllowed ? "grey" : globalSign == "Ciseaux" ? "red" : "lightblue", borderColor: "black", borderWidth: 1, height: "100%", borderRadius: 25, marginRight: 10, minHeight: 50 }}>
-                    <Image style={{ alignSelf: "center", tintColor: "black", height: 50, width: 50, marginTop: 5, transform: [{ rotate: '270deg' }] }} resizeMode="contain" source={require('./assets/scissors.png')} /></Pressable>
-
-
-
-            </View>
-
-        </View>
     )
 }
 
@@ -148,11 +123,11 @@ export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, set
             var localScores = [];
             // localScores.sort((a,b) => a > b);
             // console.log(data.scores)
-            for( let i in data.scores){
+            for (let i in data.scores) {
                 localScores.push([i, data.scores[i]]);
             }
             localScores.sort((a, b) => b[1] - a[1]);
-            for (let name in localScores){
+            for (let name in localScores) {
                 score_txt += localScores[name][0] + ":" + localScores[name][1] + "\n"
 
             }

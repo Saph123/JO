@@ -373,19 +373,19 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
     }
 }
 
-export function chatView(value, text, setChatText, localText, setLocalText, sportname, username, canBeClosed) {
+export function chatView(text, setChatText, localText, setLocalText, sportname, username, canBeClosed) {
     function setNewMessageMock(value) {
         return
     }
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={{ flex: 1 }}
+            style={{ height: "100%" }}
         >
             <View style={{ flex: 1 }}>
-                <View style={{ flex: 6, flexDirection: 'row', backgroundColor: "darkgrey" }}>
+                <View style={{ flex: 6, flexDirection: 'row', backgroundColor: "white" }}>
                     <View style={{ flex: 5 }}>
-                        <ScrollView nestedScrollEnabled={true} style={{ marginTop: 20 }} ref={ref => { this.scrollView = ref }} onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
+                        <ScrollView nestedScrollEnabled={true} style={{ flex:4 }} ref={ref => { this.scrollView = ref }} onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
 
                             <View style={{ flex: 10, flexDirection: "column" }}>
                                 {text.split("\n").map((r, index) => {
@@ -405,7 +405,7 @@ export function chatView(value, text, setChatText, localText, setLocalText, spor
                                             </View>
                                             <View style={{ flex: 6 }}>
                                                 <View key={index} style={
-                                                    { borderRadius: 10, marginTop: 5, padding: 3, alignSelf: who == username ? "flex-end" : "flex-start", backgroundColor: who == username ? "#186edb" : "#ffffff" }}>
+                                                    { borderRadius: 10, marginTop: 5, padding: 3, alignSelf: who == username ? "flex-end" : "flex-start", backgroundColor: who == username ? "#186edb" : "lightblue" }}>
                                                     {who == username ? <Text style={{ color: "white" }}>{what}</Text> :
                                                         <View><Text style={{ fontSize: 10, color: "purple" }}>{who}</Text>
                                                             <Text>{what}</Text></View>}
@@ -452,7 +452,7 @@ export function modalChat(value, text, setChatText, localText, setLocalText, spo
             onRequestClose={() => { value.setChat(false) }}
             onShow={() => { value.setNewMessage(false); initialLineNumber[sportname] = countLines(text); save("initialLineNumber", JSON.stringify(initialLineNumber)); }}
         >
-            {chatView(value, text, setChatText, localText, setLocalText, sportname, username, true)}
+            {chatView(text, setChatText, localText, setLocalText, sportname, username, true)}
 
         </Modal>
 
