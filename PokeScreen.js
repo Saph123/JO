@@ -1,6 +1,5 @@
 import styles from "./style";
 import * as React from 'react';
-import * as Notifications from 'expo-notifications';
 import { View, Text, Pressable, AppState } from 'react-native';
 import { getPokeInfo, personView, sendPoke } from "./utils";
 import { ActivityIndicator } from "react-native";
@@ -9,7 +8,6 @@ export function PokeScreen({ route }) {
     const [loading, setLoading] = React.useState(true);
     const [canSend, setCanSend] = React.useState(true)
     const [score, setScore] = React.useState(0)
-    const notificationListener = React.useRef();
 
     React.useEffect(() => {
         getPokeInfo(route.params.username, route.params.other_user).then(info => {

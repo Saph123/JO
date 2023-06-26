@@ -1,11 +1,13 @@
 import * as React from 'react';
-import { View, Text, Pressable, Image, Keyboard } from 'react-native';
+import { View, Text, Pressable, Image, Keyboard, Modal } from 'react-native';
 import { fetchChat, chatView } from "./utils.js"
 import { ScrollView } from 'react-native-gesture-handler';
+import styles from './style.js'
 
 var globalSign = "puit";
 var globalPartyId = -1;
 var globalTour = 0;
+var roundInProgress = false
 export function ShifumiScreen({ route }) {
     const [localChat, setChatText] = React.useState("");
     const [localInputText, setInputText] = React.useState("");
@@ -18,6 +20,7 @@ export function ShifumiScreen({ route }) {
     const [scores, setScores] = React.useState("");
     const [keyboardHeight, setKeyboardHeight] = React.useState(0);
     const [hideSigns, setHideSigns] = React.useState(false)
+    const [focus, setFocus] = React.useState(false)
     const ref = React.useRef(null)
     React.useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
@@ -41,8 +44,19 @@ export function ShifumiScreen({ route }) {
             }
         );
         var chatInterval = setInterval(() => fetchChat("Shifumi", setChatText, setNewMessage), 500);
-        var shiFuMiInterval = setInterval(() => ShifumiPost(route.params.username, globalSign, setSpecs, setPlayers, setStatus, setSign, setNotAllowed, setScores), 1000);
-
+        var shiFuMiInterval = setInterval(() => {
+            ShifumiPost(route.params.username, globalSign, setSpecs, setPlayers, setStatus, setSign, setNotAllowed, setScores).then(
+                data => {
+                    console.log(data.round_in_progress)
+                    console.log(roundInProgress)
+                    if (!data.round_in_progress && (roundInProgress != data.round_in_progress)) {
+                        setFocus(true)
+                    }
+                    roundInProgress = data.round_in_progress
+                }
+            )
+            
+        }, 1000);
         return () => {
             clearInterval(chatInterval);
             clearInterval(shiFuMiInterval);
@@ -51,13 +65,33 @@ export function ShifumiScreen({ route }) {
         }
     }, []);
     return (
+
         <View style={{ flex: 1, alignItems: "center", alignContent: "center", flexDirection: "column" }}>
+            <Modal
+                
+                animationType="fade"
+                transparent={true}
+                visible={focus} style={{ paddingTop: "30%" }}
+                onShow={ () => {setTimeout(() => {
+                    setFocus(false)
+                }, 5000);}}>
+                <View style={[styles.matchZoomView, { minHeight: 300 }]}>
+                    <ScrollView>
+
+                    </ScrollView>
+                </View>
+                <Pressable style={{ height: "100%" }} onPress={() => { setFocus(false) }}>
+                </Pressable>
+            </Modal>
             <View style={{ flex: 4, alignItems: "center", alignContent: "center", flexDirection: "row" }}>
                 <View style={{ flex: 1, alignContent: "center", alignSelf: "flex-start", width: "100%" }}>
                     <View style={{ flex: 1, alignSelf: "center", width: "100%", borderWidth: 1, borderColor: 'black' }}><Text style={{ borderColor: "black", borderWidth: 1, textAlign: "center" }}>Joueurs</Text>
                         <ScrollView>
 
-                            {activePlayers.map(r => <View key={r}><Text>{r}</Text></View>)}
+                            {activePlayers.map(r => <View style={{ flexDirection: "row" }} key={r.username}>
+                                <Text>{r.username}</Text>
+                                {r.has_played ? <Image style={{ height: 18, resizeMode: "contain" }} source={require("./assets/check-mark.png")} /> : null}
+                            </View>)}
                         </ScrollView>
                     </View>
                     <View style={{ flex: 1, alignSelf: "flex-start", width: "100%", height: "100%", borderColor: "black", borderWidth: 1 }}>
@@ -74,7 +108,7 @@ export function ShifumiScreen({ route }) {
                 </View>
 
             </View>
-            <View style={{ flex: 1, flexDirection: "column", backgroundColor: "lightblue", width: "100%", borderColor: "black", borderWidth: 1 }}>
+            <View style={{ flex: 1, minHeight: 30, flexDirection: "column", backgroundColor: "lightblue", width: "100%", borderColor: "black", borderWidth: 1 }}>
                 <Text style={{ textAlign: "center" }}>{status}</Text>
             </View>
             <View style={{ flex: 4, left: 0, right: 0, bottom: 0, paddingBottom: Platform.OS === "ios" ? keyboardHeight + 10 : 0, width: "100%", marginBottom: 30 }}>
@@ -116,13 +150,13 @@ export function ShifumiScreen({ route }) {
 
 
                 </View> : null}
-
         </View>
+
     )
 }
 
 export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, setSign, setNotAllowed, setScores) {
-    fetch("https://pierrickperso.ddnsfree.com:42124/shifumi", { method: "POST", body: JSON.stringify({ "username": username, "sign": sign, "party_id": globalPartyId, "tour": globalTour }) }).then(response => response.json()).then(
+    let data = fetch("https://pierrickperso.ddnsfree.com:42124/shifumi", { method: "POST", body: JSON.stringify({ "username": username, "sign": sign, "party_id": globalPartyId, "tour": globalTour }) }).then(response => response.json()).then(
         data => {
             setSpecs(data.specs);
             setPlayers(data.active_players);
@@ -156,10 +190,10 @@ export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, set
             else {
                 txt = "Partie en cours entre : "
                 for (let i = 0; i < data.active_players.length; i++) {
-                    if (data.active_players[i] == username) {
+                    if (data.active_players[i].username == username) {
                         notAllowed = false;
                     }
-                    txt += data.active_players[i] + ", "
+                    txt += data.active_players[i].username + ", "
                 }
 
                 txt += "\n Tour numéro : " + data.tour
@@ -183,13 +217,7 @@ export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, set
             globalTour = data.tour;
             globalPartyId = data.party_id;
             if (data.voting_in > 0) {
-                if (data.last_winner == "draw" || data.last_winner == "Whisky") {
-                    setStatus(txt + "\n" + "La prochaine partie commence dans " + Math.floor(data.voting_in) + " secondes")
-                }
-                else {
-
-                    setStatus(txt + "\nLa prochaine partie commence dans " + Math.floor(data.voting_in) + " secondes");
-                }
+                setStatus(txt + "\nLa prochaine partie commence dans " + Math.floor(data.voting_in) + " secondes");
             }
             else {
                 if (data.last_winner == "draw" || data.last_winner == "Whisky") {
@@ -201,8 +229,9 @@ export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, set
                 }
             }
 
+            return data
         }
     ).catch(
         err => console.error("shifumierr", err));
-
+        return data
 }
