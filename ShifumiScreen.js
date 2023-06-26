@@ -48,7 +48,7 @@ export function ShifumiScreen({ route }) {
         var shiFuMiInterval = setInterval(() => {
             ShifumiPost(route.params.username, globalSign, setSpecs, setPlayers, setStatus, setSign, setNotAllowed, setScores, setPlayerRecap, setRecap);
 
-        }, 1000);
+        }, 500);
         return () => {
             clearInterval(chatInterval);
             clearInterval(shiFuMiInterval);
@@ -72,7 +72,7 @@ export function ShifumiScreen({ route }) {
                 <View style={[styles.matchZoomView, { minHeight: 300 }]}>
                     {recapPlayers.map(r =>
                         <View style={{ flex: 1, flexDirection: "row" }}>
-                            <Text style={{ marginTop: 2, marginRight: 5 }}>{r.username}</Text>
+                            {r.has_win ? <Text style={{ marginTop: 2, marginRight: 5, color: "green" }}>{r.username}</Text> : <Text style={{ marginTop: 2, marginRight: 5, textDecorationLine: "line-through", color: "red" }}>{r.username}</Text>}
                             <View style={{ width: 30, height: 30 }}>{r.sign != "puit" ? draw_sign(r.sign) : null}</View>
 
                         </View>
@@ -108,7 +108,8 @@ export function ShifumiScreen({ route }) {
                 </View>
 
             </View>
-            <Pressable onPress={() => { setRecap(true);
+            <Pressable onPress={() => {
+                setRecap(true);
                 setTimeout(() => {
                     setRecap(false)
                 }, 5000);
@@ -216,7 +217,7 @@ export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, set
                 setSign("puit");
                 globalSign = "puit";
                 for (i in data.players_and_sign) {
-                    recapPlayers.push({ username: data.players_and_sign[i][0], sign: data.players_and_sign[i][1], has_played: false })
+                    recapPlayers.push({ username: data.players_and_sign[i][0], sign: data.players_and_sign[i][1], has_played: false, has_win: data.players_and_sign[i][2] })
                 }
                 setPlayerRecap(recapPlayers);
                 setRecap(true);
@@ -226,8 +227,23 @@ export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, set
             else if (globalTour != data.tour) {
                 setSign("puit");
                 globalSign = "puit";
+                let win = true;
                 for (i in data.players_and_sign) {
-                    recapPlayers.push({ username: data.players_and_sign[i][0], sign: data.players_and_sign[i][1], has_played: false })
+                    if (data.last_winner == "draw") {
+
+                        for (let i = 0; i < data.active_players.length; i++) {
+                            if (data.active_players[i].username == data.players_and_sign[i][0]) {
+                                win = true;
+                            }
+                            else {
+                                win = false;
+                            }
+                        }
+                    }
+                    else{
+                        win = data.players_and_sign[i][2];
+                    }
+                    recapPlayers.push({ username: data.players_and_sign[i][0], sign: data.players_and_sign[i][1], has_played: false, has_win:win})
                 }
                 setPlayerRecap(recapPlayers);
                 setRecap(true);
@@ -237,6 +253,7 @@ export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, set
                 setPlayers(data.active_players);
             }
 
+            console.log(recapPlayers)
             globalTour = data.tour;
             globalPartyId = data.party_id;
             if (data.voting_in > 0) {
