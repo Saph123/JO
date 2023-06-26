@@ -71,9 +71,9 @@ export function ShifumiScreen({ route }) {
                 }}>
                 <View style={[styles.matchZoomView, { minHeight: 300 }]}>
                     {recapPlayers.map(r =>
-                        <View style={{flex:1, flexDirection:"row"}}>
-                            <Text style={{marginTop:2, marginRight:5}}>{r.username}</Text>
-                            <View style={{width:30, height:30}}>{r.sign != "puit" ? draw_sign(r.sign) : null}</View>
+                        <View style={{ flex: 1, flexDirection: "row" }}>
+                            <Text style={{ marginTop: 2, marginRight: 5 }}>{r.username}</Text>
+                            <View style={{ width: 30, height: 30 }}>{r.sign != "puit" ? draw_sign(r.sign) : null}</View>
 
                         </View>
 
@@ -108,9 +108,13 @@ export function ShifumiScreen({ route }) {
                 </View>
 
             </View>
-            <View style={{ flex: 1, minHeight: 30, flexDirection: "column", backgroundColor: "lightblue", width: "100%", borderColor: "black", borderWidth: 1 }}>
+            <Pressable onPress={() => { setRecap(true);
+                setTimeout(() => {
+                    setRecap(false)
+                }, 5000);
+            }} style={{ flex: 1, minHeight: 30, flexDirection: "column", backgroundColor: "lightblue", width: "100%", borderColor: "black", borderWidth: 1 }}>
                 <Text style={{ textAlign: "center" }}>{status}</Text>
-            </View>
+            </Pressable>
             <View style={{ flex: 4, left: 0, right: 0, bottom: 0, paddingBottom: Platform.OS === "ios" ? keyboardHeight + 10 : 0, width: "100%", marginBottom: 30 }}>
                 {chatView(localChat, setChatText, localInputText, setInputText, "Shifumi", route.params.username, false)}
             </View>
@@ -229,11 +233,7 @@ export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, set
                 setRecap(true);
             }
             else {
-                // here we need to display during draw
-                // for( i in data.players_and_sign)
-                // {
-                //    localActivePlayer.push({username:data.players_and_sign[i][0], sign:data.players_and_sign[i][1], has_played:false})
-                // }
+
                 setPlayers(data.active_players);
             }
 
@@ -261,12 +261,12 @@ export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, set
 
 function draw_sign(sign) {
     if (sign == "Pierre") {
-        return (<Image style={{ alignSelf: "center", tintColor: "black", height: 30, width: 30}} resizeMode="contain" source={require('./assets/fist.png')}></Image>)
+        return (<Image style={{ alignSelf: "center", tintColor: "black", height: 30, width: 30 }} resizeMode="contain" source={require('./assets/fist.png')}></Image>)
     }
     if (sign == "Ciseaux") {
-        return (<Image style={{ alignSelf: "center", tintColor: "black", height: 30, width: 30, transform: [{ rotate: '270deg' }] }} resizeMode="contain"  source={require('./assets/scissors.png')}></Image>)
+        return (<Image style={{ alignSelf: "center", tintColor: "black", height: 30, width: 30, transform: [{ rotate: '270deg' }] }} resizeMode="contain" source={require('./assets/scissors.png')}></Image>)
     }
     if (sign == "Papier") {
-        return (<Image style={{ alignSelf: "center", tintColor: "black", height: 30, width: 30}} resizeMode="contain" source={require('./assets/paper.png')}></Image>)
+        return (<Image style={{ alignSelf: "center", tintColor: "black", height: 30, width: 30 }} resizeMode="contain" source={require('./assets/paper.png')}></Image>)
     }
 }
