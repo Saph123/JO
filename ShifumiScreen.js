@@ -71,7 +71,7 @@ export function ShifumiScreen({ route }) {
                 }}>
                 <View style={[styles.matchZoomView, { minHeight: 300 }]}>
                     {recapPlayers.map(r =>
-                        <View style={{ flex: 1, flexDirection: "row" }}>
+                        <View key={r.username} style={{ flex: 1, flexDirection: "row" }}>
                             {r.has_win ? <Text style={{ marginTop: 2, marginRight: 5, color: "green" }}>{r.username}</Text> : <Text style={{ marginTop: 2, marginRight: 5, textDecorationLine: "line-through", color: "red" }}>{r.username}</Text>}
                             <View style={{ width: 30, height: 30 }}>{r.sign != "puit" ? draw_sign(r.sign) : null}</View>
 
