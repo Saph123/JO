@@ -2,11 +2,10 @@ import styles from "./style";
 import * as React from 'react';
 import { View, ScrollView, ActivityIndicator, Text, Image, Pressable, Linking, Alert } from 'react-native';
 import { Audio } from 'expo-av';
-
 import { getNextEventseconds, Planning } from "./planning.js";
 import * as Notifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
-import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo, firstDay, vibrateLight } from './utils.js';
+import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo, firstDay, vibrateLight, getShifumiNbPlayers } from './utils.js';
 import { SportContext, ChatContext, adminlist } from "./global.js"
 export function HomeScreen({ route, navigation }) {
     const [loading, setLoading] = React.useState(1);
@@ -25,6 +24,7 @@ export function HomeScreen({ route, navigation }) {
     const responseListener = React.useRef();
     const [chatText, setChatText] = React.useState("");
     const [localText, setLocalText] = React.useState("");
+    const [nbShifumiPlayers, setNbShifumiPlayers] = React.useState(0)
     const chatcontext = React.useContext(ChatContext);
     let planning = new Planning();
     let now = new Date(Date.now());
@@ -74,6 +74,7 @@ export function HomeScreen({ route, navigation }) {
         }
         getValueFor("username").then(r => { setusername(r); setLoading(0) }).catch(() => setLoading(0));
         chatcontext.setChatName("Home");
+        getShifumiNbPlayers(setNbShifumiPlayers)
         manageEvents(setEventsDone, setCurrentEvents)
         var startEvent = getNextEventseconds();
         setSecondsleft(startEvent.time);
@@ -235,6 +236,11 @@ export function HomeScreen({ route, navigation }) {
                 </Pressable>
                 <Pressable style={styles.bottomTabs} onPress={() => { vibrateLight(); navigation.navigate('ShifumiScreen') }}>
                     <Image style={{ tintColor: "white", height: 35, marginBottom: 2 }} resizeMode="contain" source={require('./assets/shifumi.png')} />
+                    {nbShifumiPlayers > 0 ? <View style={{ position: "absolute", height: 30 }}>
+                        <Image style={{ position: "absolute", height: 30, left: 20 }} resizeMode="contain" source={require("./assets/dot.png")} />
+                        <Text style={{ position: "absolute", color: "white", left: nbShifumiPlayers > 9 ? 36: 40, top: 3, fontSize: 15 }}>{nbShifumiPlayers}</Text>
+                    </View>
+                        : null}
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >ShiFUmi</Text>
                 </Pressable>
                 <Pressable style={styles.bottomTabs}

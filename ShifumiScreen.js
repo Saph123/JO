@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, Text, Pressable, Image, Keyboard, Modal } from 'react-native';
-import { fetchChat, chatView } from "./utils.js"
+import { fetchChat, chatView, draw_sign } from "./utils.js"
 import { ScrollView } from 'react-native-gesture-handler';
 import styles from './style.js'
 
@@ -220,7 +220,9 @@ export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, set
                     recapPlayers.push({ username: data.players_and_sign[i][0], sign: data.players_and_sign[i][1], has_played: false, has_win: data.players_and_sign[i][2] })
                 }
                 setPlayerRecap(recapPlayers);
-                setRecap(true);
+                if (recapPlayers.length != 0) {
+                    setRecap(true);
+                }
 
 
             }
@@ -240,10 +242,10 @@ export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, set
                             }
                         }
                     }
-                    else{
+                    else {
                         win = data.players_and_sign[i][2];
                     }
-                    recapPlayers.push({ username: data.players_and_sign[i][0], sign: data.players_and_sign[i][1], has_played: false, has_win:win})
+                    recapPlayers.push({ username: data.players_and_sign[i][0], sign: data.players_and_sign[i][1], has_played: false, has_win: win })
                 }
                 setPlayerRecap(recapPlayers);
                 setRecap(true);
@@ -274,16 +276,4 @@ export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, set
     ).catch(
         err => console.error("shifumierr", err));
     return data
-}
-
-function draw_sign(sign) {
-    if (sign == "Pierre") {
-        return (<Image style={{ alignSelf: "center", tintColor: "black", height: 30, width: 30 }} resizeMode="contain" source={require('./assets/fist.png')}></Image>)
-    }
-    if (sign == "Ciseaux") {
-        return (<Image style={{ alignSelf: "center", tintColor: "black", height: 30, width: 30, transform: [{ rotate: '270deg' }] }} resizeMode="contain" source={require('./assets/scissors.png')}></Image>)
-    }
-    if (sign == "Papier") {
-        return (<Image style={{ alignSelf: "center", tintColor: "black", height: 30, width: 30 }} resizeMode="contain" source={require('./assets/paper.png')}></Image>)
-    }
 }

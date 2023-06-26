@@ -373,7 +373,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
     }
 }
 
-export function chatView(text, setChatText, localText, setLocalText, sportname, username, canBeClosed, value=null) {
+export function chatView(text, setChatText, localText, setLocalText, sportname, username, canBeClosed, value = null) {
     function setNewMessageMock(value) {
         return
     }
@@ -385,7 +385,7 @@ export function chatView(text, setChatText, localText, setLocalText, sportname, 
             <View style={{ flex: 1 }}>
                 <View style={{ flex: 6, flexDirection: 'row', backgroundColor: "white" }}>
                     <View style={{ flex: 5 }}>
-                        <ScrollView nestedScrollEnabled={true} style={{ flex:4 }} ref={ref => { this.scrollView = ref }} onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
+                        <ScrollView nestedScrollEnabled={true} style={{ flex: 4 }} ref={ref => { this.scrollView = ref }} onContentSizeChange={() => this.scrollView.scrollToEnd({ animated: true })}>
 
                             <View style={{ flex: 10, flexDirection: "column" }}>
                                 {text.split("\n").map((r, index) => {
@@ -957,4 +957,28 @@ export function personView(name, alive) {
             <Text style={{ height: 20, textAlign: "center", fontWeight: "bold" }}>{name}</Text>
         </View>
     )
+}
+
+
+export function getShifumiNbPlayers(setNb) {
+    fetch("https://pierrickperso.ddnsfree.com:42124/shifumi").then(response => response.json()).then(data => {
+
+        console.log(data)
+        setNb(data.nb_players)
+    }
+    ).catch(
+        err => console.error("shifumierr", err));
+
+}
+
+export function draw_sign(sign) {
+    if (sign == "Pierre") {
+        return (<Image style={{ alignSelf: "center", tintColor: "black", height: 30, width: 30 }} resizeMode="contain" source={require('./assets/fist.png')}></Image>)
+    }
+    if (sign == "Ciseaux") {
+        return (<Image style={{ alignSelf: "center", tintColor: "black", height: 30, width: 30, transform: [{ rotate: '270deg' }] }} resizeMode="contain" source={require('./assets/scissors.png')}></Image>)
+    }
+    if (sign == "Papier") {
+        return (<Image style={{ alignSelf: "center", tintColor: "black", height: 30, width: 30 }} resizeMode="contain" source={require('./assets/paper.png')}></Image>)
+    }
 }
