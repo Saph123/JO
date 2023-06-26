@@ -14,13 +14,14 @@ export function ShifumiScreen({ route }) {
     const [newMessage, setNewMessage] = React.useState("");
     const [specs, setSpecs] = React.useState([]);
     const [activePlayers, setPlayers] = React.useState([]);
+    const [recapPlayers, setPlayerRecap] = React.useState([]);
     const [sign, setSign] = React.useState("puit");
     const [notAllowed, setNotAllowed] = React.useState(true);
     const [status, setStatus] = React.useState("");
     const [scores, setScores] = React.useState("");
     const [keyboardHeight, setKeyboardHeight] = React.useState(0);
     const [hideSigns, setHideSigns] = React.useState(false)
-    const [focus, setFocus] = React.useState(false)
+    const [recap, setRecap] = React.useState(false)
     const ref = React.useRef(null)
     React.useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
@@ -45,17 +46,8 @@ export function ShifumiScreen({ route }) {
         );
         var chatInterval = setInterval(() => fetchChat("Shifumi", setChatText, setNewMessage), 500);
         var shiFuMiInterval = setInterval(() => {
-            ShifumiPost(route.params.username, globalSign, setSpecs, setPlayers, setStatus, setSign, setNotAllowed, setScores).then(
-                data => {
-                    console.log(data.round_in_progress)
-                    console.log(roundInProgress)
-                    if (!data.round_in_progress && (roundInProgress != data.round_in_progress)) {
-                        setFocus(true)
-                    }
-                    roundInProgress = data.round_in_progress
-                }
-            )
-            
+            ShifumiPost(route.params.username, globalSign, setSpecs, setPlayers, setStatus, setSign, setNotAllowed, setScores, setPlayerRecap, setRecap);
+
         }, 1000);
         return () => {
             clearInterval(chatInterval);
@@ -68,19 +60,26 @@ export function ShifumiScreen({ route }) {
 
         <View style={{ flex: 1, alignItems: "center", alignContent: "center", flexDirection: "column" }}>
             <Modal
-                
+
                 animationType="fade"
                 transparent={true}
-                visible={focus} style={{ paddingTop: "30%" }}
-                onShow={ () => {setTimeout(() => {
-                    setFocus(false)
-                }, 5000);}}>
+                visible={recap} style={{ paddingTop: "30%" }}
+                onShow={() => {
+                    setTimeout(() => {
+                        setRecap(false)
+                    }, 5000);
+                }}>
                 <View style={[styles.matchZoomView, { minHeight: 300 }]}>
-                    <ScrollView>
+                    {recapPlayers.map(r =>
+                        <View style={{flex:1, flexDirection:"row"}}>
+                            <Text style={{marginTop:2, marginRight:5}}>{r.username}</Text>
+                            <View style={{width:30, height:30}}>{r.sign != "puit" ? draw_sign(r.sign) : null}</View>
 
-                    </ScrollView>
+                        </View>
+
+                    )}
                 </View>
-                <Pressable style={{ height: "100%" }} onPress={() => { setFocus(false) }}>
+                <Pressable style={{ height: "100%", width: '100%' }} onPress={() => { setRecap(false) }}>
                 </Pressable>
             </Modal>
             <View style={{ flex: 4, alignItems: "center", alignContent: "center", flexDirection: "row" }}>
@@ -91,6 +90,7 @@ export function ShifumiScreen({ route }) {
                             {activePlayers.map(r => <View style={{ flexDirection: "row" }} key={r.username}>
                                 <Text>{r.username}</Text>
                                 {r.has_played ? <Image style={{ height: 18, resizeMode: "contain" }} source={require("./assets/check-mark.png")} /> : null}
+
                             </View>)}
                         </ScrollView>
                     </View>
@@ -155,15 +155,14 @@ export function ShifumiScreen({ route }) {
     )
 }
 
-export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, setSign, setNotAllowed, setScores) {
+export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, setSign, setNotAllowed, setScores, setPlayerRecap, setRecap) {
     let data = fetch("https://pierrickperso.ddnsfree.com:42124/shifumi", { method: "POST", body: JSON.stringify({ "username": username, "sign": sign, "party_id": globalPartyId, "tour": globalTour }) }).then(response => response.json()).then(
         data => {
             setSpecs(data.specs);
-            setPlayers(data.active_players);
             score_txt = ""
             var localScores = [];
-            // localScores.sort((a,b) => a > b);
-            // console.log(data.scores)
+            // console.log(data);
+
             for (let i in data.scores) {
                 localScores.push([i, data.scores[i]]);
             }
@@ -172,8 +171,7 @@ export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, set
                 score_txt += localScores[name][0] + ":" + localScores[name][1] + "\n"
 
             }
-            // score_txt += i + ":";
-            // score_txt += data.scores[i] + "\n";
+
             setScores(score_txt)
             let notAllowed = true;
             let txt = "";
@@ -186,7 +184,9 @@ export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, set
                     txt += data.leaver[i] + " s'est barré comme un FDP!\n"
                 }
             }
-
+            else if (data.active_players.length == 1) {
+                txt = data.active_players[0].username + " est prêt à ragler tout le monde!";
+            }
             else {
                 txt = "Partie en cours entre : "
                 for (let i = 0; i < data.active_players.length; i++) {
@@ -206,14 +206,37 @@ export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, set
 
                 setNotAllowed(notAllowed);
             }
+            // These 2 checks show us if the turn is done or party is over
+            var recapPlayers = [];
             if (globalPartyId != data.party_id) {
                 setSign("puit");
                 globalSign = "puit";
+                for (i in data.players_and_sign) {
+                    recapPlayers.push({ username: data.players_and_sign[i][0], sign: data.players_and_sign[i][1], has_played: false })
+                }
+                setPlayerRecap(recapPlayers);
+                setRecap(true);
+
+
             }
-            if (globalTour != data.tour) {
+            else if (globalTour != data.tour) {
                 setSign("puit");
                 globalSign = "puit";
+                for (i in data.players_and_sign) {
+                    recapPlayers.push({ username: data.players_and_sign[i][0], sign: data.players_and_sign[i][1], has_played: false })
+                }
+                setPlayerRecap(recapPlayers);
+                setRecap(true);
             }
+            else {
+                // here we need to display during draw
+                // for( i in data.players_and_sign)
+                // {
+                //    localActivePlayer.push({username:data.players_and_sign[i][0], sign:data.players_and_sign[i][1], has_played:false})
+                // }
+                setPlayers(data.active_players);
+            }
+
             globalTour = data.tour;
             globalPartyId = data.party_id;
             if (data.voting_in > 0) {
@@ -233,5 +256,17 @@ export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, set
         }
     ).catch(
         err => console.error("shifumierr", err));
-        return data
+    return data
+}
+
+function draw_sign(sign) {
+    if (sign == "Pierre") {
+        return (<Image style={{ alignSelf: "center", tintColor: "black", height: 30, width: 30}} resizeMode="contain" source={require('./assets/fist.png')}></Image>)
+    }
+    if (sign == "Ciseaux") {
+        return (<Image style={{ alignSelf: "center", tintColor: "black", height: 30, width: 30, transform: [{ rotate: '270deg' }] }} resizeMode="contain"  source={require('./assets/scissors.png')}></Image>)
+    }
+    if (sign == "Papier") {
+        return (<Image style={{ alignSelf: "center", tintColor: "black", height: 30, width: 30}} resizeMode="contain" source={require('./assets/paper.png')}></Image>)
+    }
 }
