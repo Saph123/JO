@@ -134,12 +134,16 @@ export function HomeScreen({ route, navigation }) {
             setLoading(0)
         }).catch(() => setLoading(0));
         chatcontext.setChatName("Home");
-        var playersInfo = setInterval(() => getOnlinePersons("ShifumiScreen").then(data => {
-            setNbShifumiPlayers(data.length);
+        var playersInfo = setInterval(() => {
+            getOnlinePersons("ShifumiScreen").then(data => {
+                if (data.length === undefined) { console.log("kekos"); data.length = 0 }
+                setNbShifumiPlayers(data.length);
+            })
             getOnlinePersons("CanvaScreen").then(data => {
                 setNbCanvaArtists(data.length)
             });
-        }), 3000);
+        }
+            , 1000);
 
 
 
@@ -230,7 +234,6 @@ export function HomeScreen({ route, navigation }) {
             clearInterval(chatInterval);
             clearInterval(life_interval);
             clearInterval(playersInfo);
-            console.log(Notifications.removeNotificationSubscription);
             Notifications.removeNotificationSubscription(notificationListener.current);
             Notifications.removeNotificationSubscription(responseListener.current);
         };
