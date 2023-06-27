@@ -134,12 +134,18 @@ export function HomeScreen({ route, navigation }) {
             setLoading(0)
         }).catch(() => setLoading(0));
         chatcontext.setChatName("Home");
-        getOnlinePersons("ShifumiScreen").then(data => {
-            setNbShifumiPlayers(data.length)
-        })
-        getOnlinePersons("CanvaScreen").then(data => {
-            setNbCanvaArtists(data.length)
-        })
+        var playersInfo = setInterval(() => getOnlinePersons("ShifumiScreen").then(data => {
+            setNbShifumiPlayers(data.length);
+            getOnlinePersons("CanvaScreen").then(data => {
+                setNbCanvaArtists(data.length)
+            });
+        }), 3000);
+
+
+
+
+
+
         manageEvents(setEventsDone, setCurrentEvents)
         var startEvent = getNextEventseconds();
         setSecondsleft(startEvent.time);
@@ -223,6 +229,8 @@ export function HomeScreen({ route, navigation }) {
         return () => {
             clearInterval(chatInterval);
             clearInterval(life_interval);
+            clearInterval(playersInfo);
+            console.log(Notifications.removeNotificationSubscription);
             Notifications.removeNotificationSubscription(notificationListener.current);
             Notifications.removeNotificationSubscription(responseListener.current);
         };
