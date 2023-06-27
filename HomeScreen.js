@@ -5,7 +5,7 @@ import { Audio } from 'expo-av';
 import { getNextEventseconds, Planning } from "./planning.js";
 import * as Notifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
-import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo, firstDay, vibrateLight, getShifumiNbPlayers } from './utils.js';
+import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo, firstDay, vibrateLight, getShifumiNbPlayers, getPokeInfo } from './utils.js';
 import { SportContext, ChatContext, adminlist } from "./global.js"
 export function HomeScreen({ route, navigation }) {
     const [loading, setLoading] = React.useState(1);
@@ -26,6 +26,46 @@ export function HomeScreen({ route, navigation }) {
     const [localText, setLocalText] = React.useState("");
     const [nbShifumiPlayers, setNbShifumiPlayers] = React.useState(0)
     const chatcontext = React.useContext(ChatContext);
+    const [all_players, setAllPlayers] = React.useState([[
+        { name: "Antoine", poke: false },
+        { name: "Armand", poke: false },
+        { name: "Beranger", poke: false },
+        { name: "Bifteck", poke: false },
+        { name: "Boulbi", poke: false },
+        { name: "Brice", poke: false },
+        { name: "Bryan", poke: false },
+        { name: "Chachav", poke: false },
+        { name: "Chloe", poke: false },
+        { name: "Clement", poke: false },
+        { name: "Emma", poke: false }
+    ],
+    [
+        { name: "Florent", poke: false },
+        { name: "Girex", poke: false },
+        { name: "Gui", poke: false },
+        { name: "Guillaume", poke: false },
+        { name: "Hugo", poke: false },
+        { name: "Jason", poke: false },
+        { name: "Jess", poke: false },
+        { name: "Jo", poke: false },
+        { name: "Keke", poke: false },
+        { name: "Mams", poke: false },
+        { name: "Mathias", poke: false }
+    ],
+    [
+        { name: "Max", poke: false },
+        { name: "Mimo", poke: false },
+        { name: "LaGuille", poke: false },
+        { name: "Lapinou", poke: false },
+        { name: "Leo", poke: false },
+        { name: "Pierrick", poke: false },
+        { name: "Quentin", poke: false },
+        { name: "Reminem", poke: false },
+        { name: "Shmav", poke: false },
+        { name: "Thomas", poke: false },
+        { name: "Ugo", poke: false }
+    ]
+    ])
     let planning = new Planning();
     let now = new Date(Date.now());
     var jeudi = new Date('2023-07-13T00:00:00+02:00');
@@ -72,7 +112,30 @@ export function HomeScreen({ route, navigation }) {
             default:
                 setDisplayDay(jeudi);
         }
-        getValueFor("username").then(r => { setusername(r); setLoading(0) }).catch(() => setLoading(0));
+        let poke_interval
+        getValueFor("username").then(r => {
+            setusername(r);
+            setLoading(0)
+            poke_interval = setInterval(() => {
+                tempList = all_players
+                tempList.map(sublist => (
+                    sublist.map(
+                        player => (
+                            getPokeInfo(r, player.name).then(info => {
+                                if (info.can_send && info.score > 0) {
+                                    player.poke = true
+                                }
+                                else
+                                {
+                                    player.poke = false
+                                }
+                            })
+                            )
+                            )))
+                            setAllPlayers(tempList)
+                        }
+                        , 500);
+        }).catch(() => setLoading(0));
         chatcontext.setChatName("Home");
         getShifumiNbPlayers(setNbShifumiPlayers)
         manageEvents(setEventsDone, setCurrentEvents)
@@ -152,6 +215,7 @@ export function HomeScreen({ route, navigation }) {
         // setLoading(0);
         return () => {
             clearInterval(chatInterval);
+            clearInterval(poke_interval);
             Notifications.removeNotificationSubscription(notificationListener.current);
             Notifications.removeNotificationSubscription(responseListener.current);
         };
@@ -208,7 +272,7 @@ export function HomeScreen({ route, navigation }) {
                                             if (displayDay.getDay() == jeudi.getDay()) {
                                                 {
                                                     return (
-                                                        firstDay(secondsleft, setSecondsleft, navigation, username)
+                                                        firstDay(secondsleft, setSecondsleft, navigation, username, all_players)
                                                     )
                                                 }
                                             }
@@ -238,7 +302,7 @@ export function HomeScreen({ route, navigation }) {
                     <Image style={{ tintColor: "white", height: 35, marginBottom: 2 }} resizeMode="contain" source={require('./assets/shifumi.png')} />
                     {nbShifumiPlayers > 0 ? <View style={{ position: "absolute", height: 30 }}>
                         <Image style={{ position: "absolute", height: 30, left: 20 }} resizeMode="contain" source={require("./assets/dot.png")} />
-                        <Text style={{ position: "absolute", color: "white", left: nbShifumiPlayers > 9 ? 36: 40, top: 3, fontSize: 15 }}>{nbShifumiPlayers}</Text>
+                        <Text style={{ position: "absolute", color: "white", left: nbShifumiPlayers > 9 ? 36 : 40, top: 3, fontSize: 15 }}>{nbShifumiPlayers}</Text>
                     </View>
                         : null}
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >ShiFUmi</Text>

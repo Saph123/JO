@@ -43,44 +43,7 @@ class Match {
     }
 }
 
-export function firstDay(secondsleft, setSecondsleft, navigation, username) {
-    let all_players = [[
-        "Antoine",
-        "Armand",
-        "Beranger",
-        "Bifteck",
-        "Boulbi",
-        "Brice",
-        "Bryan",
-        "Chachav",
-        "Chloe",
-        "Clement",
-        "Emma"],
-    [
-        "Florent",
-        "Girex",
-        "Gui",
-        "Guillaume",
-        "Hugo",
-        "Jason",
-        "Jess",
-        "Jo",
-        "Keke",
-        "Mams",
-        "Mathias"],
-    [
-        "Max",
-        "Mimo",
-        "LaGuille",
-        "Lapinou",
-        "Leo",
-        "Pierrick",
-        "Quentin",
-        "Reminem",
-        "Shmav",
-        "Thomas",
-        "Ugo"]
-    ]
+export function firstDay(secondsleft, setSecondsleft, navigation, username, all_players) {
 
     return (
         <View key={secondsleft}>
@@ -107,13 +70,13 @@ export function firstDay(secondsleft, setSecondsleft, navigation, username) {
                         <View key={sublist} style={{ flex: 1, flexDirection: "column" }}>
                             {
                                 sublist.map((person) => (
-                                    <Pressable key={person} onPress={() => {
-                                        if (username != person) {
-                                            navigation.navigate("PokeScreen", { username: username, other_user: person })
+                                    <Pressable key={person.name} onPress={() => {
+                                        if (username != person.name) {
+                                            navigation.navigate("PokeScreen", { username: username, other_user: person.name })
                                         }
                                     }}>
                                         {
-                                            personView(person)
+                                            personView(person.name, true, person.poke)
                                         }
                                     </Pressable>
                                 )
@@ -947,13 +910,14 @@ export function toggleLockBets(sportname) {
 }
 
 
-export function personView(name, alive) {
+export function personView(name, alive, poke) {
     return (
-        <View key={name} style={{ width: 100, height: 170, margin: 10 }}>
+        <View key={name + alive + poke} style={{ width: 100, height: 170, margin: 10 }}>
             <View style={{ height: 150 }}>
                 <Image style={{ height: 150, width: 100, borderRadius: 10 }} source={{ cache: 'reload', uri: "https://pierrickperso.ddnsfree.com:42124/photo/" + name }} />
             </View>
             {alive == false ? <Image style={{ position: "absolute", height: 150 }} source={require("./assets/dead2.png")} /> : null}
+            {poke ? <Image style={{ position: "absolute", height: 30, resizeMode: "contain", left: 75, top: -10 }} source={require("./assets/dot.png")} /> : null}
             <Text style={{ height: 20, textAlign: "center", fontWeight: "bold" }}>{name}</Text>
         </View>
     )
