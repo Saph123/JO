@@ -80,8 +80,8 @@ export function firstDay(secondsleft, setSecondsleft, navigation, username, all_
             </View>
             <View style={{ flexDirection: "row" }}>
                 {
-                    all_players.map(sublist => (
-                        <View key={sublist} style={{ flex: 1, flexDirection: "column" }}>
+                    all_players.map((sublist, index) => (
+                        <View key={index} style={{ flex: 1, flexDirection: "column" }}>
                             {
                                 sublist.map((person) => (
                                     <Pressable key={person.name} onPress={() => {
@@ -971,7 +971,6 @@ export function getOnlinePersons(screen="") {
                 online.push(data.online[index])
             }
         }
-        console.log(online)
         return online
     }
     }

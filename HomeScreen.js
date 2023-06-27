@@ -116,7 +116,6 @@ export function HomeScreen({ route, navigation }) {
         }
         getValueFor("username").then(r => {
             setusername(r);
-            setLoading(0)
             tempList = all_players
             tempList.map(sublist => (
                 sublist.map(
@@ -132,12 +131,13 @@ export function HomeScreen({ route, navigation }) {
                     )
                 )))
             setAllPlayers(tempList)
+            setLoading(0)
         }).catch(() => setLoading(0));
         chatcontext.setChatName("Home");
-        getOnlinePersons("ShifumiScreen").then( data => {
+        getOnlinePersons("ShifumiScreen").then(data => {
             setNbShifumiPlayers(data.length)
         })
-        getOnlinePersons("CanvaScreen").then( data => {
+        getOnlinePersons("CanvaScreen").then(data => {
             setNbCanvaArtists(data.length)
         })
         manageEvents(setEventsDone, setCurrentEvents)
