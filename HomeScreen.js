@@ -142,7 +142,24 @@ export function HomeScreen({ route, navigation }) {
             getOnlinePersons("CanvaScreen").then(data => {
                 setNbCanvaArtists(data.length)
             });
-        }
+            getValueFor("username").then(r => {
+                setusername(r);
+                tempList = all_players
+                tempList.map(sublist => (
+                    sublist.map(
+                        player => (
+                            getPokeInfo(r, player.name).then(info => {
+                                if (info.can_send && info.score > 0) {
+                                    player.poke = true
+                                }
+                                else {
+                                    player.poke = false
+                                }
+                            })
+                        )
+                    )))
+                setAllPlayers([...tempList])})
+                    }
             , 1000);
 
 
