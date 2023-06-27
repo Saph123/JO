@@ -5,7 +5,7 @@ import { Audio } from 'expo-av';
 import { getNextEventseconds, Planning } from "./planning.js";
 import * as Notifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
-import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo, firstDay, vibrateLight, getShifumiNbPlayers, getPokeInfo } from './utils.js';
+import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo, firstDay, vibrateLight, getShifumiNbPlayers, getPokeInfo, fetchAnnonce } from './utils.js';
 import { SportContext, ChatContext, adminlist } from "./global.js"
 export function HomeScreen({ route, navigation }) {
     const [loading, setLoading] = React.useState(1);
@@ -26,6 +26,7 @@ export function HomeScreen({ route, navigation }) {
     const [localText, setLocalText] = React.useState("");
     const [nbShifumiPlayers, setNbShifumiPlayers] = React.useState(0)
     const chatcontext = React.useContext(ChatContext);
+    const [annonce, setAnnonce] = React.useState("")
     const [all_players, setAllPlayers] = React.useState([[
         { name: "Antoine", poke: false },
         { name: "Armand", poke: false },
@@ -112,29 +113,24 @@ export function HomeScreen({ route, navigation }) {
             default:
                 setDisplayDay(jeudi);
         }
-        let poke_interval
         getValueFor("username").then(r => {
             setusername(r);
             setLoading(0)
-            poke_interval = setInterval(() => {
-                tempList = all_players
-                tempList.map(sublist => (
-                    sublist.map(
-                        player => (
-                            getPokeInfo(r, player.name).then(info => {
-                                if (info.can_send && info.score > 0) {
-                                    player.poke = true
-                                }
-                                else
-                                {
-                                    player.poke = false
-                                }
-                            })
-                            )
-                            )))
-                            setAllPlayers(tempList)
-                        }
-                        , 500);
+            tempList = all_players
+            tempList.map(sublist => (
+                sublist.map(
+                    player => (
+                        getPokeInfo(r, player.name).then(info => {
+                            if (info.can_send && info.score > 0) {
+                                player.poke = true
+                            }
+                            else {
+                                player.poke = false
+                            }
+                        })
+                    )
+                )))
+            setAllPlayers(tempList)
         }).catch(() => setLoading(0));
         chatcontext.setChatName("Home");
         getShifumiNbPlayers(setNbShifumiPlayers)
@@ -142,6 +138,7 @@ export function HomeScreen({ route, navigation }) {
         var startEvent = getNextEventseconds();
         setSecondsleft(startEvent.time);
         setNextEvent(startEvent.name);
+        fetchAnnonce(setAnnonce)
         registerForPushNotificationsAsync().then(token => { setExpoPushToken(token); pushtoken(token, username) });
         // This listener is fired whenever a notification is received while the app is foregrounded
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
@@ -215,7 +212,6 @@ export function HomeScreen({ route, navigation }) {
         // setLoading(0);
         return () => {
             clearInterval(chatInterval);
-            clearInterval(poke_interval);
             Notifications.removeNotificationSubscription(notificationListener.current);
             Notifications.removeNotificationSubscription(responseListener.current);
         };
@@ -272,7 +268,7 @@ export function HomeScreen({ route, navigation }) {
                                             if (displayDay.getDay() == jeudi.getDay()) {
                                                 {
                                                     return (
-                                                        firstDay(secondsleft, setSecondsleft, navigation, username, all_players)
+                                                        firstDay(secondsleft, setSecondsleft, navigation, username, all_players, annonce, setAnnonce)
                                                     )
                                                 }
                                             }

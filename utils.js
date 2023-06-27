@@ -43,8 +43,24 @@ class Match {
     }
 }
 
-export function firstDay(secondsleft, setSecondsleft, navigation, username, all_players) {
+export function fetchAnnonce(setAnnonce) {
+    fetch("https://pierrickperso.ddnsfree.com:42124/annonce").then(response => response.text()).then(r => {
+        setAnnonce(r)
+    }).catch(err => console.error("fetch annonce err", err));
+}
 
+export function pushAnnonce(annonce) {
+    fetch("https://pierrickperso.ddnsfree.com:42124/annonce", { method: "POST", body: annonce }).then(res => {
+        if (res.status == 200) {
+        }
+        else {
+            alert("Couldn't update annonce!");
+        }
+    }).catch(err => console.log(err, "err push annonce"));
+}
+
+
+export function firstDay(secondsleft, setSecondsleft, navigation, username, all_players, annonce, setAnnonce) {
     return (
         <View key={secondsleft}>
             {secondsleft < 0 ? <View></View> : <View><Text style={{ alignSelf: "center" }}>{"Soirée d'ouverture dans :"}</Text><CountDown
@@ -57,9 +73,7 @@ export function firstDay(secondsleft, setSecondsleft, navigation, username, all_
             <View key={"details"} style={{ justifyContent: "center" }}>
                 <Text style={{ textAlign: "center", fontSize: 24, fontWeight: "bold" }}> BIENVENUE!</Text>
                 <Text style={{ textAlign: "center", fontSize: 18 }}>1605 Chemin des Pierres, 38440 Meyssiez, France</Text>
-                <Text style={{ textAlign: "center" }}> What's new?!</Text>
-                <Text style={{ textAlign: "center" }}> * Killer</Text>
-                <Text style={{ textAlign: "center" }}> * Shifumi</Text>
+                {adminlist.includes(username) ? <TextInput multiline={true} style={{ textAlign: "center" }} onChangeText={text => { setAnnonce(text) }} onEndEditing={() => { pushAnnonce(annonce) }}  >{annonce}</TextInput> : <Text style={{ textAlign: "center" }}> {annonce}</Text>}
             </View>
             <View style={{ marginBottom: 10, marginTop: 50 }}>
                 <Text style={{ fontSize: 20, fontWeight: "bold", textAlign: "center" }}>Athlètes présents cette année:</Text>
@@ -88,6 +102,7 @@ export function firstDay(secondsleft, setSecondsleft, navigation, username, all_
         </View>
     );
 }
+
 export async function save(key, value) {
     await SecureStore.setItemAsync(key, value);
 }
@@ -914,7 +929,7 @@ export function personView(name, alive, poke) {
     return (
         <View key={name + alive + poke} style={{ width: 100, height: 170, margin: 10 }}>
             <View style={{ height: 150 }}>
-                <Image style={{ height: 150, width: 100, borderRadius: 10 }} source={{ cache: 'reload', uri: "https://pierrickperso.ddnsfree.com:42124/photo/" + name }} />
+                <Image style={{ height: 150, width: 100, borderRadius: 10 }} source={{ cache: 'force-cache', uri: "https://pierrickperso.ddnsfree.com:42124/photo/" + name }} />
             </View>
             {alive == false ? <Image style={{ position: "absolute", height: 150 }} source={require("./assets/dead2.png")} /> : null}
             {poke ? <Image style={{ position: "absolute", height: 30, resizeMode: "contain", left: 75, top: -10 }} source={require("./assets/dot.png")} /> : null}
