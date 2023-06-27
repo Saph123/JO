@@ -55,6 +55,7 @@ export function CanvaScreen({ route }) {
         return () => {
             clearInterval(refreshInterval);
             clearInterval(chatInterval);
+            clearInterval(liveInterval);
             lines_number = 0;
         }
     }, [chatcontext.chatName, lineNb, colNb]);

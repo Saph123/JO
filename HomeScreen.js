@@ -136,11 +136,17 @@ export function HomeScreen({ route, navigation }) {
         chatcontext.setChatName("Home");
         var playersInfo = setInterval(() => {
             getOnlinePersons("ShifumiScreen").then(data => {
-                setNbShifumiPlayers(data.length);
-            }).catch(err => {console.log("err in nbshifumiplayer"); setNbShifumiPlayers(0)});
+                if(data.length === undefined){setNbShifumiPlayers(0)}
+                else{
+                    setNbShifumiPlayers(data.length);
+                }
+            }).catch(err => {console.log(err, "err in nbshifumiplayer"); setNbShifumiPlayers(0)});
             getOnlinePersons("CanvaScreen").then(data => {
-                setNbCanvaArtists(data.length)
-            }).catch(err => {console.log("err in nbcanva"); setNbCanvaArtists(0)});
+                if(data.length === undefined){setNbCanvaArtists(0)}
+                else{
+                    setNbCanvaArtists(data.length);
+                }
+            }).catch(err => {console.log(err, "err in nbcanva"); setNbCanvaArtists(0)});
             getValueFor("username").then(r => {
                 setusername(r);
                 tempList = all_players
