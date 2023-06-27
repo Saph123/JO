@@ -5,7 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Audio } from 'expo-av';
 import * as Notifications from 'expo-notifications';
-import { getValueFor, life, lock_unlock, vibrateLight } from './utils.js';
+import { getValueFor, lock_unlock, vibrateLight } from './utils.js';
 
 import { HomeScreen } from "./HomeScreen.js";
 import { SummaryScreen } from "./SummaryScreen.js";
@@ -69,18 +69,10 @@ function App() {
     }
 
     React.useEffect(() => {
-        var life_interval
         getValueFor("username").then(r => {
             setUsername(r)
-            life_interval = setInterval(() => {
-                life(r)
-            }, 3000);
         });
         calcInitLines().then(r => { setLoad(false) });
-        // setLoad(false);
-        return () => {
-            clearInterval(life_interval);
-        }
     }, [username]);
     if (load) {
         return (

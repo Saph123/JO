@@ -938,17 +938,6 @@ export function personView(name, alive, poke) {
     )
 }
 
-
-export function getShifumiNbPlayers(setNb) {
-    fetch("https://pierrickperso.ddnsfree.com:42124/shifumi").then(response => response.json()).then(data => {
-
-        setNb(data.nb_players)
-    }
-    ).catch(
-        err => console.error("shifumierr", err));
-
-}
-
 export function draw_sign(sign) {
     if (sign == "Pierre") {
         return (<Image style={{ alignSelf: "center", tintColor: "black", height: 30, width: 30 }} resizeMode="contain" source={require('./assets/fist.png')}></Image>)
@@ -961,17 +950,30 @@ export function draw_sign(sign) {
     }
 }
 
-export function life(username) {
+export function life(username, screen) {
     fetch("https://pierrickperso.ddnsfree.com:42124/life", {
         method: "POST",
-        body: JSON.stringify({ "version": version, "username": username })
+        body: JSON.stringify({ "version": version, "username": username, "screen": screen })
     }).catch(err => console.error(err))
 }
 
 
-export function getOnlinePersons() {
+export function getOnlinePersons(screen="") {
    let online = fetch("https://pierrickperso.ddnsfree.com:42124/life").then(response => response.json()).then( data => {
+    if (screen == "") {
         return data.online
+    }
+    else{
+        let online = []
+        for (let index = 0; index < data.online.length; index++) {
+            if (data.online[index].screen == screen)
+            {
+                online.push(data.online[index])
+            }
+        }
+        console.log(online)
+        return online
+    }
     }
     ).catch(err => console.error(err))
     return online

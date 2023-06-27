@@ -16,7 +16,6 @@ export function pushNotifScreen() {
         getValueFor("username").then(r => { setUsername(r) });
         var life_interval = setInterval(() => {
             getOnlinePersons().then(data => {
-                console.log(data)
                 setOnline(data)
             })
         }, 1000);
@@ -38,7 +37,7 @@ export function pushNotifScreen() {
             <Text style={{textAlign: "center", fontWeight: "bold"}}>Online:</Text>
             {online.map(r => {
                 {
-                    return(<Text key={r} style={{textAlign: "center"}}>{r}</Text>)
+                    return(<Text key={r.name} style={{textAlign: "center"}}>{r.name}</Text>)
                 }
             })}
         </View >

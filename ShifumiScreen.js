@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, Text, Pressable, Image, Keyboard, Modal } from 'react-native';
-import { fetchChat, chatView, draw_sign } from "./utils.js"
+import { fetchChat, chatView, draw_sign, life } from "./utils.js"
 import { ScrollView } from 'react-native-gesture-handler';
 import styles from './style.js'
 
@@ -255,7 +255,6 @@ export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, set
                 setPlayers(data.active_players);
             }
 
-            console.log(recapPlayers)
             globalTour = data.tour;
             globalPartyId = data.party_id;
             if (data.voting_in > 0) {

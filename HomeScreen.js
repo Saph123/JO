@@ -5,7 +5,7 @@ import { Audio } from 'expo-av';
 import { getNextEventseconds, Planning } from "./planning.js";
 import * as Notifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
-import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo, firstDay, vibrateLight, getShifumiNbPlayers, getPokeInfo, fetchAnnonce } from './utils.js';
+import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo, firstDay, vibrateLight, getPokeInfo, fetchAnnonce, life, getOnlinePersons } from './utils.js';
 import { SportContext, ChatContext, adminlist } from "./global.js"
 export function HomeScreen({ route, navigation }) {
     const [loading, setLoading] = React.useState(1);
@@ -25,6 +25,7 @@ export function HomeScreen({ route, navigation }) {
     const [chatText, setChatText] = React.useState("");
     const [localText, setLocalText] = React.useState("");
     const [nbShifumiPlayers, setNbShifumiPlayers] = React.useState(0)
+    const [nbCanvaArtists, setNbCanvaArtists] = React.useState(0)
     const chatcontext = React.useContext(ChatContext);
     const [annonce, setAnnonce] = React.useState("")
     const [all_players, setAllPlayers] = React.useState([[
@@ -133,7 +134,12 @@ export function HomeScreen({ route, navigation }) {
             setAllPlayers(tempList)
         }).catch(() => setLoading(0));
         chatcontext.setChatName("Home");
-        getShifumiNbPlayers(setNbShifumiPlayers)
+        getOnlinePersons("ShifumiScreen").then( data => {
+            setNbShifumiPlayers(data.length)
+        })
+        getOnlinePersons("CanvaScreen").then( data => {
+            setNbCanvaArtists(data.length)
+        })
         manageEvents(setEventsDone, setCurrentEvents)
         var startEvent = getNextEventseconds();
         setSecondsleft(startEvent.time);
@@ -209,9 +215,14 @@ export function HomeScreen({ route, navigation }) {
             }
 
         });
+        var life_interval = setInterval(() => {
+            let index = navigation.getState().index
+            life(route.params.username, navigation.getState().routes[index].name)
+        }, 3000);
         // setLoading(0);
         return () => {
             clearInterval(chatInterval);
+            clearInterval(life_interval);
             Notifications.removeNotificationSubscription(notificationListener.current);
             Notifications.removeNotificationSubscription(responseListener.current);
         };
@@ -313,6 +324,11 @@ export function HomeScreen({ route, navigation }) {
                     onPress={() => { vibrateLight(); navigation.navigate('CanvaScreen') }}
                 >
                     <Image style={{ tintColor: "white", height: 35, marginBottom: 2 }} resizeMode="contain" source={require('./assets/palette.png')} />
+                    {nbCanvaArtists > 0 ? <View style={{ position: "absolute", height: 30 }}>
+                        <Image style={{ position: "absolute", height: 30, left: 20 }} resizeMode="contain" source={require("./assets/dot.png")} />
+                        <Text style={{ position: "absolute", color: "white", left: nbCanvaArtists > 9 ? 36 : 40, top: 3, fontSize: 15 }}>{nbCanvaArtists}</Text>
+                    </View>
+                        : null}
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >Canva</Text>
                 </Pressable>
                 <Pressable style={styles.bottomTabs}
