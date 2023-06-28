@@ -125,7 +125,7 @@ export function KillerScreen({ route }) {
                                     }, { text: "Annuler" }])
                                 }}><Text>Je me suis fait griller</Text></Pressable>
                             </View>
-                            <View style={{ height: 100 }}></View>
+                            <View><Text style={{textAlign: "center", fontWeight: "bold", marginBottom: 10, marginTop: 30}}>Dialogue avec les victimes chaudes de ta région:</Text></View>
                             <View style={{ height: 300 + keyboardHeight, left: 0, right: 0, bottom: 0, paddingBottom: Platform.OS === "ios" ? keyboardHeight + 10 : 10, width: "100%", borderWidth: 1 }}>
                                 {chatView(chatText, setChatText, localText, setLocalText, "killer/" + target, "Killer", false)}
                             </View>
@@ -172,8 +172,8 @@ export function KillerScreen({ route }) {
 
                             </View>
                         </View>
+                        <View><Text style={{textAlign: "center", fontWeight: "bold", marginBottom: 10, marginTop: 30}}>Dialogue avec les killers chauds de ta région:</Text></View>
                         {alive ?
-
                             <View style={{ height: 300 + keyboardHeight, left: 0, right: 0, bottom: 0, paddingBottom: keyboardHeight + 10, width: "100%", borderWidth: 1 }}>
                                 {chatView(chatText, setChatText, localText, setLocalText, "killer/" + route.params.username, route.params.username, false)}
                             </View> : null
