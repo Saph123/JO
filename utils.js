@@ -960,7 +960,6 @@ export function life(username, screen) {
 
 export function getOnlinePersons(screen="") {
    let online = fetch("https://pierrickperso.ddnsfree.com:42124/life").then(response => {
-    console.log(response.ok)
     if (response.ok) {
         return response.json()
     }
