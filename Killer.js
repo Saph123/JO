@@ -1,6 +1,6 @@
 import styles from "./style.js";
 import * as React from 'react';
-import { View, Pressable, Image, ScrollView, Text, Alert, TextInput, Modal, Keyboard } from 'react-native';
+import { View, Pressable, Image, ScrollView, Text, Alert, TextInput, Modal, Keyboard, Dimensions } from 'react-native';
 import { die, lutImg, vibrateLight, fetchKiller, updateMission, personView, kill, endKiller, changeMission, chatView, fetchChat, startKiller } from './utils.js';
 import { adminlist } from "./global.js";
 
@@ -32,6 +32,8 @@ export function KillerScreen({ route }) {
     const [lifetime, setLifetime] = React.useState("")
     const [nbMissions, setNbMissions] = React.useState(0)
     const ref = React.useRef(null)
+    const { width, height } = Dimensions.get("window")
+    const [viewSize, setViewSize] = React.useState({ width: 0, height: 0 });
     let missions_list = missions;
     React.useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
@@ -135,7 +137,10 @@ export function KillerScreen({ route }) {
                 </ScrollView>
                 : tabs.status == "résumé" ?
                     <ScrollView style={{ height: "100%" }} ref={ref}>
-                        <View style={{ flexDirection: "row" }}>
+                        <View style={{ flexDirection: "row" }} onLayout={(event) => {
+                            const { width, height } = event.nativeEvent.layout;
+                            setViewSize({ width, height });
+                        }}>
                             <View style={{ flex: 1, flexDirection: "column", marginTop: 10 }}>
                                 <Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>Etat:</Text>
                                 <Text style={{ textAlign: "center", fontWeight: "bold", marginTop: 10 }}>
@@ -162,7 +167,7 @@ export function KillerScreen({ route }) {
                                     <Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>Kills:</Text>
                                 </View>
                                 {kills.length > 0 ?
-                                    <ScrollView style={{ flex: 1, flexDirection: "column", marginTop: "5%", borderWidth: 1, borderRadius: 10 }}>
+                                    <ScrollView nestedScrollEnabled={true} style={{ flex: 1, flexDirection: "column", marginTop: "5%", borderWidth: 1, borderRadius: 10 }}>
                                         {kills.map(r =>
                                             <View key={r.name} style={[styles.kills, { borderRadius: 10, margin: 5 }]}>
                                                 <Text style={{ textAlign: "center" }}>{r.name + "\n" + r.date}:{"\n"}{r.mission}</Text>
@@ -172,9 +177,9 @@ export function KillerScreen({ route }) {
 
                             </View>
                         </View>
-                        <View><Text style={{ textAlign: "center", fontWeight: "bold", marginBottom: 10, marginTop: 30 }}>Dialogue avec les killers chauds de ta région:</Text></View>
+                        <View><Text style={{ height :20, textAlign: "center", fontWeight: "bold", marginBottom: 10, marginTop: 30 }}>Dialogue avec les killers chauds de ta région:</Text></View>
                         {alive ?
-                            <View style={{ height: 300 + keyboardHeight, left: 0, right: 0, bottom: 0, paddingBottom: Platform.OS === "ios" ? keyboardHeight + 10 : 10, width: "100%", borderWidth: 1, borderBottomWidth:0 }}>
+                            <View style={{ height: height - viewSize.height -210 + keyboardHeight, left: 0, right: 0, bottom: 0, paddingBottom: Platform.OS === "ios" ? keyboardHeight + 10 : 10, width: "100%", borderWidth: 1, borderBottomWidth: 0 }}>
                                 {chatView(chatText, setChatText, localText, setLocalText, "killer/" + route.params.username, route.params.username, false)}
                             </View> : null
                         }
