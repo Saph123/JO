@@ -125,7 +125,7 @@ export function KillerScreen({ route }) {
                                     }, { text: "Annuler" }])
                                 }}><Text>Je me suis fait griller</Text></Pressable>
                             </View>
-                            <View><Text style={{textAlign: "center", fontWeight: "bold", marginBottom: 10, marginTop: 30}}>Dialogue avec les victimes chaudes de ta région:</Text></View>
+                            <View style={{ flex: 1 }}><Text style={{ textAlign: "center", fontWeight: "bold" }}>Dialogue avec les victimes chaudes de ta région:</Text></View>
                             <View style={{ height: 300 + keyboardHeight, left: 0, right: 0, bottom: 0, paddingBottom: Platform.OS === "ios" ? keyboardHeight + 10 : 10, width: "100%", borderWidth: 1 }}>
                                 {chatView(chatText, setChatText, localText, setLocalText, "killer/" + target, "Killer", false)}
                             </View>
@@ -134,8 +134,8 @@ export function KillerScreen({ route }) {
                         <View></View>}
                 </ScrollView>
                 : tabs.status == "résumé" ?
-                    <View style={{ flex: 2, flexDirection: "column" }}>
-                        <View style={{ flex: 2, flexDirection: "row" }}>
+                    <ScrollView style={{ height: "100%" }} ref={ref}>
+                        <View style={{ flexDirection: "row" }}>
                             <View style={{ flex: 1, flexDirection: "column", marginTop: 10 }}>
                                 <Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>Etat:</Text>
                                 <Text style={{ textAlign: "center", fontWeight: "bold", marginTop: 10 }}>
@@ -172,13 +172,13 @@ export function KillerScreen({ route }) {
 
                             </View>
                         </View>
-                        <View><Text style={{textAlign: "center", fontWeight: "bold", marginBottom: 10, marginTop: 30}}>Dialogue avec les killers chauds de ta région:</Text></View>
+                        <View><Text style={{ textAlign: "center", fontWeight: "bold", marginBottom: 10, marginTop: 30 }}>Dialogue avec les killers chauds de ta région:</Text></View>
                         {alive ?
-                            <View style={{ height: 300 + keyboardHeight, left: 0, right: 0, bottom: 0, paddingBottom: keyboardHeight + 10, width: "100%", borderWidth: 1 }}>
+                            <View style={{ height: 300 + keyboardHeight, left: 0, right: 0, bottom: 0, paddingBottom: Platform.OS === "ios" ? keyboardHeight + 10 : 10, width: "100%", borderWidth: 1, borderBottomWidth:0 }}>
                                 {chatView(chatText, setChatText, localText, setLocalText, "killer/" + route.params.username, route.params.username, false)}
                             </View> : null
                         }
-                    </View>
+                    </ScrollView>
                     : tabs.status == "waiting" ?
                         <View>
                             <Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>En attente du démarrage de la partie</Text>
@@ -303,10 +303,10 @@ export function KillerScreen({ route }) {
                                                     {focusOn.alive & !gameOver ?
                                                         <View>
                                                             <View style={{ flexDirection: "row" }}>
-                                                                <Pressable onPress={() => {giveCredit ? setCounterKill(false) : ""; setGiveCredit(!giveCredit)}} style={{ width: 22, height: 22, borderRadius: 5, borderWidth: 1, marginRight: 5 }}>
+                                                                <Pressable onPress={() => { giveCredit ? setCounterKill(false) : ""; setGiveCredit(!giveCredit) }} style={{ width: 22, height: 22, borderRadius: 5, borderWidth: 1, marginRight: 5 }}>
                                                                     {giveCredit ? <Image source={require("./assets/check.png")}></Image> : null}
                                                                 </Pressable>
-                                                                <Pressable onPress={() => {giveCredit ? setCounterKill(false) : ""; setGiveCredit(!giveCredit)}} style={{ flex: 1, marginTop: 2 }}>
+                                                                <Pressable onPress={() => { giveCredit ? setCounterKill(false) : ""; setGiveCredit(!giveCredit) }} style={{ flex: 1, marginTop: 2 }}>
                                                                     <Text>Attribuer le kill</Text>
                                                                 </Pressable>
                                                             </View>
