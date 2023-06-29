@@ -405,12 +405,18 @@ export function chatView(text, setChatText, localText, setLocalText, sportname, 
                 <View style={{ flexDirection: "row", flex: 1 }}>
                     <TextInput onSubmitEditing={() => {
                         pushChat(sportname, localText, username);
-                        fetchChat(sportname, setChatText, setNewMessageMock)
+                        setTimeout(() => {
+
+                            fetchChat(sportname, setChatText, setNewMessageMock)
+                        }, 200);
                         setLocalText("");
                     }} style={{ borderWidth: 1, flex: 1, borderRadius: 8, minHeight: 50 }} value={localText} onChangeText={(txt) => setLocalText(txt)} />
                     <Pressable onPress={() => {
                         pushChat(sportname, localText, username);
-                        fetchChat(sportname, setChatText, setNewMessageMock)
+                        setTimeout(() => {
+
+                            fetchChat(sportname, setChatText, setNewMessageMock)
+                        }, 200);
                         setLocalText("");
                     }}>
                         <Image style={{ width: 50, height: 50 }} source={require('./assets/sendmessage.png')} />
@@ -958,27 +964,26 @@ export function life(username, screen) {
 }
 
 
-export function getOnlinePersons(screen="") {
-   let online = fetch("https://pierrickperso.ddnsfree.com:42124/life").then(response => {
-    if (response.ok) {
-        return response.json()
-    }
-    let data = {online : []}
-    return data
-}).then( data => {
-    if (screen == "") {
-        return data.online
-    }
-    else{
-        let online = []
-        for (let index = 0; index < data.online.length; index++) {
-            if (data.online[index].screen == screen)
-            {
-                online.push(data.online[index])
-            }
+export function getOnlinePersons(screen = "") {
+    let online = fetch("https://pierrickperso.ddnsfree.com:42124/life").then(response => {
+        if (response.ok) {
+            return response.json()
         }
-        return online
-    }
+        let data = { online: [] }
+        return data
+    }).then(data => {
+        if (screen == "") {
+            return data.online
+        }
+        else {
+            let online = []
+            for (let index = 0; index < data.online.length; index++) {
+                if (data.online[index].screen == screen) {
+                    online.push(data.online[index])
+                }
+            }
+            return online
+        }
     }
     ).catch(err => console.error(err))
     return online
