@@ -161,8 +161,16 @@ export function ShifumiScreen({ route }) {
 }
 
 export function ShifumiPost(username, sign, setSpecs, setPlayers, setStatus, setSign, setNotAllowed, setScores, setPlayerRecap, setRecap) {
-    let data = fetch("https://pierrickperso.ddnsfree.com:42124/shifumi", { method: "POST", body: JSON.stringify({ "username": username, "sign": sign, "party_id": globalPartyId, "tour": globalTour }) }).then(response => response.json()).then(
+    let data = fetch("https://pierrickperso.ddnsfree.com:42124/shifumi", { method: "POST", body: JSON.stringify({ "username": username, "sign": sign, "party_id": globalPartyId, "tour": globalTour }) }).then(response => {
+        if (response.ok) {
+            return response.json()
+        }    
+        return "Error"
+    }).then(
         data => {
+            if (data == "Error") {
+                return 0
+            }
             setSpecs(data.specs);
             score_txt = ""
             var localScores = [];

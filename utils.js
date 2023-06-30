@@ -580,7 +580,17 @@ export function fetchChat(sportname, setChatText, setNewMessage) {
 }
 
 export async function fetchKiller(username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setChatText, setNewMessage, setLifetime, setNbMissions) {
-    let start = fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username).then(response => response.json()).then(data => {
+    let start = fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username).then(response => {
+        if (response.ok)
+        {
+            return response.json()
+        }
+        return "Error"
+    }).then(data => {
+        if (data == "Error")
+        {
+            return 0
+        }
         if (data["over"]) {
             setTab({ states: ["results", "people"], status: "results" })
             let players = { left: [], middle: [], right: [], everyone: [] }
