@@ -581,14 +581,12 @@ export function fetchChat(sportname, setChatText, setNewMessage) {
 
 export async function fetchKiller(username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setChatText, setNewMessage, setLifetime, setNbMissions) {
     let start = fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username).then(response => {
-        if (response.ok)
-        {
+        if (response.ok) {
             return response.json()
         }
         return "Error"
     }).then(data => {
-        if (data == "Error")
-        {
+        if (data == "Error") {
             return 0
         }
         if (data["over"]) {
@@ -730,7 +728,12 @@ export function changeMission(username, person) {
 }
 
 export function getPokeInfo(username, otherUser) {
-    let info = fetch("https://pierrickperso.ddnsfree.com:42124/poke/" + username + "-" + otherUser).then(res => res.json()).then(data => {
+    let info = fetch("https://pierrickperso.ddnsfree.com:42124/poke/" + username + "-" + otherUser).then(res => {
+        if (res.ok) {
+            return res.json()
+        }
+        return { "can_send": false, "score": 0 }
+    }).then(data => {
         return data
     }).catch(err => console.log(err, "in get poke info"));
     return info
