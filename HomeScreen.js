@@ -16,7 +16,7 @@ export function HomeScreen({ route, navigation }) {
     const [eventsDone, setEventsDone] = React.useState([]);
     const [soundstatus, setSound] = React.useState();
     const [boules, setBoules] = React.useState(false);
-    const [displayDay, setDisplayDay] = React.useState(new Date('2022-07-13T00:00:00+02:00'));
+    const [displayDay, setDisplayDay] = React.useState(new Date('2022-07-13T00:00:00'));
     const notificationListener = React.useRef();
     const videoBoule = React.useRef();
     const [notification, setNotification] = React.useState(false);
@@ -70,10 +70,10 @@ export function HomeScreen({ route, navigation }) {
     ])
     let planning = new Planning();
     let now = new Date(Date.now());
-    var jeudi = new Date('2023-07-13T00:00:00+02:00');
-    var vendredi = new Date('2023-07-14T00:00:00+02:00');
-    var samedi = new Date('2023-07-15T00:00:00+02:00');
-    var dimanche = new Date('2023-07-16T00:00:00+02:00');
+    var jeudi = new Date('2023-07-13T00:00:00');
+    var vendredi = new Date('2023-07-14T00:00:00');
+    var samedi = new Date('2023-07-15T00:00:00');
+    var dimanche = new Date('2023-07-16T00:00:00');
     async function playcluedo() {
         pushcluedo().then(r => console.log("pushing cluedo")).catch((err) => console.error("cluedo", err));
         if (soundstatus == undefined) {
