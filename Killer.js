@@ -167,7 +167,7 @@ export function KillerScreen({ route }) {
                                     <Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>Kills:</Text>
                                 </View>
                                 {kills.length > 0 ?
-                                    <ScrollView nestedScrollEnabled={true} style={{ flex: 1, flexDirection: "column", marginTop: "5%", borderWidth: 1, borderRadius: 10 }}>
+                                    <ScrollView nestedScrollEnabled={true} style={{ flex: 1, flexDirection: "column", marginTop: "5%", borderWidth: 1, borderRadius: 10, maxHeight: 100 }}>
                                         {kills.map(r =>
                                             <View key={r.name} style={[styles.kills, { borderRadius: 10, margin: 5 }]}>
                                                 <Text style={{ textAlign: "center" }}>{r.name + "\n" + r.date}:{"\n"}{r.mission}</Text>
