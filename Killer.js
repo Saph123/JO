@@ -117,16 +117,6 @@ export function KillerScreen({ route }) {
                             <View style={{ backgroundColor: "white", padding: 15, borderRadius: 20, width: "50%", alignSelf: "center" }}>
                                 <Text style={{ fontSize: 15, alignSelf: "center" }}>{mission}</Text>
                             </View>
-                            <View style={styles.killbutton}>
-                                <Pressable onPress={() => {
-                                    Alert.alert("Confirmer votre mort", "", [{
-                                        text: "Confirmer", onPress: () => {
-                                            die(route.params.username, setAlive, setRefresh, true);
-                                            setLifetime(timeAlive);
-                                        }
-                                    }, { text: "Annuler" }])
-                                }}><Text>Je me suis fait griller</Text></Pressable>
-                            </View>
                             <View style={{ flex: 1, marginBottom: 10, marginTop: 30 }}><Text style={{ textAlign: "center", fontWeight: "bold" }}>Dialogue avec les victimes chaudes de ta région:</Text></View>
                             <View style={{ height: 300 + keyboardHeight, left: 0, right: 0, bottom: 0, paddingBottom: Platform.OS === "ios" ? keyboardHeight + 10 : 10, width: "100%", borderWidth: 1 }}>
                                 {chatView(chatText, setChatText, localText, setLocalText, "killer/" + target, "Killer", false)}
