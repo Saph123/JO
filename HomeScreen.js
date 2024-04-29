@@ -136,6 +136,7 @@ export function HomeScreen({ route, navigation }) {
         chatcontext.setChatName("Home");
         var playersInfo = setInterval(() => {
             getOnlinePersons("ShifumiScreen").then(data => {
+                
                 if(data.length === undefined){setNbShifumiPlayers(0)}
                 else{
                     setNbShifumiPlayers(data.length);

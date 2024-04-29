@@ -399,7 +399,7 @@ export function result_view(results) {
 export async function fetch_global_bets_results() {
     let fetch_results = {}
 
-    fetch_results = await fetch("https://pierrickperso.ddnsfree.com:42124/results/global_bets.json").then(response => response.json()).then(data => {
+    fetch_results = await fetch("https://jo.pierrickperso.ddnsfree.com/results/global_bets.json").then(response => response.json()).then(data => {
         return data;
     }).catch(err => console.log(err));
     return fetch_results;
@@ -408,14 +408,14 @@ export async function fetch_global_bets_results() {
 export async function fetch_global_results() {
     let fetch_results = {}
 
-    fetch_results = await fetch("https://pierrickperso.ddnsfree.com:42124/results/global.json").then(response => response.json()).then(data => {
+    fetch_results = await fetch("https://jo.pierrickperso.ddnsfree.com/results/global.json").then(response => response.json()).then(data => {
         return data;
     }).catch(err => console.log(err));
     return fetch_results;
 }
 
 export async function fetch_activities(username, setArbitre, setEvents) {
-    await fetch("https://pierrickperso.ddnsfree.com:42124/athletes/" + username + ".json").then(response => response.json()).then(data => {
+    await fetch("https://jo.pierrickperso.ddnsfree.com/athletes/" + username + ".json").then(response => response.json()).then(data => {
         setArbitre(data["arbitre"])
         setEvents(data["activities"])
         return;
@@ -622,7 +622,7 @@ function pushmatch(username, sport, match, type, uniqueId) {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     // // push to server
-    fetch("https://pierrickperso.ddnsfree.com:42124/pushmatch", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sport, "username": username, "type": type, "match": match, uniqueId: uniqueId }) }).then(r => {
+    fetch("https://jo.pierrickperso.ddnsfree.com/pushmatch", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sport, "username": username, "type": type, "match": match, uniqueId: uniqueId }) }).then(r => {
         if (r.status == 200) {
             Alert.alert("Saved", "Saved to server!", ["Ok"])
         }

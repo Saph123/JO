@@ -44,13 +44,13 @@ class Match {
 }
 
 export function fetchAnnonce(setAnnonce) {
-    fetch("https://pierrickperso.ddnsfree.com:42124/annonce").then(response => response.text()).then(r => {
+    fetch("https://jo.pierrickperso.ddnsfree.com/annonce").then(response => response.text()).then(r => {
         setAnnonce(r)
     }).catch(err => console.error("fetch annonce err", err));
 }
 
 export function pushAnnonce(annonce) {
-    fetch("https://pierrickperso.ddnsfree.com:42124/annonce", { method: "POST", body: annonce }).then(res => {
+    fetch("https://jo.pierrickperso.ddnsfree.com/annonce", { method: "POST", body: annonce }).then(res => {
         if (res.status == 200) {
         }
         else {
@@ -198,7 +198,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
 
     let allok = false
     while (!allok) {
-        allok = await fetch("https://pierrickperso.ddnsfree.com:42124/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
+        allok = await fetch("https://jo.pierrickperso.ddnsfree.com/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
             for (var authouser in data['arbitre']) {
                 if (data['arbitre'][authouser] == "All") {
                     setAutho(true);
@@ -226,7 +226,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
             setStatus(data);
             let status = data;
             if (status['states'].includes("poules")) {
-                fetch("https://pierrickperso.ddnsfree.com:42124/teams/" + sportname + "_poules.json").then(response => response.json()).then(data => {
+                fetch("https://jo.pierrickperso.ddnsfree.com/teams/" + sportname + "_poules.json").then(response => response.json()).then(data => {
 
                     var i = 0;
                     let array_groups = [];
@@ -253,7 +253,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                 }).catch((err => { console.error("oui", err); allok = false }));
             }
             if (status['states'].includes("playoff")) {
-                fetch("https://pierrickperso.ddnsfree.com:42124/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => {
+                fetch("https://jo.pierrickperso.ddnsfree.com/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => {
 
                     let level = [];
                     let local_array_match = [[]];
@@ -276,7 +276,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
             if (status['states'].includes("final")) { // gestion listes (trail/tong)
 
                 let liste = {};
-                fetch("https://pierrickperso.ddnsfree.com:42124/teams/" + sportname + "_series.json").then(response => response.json()).then(data => {
+                fetch("https://jo.pierrickperso.ddnsfree.com/teams/" + sportname + "_series.json").then(response => response.json()).then(data => {
                     liste = data;
                     let local_liste = [];
                     let local_final = [];
@@ -329,7 +329,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                     setAuthoVote(true)
                 }
                 let liste = {};
-                fetch("https://pierrickperso.ddnsfree.com:42124/teams/" + sportname + "_votes.json").then(response => response.json()).then(data => {
+                fetch("https://jo.pierrickperso.ddnsfree.com/teams/" + sportname + "_votes.json").then(response => response.json()).then(data => {
                     liste = data;
                     let local_final = [];
                     var score = 0;
@@ -572,7 +572,7 @@ export function sportlist() {
 }
 
 export function fetchChat(sportname, setChatText, setNewMessage) {
-    fetch("https://pierrickperso.ddnsfree.com:42124/Chatalere/" + sportname + ".txt").then(response => response.text()).then(r => {
+    fetch("https://jo.pierrickperso.ddnsfree.com/Chatalere/" + sportname + ".txt").then(response => response.text()).then(r => {
         if (initialLineNumber[sportname] != countLines(r) && countLines(r) > 1) {
             setNewMessage(true);
         }
@@ -582,7 +582,7 @@ export function fetchChat(sportname, setChatText, setNewMessage) {
 }
 
 export async function fetchKiller(username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setChatText, setNewMessage, setLifetime, setNbMissions) {
-    let start = fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username).then(response => {
+    let start = fetch("https://jo.pierrickperso.ddnsfree.com/killer/" + username).then(response => {
         if (response.ok) {
             return response.json()
         }
@@ -667,7 +667,7 @@ export async function fetchKiller(username, setKills, setAlive, setMission, setT
 }
 
 export function updateMission(missions, username, setRefresh, setShouldSave) {
-    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "missions", "missions": missions }) }).then(res => {
+    fetch("https://jo.pierrickperso.ddnsfree.com/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "missions", "missions": missions }) }).then(res => {
         if (res.status == 200) {
             alert("Saved", "Saved to server!", ["Ok"])
             setRefresh(true)
@@ -681,7 +681,7 @@ export function updateMission(missions, username, setRefresh, setShouldSave) {
 }
 
 export function startKiller(username) {
-    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "start_killer": true }) }).then(res => {
+    fetch("https://jo.pierrickperso.ddnsfree.com/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "start_killer": true }) }).then(res => {
         if (res.status == 200) {
         }
         else {
@@ -692,7 +692,7 @@ export function startKiller(username) {
 }
 
 export function die(username, setAlive, setRefresh, counterKill = fasle) {
-    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "counter_kill": counterKill }) }).then(res => {
+    fetch("https://jo.pierrickperso.ddnsfree.com/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "counter_kill": counterKill }) }).then(res => {
         if (res.status == 200) {
             setAlive(false)
             setRefresh(true)
@@ -703,7 +703,7 @@ export function die(username, setAlive, setRefresh, counterKill = fasle) {
 }
 
 export function kill(username, personToKill, giveCredit, counterKill, setFocus) {
-    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "kill", "counter_kill": counterKill, "to_kill": { name: personToKill, give_credit: giveCredit } }) }).then(res => {
+    fetch("https://jo.pierrickperso.ddnsfree.com/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "kill", "counter_kill": counterKill, "to_kill": { name: personToKill, give_credit: giveCredit } }) }).then(res => {
         if (res.status == 200) {
             setFocus(false);
         }
@@ -712,7 +712,7 @@ export function kill(username, personToKill, giveCredit, counterKill, setFocus) 
 }
 
 export function endKiller(username, setTab) {
-    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "end_killer" }) }).then(res => {
+    fetch("https://jo.pierrickperso.ddnsfree.com/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "end_killer" }) }).then(res => {
         if (res.status == 200) {
             setTab({ states: ["results"], status: "results" });
         }
@@ -721,7 +721,7 @@ export function endKiller(username, setTab) {
 }
 
 export function changeMission(username, person) {
-    fetch("https://pierrickperso.ddnsfree.com:42124/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "modify_mission", target: { name: person.name, mission: person.mission } }) }).then(res => {
+    fetch("https://jo.pierrickperso.ddnsfree.com/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "modify_mission", target: { name: person.name, mission: person.mission } }) }).then(res => {
         if (!res.status == 200) {
             alert("Error", "Please try again later")
         }
@@ -730,19 +730,22 @@ export function changeMission(username, person) {
 }
 
 export function getPokeInfo(username, otherUser) {
-    let info = fetch("https://pierrickperso.ddnsfree.com:42124/poke/" + username + "-" + otherUser).then(res => {
-        if (res.ok) {
-            return res.json()
-        }
-        return { "can_send": false, "score": 0 }
-    }).then(data => {
-        return data
-    }).catch(err => console.log(err, "in get poke info"));
-    return info
+    if (username != ""){
+
+        let info = fetch("https://jo.pierrickperso.ddnsfree.com/poke/" + username + "-" + otherUser).then(res => {
+            if (res.ok) {
+                return res.json()
+            }
+            return { "can_send": false, "score": 0 }
+        }).then(data => {
+            return data
+        }).catch(err => {console.log(err, "err in poke fetch")
+        return info
+    }
 }
 
 export function sendPoke(username, otherUser) {
-    let ret = fetch("https://pierrickperso.ddnsfree.com:42124/poke/" + username + "-" + otherUser, { method: "POST" }).then(res => {
+    let ret = fetch("https://jo.pierrickperso.ddnsfree.com/poke/" + username + "-" + otherUser, { method: "POST" }).then(res => {
         if (!res.status == 200) {
             alert("Error", "Please try again later")
         }
@@ -752,7 +755,7 @@ export function sendPoke(username, otherUser) {
 export async function fetch_teams(sportname) {
     let fetch_teams = {}
 
-    fetch_teams = await fetch("https://pierrickperso.ddnsfree.com:42124/teams/" + sportname + ".json").then(response => response.json()).then(data => {
+    fetch_teams = await fetch("https://jo.pierrickperso.ddnsfree.com/teams/" + sportname + ".json").then(response => response.json()).then(data => {
         let local_liste = { "Teams": [], "Others": [] };
         for (var i in data["Teams"]) {
             local_liste["Teams"].push(new Liste(data["Teams"][i]["Players"], data["Teams"][i]["Players"], 0, 0));
@@ -768,7 +771,7 @@ export async function fetch_teams(sportname) {
 
 export async function fetch_sport_results(sportname, setResults) {
     let lists;
-    lists = await fetch("https://pierrickperso.ddnsfree.com:42124/results/sports/" + sportname + "_summary.json").then(response => response.json()).then(data => {
+    lists = await fetch("https://jo.pierrickperso.ddnsfree.com/results/sports/" + sportname + "_summary.json").then(response => response.json()).then(data => {
         let results = { "1": {}, "2": {}, "3": {} }
         for (var i in data) {
             results["1"][i] = [];
@@ -784,7 +787,7 @@ export async function fetch_sport_results(sportname, setResults) {
 }
 
 export function pushChat(sportname, text, username) {
-    fetch("https://pierrickperso.ddnsfree.com:42124/Chatalere/" + sportname + ".txt", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "text": text }) }).then(res => {
+    fetch("https://jo.pierrickperso.ddnsfree.com/Chatalere/" + sportname + ".txt", { method: "POST", body: JSON.stringify({ "version": version, "username": username, "text": text }) }).then(res => {
         if (res.status == 200) {
             initialLineNumber[sportname]++;
             save("initialLineNumber", JSON.stringify(initialLineNumber));
@@ -803,7 +806,7 @@ export function updateTeams(sport, teams) {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     // // push to server
-    fetch("https://pierrickperso.ddnsfree.com:42124/updateTeams", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sport, "teams": teams }) }).then(r => {
+    fetch("https://jo.pierrickperso.ddnsfree.com/updateTeams", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sport, "teams": teams }) }).then(r => {
         if (r.status == 200) {
             alert("Saved", "Saved to server!", ["Ok"])
         }
@@ -821,7 +824,7 @@ export function pushbets(username, sport, vote) {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     // // push to server
-    fetch("https://pierrickperso.ddnsfree.com:42124/pushBets", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "sport": sport, "bets": vote }) }).then(r => {
+    fetch("https://jo.pierrickperso.ddnsfree.com/pushBets", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "sport": sport, "bets": vote }) }).then(r => {
         if (r.status == 200) {
             return true;
         }
@@ -840,7 +843,7 @@ export function pushvote(username, vote, sportname) {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     // // push to server
-    fetch("https://pierrickperso.ddnsfree.com:42124/pushvote", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "vote": vote, "sportname": sportname }) }).then(r => {
+    fetch("https://jo.pierrickperso.ddnsfree.com/pushvote", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "vote": vote, "sportname": sportname }) }).then(r => {
         if (r.status == 200) {
             return true;
         }
@@ -863,7 +866,7 @@ export async function pushtoken(token, username) {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     // // push to server
-    fetch("https://pierrickperso.ddnsfree.com:42124/pushtoken", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "token": token, "username": username }) }).then(r => {
+    fetch("https://jo.pierrickperso.ddnsfree.com/pushtoken", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "token": token, "username": username }) }).then(r => {
         return;
     }).catch((err) => { console.log("Maybe it's normal") });
 }
@@ -874,7 +877,7 @@ export async function pushcluedo() {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     // // push to server
     getValueFor("username").then(username =>
-        fetch("https://pierrickperso.ddnsfree.com:42124/cluedo", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "cluedo": username }) }).then(r => {
+        fetch("https://jo.pierrickperso.ddnsfree.com/cluedo", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "cluedo": username }) }).then(r => {
 
 
         }).catch((err) => { console.log("Maybe it's normal") })
@@ -886,7 +889,7 @@ export async function askPushNotif(username, title, body, to) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     // // push to server
-    fetch("https://pierrickperso.ddnsfree.com:42124/pushnotif", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "title": title, "body": body, "to": to }) }).then(r => {
+    fetch("https://jo.pierrickperso.ddnsfree.com/pushnotif", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": username, "title": title, "body": body, "to": to }) }).then(r => {
         return
     }).catch((err) => { console.log(err, "Maybe it's normal") });
 }
@@ -894,7 +897,7 @@ export async function askPushNotif(username, title, body, to) {
 export async function fetch_teams_bet(sportname, username) {
     let fetch_teams = {}
 
-    fetch_teams = await fetch("https://pierrickperso.ddnsfree.com:42124/bets/" + sportname + ".json").then(response => response.json()).then(data => {
+    fetch_teams = await fetch("https://jo.pierrickperso.ddnsfree.com/bets/" + sportname + ".json").then(response => response.json()).then(data => {
         let local_liste = [];
         for (var i in data["Teams"]) {
             local_liste.push(new Liste(data["Teams"][i]["Players"], data["Teams"][i]["TotalVotes"], data["Teams"][i]["Votes"].includes(username) ? 1 : 0, 0));
@@ -916,7 +919,7 @@ export function lock_unlock(lock, setLock, sportname) {
         type = "lock";
     }
     const timeoutId = setTimeout(() => controller.abort(), 10000);
-    fetch("https://pierrickperso.ddnsfree.com:42124/locksport", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sportname, "type": type }) }).then(r => {
+    fetch("https://jo.pierrickperso.ddnsfree.com/locksport", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sportname, "type": type }) }).then(r => {
         if (r.status == 200) {
 
             setLock(!lock);
@@ -936,7 +939,7 @@ export function vibrateLight() {
 
 export function toggleLockBets(sportname) {
     const controller = new AbortController();
-    fetch("https://pierrickperso.ddnsfree.com:42124/lockBets", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sportname }) }).then(r => {
+    fetch("https://jo.pierrickperso.ddnsfree.com/lockBets", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sportname }) }).then(r => {
         if (r.status != 200) {
             let msg = "Server reply :" + r.status
             alert(msg);
@@ -950,7 +953,7 @@ export function personView(name, alive, poke) {
     return (
         <View key={name + alive + poke} style={{ width: 100, height: 170, margin: 10 }}>
             <View style={{ height: 150 }}>
-                <Image style={{ height: 150, width: 100, borderRadius: 10 }} source={{ cache: 'force-cache', uri: "https://pierrickperso.ddnsfree.com:42124/photo/" + name }} />
+                <Image style={{ height: 150, width: 100, borderRadius: 10 }} source={{ cache: 'force-cache', uri: "https://jo.pierrickperso.ddnsfree.com/photo/" + name }} />
             </View>
             {alive == false ? <Image style={{ position: "absolute", height: 150 }} source={require("./assets/dead2.png")} /> : null}
             {poke ? <Image style={{ position: "absolute", height: 30, resizeMode: "contain", left: 75, top: -10 }} source={require("./assets/dot.png")} /> : null}
@@ -972,7 +975,7 @@ export function draw_sign(sign) {
 }
 
 export function life(username, screen) {
-    fetch("https://pierrickperso.ddnsfree.com:42124/life", {
+    fetch("https://jo.pierrickperso.ddnsfree.com/life", {
         method: "POST",
         body: JSON.stringify({ "version": version, "username": username, "screen": screen })
     }).catch(err => console.error(err))
@@ -980,7 +983,7 @@ export function life(username, screen) {
 
 
 export function getOnlinePersons(screen = "") {
-    let online = fetch("https://pierrickperso.ddnsfree.com:42124/life").then(response => {
+    let online = fetch("https://jo.pierrickperso.ddnsfree.com/life").then(response => {
         if (response.ok) {
             return response.json()
         }

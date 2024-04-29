@@ -84,7 +84,7 @@ export function LoginScreen({ route, navigation }) {
                     <View style={{ margin: 30, flexDirection: "row" }}>
 
                         <Pressable style={{ width: 60, height: 30, borderRadius: 15, backgroundColor: "#ff8484", justifyContent: "center" }} title="Log in" onPress={() => {
-                            fetch("https://pierrickperso.ddnsfree.com:42124/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": userName, "password": password }) }).then(r => {
+                            fetch("https://jo.pierrickperso.ddnsfree.com/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": userName, "password": password }) }).then(r => {
                                 if (r.status == 200) {
                                     route.params.setUsername(userName);
                                     pushtoken(route.params.pushtoken, userName);
@@ -98,7 +98,7 @@ export function LoginScreen({ route, navigation }) {
                                     return;
                                 }
 
-                            }).catch((err) => { alert(err, "Issue with server!"); return })
+                            }).catch((err) => { alert(err); return })
                         }}>
                             <Text style={{ textAlign: "center", textAlignVertical: "center" }}>Login</Text>
                         </Pressable>
