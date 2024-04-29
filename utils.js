@@ -739,7 +739,7 @@ export function getPokeInfo(username, otherUser) {
             return { "can_send": false, "score": 0 }
         }).then(data => {
             return data
-        }).catch(err => {console.log(err, "err in poke fetch")
+        }).catch(err => {console.log(err, "err in poke fetch")})
         return info
     }
 }
