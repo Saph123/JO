@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { View, Modal, Pressable, ActivityIndicator, Text, Dimensions, Image, Alert } from 'react-native';
+import { View, Pressable, ActivityIndicator, Text, Image } from 'react-native';
 import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
 import { modalChat, fetchChat, vibrateLight } from "./utils.js"
-import { paletteColors, ChatContext, carreSize } from "./global";
+import { paletteColors, ChatContext } from "./global";
 
 let globRefresh = 0;
 function refreshBase(setref, setRef2) {
@@ -176,8 +176,8 @@ function fetchLive(setPatch) {
     })
 
 }
-function fetchSize(setLineNb, setColNb, lineNb, colNb) {
-    fetch("https://jo.pierrickperso.ddnsfree.com/canvasizedev").then(r => {
+async function fetchSize(setLineNb, setColNb, lineNb, colNb) {
+    await fetch("https://jo.pierrickperso.ddnsfree.com/canvasizedev").then(r => {
         if (r.status == 200) {
             return r.json();
         }

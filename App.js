@@ -11,14 +11,13 @@ import { HomeScreen } from "./HomeScreen.js";
 import { SummaryScreen } from "./SummaryScreen.js";
 import { LastYearsResultsScreen } from "./LastYearsResultsScreen.js";
 import { SportDetailsScreen } from "./SportDetailsScreen.js";
-import { VanRommelScreen } from "./VanRommelScreen.js";
 import { CanvaScreen } from "./CanvaScreen.js";
-import { PokeScreen } from './PokeScreen.js';
+import { Palmares } from './Palmares.js';
 import { pushNotifScreen } from "./PushNotifScreen.js";
 import { LoginScreen } from "./LoginScreen.js";
 import { ShifumiScreen } from "./ShifumiScreen.js";
 import { KillerScreen } from "./Killer.js";
-import { SportContext, ArbitreContext, ChatContext, calcInitLines, version, adminlist } from "./global.js"
+import { SportContext, ArbitreContext, ChatContext, calcInitLines, adminlist } from "./global.js"
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -144,7 +143,7 @@ function App() {
                             })} name="SummaryScreen" component={SummaryScreen} />
                             <Stack.Screen options={() => ({
                                 title: username
-                            })} initialParams={{ username: username, setCurrentSport: setCurrentSport }} name="2021" component={LastYearsResultsScreen} />
+                            })} initialParams={{ username: username, setCurrentSport: setCurrentSport }} name="2023" component={LastYearsResultsScreen} />
 
                             <Stack.Screen options={() => ({
                                 title: "Notif tool"
@@ -157,8 +156,8 @@ function App() {
                                 title: "Killer"
                             })} initialParams={{ username: username }} name="KillerScreen" component={KillerScreen} />
                             <Stack.Screen options={() => ({
-                                title: "Poke"
-                            })} initialParams={{ username: username, other_user: username }} name="PokeScreen" component={PokeScreen} />
+                                title: "Palmarès"
+                            })} initialParams={{ username: username}} name="Palmarès" component={Palmares} />
 
                             <Stack.Screen options={() => ({
                                 title: "Canva", headerRight: () => <View>

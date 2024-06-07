@@ -2,7 +2,7 @@ import styles from "./style.js"
 import * as React from 'react';
 import { View, Modal, Platform, Pressable, Linking, KeyboardAvoidingView, Image, ScrollView, Text, TextInput } from 'react-native';
 import { Video } from 'expo-av';
-import Constants from 'expo-constants';
+import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import * as SecureStore from 'expo-secure-store';
 import { Planning } from './planning';
@@ -43,8 +43,8 @@ class Match {
     }
 }
 
-export function fetchAnnonce(setAnnonce) {
-    fetch("https://jo.pierrickperso.ddnsfree.com/annonce").then(response => response.text()).then(r => {
+export async function fetchAnnonce(setAnnonce) {
+    await fetch("https://jo.pierrickperso.ddnsfree.com/annonce").then(response => response.text()).then(r => {
         setAnnonce(r)
     }).catch(err => console.error("fetch annonce err", err));
 }
@@ -85,12 +85,10 @@ export function firstDay(secondsleft, setSecondsleft, navigation, username, all_
                             {
                                 sublist.map((person) => (
                                     <Pressable key={person.name} onPress={() => {
-                                        if (username != person.name) {
-                                            navigation.navigate("PokeScreen", { username: username, other_user: person.name })
-                                        }
+                                        navigation.navigate("Palmarès", { username: person })
                                     }}>
                                         {
-                                            personView(person.name, true, person.poke)
+                                            personView(person, true)
                                         }
                                     </Pressable>
                                 )
@@ -141,7 +139,7 @@ export function manageEvents(setEventsDone, setCurrentEvents) {
 
 export async function registerForPushNotificationsAsync() {
     let token;
-    if (Constants.isDevice) {
+    if (Device.isDevice) {
         const { status: existingStatus } = await Notifications.getPermissionsAsync();
         let finalStatus = existingStatus;
         if (existingStatus !== 'granted') {
@@ -197,7 +195,8 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
 
 
     let allok = false
-    while (!allok) {
+    let tries = 3;
+    while (!allok && tries > 0) {
         allok = await fetch("https://jo.pierrickperso.ddnsfree.com/teams/" + sportname + "_status.json").then(response => response.json()).then(data => {
             for (var authouser in data['arbitre']) {
                 if (data['arbitre'][authouser] == "All") {
@@ -348,6 +347,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
             }
             return allok;
         }).catch(err => { console.log("ici", err); setStatus({ status: "error", states: ["error"], arbitre: "error", rules: "error" }); return false; });
+        tries -= 1;
     }
 }
 
@@ -448,13 +448,10 @@ export function addth(rank) {
     switch (Number(rank)) {
         case 1:
             return ("er!!!");
-            break;
         case 2:
             return ("nd!!");
-            break;
         default:
             return ("ème")
-            break;
 
     }
 }
@@ -571,8 +568,8 @@ export function sportlist() {
     ]
 }
 
-export function fetchChat(sportname, setChatText, setNewMessage) {
-    fetch("https://jo.pierrickperso.ddnsfree.com/Chatalere/" + sportname + ".txt").then(response => response.text()).then(r => {
+export async function fetchChat(sportname, setChatText, setNewMessage) {
+    await fetch("https://jo.pierrickperso.ddnsfree.com/Chatalere/" + sportname + ".txt").then(response => response.text()).then(r => {
         if (initialLineNumber[sportname] != countLines(r) && countLines(r) > 1) {
             setNewMessage(true);
         }
@@ -729,29 +726,6 @@ export function changeMission(username, person) {
 
 }
 
-export function getPokeInfo(username, otherUser) {
-    if (username != ""){
-
-        let info = fetch("https://jo.pierrickperso.ddnsfree.com/poke/" + username + "-" + otherUser).then(res => {
-            if (res.ok) {
-                return res.json()
-            }
-            return { "can_send": false, "score": 0 }
-        }).then(data => {
-            return data
-        }).catch(err => {console.log(err, "err in poke fetch")})
-        return info
-    }
-}
-
-export function sendPoke(username, otherUser) {
-    let ret = fetch("https://jo.pierrickperso.ddnsfree.com/poke/" + username + "-" + otherUser, { method: "POST" }).then(res => {
-        if (!res.status == 200) {
-            alert("Error", "Please try again later")
-        }
-    }).catch(err => console.log(err, "in end killer"));
-    return ret
-}
 export async function fetch_teams(sportname) {
     let fetch_teams = {}
 
@@ -949,14 +923,13 @@ export function toggleLockBets(sportname) {
 }
 
 
-export function personView(name, alive, poke) {
+export function personView(name, alive) {
     return (
-        <View key={name + alive + poke} style={{ width: 100, height: 170, margin: 10 }}>
+        <View key={name + alive} style={{ width: 100, height: 170, margin: 10 }}>
             <View style={{ height: 150 }}>
                 <Image style={{ height: 150, width: 100, borderRadius: 10 }} source={{ cache: 'force-cache', uri: "https://jo.pierrickperso.ddnsfree.com/photo/" + name }} />
             </View>
             {alive == false ? <Image style={{ position: "absolute", height: 150 }} source={require("./assets/dead2.png")} /> : null}
-            {poke ? <Image style={{ position: "absolute", height: 30, resizeMode: "contain", left: 75, top: -10 }} source={require("./assets/dot.png")} /> : null}
             <Text style={{ height: 20, textAlign: "center", fontWeight: "bold" }}>{name}</Text>
         </View>
     )
@@ -982,8 +955,8 @@ export function life(username, screen) {
 }
 
 
-export function getOnlinePersons(screen = "") {
-    let online = fetch("https://jo.pierrickperso.ddnsfree.com/life").then(response => {
+export async function getOnlinePersons(screen = "") {
+    let online = await fetch("https://jo.pierrickperso.ddnsfree.com/life").then(response => {
         if (response.ok) {
             return response.json()
         }
@@ -1006,4 +979,3 @@ export function getOnlinePersons(screen = "") {
     ).catch(err => console.error(err))
     return online
 }
-

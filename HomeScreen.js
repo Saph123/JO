@@ -5,7 +5,7 @@ import { Audio } from 'expo-av';
 import { getNextEventseconds, Planning } from "./planning.js";
 import * as Notifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
-import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo, firstDay, vibrateLight, getPokeInfo, fetchAnnonce, life, getOnlinePersons } from './utils.js';
+import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo, firstDay, vibrateLight, fetchAnnonce, life, getOnlinePersons } from './utils.js';
 import { SportContext, ChatContext, adminlist } from "./global.js"
 export function HomeScreen({ route, navigation }) {
     const [loading, setLoading] = React.useState(1);
@@ -29,43 +29,43 @@ export function HomeScreen({ route, navigation }) {
     const chatcontext = React.useContext(ChatContext);
     const [annonce, setAnnonce] = React.useState("")
     const [all_players, setAllPlayers] = React.useState([[
-        { name: "Antoine", poke: false },
-        { name: "Armand", poke: false },
-        { name: "Beranger", poke: false },
-        { name: "Bifteck", poke: false },
-        { name: "Boulbi", poke: false },
-        { name: "Brice", poke: false },
-        { name: "Bryan", poke: false },
-        { name: "Chachav", poke: false },
-        { name: "Chloe", poke: false },
-        { name: "Clement", poke: false },
-        { name: "Emma", poke: false }
+        "Antoine",
+        "Armand",
+        "Beranger",
+        "Bifteck",
+        "Boulbi",
+        "Brice",
+        "Bryan",
+        "Chachav",
+        "Chloe",
+        "Clement",
+        "Emma"
     ],
     [
-        { name: "Florent", poke: false },
-        { name: "Girex", poke: false },
-        { name: "Gui", poke: false },
-        { name: "Guillaume", poke: false },
-        { name: "Hugo", poke: false },
-        { name: "Jason", poke: false },
-        { name: "Jess", poke: false },
-        { name: "Jo", poke: false },
-        { name: "Keke", poke: false },
-        { name: "Mams", poke: false },
-        { name: "Mathias", poke: false }
+        "Florent",
+        "Girex",
+        "Gui",
+        "Guillaume",
+        "Hugo",
+        "Jason",
+        "Jess",
+        "Jo",
+        "Keke",
+        "Mams",
+        "Mathias"
     ],
     [
-        { name: "Max", poke: false },
-        { name: "Mimo", poke: false },
-        { name: "LaGuille", poke: false },
-        { name: "Lapinou", poke: false },
-        { name: "Leo", poke: false },
-        { name: "Pierrick", poke: false },
-        { name: "Quentin", poke: false },
-        { name: "Reminem", poke: false },
-        { name: "Shmav", poke: false },
-        { name: "Thomas", poke: false },
-        { name: "Ugo", poke: false }
+        "Max",
+        "Mimo",
+        "LaGuille",
+        "Lapinou",
+        "Leo",
+        "Pierrick",
+        "Quentin",
+        "Reminem",
+        "Shmav",
+        "Thomas",
+        "Ugo"
     ]
     ])
     let planning = new Planning();
@@ -116,21 +116,6 @@ export function HomeScreen({ route, navigation }) {
         }
         getValueFor("username").then(r => {
             setusername(r);
-            tempList = all_players
-            tempList.map(sublist => (
-                sublist.map(
-                    player => (
-                        getPokeInfo(r, player.name).then(info => {
-                            if (info.can_send && info.score > 0) {
-                                player.poke = true
-                            }
-                            else {
-                                player.poke = false
-                            }
-                        })
-                    )
-                )))
-            setAllPlayers(tempList)
             setLoading(0)
         }).catch(() => setLoading(0));
         chatcontext.setChatName("Home");
@@ -147,32 +132,8 @@ export function HomeScreen({ route, navigation }) {
                 else{
                     setNbCanvaArtists(data.length);
                 }
-            }).catch(err => {console.log(err, "err in nbcanva"); setNbCanvaArtists(0)});
-            getValueFor("username").then(r => {
-                setusername(r);
-                tempList = all_players
-                tempList.map(sublist => (
-                    sublist.map(
-                        player => (
-                            getPokeInfo(r, player.name).then(info => {
-                                if (info.can_send && info.score > 0) {
-                                    player.poke = true
-                                }
-                                else {
-                                    player.poke = false
-                                }
-                            })
-                        )
-                    )))
-                setAllPlayers([...tempList])})
-                    }
+            }).catch(err => {console.log(err, "err in nbcanva"); setNbCanvaArtists(0)});}
             , 1000);
-
-
-
-
-
-
         manageEvents(setEventsDone, setCurrentEvents)
         var startEvent = getNextEventseconds();
         setSecondsleft(startEvent.time);
@@ -254,6 +215,7 @@ export function HomeScreen({ route, navigation }) {
         }, 3000);
         // setLoading(0);
         return () => {
+            console.log("clear done")
             clearInterval(chatInterval);
             clearInterval(life_interval);
             clearInterval(playersInfo);
