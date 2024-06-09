@@ -457,7 +457,7 @@ export function addth(rank) {
 }
 
 
-export function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentSport, navigateTo, timeBegin, summary = false) {
+export function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentSport, navigateTo = 'SportDetails', timeBegin = new Date("9999-12-31T23:59:99+02:00"), summary = false) {
     let now = new Date()
     let planning = new Planning()
     if (!summary) {
@@ -978,4 +978,13 @@ export async function getOnlinePersons(screen = "") {
     }
     ).catch(err => console.error(err))
     return online
+}
+
+
+export async function getPalmares(user, setPalmares){
+    palmares = await fetch("https://jo.pierrickperso.ddnsfree.com/palmares/" + user).then(response => {
+        if (response.ok) {
+            return response.json()
+        }}).catch(err => console.error(err))
+    setPalmares(palmares);
 }
