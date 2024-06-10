@@ -60,7 +60,7 @@ export function pushAnnonce(annonce) {
 }
 
 
-export function firstDay(secondsleft, setSecondsleft, navigation, username, all_players, annonce, setAnnonce) {
+export function firstDay(secondsleft, setSecondsleft, navigation, username, all_players, annonce, setAnnonce, edit, setEdit) {
     return (
         <View key={secondsleft}>
             {secondsleft < 0 ? <View></View> : <View><Text style={{ alignSelf: "center" }}>{"Soirée d'ouverture dans :"}</Text><CountDown
@@ -73,7 +73,13 @@ export function firstDay(secondsleft, setSecondsleft, navigation, username, all_
             <View key={"details"} style={{ justifyContent: "center" }}>
                 <Text style={{ textAlign: "center", fontSize: 24, fontWeight: "bold" }}> BIENVENUE!</Text>
                 <Text style={{ textAlign: "center", fontSize: 18 }}>1605 Chemin des Pierres, 38440 Meyssiez, France</Text>
-                {adminlist.includes(username) ? <TextInput multiline={true} style={{ textAlign: "center" }} onChangeText={text => { setAnnonce(text) }} onEndEditing={() => { pushAnnonce(annonce) }}  >{annonce}</TextInput> : <Text style={{ textAlign: "center" }}> {annonce}</Text>}
+                {adminlist.includes(username) ? 
+                <Pressable style={{alignSelf: "center"}} onPress={() => {setEdit(!edit)}}>
+                    <Image resizeMode="cover" resizeMethod="resize" source={lutImg("modif")} />
+                </Pressable>
+                : <View></View>
+                }
+                {adminlist.includes(username) && edit ? <TextInput autoFocus={true} multiline={true} style={{ textAlign: "center" }} onChangeText={text => { setAnnonce(text) }} onEndEditing={() => { setEdit(false);pushAnnonce(annonce) }}  >{annonce}</TextInput> : <Text style={{ textAlign: "center" }}> {annonce}</Text>}
             </View>
             <View style={{ marginBottom: 10, marginTop: 50 }}>
                 <Text style={{ fontSize: 20, fontWeight: "bold", textAlign: "center" }}>Athlètes présents cette année:</Text>

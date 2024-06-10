@@ -28,6 +28,7 @@ export function HomeScreen({ route, navigation }) {
     const [nbCanvaArtists, setNbCanvaArtists] = React.useState(0)
     const chatcontext = React.useContext(ChatContext);
     const [annonce, setAnnonce] = React.useState("")
+    const [edit, setEdit] = React.useState(false);
     const [all_players, setAllPlayers] = React.useState([[
         "Antoine",
         "Armand",
@@ -275,7 +276,7 @@ export function HomeScreen({ route, navigation }) {
                                             if (displayDay == jeudi) {
                                                 {
                                                     return (
-                                                        firstDay(secondsleft, setSecondsleft, navigation, username, all_players, annonce, setAnnonce)
+                                                        firstDay(secondsleft, setSecondsleft, navigation, username, all_players, annonce, setAnnonce, edit, setEdit)
                                                     )
                                                 }
                                             }
