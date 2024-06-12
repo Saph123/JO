@@ -30,7 +30,7 @@ export function Palmares({ route, navigation }) {
                             <View style={{ flex: 1 }}>
                                 {
                                     Object.keys(palmares).map((sport) => {
-                                        console.log(palmares[sport])
+                                        // console.log(palmares[sport])
                                         return (
                                             <View key={sport} style={{ flex: 1, margin: -1, flexDirection: "row", borderColor: "black", borderWidth: 2, borderTopWidth: 0, justifyContent: "flex-start", maxHeight: 80 }}>
                                                 <View style={{ flex: 1, justifyContent: "center" }}>
@@ -49,7 +49,7 @@ export function Palmares({ route, navigation }) {
 
                                     {
                                         Object.keys(palmares).map((sport) => {
-                                            console.log(palmares[sport])
+                                            // console.log(palmares[sport])
                                             return (
                                                 <View key={sport} style={{ flex: 1, borderWidth: 2, marginBottom: -1, borderTopWidth: 0, width: "100%" }}>
                                                     <ScrollView horizontal={true}>

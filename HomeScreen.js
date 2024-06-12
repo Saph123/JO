@@ -302,7 +302,7 @@ export function HomeScreen({ route, navigation }) {
                     <Image style={{ tintColor: "white", height: 35, marginBottom: 2 }} resizeMode="contain" source={require('./assets/cluedo.png')} />
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >Cluedo</Text>
                 </Pressable>
-                <Pressable style={styles.bottomTabs} onPress={() => { vibrateLight(); navigation.navigate('ShifumiScreen') }}>
+                {/* <Pressable style={styles.bottomTabs} onPress={() => { vibrateLight(); navigation.navigate('ShifumiScreen') }}>
                     <Image style={{ tintColor: "white", height: 35, marginBottom: 2 }} resizeMode="contain" source={require('./assets/shifumi.png')} />
                     {nbShifumiPlayers > 0 ? <View style={{ position: "absolute", height: 30 }}>
                         <Image style={{ position: "absolute", height: 30, left: 20 }} resizeMode="contain" source={require("./assets/dot.png")} />
@@ -310,14 +310,14 @@ export function HomeScreen({ route, navigation }) {
                     </View>
                         : null}
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >ShiFUmi</Text>
-                </Pressable>
+                </Pressable> */}
                 <Pressable style={styles.bottomTabs}
                     onPress={() => { vibrateLight(); navigation.navigate('LoginScreen', { pushtoken: expoPushToken }) }}
                 >
                     <Image style={{ tintColor: "white", height: 35, marginBottom: 2 }} resizeMode="contain" source={require('./assets/person.png')} />
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >Mon profil</Text>
                 </Pressable>
-                <Pressable style={styles.bottomTabs}
+                {/* <Pressable style={styles.bottomTabs}
                     onPress={() => { vibrateLight(); navigation.navigate('CanvaScreen') }}
                 >
                     <Image style={{ tintColor: "white", height: 35, marginBottom: 2 }} resizeMode="contain" source={require('./assets/palette.png')} />
@@ -327,7 +327,7 @@ export function HomeScreen({ route, navigation }) {
                     </View>
                         : null}
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >Canva</Text>
-                </Pressable>
+                </Pressable> */}
                 <Pressable style={styles.bottomTabs}
                     onPress={() => { vibrateLight(); navigation.navigate('KillerScreen') }}
                 >

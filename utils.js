@@ -91,7 +91,7 @@ export function firstDay(secondsleft, setSecondsleft, navigation, username, all_
                             {
                                 sublist.map((person) => (
                                     <Pressable key={person.name} onPress={() => {
-                                        navigation.navigate("Palmarès", { username: person })
+                                        navigation.navigate("Profil", { username: person })
                                     }}>
                                         {
                                             personView(person, true)
