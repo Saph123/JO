@@ -533,6 +533,7 @@ export function lutImg(imgname) {
         final: require('./assets/liste.png'),
         series: require('./assets/liste.png'),
         results: require('./assets/podium.png'),
+        Blitz: require('./assets/sports/blitz.png'),
         "Remise des prix": require('./assets/podium.png'),
         "Rangement": require('./assets/sweep.png'),
         "résumé": require('./assets/memo.png'),
