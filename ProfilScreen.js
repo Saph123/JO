@@ -1,12 +1,12 @@
-import styles from "./style";
+import styles from "./style.js";
 import * as React from 'react';
 import { View, Text, Image, Pressable } from 'react-native';
-import { getPalmares, lutImg } from "./utils";
+import { getPalmares, lutImg } from "./utils.js";
 import { ActivityIndicator } from "react-native";
 import { SportContext } from "./global.js"
 import { ScrollView } from "react-native-gesture-handler";
 
-export function Palmares({ route, navigation }) {
+export function ProfilScreen({ route }) {
     const [loading, setLoading] = React.useState(true);
     const [palmares, setPalmares] = React.useState([]);
     React.useEffect(() => {

@@ -6,7 +6,7 @@ export class Planning{
 
         for (var event in planning)
         {
-            this.listeevent.push({eventname:event, timeBegin:new Date(planning[event][0]), timeEnd:new Date(planning[event][1])});
+            this.listeevent.push({eventname:event, timeBegin:new Date(planning[event][0]), timeEnd:new Date(planning[event][1]), linksTo: planning[event][2]});
         }
     }
     

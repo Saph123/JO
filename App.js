@@ -12,11 +12,12 @@ import { SummaryScreen } from "./SummaryScreen.js";
 import { LastYearsResultsScreen } from "./LastYearsResultsScreen.js";
 import { SportDetailsScreen } from "./SportDetailsScreen.js";
 import { CanvaScreen } from "./CanvaScreen.js";
-import { Palmares } from './Palmares.js';
+import { ProfilScreen} from './ProfilScreen.js';
 import { pushNotifScreen } from "./PushNotifScreen.js";
 import { LoginScreen } from "./LoginScreen.js";
 import { ShifumiScreen } from "./ShifumiScreen.js";
 import { KillerScreen } from "./Killer.js";
+import { RangementScreen } from './RangementScreen.js';
 import { SportContext, ArbitreContext, ChatContext, calcInitLines, adminlist } from "./global.js"
 
 Notifications.setNotificationHandler({
@@ -157,7 +158,10 @@ function App() {
                             })} initialParams={{ username: username }} name="KillerScreen" component={KillerScreen} />
                             <Stack.Screen options={() => ({
                                 title: "Profil"
-                            })} initialParams={{ username: username}} name="Profil" component={Palmares} />
+                            })} initialParams={{ username: username}} name="Profil" component={ProfilScreen} />
+                            <Stack.Screen options={() => ({
+                                title: "Rangement"
+                            })} initialParams={{ username: username}} name="Rangement" component={RangementScreen} />
 
                             <Stack.Screen options={() => ({
                                 title: "Canva", headerRight: () => <View>

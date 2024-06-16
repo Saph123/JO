@@ -24,8 +24,6 @@ export function HomeScreen({ route, navigation }) {
     const responseListener = React.useRef();
     const [chatText, setChatText] = React.useState("");
     const [localText, setLocalText] = React.useState("");
-    const [nbShifumiPlayers, setNbShifumiPlayers] = React.useState(0)
-    const [nbCanvaArtists, setNbCanvaArtists] = React.useState(0)
     const chatcontext = React.useContext(ChatContext);
     const [annonce, setAnnonce] = React.useState("")
     const [edit, setEdit] = React.useState(false);
@@ -120,21 +118,6 @@ export function HomeScreen({ route, navigation }) {
             setLoading(0)
         }).catch(() => setLoading(0));
         chatcontext.setChatName("Home");
-        var playersInfo = setInterval(() => {
-            getOnlinePersons("ShifumiScreen").then(data => {
-                
-                if(data.length === undefined){setNbShifumiPlayers(0)}
-                else{
-                    setNbShifumiPlayers(data.length);
-                }
-            }).catch(err => {console.log(err, "err in nbshifumiplayer"); setNbShifumiPlayers(0)});
-            getOnlinePersons("CanvaScreen").then(data => {
-                if(data.length === undefined){setNbCanvaArtists(0)}
-                else{
-                    setNbCanvaArtists(data.length);
-                }
-            }).catch(err => {console.log(err, "err in nbcanva"); setNbCanvaArtists(0)});}
-            , 1000);
         manageEvents(setEventsDone, setCurrentEvents)
         var startEvent = getNextEventseconds();
         setSecondsleft(startEvent.time);
@@ -219,7 +202,6 @@ export function HomeScreen({ route, navigation }) {
             console.log("clear done")
             clearInterval(chatInterval);
             clearInterval(life_interval);
-            clearInterval(playersInfo);
             Notifications.removeNotificationSubscription(notificationListener.current);
             Notifications.removeNotificationSubscription(responseListener.current);
         };
@@ -283,7 +265,7 @@ export function HomeScreen({ route, navigation }) {
                                             else {
 
                                                 return (
-                                                    eventView(currentEvents, eventsDone, r.eventname, navigation, value.setCurrentSport, 'SportDetails', r.timeBegin));
+                                                    eventView(currentEvents, eventsDone, r.eventname, navigation, value.setCurrentSport, r.linksTo, r.timeBegin));
                                             }
                                         }
                                     })}
@@ -297,7 +279,7 @@ export function HomeScreen({ route, navigation }) {
                     {/* <View style={{ height: 60 }}></View> */}
                 </ScrollView>
             </View>
-            <View style={{ backgroundColor: "black", height: 65, flexDirection: "row", borderColor: "black", borderWidth: 1, justifyContent: "space-between" }}>
+            <View style={{ backgroundColor: "black", height: 65, flexDirection: "row", borderColor: "black", borderWidth: 1, justifyContent: "space-evenly" }}>
                 <Pressable style={styles.bottomTabs} onPress={() => { vibrateLight(); playcluedo() }}>
                     <Image style={{ tintColor: "white", height: 35, marginBottom: 2 }} resizeMode="contain" source={require('./assets/cluedo.png')} />
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >Cluedo</Text>

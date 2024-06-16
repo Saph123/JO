@@ -24,39 +24,16 @@ export function KillerScreen({ route }) {
     const [giveCredit, setGiveCredit] = React.useState(false)
     const [counterKill, setCounterKill] = React.useState(false)
     const [gameOver, setGameOver] = React.useState(false)
-    const [chatText, setChatText] = React.useState("");
-    const [localText, setLocalText] = React.useState("");
-    const [newMessage, setNewMessage] = React.useState("");
-    const [keyboardHeight, setKeyboardHeight] = React.useState(0);
     const [timeAlive, setTimeAlive] = React.useState("")
     const [lifetime, setLifetime] = React.useState("")
     const [nbMissions, setNbMissions] = React.useState(0)
     const ref = React.useRef(null)
-    const { width, height } = Dimensions.get("window")
     const [viewSize, setViewSize] = React.useState({ width: 0, height: 0 });
     let missions_list = missions;
     React.useEffect(() => {
-        const keyboardDidShowListener = Keyboard.addListener(
-            'keyboardDidShow',
-            e => {
-                setKeyboardHeight(e.endCoordinates.height);
-                setTimeout(() => {
-                    if (ref.current != undefined) {
-                        ref.current.scrollToEnd({ animated: false })
-                    }
-                }, 1);
-            }
-        );
-
-        const keyboardDidHideListener = Keyboard.addListener(
-            'keyboardDidHide',
-            () => {
-                setKeyboardHeight(0);
-            }
-        );
         var timer
         if (refresh == true) {
-            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setChatText, setNewMessage, setLifetime, setNbMissions).then(start => {
+            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setLifetime, setNbMissions).then(start => {
                 timer = setInterval(() => {
                     let now = new Date().getTime()
                     let startDate = start * 1000
@@ -70,8 +47,6 @@ export function KillerScreen({ route }) {
             }, 1000);
             setRefresh(false)
             return () => {
-                keyboardDidShowListener.remove();
-                keyboardDidHideListener.remove();
                 clearInterval(timer)
             }
         }
@@ -83,8 +58,6 @@ export function KillerScreen({ route }) {
                 {tabs.states.map(r =>
                     <Pressable key={r} onPress={() => {
                         vibrateLight();
-                        let chatName = r == "en cours" ? "killer/" + target : "killer/" + route.params.username
-                        fetchChat(chatName, setChatText, setNewMessage)
                         setTab((current) => {
                             current.status = r;
                             return { ...current }
@@ -116,10 +89,6 @@ export function KillerScreen({ route }) {
                             </View>
                             <View style={{ backgroundColor: "white", padding: 15, borderRadius: 20, width: "50%", alignSelf: "center" }}>
                                 <Text style={{ fontSize: 15, alignSelf: "center" }}>{mission}</Text>
-                            </View>
-                            <View style={{ flex: 1, marginBottom: 10, marginTop: 30 }}><Text style={{ textAlign: "center", fontWeight: "bold" }}>Dialogue avec les victimes chaudes de ta région:</Text></View>
-                            <View style={{ height: 300 + keyboardHeight, left: 0, right: 0, bottom: 0, paddingBottom: Platform.OS === "ios" ? keyboardHeight + 10 : 10, width: "100%", borderWidth: 1 }}>
-                                {chatView(chatText, setChatText, localText, setLocalText, "killer/" + target, "Killer", false)}
                             </View>
                         </View>
                         :
@@ -167,12 +136,6 @@ export function KillerScreen({ route }) {
 
                             </View>
                         </View>
-                        <View><Text style={{ height :20, textAlign: "center", fontWeight: "bold", marginBottom: 10, marginTop: 30 }}>Dialogue avec les killers chauds de ta région:</Text></View>
-                        {alive ?
-                            <View style={{ height: height - viewSize.height -210 + keyboardHeight, left: 0, right: 0, bottom: 0, paddingBottom: Platform.OS === "ios" ? keyboardHeight + 10 : 10, width: "100%", borderWidth: 1, borderBottomWidth: 0 }}>
-                                {chatView(chatText, setChatText, localText, setLocalText, "killer/" + route.params.username, route.params.username, false)}
-                            </View> : null
-                        }
                     </ScrollView>
                     : tabs.status == "waiting" ?
                         <View>
@@ -183,7 +146,7 @@ export function KillerScreen({ route }) {
                                     Alert.alert("Démarrer ?", "", [{
                                         text: "Confirmer", onPress: () => {
                                             startKiller(route.params.username);
-                                            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setChatText, setNewMessage, setLifetime, setNbMissions)
+                                            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setLifetime, setNbMissions)
                                             setTab({ states: ["résumé", "en cours"], status: "en cours" })
                                         }
                                     }, { text: "Annuler" }])

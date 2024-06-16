@@ -472,7 +472,7 @@ export function eventView(currentEvents, eventsDone, sportname, navigation, setC
             <View key={sportname} style={{ flex: 1, margin: -1, flexDirection: "row", borderColor: "black", borderWidth: 2, borderTopWidth: 0 }}>
                 <View style={{ alignSelf: "center", width: 70, height: "100%", flexDirection: "column", justifyContent: "center", borderRightWidth: 2, borderRightColor: "black" }}><Text style={{ textAlign: "center", fontWeight: "bold" }}>{timeBegin.getHours() + "H" + timeBegin.getMinutes().toString().padStart(2, "0")}</Text></View>
                 <Pressable delayLongPress={5000} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
-                    onPress={() => { vibrateLight(); sportlist().includes(sportname) ? setCurrentSport(sportname) : "", sportlist().includes(sportname) ? navigation.navigate(navigateTo, { sportname: sportname }) : now > planning["listeevent"][planning["listeevent"].length - 1].timeBegin ? navigation.navigate("SummaryScreen") : "" }}
+                    onPress={() => { vibrateLight(); sportlist().includes(sportname) ? setCurrentSport(sportname) : "", navigateTo != null ? navigateTo == "SummaryScreen" && now < planning["listeevent"][planning["listeevent"].length - 1].timeBegin ? "" : navigation.navigate(navigateTo, { sportname: sportname })  : "" }}
                 >
                     <Image style={[styles.sportimage, { tintColor: "black" }]} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
                 </Pressable>
@@ -585,7 +585,7 @@ export async function fetchChat(sportname, setChatText, setNewMessage) {
 
 }
 
-export async function fetchKiller(username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setChatText, setNewMessage, setLifetime, setNbMissions) {
+export async function fetchKiller(username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setLifetime, setNbMissions) {
     let start = fetch("https://jo.pierrickperso.ddnsfree.com/killer/" + username).then(response => {
         if (response.ok) {
             return response.json()
@@ -626,7 +626,6 @@ export async function fetchKiller(username, setKills, setAlive, setMission, setT
                 }
                 setMission(data["how_to_kill"])
                 setTarget(data["target"])
-                fetchChat("killer/" + data["target"], setChatText, setNewMessage);
 
             }
             else {
