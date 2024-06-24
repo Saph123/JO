@@ -694,7 +694,7 @@ export function startKiller(username) {
 
 }
 
-export function die(username, setAlive, setRefresh, counterKill = fasle) {
+export function die(username, setAlive, setRefresh, counterKill = false) {
     fetch("https://jo.pierrickperso.ddnsfree.com/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "counter_kill": counterKill }) }).then(res => {
         if (res.status == 200) {
             setAlive(false)
@@ -779,14 +779,14 @@ export function pushChat(sportname, text, username) {
 
 }
 
-export function updateTeams(sport, teams) {
+export function updateTeams(sport, teams, arbitre) {
 
     // 5 second timeout:
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
 
     // // push to server
-    fetch("https://jo.pierrickperso.ddnsfree.com/updateTeams", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sport, "teams": teams }) }).then(r => {
+    fetch("https://jo.pierrickperso.ddnsfree.com/updateTeams", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sport, "teams": teams, "arbitre": arbitre }) }).then(r => {
         if (r.status == 200) {
             alert("Saved", "Saved to server!", ["Ok"])
         }

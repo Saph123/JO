@@ -60,9 +60,17 @@ export const Trace = (props) => {
     const username = props.username;
     const status = props.all_teams.status.status;
     const [loading, setloading] = React.useState(true);
-    const [year, setYear] = React.useState(2022);
+    const [year, setYear] = React.useState(2023);
+    let arbitres = props.status["arbitre"]
+    const [appended, setAppended] = React.useState(false)
+    
     React.useEffect(() => {
         setloading(false)
+        if (!appended)
+        {
+            arbitres.push("")
+            setAppended(true)
+        }
 
 
     }, [status]);
@@ -111,15 +119,23 @@ export const Trace = (props) => {
                 <ScrollView horizontal={true} directionalLockEnabled={false}>
                     <View style={{ flexDirection: "row", marginTop: 22 }}>
                         <View>
-                            <Text style={[styles.showPlayers, { height: 60 }]}>Équipe/Athlète</Text>
+                            <Text style={[styles.showPlayers, { height: 60, minWidth: 20 }]}>Équipe/Athlète</Text>
                             {props.all_teams.modifListe["Teams"].map(r =>
-                                <TextInput key={r.username} onChangeText={(text) => { r.username = text; }} style={styles.showPlayers}>{r.username}</TextInput>
+                                <TextInput key={r.username} onChangeText={(text) => { r.username = text; }} style={[styles.showPlayers, { minWidth: 20, borderRadius: 5 }]}>{r.username}</TextInput>
                             )
                             }
                         </View>
-                        <View style={{ width: 60, height: 60, backgroundColor: "lightgrey", justifyContent: "center" }}>
+                        <View>
+                            <Text style={[styles.showPlayers, { height: 60, minWidth: 20 }]}>Arbitres</Text>
+                            {
+                                arbitres.map(r =>
+                                <TextInput key={r} onChangeText={(text) => { r = text; arbitres.pop(r); arbitres.push(text)}} style={[styles.showPlayers, { minWidth: 20, borderRadius: 5 }]}>{r}</TextInput>
+                            )
+                            }
+                        </View>
+                        <View style={{ minWidth: 60, height: 60, backgroundColor: "lightgrey", justifyContent: "center" }}>
                             <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => { // Function to save only the results!
-                                updateTeams(sport, props.all_teams.modifListe["Teams"]);
+                                updateTeams(sport, props.all_teams.modifListe["Teams"], arbitres);
                             }
                             }>
                                 <Image resizeMode="cover" resizeMethod="resize" style={{ alignSelf: "center" }} source={require('./assets/save.png')}></Image>
