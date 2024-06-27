@@ -73,13 +73,13 @@ export function firstDay(secondsleft, setSecondsleft, navigation, username, all_
             <View key={"details"} style={{ justifyContent: "center" }}>
                 <Text style={{ textAlign: "center", fontSize: 24, fontWeight: "bold" }}> BIENVENUE!</Text>
                 <Text style={{ textAlign: "center", fontSize: 18 }}>1605 Chemin des Pierres, 38440 Meyssiez, France</Text>
-                {adminlist.includes(username) ? 
-                <Pressable style={{alignSelf: "center"}} onPress={() => {setEdit(!edit)}}>
-                    <Image resizeMode="cover" resizeMethod="resize" source={lutImg("modif")} />
-                </Pressable>
-                : <View></View>
+                {adminlist.includes(username) ?
+                    <Pressable style={{ alignSelf: "center" }} onPress={() => { setEdit(!edit) }}>
+                        <Image resizeMode="cover" resizeMethod="resize" source={lutImg("modif")} />
+                    </Pressable>
+                    : <View></View>
                 }
-                {adminlist.includes(username) && edit ? <TextInput autoFocus={true} multiline={true} style={{ textAlign: "center" }} onChangeText={text => { setAnnonce(text) }} onEndEditing={() => { setEdit(false);pushAnnonce(annonce) }}  >{annonce}</TextInput> : <Text style={{ textAlign: "center" }}> {annonce}</Text>}
+                {adminlist.includes(username) && edit ? <TextInput autoFocus={true} multiline={true} style={{ textAlign: "center" }} onChangeText={text => { setAnnonce(text) }} onEndEditing={() => { setEdit(false); pushAnnonce(annonce) }}  >{annonce}</TextInput> : <Text style={{ textAlign: "center" }}> {annonce}</Text>}
             </View>
             <View style={{ marginBottom: 10, marginTop: 50 }}>
                 <Text style={{ fontSize: 20, fontWeight: "bold", textAlign: "center" }}>Athlètes présents cette année:</Text>
@@ -472,7 +472,7 @@ export function eventView(currentEvents, eventsDone, sportname, navigation, setC
             <View key={sportname} style={{ flex: 1, margin: -1, flexDirection: "row", borderColor: "black", borderWidth: 2, borderTopWidth: 0 }}>
                 <View style={{ alignSelf: "center", width: 70, height: "100%", flexDirection: "column", justifyContent: "center", borderRightWidth: 2, borderRightColor: "black" }}><Text style={{ textAlign: "center", fontWeight: "bold" }}>{timeBegin.getHours() + "H" + timeBegin.getMinutes().toString().padStart(2, "0")}</Text></View>
                 <Pressable delayLongPress={5000} style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1 }, currentEvents.includes(sportname) ? styles.inProgress : (eventsDone.includes(sportname) ? styles.eventDone : styles.homebuttons)]}
-                    onPress={() => { vibrateLight(); sportlist().includes(sportname) ? setCurrentSport(sportname) : "", navigateTo != null ? navigateTo == "SummaryScreen" && now < planning["listeevent"][planning["listeevent"].length - 1].timeBegin ? "" : navigation.navigate(navigateTo, { sportname: sportname })  : "" }}
+                    onPress={() => { vibrateLight(); sportlist().includes(sportname) ? setCurrentSport(sportname) : "", navigateTo != null ? navigateTo == "SummaryScreen" && now < planning["listeevent"][planning["listeevent"].length - 1].timeBegin ? "" : navigation.navigate(navigateTo, { sportname: sportname }) : "" }}
                 >
                     <Image style={[styles.sportimage, { tintColor: "black" }]} resizeMode="contain" resizeMethod="auto" source={lutImg(sportname)} />
                 </Pressable>
@@ -586,7 +586,7 @@ export async function fetchChat(sportname, setChatText, setNewMessage) {
 }
 
 export async function fetchKiller(username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setLifetime, setNbMissions) {
-    let start = fetch("https://jo.pierrickperso.ddnsfree.com/killer/" + username).then(response => {
+    let start = fetch("https://jo.pierrickperso.ddnsfree.com/killer-info/" + username).then(response => {
         if (response.ok) {
             return response.json()
         }
@@ -669,8 +669,8 @@ export async function fetchKiller(username, setKills, setAlive, setMission, setT
     return start
 }
 
-export function updateMission(missions, username, setRefresh, setShouldSave) {
-    fetch("https://jo.pierrickperso.ddnsfree.com/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "missions", "missions": missions }) }).then(res => {
+export function updateMission(missions, setRefresh, setShouldSave) {
+    fetch("https://jo.pierrickperso.ddnsfree.com/killer-update-missions", { method: "POST", body: JSON.stringify({ "version": version, "missions": missions }) }).then(res => {
         if (res.status == 200) {
             alert("Saved", "Saved to server!", ["Ok"])
             setRefresh(true)
@@ -683,8 +683,8 @@ export function updateMission(missions, username, setRefresh, setShouldSave) {
 
 }
 
-export function startKiller(username) {
-    fetch("https://jo.pierrickperso.ddnsfree.com/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "start_killer": true }) }).then(res => {
+export function startKiller() {
+    fetch("https://jo.pierrickperso.ddnsfree.com/killer-start", { method: "POST", body: JSON.stringify({ "version": version }) }).then(res => {
         if (res.status == 200) {
         }
         else {
@@ -695,7 +695,7 @@ export function startKiller(username) {
 }
 
 export function die(username, setAlive, setRefresh, counterKill = false) {
-    fetch("https://jo.pierrickperso.ddnsfree.com/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "counter_kill": counterKill }) }).then(res => {
+    fetch("https://jo.pierrickperso.ddnsfree.com/killer-kill", { method: "POST", body: JSON.stringify({ "version": version, "name": username, "counter_kill": counterKill, "give_credit": true }) }).then(res => {
         if (res.status == 200) {
             setAlive(false)
             setRefresh(true)
@@ -705,8 +705,8 @@ export function die(username, setAlive, setRefresh, counterKill = false) {
 
 }
 
-export function kill(username, personToKill, giveCredit, counterKill, setFocus) {
-    fetch("https://jo.pierrickperso.ddnsfree.com/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "kill", "counter_kill": counterKill, "to_kill": { name: personToKill, give_credit: giveCredit } }) }).then(res => {
+export function kill(personToKill, giveCredit, counterKill, setFocus) {
+    fetch("https://jo.pierrickperso.ddnsfree.com/killer-kill", { method: "POST", body: JSON.stringify({ "version": version, "name": personToKill, "counter_kill": counterKill, "give_credit": giveCredit }) }).then(res => {
         if (res.status == 200) {
             setFocus(false);
         }
@@ -714,8 +714,8 @@ export function kill(username, personToKill, giveCredit, counterKill, setFocus) 
 
 }
 
-export function endKiller(username, setTab) {
-    fetch("https://jo.pierrickperso.ddnsfree.com/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "end_killer" }) }).then(res => {
+export function endKiller(setTab) {
+    fetch("https://jo.pierrickperso.ddnsfree.com/killer-end/", { method: "POST", body: JSON.stringify({ "version": version }) }).then(res => {
         if (res.status == 200) {
             setTab({ states: ["results"], status: "results" });
         }
@@ -723,8 +723,8 @@ export function endKiller(username, setTab) {
 
 }
 
-export function changeMission(username, person) {
-    fetch("https://jo.pierrickperso.ddnsfree.com/killer/" + username, { method: "POST", body: JSON.stringify({ "version": version, "data": "modify_mission", target: { name: person.name, mission: person.mission } }) }).then(res => {
+export function changeMission(person) {
+    fetch("https://jo.pierrickperso.ddnsfree.com/killer-change-mission", { method: "POST", body: JSON.stringify({ "version": version, "name": person.name, "mission": person.mission }) }).then(res => {
         if (!res.status == 200) {
             alert("Error", "Please try again later")
         }
@@ -987,10 +987,11 @@ export async function getOnlinePersons(screen = "") {
 }
 
 
-export async function getPalmares(user, setPalmares){
+export async function getPalmares(user, setPalmares) {
     palmares = await fetch("https://jo.pierrickperso.ddnsfree.com/palmares/" + user).then(response => {
         if (response.ok) {
             return response.json()
-        }}).catch(err => console.error(err))
+        }
+    }).catch(err => console.error(err))
     setPalmares(palmares);
 }
