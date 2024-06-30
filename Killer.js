@@ -8,6 +8,7 @@ export function KillerScreen({ route }) {
     const [tabs, setTab] = React.useState({ states: ["waiting"], status: "waiting" });
     const [kills, setKills] = React.useState([{ name: "", mission: "", date: "" }])
     const [alive, setAlive] = React.useState(true)
+    const [playing, setPlaying] = React.useState(true)
     const [target, setTarget] = React.useState("")
     const [mission, setMission] = React.useState("")
     const [discovered, setDiscovered] = React.useState(false)
@@ -33,7 +34,7 @@ export function KillerScreen({ route }) {
     React.useEffect(() => {
         var timer
         if (refresh == true) {
-            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setLifetime, setNbMissions).then(start => {
+            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setLifetime, setNbMissions, setPlaying).then(start => {
                 timer = setInterval(() => {
                     let now = new Date().getTime()
                     let startDate = start * 1000
@@ -140,13 +141,21 @@ export function KillerScreen({ route }) {
                     : tabs.status == "waiting" ?
                         <View>
                             <Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>En attente du démarrage de la partie</Text>
+                            <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 20 }}>
 
+                                <Pressable onPress={() => { setPlaying(!playing) }} style={{ width: 22, height: 22, borderRadius: 5, borderWidth: 1, marginRight: 5 }}>
+                                    {playing ? <Image source={require("./assets/check.png")}></Image> : null}
+                                </Pressable>
+                                <Pressable onPress={() => { setPlaying(!playing) }} style={{ marginTop: 2 }}>
+                                    {<Text>Participation au killer</Text>}
+                                </Pressable>
+                            </View>
                             {adminlist.includes(route.params.username) ?
-                                <Pressable style={[styles.killbutton, { height: 70, justifyContent: "center", marginTop: 50, paddingLeft: 10, paddingRight: 10 }]} onPress={() => {
+                                <Pressable style={[styles.killbutton, { height: 70, justifyContent: "center", marginTop: 30, paddingLeft: 10, paddingRight: 10 }]} onPress={() => {
                                     Alert.alert("Démarrer ?", "", [{
                                         text: "Confirmer", onPress: () => {
                                             startKiller(route.params.username);
-                                            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setLifetime, setNbMissions)
+                                            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setLifetime, setNbMissions, setPlaying)
                                             setTab({ states: ["résumé", "en cours"], status: "en cours" })
                                         }
                                     }, { text: "Annuler" }])
