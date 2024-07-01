@@ -585,7 +585,7 @@ export async function fetchChat(sportname, setChatText, setNewMessage) {
 
 }
 
-export async function fetchKiller(username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setLifetime, setNbMissions) {
+export async function fetchKiller(username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setLifetime, setNbMissions, setPlaying) {
     let start = fetch("https://jo.pierrickperso.ddnsfree.com/killer-info/" + username).then(response => {
         if (response.ok) {
             return response.json()
@@ -622,6 +622,7 @@ export async function fetchKiller(username, setKills, setAlive, setMission, setT
                     setTab({ states: ["en cours", "résumé"], status: "en cours" })
                 }
                 else {
+                    setPlaying(data["is_playing"])
                     setNbMissions(data["missions"])
                 }
                 setMission(data["how_to_kill"])
@@ -692,6 +693,14 @@ export function startKiller() {
         }
     }).catch(err => console.log(err, "start killer"));
 
+}
+
+export function toggleKillerRegister(username, playing, setPlaying) {
+    fetch("https://jo.pierrickperso.ddnsfree.com/killer-register", { method: "POST", body: JSON.stringify({ "version": version, "name": username, "registering": !playing }) }).then(res => {
+        if (res.status == 200) {
+            setPlaying(!playing)
+        }
+    }).catch(err => console.log(err, "registering"));
 }
 
 export function die(username, setAlive, setRefresh, counterKill = false) {

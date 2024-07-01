@@ -1,7 +1,7 @@
 import styles from "./style.js";
 import * as React from 'react';
-import { View, Pressable, Image, ScrollView, Text, Alert, TextInput, Modal, Keyboard, Dimensions } from 'react-native';
-import { die, lutImg, vibrateLight, fetchKiller, updateMission, personView, kill, endKiller, changeMission, chatView, fetchChat, startKiller } from './utils.js';
+import { View, Pressable, Image, ScrollView, Text, Alert, TextInput, Modal } from 'react-native';
+import { die, lutImg, vibrateLight, fetchKiller, updateMission, personView, kill, endKiller, changeMission, startKiller, toggleKillerRegister } from './utils.js';
 import { adminlist } from "./global.js";
 
 export function KillerScreen({ route }) {
@@ -143,10 +143,10 @@ export function KillerScreen({ route }) {
                             <Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>En attente du démarrage de la partie</Text>
                             <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 20 }}>
 
-                                <Pressable onPress={() => { setPlaying(!playing) }} style={{ width: 22, height: 22, borderRadius: 5, borderWidth: 1, marginRight: 5 }}>
+                                <Pressable onPress={() => { toggleKillerRegister(route.params.username, playing, setPlaying) }} style={{ width: 22, height: 22, borderRadius: 5, borderWidth: 1, marginRight: 5 }}>
                                     {playing ? <Image source={require("./assets/check.png")}></Image> : null}
                                 </Pressable>
-                                <Pressable onPress={() => { setPlaying(!playing) }} style={{ marginTop: 2 }}>
+                                <Pressable onPress={() => { toggleKillerRegister(route.params.username, playing, setPlaying) }} style={{ marginTop: 2 }}>
                                     {<Text>Participation au killer</Text>}
                                 </Pressable>
                             </View>
