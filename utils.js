@@ -120,8 +120,7 @@ export async function getValueFor(key) {
     }
 }
 
-export function manageEvents(setEventsDone, setCurrentEvents) {
-    var planning = new Planning();
+export function manageEvents(setEventsDone, setCurrentEvents, planning) {
     var localnow = Date.now();
     var eventDone = []
     var currEvent = []
@@ -575,6 +574,15 @@ export function sportlist() {
     ]
 }
 
+export async function fetchPlanning() {
+    let planning = await fetch("https://jo.pierrickperso.ddnsfree.com/planning").then(response => {
+        let data = response.json()
+        return data
+    }
+    ).catch(err => console.error("planning", err));
+    return planning
+}
+
 export async function fetchChat(sportname, setChatText, setNewMessage) {
     await fetch("https://jo.pierrickperso.ddnsfree.com/Chatalere/" + sportname + ".txt").then(response => response.text()).then(r => {
         if (initialLineNumber[sportname] != countLines(r) && countLines(r) > 1) {
@@ -624,10 +632,10 @@ export async function fetchKiller(username, setKills, setAlive, setMission, setT
                 else {
                     setPlaying(data["is_playing"])
                     setNbMissions(data["missions"])
+                    setMotivText(data["missions"] + "/" + data["participants"].length)
                 }
                 setMission(data["how_to_kill"])
                 setTarget(data["target"])
-
             }
             else {
                 setLifetime(data["lifetime"])
@@ -642,7 +650,7 @@ export async function fetchKiller(username, setKills, setAlive, setMission, setT
                     nb_missions--;
                 }
             }
-            setMotivText(nb_missions + "/25")
+            setMotivText(nb_missions + "/" + data["participants"].length)
             if (data["started"]) {
                 setTab({ states: ["people", "kills"], status: "people" })
                 let players = { left: [], middle: [], right: [] }
@@ -661,7 +669,6 @@ export async function fetchKiller(username, setKills, setAlive, setMission, setT
                 setPlayers(players)
             }
             else {
-                setMotivText(nb_missions + "/25")
                 setTab({ states: ["kills"], status: "kills" })
             }
         }

@@ -4,7 +4,6 @@ import { View, TextInput, Text, Image, Linking, Pressable, ScrollView, ActivityI
 import { getValueFor, save, videoHandler, pushtoken, manageEvents, eventView, personView } from './utils';
 import { SportContext, version } from "./global.js"
 import { fetch_activities, fetch_global_results } from "./trace.js";
-import { Planning } from "./planning.js";
 import { addth } from "./utils";
 
 export function LoginScreen({ route, navigation }) {
@@ -27,14 +26,13 @@ export function LoginScreen({ route, navigation }) {
     const [eventsInProgress, setEventsInProgess] = React.useState([]);
     const controller = new AbortController()
     // 5 second timeout:
-    let planning = new Planning();
     let now = new Date()
     React.useEffect(() => {
+        manageEvents(setEventsDone, setEventsInProgess, route.params.planning)
         getValueFor("username").then(user => {
             setuserName(user);
             if (user != "") {
                 setLoggedIn(true);
-                manageEvents(setEventsDone, setEventsInProgess)
                 fetch_activities(user, setArbitre, setEvents);
                 fetch_global_results().then(r => {
 
@@ -150,8 +148,8 @@ export function LoginScreen({ route, navigation }) {
                     </Pressable>
                 </View>
                 <View style={{ flex: 1 }}>
-                    <View style={{ flexDirection: "row", justifyContent:"space-evenly" }}>
-                        <View style={{justifyContent: "center" }}>
+                    <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
+                        <View style={{ justifyContent: "center" }}>
                             {personView(userName)}
                         </View>
                         <View>
@@ -191,7 +189,7 @@ export function LoginScreen({ route, navigation }) {
                             </View>
                             <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Mon rang </Text></View>
                             <View style={{ flexDirection: "row", justifyContent: "center" }}>
-                                <Text style={styles.medailleNumber}>{now > planning["listeevent"][planning["listeevent"].length - 1].timeBegin ? rank : "?"}</Text>
+                                <Text style={styles.medailleNumber}>{now > route.params.planning["listeevent"][route.params.planning["listeevent"].length - 1].timeBegin ? rank : "?"}</Text>
                             </View>
                         </View>
                     </View>
@@ -200,7 +198,7 @@ export function LoginScreen({ route, navigation }) {
                             <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> Mes activités </Text></View>
 
                             {events.map(r => {
-                                return planning["listeevent"].map(q => {
+                                return route.params.planning["listeevent"].map(q => {
                                     if (q.eventname == r) {
 
                                         return (
@@ -222,7 +220,7 @@ export function LoginScreen({ route, navigation }) {
                         <View style={{ flex: 1 }}>
                             <View style={{ alignItems: "center" }}><Text style={styles.medailleText}> J'arbitre </Text></View>
                             {arbitre.map(r => {
-                                return planning["listeevent"].map(q => {
+                                return route.params.planning["listeevent"].map(q => {
                                     if (q.eventname == r) {
                                         return (
                                             <SportContext.Consumer key={q}>

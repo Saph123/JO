@@ -29,7 +29,6 @@ export function KillerScreen({ route }) {
     const [lifetime, setLifetime] = React.useState("")
     const [nbMissions, setNbMissions] = React.useState(0)
     const ref = React.useRef(null)
-    const [viewSize, setViewSize] = React.useState({ width: 0, height: 0 });
     let missions_list = missions;
     React.useEffect(() => {
         var timer
@@ -163,7 +162,7 @@ export function KillerScreen({ route }) {
                                     <Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>
                                         Démarrer la partie
                                     </Text>
-                                    <Text>{nbMissions}/25</Text>
+                                    <Text>{motiv_text}</Text>
                                 </Pressable> : null
                             }
                         </View>

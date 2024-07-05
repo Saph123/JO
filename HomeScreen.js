@@ -2,11 +2,12 @@ import styles from "./style";
 import * as React from 'react';
 import { View, ScrollView, ActivityIndicator, Text, Image, Pressable, Linking, Alert } from 'react-native';
 import { Audio } from 'expo-av';
-import { getNextEventseconds, Planning } from "./planning.js";
+import { getNextEventseconds } from "./planning.js";
 import * as Notifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
-import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo, firstDay, vibrateLight, fetchAnnonce, life, getOnlinePersons } from './utils.js';
+import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo, firstDay, vibrateLight, fetchAnnonce, life, fetchPlanning } from './utils.js';
 import { SportContext, ChatContext, adminlist } from "./global.js"
+import { Planning } from "./planning.js";
 export function HomeScreen({ route, navigation }) {
     const [loading, setLoading] = React.useState(1);
     const [username, setusername] = React.useState("");
@@ -27,6 +28,7 @@ export function HomeScreen({ route, navigation }) {
     const chatcontext = React.useContext(ChatContext);
     const [annonce, setAnnonce] = React.useState("")
     const [edit, setEdit] = React.useState(false);
+    const [planning, setPlanning] = React.useState(new Planning([]));
     const [all_players, setAllPlayers] = React.useState([[
         "Antoine",
         "Armand",
@@ -67,7 +69,6 @@ export function HomeScreen({ route, navigation }) {
         "Ugo"
     ]
     ])
-    let planning = new Planning();
     let now = new Date(Date.now());
     var jeudi = 4;
     var vendredi = 5;
@@ -113,15 +114,20 @@ export function HomeScreen({ route, navigation }) {
             default:
                 setDisplayDay(jeudi);
         }
+        fetchPlanning().then(response => {
+            setPlanning(new Planning(response))
+        })
         getValueFor("username").then(r => {
             setusername(r);
             setLoading(0)
         }).catch(() => setLoading(0));
+        if (loading == 0) {
+            var startEvent = getNextEventseconds(planning)
+            manageEvents(setEventsDone, setCurrentEvents, planning)
+            setSecondsleft(startEvent.time);
+            setNextEvent(startEvent.name);
+        }
         chatcontext.setChatName("Home");
-        manageEvents(setEventsDone, setCurrentEvents)
-        var startEvent = getNextEventseconds();
-        setSecondsleft(startEvent.time);
-        setNextEvent(startEvent.name);
         fetchAnnonce(setAnnonce)
         registerForPushNotificationsAsync().then(token => { setExpoPushToken(token); pushtoken(token, username) });
         // This listener is fired whenever a notification is received while the app is foregrounded
@@ -253,22 +259,23 @@ export function HomeScreen({ route, navigation }) {
                         {value =>
                             <View key={value} style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                                 <View style={{ flex: 1 }}>
-                                    {planning["listeevent"].map(r => {
-                                        if (r.timeBegin.getDay() == displayDay) {
-                                            if (displayDay == jeudi) {
-                                                {
+                                    { 
+                                        planning["listeevent"].map(r => {
+                                            if (r.timeBegin.getDay() == displayDay) {
+                                                if (displayDay == jeudi) {
+                                                    {
+                                                        return (
+                                                            firstDay(secondsleft, setSecondsleft, navigation, username, all_players, annonce, setAnnonce, edit, setEdit)
+                                                        )
+                                                    }
+                                                }
+                                                else {
+
                                                     return (
-                                                        firstDay(secondsleft, setSecondsleft, navigation, username, all_players, annonce, setAnnonce, edit, setEdit)
-                                                    )
+                                                        eventView(currentEvents, eventsDone, r.eventname, navigation, value.setCurrentSport, r.linksTo, r.timeBegin));
                                                 }
                                             }
-                                            else {
-
-                                                return (
-                                                    eventView(currentEvents, eventsDone, r.eventname, navigation, value.setCurrentSport, r.linksTo, r.timeBegin));
-                                            }
-                                        }
-                                    })}
+                                        })}
                                 </View>
                             </View>
                         }
@@ -294,7 +301,7 @@ export function HomeScreen({ route, navigation }) {
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >ShiFUmi</Text>
                 </Pressable> */}
                 <Pressable style={styles.bottomTabs}
-                    onPress={() => { vibrateLight(); navigation.navigate('LoginScreen', { pushtoken: expoPushToken }) }}
+                    onPress={() => { vibrateLight(); navigation.navigate('LoginScreen', { pushtoken: expoPushToken, planning: planning }) }}
                 >
                     <Image style={{ tintColor: "white", height: 35, marginBottom: 2 }} resizeMode="contain" source={require('./assets/person.png')} />
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >Mon profil</Text>
