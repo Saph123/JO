@@ -8,6 +8,7 @@ import * as SecureStore from 'expo-secure-store';
 import { Planning } from './planning';
 import { version, initialLineNumber, adminlist } from "./global.js"
 import CountDown from 'react-native-countdown-component';
+import { getNextEventseconds } from "./planning";
 import * as Haptics from 'expo-haptics';
 class Liste {
     constructor(username, score, rank = 0, level = 0) {
@@ -60,7 +61,9 @@ export function pushAnnonce(annonce) {
 }
 
 
-export function firstDay(secondsleft, setSecondsleft, navigation, username, all_players, annonce, setAnnonce, edit, setEdit) {
+export function firstDay(secondsleft, setSecondsleft, navigation, username, all_players, annonce, setAnnonce, edit, setEdit, planning) {
+    var startEvent = getNextEventseconds(planning)
+    setSecondsleft(startEvent.time);
     return (
         <View key={secondsleft}>
             {secondsleft < 0 ? <View></View> : <View><Text style={{ alignSelf: "center" }}>{"Soirée d'ouverture dans :"}</Text><CountDown
@@ -121,6 +124,9 @@ export async function getValueFor(key) {
 }
 
 export function manageEvents(setEventsDone, setCurrentEvents, planning) {
+    if (planning == undefined) {
+        return
+    }
     var localnow = Date.now();
     var eventDone = []
     var currEvent = []

@@ -29,6 +29,7 @@ export function HomeScreen({ route, navigation }) {
     const [annonce, setAnnonce] = React.useState("")
     const [edit, setEdit] = React.useState(false);
     const [planning, setPlanning] = React.useState(new Planning([]));
+    const [planningIsFetched, setPlanningIsFetched] = React.useState(false)
     const [all_players, setAllPlayers] = React.useState([[
         "Antoine",
         "Armand",
@@ -114,14 +115,17 @@ export function HomeScreen({ route, navigation }) {
             default:
                 setDisplayDay(jeudi);
         }
-        fetchPlanning().then(response => {
-            setPlanning(new Planning(response))
-        })
+        if (!planningIsFetched) {
+            fetchPlanning().then(response => {
+                setPlanning(new Planning(response))
+                setPlanningIsFetched(true)
+            })
+        }
         getValueFor("username").then(r => {
             setusername(r);
             setLoading(0)
         }).catch(() => setLoading(0));
-        if (loading == 0) {
+        if (planningIsFetched) {
             var startEvent = getNextEventseconds(planning)
             manageEvents(setEventsDone, setCurrentEvents, planning)
             setSecondsleft(startEvent.time);
@@ -205,7 +209,6 @@ export function HomeScreen({ route, navigation }) {
         }, 3000);
         // setLoading(0);
         return () => {
-            console.log("clear done")
             clearInterval(chatInterval);
             clearInterval(life_interval);
             Notifications.removeNotificationSubscription(notificationListener.current);
@@ -229,7 +232,7 @@ export function HomeScreen({ route, navigation }) {
                 <Text style={{ fontWeight: "bold" }}>Tu dois te connecter d'abord!</Text>
                 <Text style={{ fontWeight: "bold" }}>Demande à Max tes identifiants</Text>
                 <Pressable style={styles.loginbutton}
-                    onPress={() => { vibrateLight(); navigation.navigate('LoginScreen') }}
+                    onPress={() => { vibrateLight(); navigation.navigate('LoginScreen', { planning: planning }) }}
                 >
                     <Text style={styles.texthomebutton}>Login</Text>
                 </Pressable>
@@ -259,13 +262,13 @@ export function HomeScreen({ route, navigation }) {
                         {value =>
                             <View key={value} style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                                 <View style={{ flex: 1 }}>
-                                    { 
+                                    {
                                         planning["listeevent"].map(r => {
                                             if (r.timeBegin.getDay() == displayDay) {
                                                 if (displayDay == jeudi) {
                                                     {
                                                         return (
-                                                            firstDay(secondsleft, setSecondsleft, navigation, username, all_players, annonce, setAnnonce, edit, setEdit)
+                                                            firstDay(secondsleft, setSecondsleft, navigation, username, all_players, annonce, setAnnonce, edit, setEdit, planning)
                                                         )
                                                     }
                                                 }

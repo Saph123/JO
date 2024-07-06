@@ -16,7 +16,6 @@ export function ProfilScreen({ route }) {
     if (loading) {
         return (<ActivityIndicator size="large" color="#000000" />)
     }
-    //console.log(palmares)
     return (
         <View style={{ flex: 15 }}>
             <View style={{ borderBottomWidth: 2, borderColor: "black" }}>
@@ -30,7 +29,6 @@ export function ProfilScreen({ route }) {
                             <View style={{ flex: 1 }}>
                                 {
                                     Object.keys(palmares).map((sport) => {
-                                        // console.log(palmares[sport])
                                         return (
                                             <View key={sport} style={{ flex: 1, margin: -1, flexDirection: "row", borderColor: "black", borderWidth: 2, borderTopWidth: 0, justifyContent: "flex-start", maxHeight: 80 }}>
                                                 <View style={{ flex: 1, justifyContent: "center" }}>
@@ -49,7 +47,6 @@ export function ProfilScreen({ route }) {
 
                                     {
                                         Object.keys(palmares).map((sport) => {
-                                            // console.log(palmares[sport])
                                             return (
                                                 <View key={sport} style={{ flex: 1, borderWidth: 2, marginBottom: -1, borderTopWidth: 0, width: "100%" }}>
                                                     <ScrollView horizontal={true}>
