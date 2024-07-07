@@ -599,6 +599,35 @@ export async function fetchChat(sportname, setChatText, setNewMessage) {
 
 }
 
+export async function fetchAthletes() {
+    let players = await fetch("https://jo.pierrickperso.ddnsfree.com/athletes/All.json").then(response => {
+        if (response.ok) {
+            return response.json()
+        }
+        return []
+    }).catch(err => console.error("fetchAthletes", err));
+    var all_players = []
+    var left = []
+    var middle = []
+    var right = []
+    for (let index = 0; index < players.length; index++) {
+        let player = players[index]["Player"]
+        if (index % 3 == 0) {
+            left.push(player)
+        }
+        if (index % 3 == 1) {
+            middle.push(player)
+        }
+        if (index % 3 == 2) {
+            right.push(player)
+        }
+    }
+    all_players.push(left)
+    all_players.push(middle)
+    all_players.push(right)
+    return all_players
+}
+
 export async function fetchKiller(username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setLifetime, setNbMissions, setPlaying) {
     let start = fetch("https://jo.pierrickperso.ddnsfree.com/killer-info/" + username).then(response => {
         if (response.ok) {

@@ -5,7 +5,7 @@ import { Audio } from 'expo-av';
 import { getNextEventseconds } from "./planning.js";
 import * as Notifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
-import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo, firstDay, vibrateLight, fetchAnnonce, life, fetchPlanning } from './utils.js';
+import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo, firstDay, vibrateLight, fetchAnnonce, life, fetchPlanning, fetchAthletes } from './utils.js';
 import { SportContext, ChatContext, adminlist } from "./global.js"
 import { Planning } from "./planning.js";
 export function HomeScreen({ route, navigation }) {
@@ -30,46 +30,7 @@ export function HomeScreen({ route, navigation }) {
     const [edit, setEdit] = React.useState(false);
     const [planning, setPlanning] = React.useState(new Planning([]));
     const [planningIsFetched, setPlanningIsFetched] = React.useState(false)
-    const [all_players, setAllPlayers] = React.useState([[
-        "Antoine",
-        "Armand",
-        "Beranger",
-        "Bifteck",
-        "Boulbi",
-        "Brice",
-        "Bryan",
-        "Chachav",
-        "Chloe",
-        "Clement",
-        "Emma"
-    ],
-    [
-        "Florent",
-        "Girex",
-        "Gui",
-        "Guillaume",
-        "Hugo",
-        "Jason",
-        "Jess",
-        "Jo",
-        "Keke",
-        "Mams",
-        "Mathias"
-    ],
-    [
-        "Max",
-        "Mimo",
-        "LaGuille",
-        "Lapinou",
-        "Leo",
-        "Pierrick",
-        "Quentin",
-        "Reminem",
-        "Shmav",
-        "Thomas",
-        "Ugo"
-    ]
-    ])
+    const [all_players, setAllPlayers] = React.useState([[], [], []])
     let now = new Date(Date.now());
     var jeudi = 4;
     var vendredi = 5;
@@ -121,6 +82,9 @@ export function HomeScreen({ route, navigation }) {
                 setPlanningIsFetched(true)
             })
         }
+        fetchAthletes().then(response => {
+            setAllPlayers(response)
+        })
         getValueFor("username").then(r => {
             setusername(r);
             setLoading(0)
