@@ -362,6 +362,18 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
     }
 }
 
+export async function fetchRangement() {
+    let tasks = fetch("https://jo.pierrickperso.ddnsfree.com/teams/Rangement.json").then(response => { 
+        if (response.ok)
+            return response.json()
+        return []
+    }
+    )
+    console.log(tasks)
+    return tasks
+
+}
+
 export function chatView(text, setChatText, localText, setLocalText, sportname, username, canBeClosed, value = null) {
     function setNewMessageMock(value) {
         return
