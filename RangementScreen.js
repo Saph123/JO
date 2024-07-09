@@ -1,13 +1,13 @@
 import styles from "./style.js";
 import * as React from 'react';
 import { View, Pressable, Image, ScrollView, Text, TextInput, ActivityIndicator, Modal } from 'react-native';
-import { lutImg, vibrateLight, fetchRangement } from './utils.js';
+import { lutImg, vibrateLight, fetchRangement, updateRangementTasks } from './utils.js';
 import { adminlist } from "./global.js";
 export function RangementScreen({ route }) {
     const [loading, setLoading] = React.useState(true)
     const [tabs, setTab] = React.useState({ states: ["résumé"], status: "résumé" });
     const [tasks, setTasks] = React.useState([{ title: "" }])
-    const [currentTask, setCurrentTask] = React.useState({ title: "" })
+    const [currentTask, setCurrentTask] = React.useState({ title: "", points: 1, participants: [], state: 0 })
     const [shouldSave, setShouldSave] = React.useState(false)
     const [focus, setFocus] = React.useState(false)
     const [displayPoints, setDisplayPoints] = React.useState(true)
@@ -51,7 +51,7 @@ export function RangementScreen({ route }) {
                         <Pressable style={[styles.closeButton, { marginBottom: 15 }]} onPress={() => { setFocus(false); setShouldSave(true) }}><Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/remove.png')} /></Pressable>
                         <View style={{ flexDirection: "row", margin: 10 }}>
                             <Text style={{ margin: 2 }}>Tache: </Text>
-                            <TextInput onChangeText={text => {currentTask.title = text}} autoFocus={currentTask.title == ""} style={{ borderWidth: 2 }}>{currentTask.title}</TextInput>
+                            <TextInput onChangeText={text => { currentTask.title = text }} autoFocus={currentTask.title == ""} style={{ borderWidth: 2 }}>{currentTask.title}</TextInput>
 
                         </View>
                         <View style={{ flexDirection: "row", margin: 10 }}>
@@ -83,6 +83,7 @@ export function RangementScreen({ route }) {
                         <View style={{ flex: 1 }}>
                             <View style={{ width: 100, height: 60, backgroundColor: shouldSave ? "red" : "white", justifyContent: "center", borderRadius: 30, borderWidth: 2, marginLeft: 5, marginBottom: 5 }}>
                                 <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => {
+                                    updateRangementTasks(tasks_list, setShouldSave)
                                 }
                                 }>
                                     <Text>Sauvegarder</Text>
@@ -91,7 +92,7 @@ export function RangementScreen({ route }) {
                             <View style={{ width: 100, height: 60, backgroundColor: "white", justifyContent: "center", borderRadius: 30, borderWidth: 2, marginLeft: 5, marginBottom: 5 }}>
                                 <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => {
                                     let tasks = tasks_list;
-                                    tasks.push({ title: "", points: 1, participants: [], done: false })
+                                    tasks.push({ title: "", points: 1, participants: [], state: 0 })
                                     setCurrentTask(tasks[tasks.length - 1]);
                                     setFocus(true)
                                 }

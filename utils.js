@@ -738,6 +738,19 @@ export function updateMission(missions, setRefresh, setShouldSave) {
 
 }
 
+export function updateRangementTasks(tasks_list, setShouldSave) {
+    fetch("https://jo.pierrickperso.ddnsfree.com/update-rangement", { method: "POST", body: JSON.stringify({ "version": version, "tasks": tasks_list }) }).then(res => {
+        if (res.status == 200) {
+            alert("Saved", "Saved to server!", ["Ok"])
+            setShouldSave(false)
+        }
+        else {
+            alert("Wrong login or password!");
+        }
+    }).catch(err => console.log(err, "in update missions"));
+
+}
+
 export function startKiller() {
     fetch("https://jo.pierrickperso.ddnsfree.com/killer-start", { method: "POST", body: JSON.stringify({ "version": version }) }).then(res => {
         if (res.status == 200) {

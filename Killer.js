@@ -153,7 +153,7 @@ export function KillerScreen({ route }) {
                                 <Pressable style={[styles.killbutton, { height: 70, justifyContent: "center", marginTop: 30, paddingLeft: 10, paddingRight: 10 }]} onPress={() => {
                                     Alert.alert("Démarrer ?", "", [{
                                         text: "Confirmer", onPress: () => {
-                                            startKiller(route.params.username);
+                                            startKiller();
                                             fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setLifetime, setNbMissions, setPlaying)
                                             setTab({ states: ["résumé", "en cours"], status: "en cours" })
                                         }
@@ -223,7 +223,7 @@ export function KillerScreen({ route }) {
                                         <View style={{ flex: 1 }}>
                                             <View style={{ width: 100, height: 60, backgroundColor: shouldSave ? "red" : "white", justifyContent: "center", borderRadius: 30, borderWidth: 2, marginLeft: 5, marginBottom: 5 }}>
                                                 <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => {
-                                                    updateMission(missions_list, route.params.username, setRefresh, setShouldSave);
+                                                    updateMission(missions_list, setRefresh, setShouldSave);
                                                     let nb_missions = missions_list.length
                                                     for (let index = 0; index < missions_list.length; index++) {
                                                         if (missions_list[index].title == "") {
@@ -289,7 +289,7 @@ export function KillerScreen({ route }) {
                                                                 <Pressable onPress={() => {
                                                                     Alert.alert("Confirmer ?", "Cette action est définitive", [{
                                                                         text: "Confirmer", onPress: () => {
-                                                                            kill(route.params.username, focusOn.name, giveCredit, counterKill, setFocus);
+                                                                            kill(focusOn.name, giveCredit, counterKill, setFocus);
                                                                             focusOn.alive = false;
                                                                             focusOn.death = "À l'instant"
                                                                         }
@@ -322,7 +322,7 @@ export function KillerScreen({ route }) {
                                                                 setGiveCredit(false);
                                                                 setCounterKill(false);
                                                                 setModifyingMission(false);
-                                                                changeMission(route.params.username, focusOn);
+                                                                changeMission(focusOn);
                                                             }}>
                                                                 <Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/check-mark.png')} />
                                                             </Pressable>
@@ -397,7 +397,7 @@ export function KillerScreen({ route }) {
                                                 <Pressable onPress={() => {
                                                     Alert.alert("Confirmer ?", "Cette action est définitive", [{
                                                         text: "Confirmer", onPress: () => {
-                                                            endKiller(route.params.username, setTab);
+                                                            endKiller(setTab);
                                                         }
                                                     }, { text: "Annuler" }])
                                                 }}>
