@@ -369,7 +369,6 @@ export async function fetchRangement() {
         return []
     }
     )
-    console.log(tasks)
     return tasks
 
 }
