@@ -363,7 +363,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
 }
 
 export async function fetchRangement() {
-    let tasks = fetch("https://jo.pierrickperso.ddnsfree.com/teams/Rangement.json").then(response => { 
+    let tasks = fetch("https://jo.pierrickperso.ddnsfree.com/rangement").then(response => { 
         if (response.ok)
             return response.json()
         return []

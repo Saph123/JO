@@ -1,10 +1,11 @@
 import styles from "./style.js";
 import * as React from 'react';
 import { View, Pressable, Image, ScrollView, Text, TextInput, ActivityIndicator, Modal } from 'react-native';
-import { lutImg, vibrateLight, fetchRangement, updateRangementTasks } from './utils.js';
+import { lutImg, vibrateLight, fetchRangement, updateRangementTasks, personView } from './utils.js';
 import { adminlist } from "./global.js";
 export function RangementScreen({ route }) {
     const [loading, setLoading] = React.useState(true)
+    const [firstime, setFirstTime] = React.useState(true)
     const [tabs, setTab] = React.useState({ states: ["résumé"], status: "résumé" });
     const [people, setPeople] = React.useState([{ name: "", score: 0, busy: false }])
     const [tasks, setTasks] = React.useState([{ title: "", points: 1, participants: [], state: 0 }])
@@ -25,8 +26,11 @@ export function RangementScreen({ route }) {
             }
             )
             setLoading(false);
-            if (adminlist.includes(route.params.username)) {
-                setTab({ states: ["résumé", "modif"], status: "modif" })
+            if (firstime) {
+                if (adminlist.includes(route.params.username)) {
+                    setTab({ states: ["résumé", "modif"], status: "modif" })
+                }
+                setFirstTime(false)
             }
         }
     });
@@ -123,7 +127,7 @@ export function RangementScreen({ route }) {
                         transparent={true}
                         visible={focus} style={{ paddingTop: "30%" }}>
                         <View style={[styles.matchZoomView, { minHeight: 10 }]}>
-                            <Pressable style={[styles.closeButton, { marginBottom: 15 }]} onPress={() => { setFocus(false); setShouldSave(true) }}><Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/remove.png')} /></Pressable>
+                            <Pressable style={[styles.closeButton, { marginBottom: 15 }]} onPress={() => { setFocus(false); updateRangementTasks(tasks_list, setShouldSave); setLoading(true) }}><Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/remove.png')} /></Pressable>
                             <View style={{ flexDirection: "row", margin: 10 }}>
                                 <Text>Tache: </Text>
                                 <Text>{currentTask.title}</Text>
@@ -164,8 +168,8 @@ export function RangementScreen({ route }) {
                         </View>
 
                     </Modal>
-                    <View>
-                        <ScrollView style={{ marginBottom: 20, marginTop: 20, alignSelf: "center" }}>
+                    <View style={{ flexDirection: "row" }}>
+                        <ScrollView style={{ marginBottom: 20, marginTop: 20, alignSelf: adminlist.includes(route.params.username) ? "" : "center", flex: adminlist.includes(route.params.username) ? 1 : 0 }}>
                             <Text style={[styles.showPlayers, { height: 30, width: 200, fontWeight: "bold", fontSize: 18 }]}>Taches</Text>
                             {tasks_list.map(r =>
                                 <Pressable key={r.title} onPress={() => { setCurrentTask(r); setFocus(true) }}>
@@ -175,6 +179,24 @@ export function RangementScreen({ route }) {
                             }
                             <View style={{ paddingTop: 50 }}></View>
                         </ScrollView>
+                        {adminlist.includes(route.params.username) ?
+                            <ScrollView style={{ marginBottom: 20, marginTop: 20, flex: 1 }}>
+                                <Text style={[styles.showPlayers, { height: 30, fontWeight: "bold", fontSize: 18, marginLeft: 10 }]}>Personnes libres</Text>
+
+                                {people.map(r => {
+                                    console.log(r)
+                                    if (!r.busy)
+                                        return (
+                                            <View style={{ justifyContent: "center" }}>
+                                                <Text style={[styles.showPlayers, { height: 30, fontWeight: "bold", fontSize: 18, marginLeft: 10 }]}>{r.name}</Text>
+                                            </View>)
+                                }
+                                )
+
+                                }
+                                <View style={{ paddingTop: 150 }}></View>
+
+                            </ScrollView> : null}
                     </View>
                 </View>
             }
