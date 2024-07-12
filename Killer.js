@@ -27,13 +27,12 @@ export function KillerScreen({ route }) {
     const [gameOver, setGameOver] = React.useState(false)
     const [timeAlive, setTimeAlive] = React.useState("")
     const [lifetime, setLifetime] = React.useState("")
-    const [nbMissions, setNbMissions] = React.useState(0)
     const ref = React.useRef(null)
     let missions_list = missions;
     React.useEffect(() => {
         var timer
         if (refresh == true) {
-            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setLifetime, setNbMissions, setPlaying).then(start => {
+            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setLifetime, setPlaying).then(start => {
                 timer = setInterval(() => {
                     let now = new Date().getTime()
                     let startDate = start * 1000
@@ -98,7 +97,6 @@ export function KillerScreen({ route }) {
                     <ScrollView style={{ height: "100%" }} ref={ref}>
                         <View style={{ flexDirection: "row" }} onLayout={(event) => {
                             const { width, height } = event.nativeEvent.layout;
-                            setViewSize({ width, height });
                         }}>
                             <View style={{ flex: 1, flexDirection: "column", marginTop: 10 }}>
                                 <Text style={{ textAlign: "center", fontSize: 25, fontWeight: "bold" }}>Etat:</Text>
@@ -153,9 +151,10 @@ export function KillerScreen({ route }) {
                                 <Pressable style={[styles.killbutton, { height: 70, justifyContent: "center", marginTop: 30, paddingLeft: 10, paddingRight: 10 }]} onPress={() => {
                                     Alert.alert("Démarrer ?", "", [{
                                         text: "Confirmer", onPress: () => {
-                                            startKiller();
-                                            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setLifetime, setNbMissions, setPlaying)
-                                            setTab({ states: ["résumé", "en cours"], status: "en cours" })
+                                            if (startKiller() == true) {
+                                                fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setLifetime, setPlaying)
+                                                setTab({ states: ["résumé", "en cours"], status: "en cours" })
+                                            }
                                         }
                                     }, { text: "Annuler" }])
                                 }}>
@@ -223,14 +222,14 @@ export function KillerScreen({ route }) {
                                         <View style={{ flex: 1 }}>
                                             <View style={{ width: 100, height: 60, backgroundColor: shouldSave ? "red" : "white", justifyContent: "center", borderRadius: 30, borderWidth: 2, marginLeft: 5, marginBottom: 5 }}>
                                                 <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => {
-                                                    updateMission(missions_list, setRefresh, setShouldSave);
                                                     let nb_missions = missions_list.length
                                                     for (let index = 0; index < missions_list.length; index++) {
                                                         if (missions_list[index].title == "") {
                                                             nb_missions--;
                                                         }
                                                     }
-                                                    setMotivText(nb_missions + "/25")
+                                                    updateMission(missions_list, setRefresh, setShouldSave);
+                                                    setMotivText(nb_missions + "/" + players.everyone.length)
                                                 }
                                                 }>
                                                     <Text>Sauvegarder</Text>
@@ -398,6 +397,8 @@ export function KillerScreen({ route }) {
                                                     Alert.alert("Confirmer ?", "Cette action est définitive", [{
                                                         text: "Confirmer", onPress: () => {
                                                             endKiller(setTab);
+                                                            fetchKiller(route.params.username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setLifetime, setPlaying)
+                                                            setRefresh(true);
                                                         }
                                                     }, { text: "Annuler" }])
                                                 }}>

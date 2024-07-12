@@ -639,7 +639,7 @@ export async function fetchAthletes() {
     return all_players
 }
 
-export async function fetchKiller(username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setLifetime, setNbMissions, setPlaying) {
+export async function fetchKiller(username, setKills, setAlive, setMission, setTarget, setTab, setMissionAsRef, setMotivText, setPlayers, setGameOver, setLifetime, setPlaying) {
     let start = fetch("https://jo.pierrickperso.ddnsfree.com/killer-info/" + username).then(response => {
         if (response.ok) {
             return response.json()
@@ -677,7 +677,6 @@ export async function fetchKiller(username, setKills, setAlive, setMission, setT
                 }
                 else {
                     setPlaying(data["is_playing"])
-                    setNbMissions(data["missions"])
                     setMotivText(data["missions"] + "/" + data["participants"].length)
                 }
                 setMission(data["how_to_kill"])
@@ -699,7 +698,7 @@ export async function fetchKiller(username, setKills, setAlive, setMission, setT
             setMotivText(nb_missions + "/" + data["participants"].length)
             if (data["started"]) {
                 setTab({ states: ["people", "kills"], status: "people" })
-                let players = { left: [], middle: [], right: [] }
+                let players = { left: [], middle: [], right: [], everyone: [] }
                 for (let index = 0; index < data["participants"].length; index++) {
                     let player = data["participants"][index]
                     if (index % 3 == 0) {
@@ -711,6 +710,7 @@ export async function fetchKiller(username, setKills, setAlive, setMission, setT
                     else if (index % 3 == 2) {
                         players["right"].push({ name: player["name"], mission: player["how_to_kill"], alive: player["is_alive"], death: player["is_alive"] == false ? player["death"] : "" })
                     }
+                    players["everyone"].push({ name: player["name"], mission: player["how_to_kill"], alive: player["is_alive"], death: player["is_alive"] == false ? player["death"] : "" })
                 }
                 setPlayers(players)
             }
@@ -751,14 +751,16 @@ export function updateRangementTasks(tasks_list, setShouldSave) {
 }
 
 export function startKiller() {
-    fetch("https://jo.pierrickperso.ddnsfree.com/killer-start", { method: "POST", body: JSON.stringify({ "version": version }) }).then(res => {
+    let ok = fetch("https://jo.pierrickperso.ddnsfree.com/killer-start", { method: "POST", body: JSON.stringify({ "version": version }) }).then(res => {
         if (res.status == 200) {
+            return true
         }
         else {
             alert("Couldn't start killer!");
+            return false
         }
     }).catch(err => console.log(err, "start killer"));
-
+    return ok
 }
 
 export function toggleKillerRegister(username, playing, setPlaying) {
@@ -790,9 +792,9 @@ export function kill(personToKill, giveCredit, counterKill, setFocus) {
 }
 
 export function endKiller(setTab) {
-    fetch("https://jo.pierrickperso.ddnsfree.com/killer-end/", { method: "POST", body: JSON.stringify({ "version": version }) }).then(res => {
+    fetch("https://jo.pierrickperso.ddnsfree.com/killer-end", { method: "POST", body: JSON.stringify({ "version": version }) }).then(res => {
         if (res.status == 200) {
-            setTab({ states: ["results"], status: "results" });
+            setTab({ states: ["results", "people"], status: "results" });
         }
     }).catch(err => console.log(err, "in end killer"));
 

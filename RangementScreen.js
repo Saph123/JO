@@ -1,7 +1,7 @@
 import styles from "./style.js";
 import * as React from 'react';
 import { View, Pressable, Image, ScrollView, Text, TextInput, ActivityIndicator, Modal } from 'react-native';
-import { lutImg, vibrateLight, fetchRangement, updateRangementTasks, personView } from './utils.js';
+import { lutImg, vibrateLight, fetchRangement, updateRangementTasks } from './utils.js';
 import { adminlist } from "./global.js";
 export function RangementScreen({ route }) {
     const [loading, setLoading] = React.useState(true)
@@ -136,13 +136,18 @@ export function RangementScreen({ route }) {
                                 {displayState ? <Text style={{ alignSelf: "center", marginRight: 10 }}>État: {currentTask.state == 0 ? "À faire" : currentTask.state == 1 ? "En cours" : "Fini"}</Text> : <Text style={{ alignSelf: "center", marginRight: 10 }}>État: {currentTask.state == 0 ? "À faire" : currentTask.state == 1 ? "En cours" : "Fini"}</Text>}
                                 <View style={{ marginTop: 10 }}>
                                     {currentTask.state == 0 ?
-                                        <Pressable style={{ flexDirection: "row" }} onPressIn={() => { console.log(currentTask); currentTask.state = 1; setDisplayState(false) }} onPressOut={() => { setDisplayState(true) }}>
+                                        <Pressable style={{ flexDirection: "row" }} onPressIn={() => { currentTask.state = 1; setDisplayState(false) }} onPressOut={() => { setDisplayState(true) }}>
                                             <Text style={{ alignSelf: "center" }}>Commencer </Text><Image style={{ transform: [{ rotate: '90deg' }] }} source={require('./assets/simpleplus.png')} ></Image>
                                         </Pressable>
                                         :
                                         <Pressable onPressIn={() => { currentTask.state == 1 ? currentTask.state = 2 : currentTask.state = 1; setDisplayState(false) }} onPressOut={() => { setDisplayState(true) }}>
                                             {currentTask.state == 1 ? <View style={{ flexDirection: "row" }}><Text style={{ alignSelf: "center" }}>Terminer </Text><View style={{ width: 22, height: 22, borderRadius: 5, borderWidth: 1, marginRight: 5 }}></View></View> : null}
                                         </Pressable>
+                                    }
+                                    {currentTask.state == 2 && adminlist.includes(route.params.username) ?
+                                        <Pressable style={{ flexDirection: "row" }} onPressIn={() => { currentTask.state = 0; setDisplayState(false) }} onPressOut={() => { setDisplayState(true) }}>
+                                            <Text style={{ alignSelf: "center" }}>Recommencer </Text><Image source={require('./assets/goback.png')} ></Image>
+                                        </Pressable> : null
                                     }
                                 </View>
                             </View>
@@ -182,9 +187,7 @@ export function RangementScreen({ route }) {
                         {adminlist.includes(route.params.username) ?
                             <ScrollView style={{ marginBottom: 20, marginTop: 20, flex: 1 }}>
                                 <Text style={[styles.showPlayers, { height: 30, fontWeight: "bold", fontSize: 18, marginLeft: 10 }]}>Personnes libres</Text>
-
                                 {people.map(r => {
-                                    console.log(r)
                                     if (!r.busy)
                                         return (
                                             <View style={{ justifyContent: "center" }}>
@@ -195,7 +198,6 @@ export function RangementScreen({ route }) {
 
                                 }
                                 <View style={{ paddingTop: 150 }}></View>
-
                             </ScrollView> : null}
                     </View>
                 </View>
