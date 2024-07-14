@@ -1,5 +1,4 @@
 import styles from "./style";
-import { useNavigation } from '@react-navigation/native';
 import { View, ActivityIndicator, ScrollView, TextInput, Text, Image, Modal, Pressable, Alert, Dimensions, ImageBackground } from 'react-native';
 import * as React from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';

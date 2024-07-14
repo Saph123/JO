@@ -1,8 +1,10 @@
 import styles from "./style.js";
 import * as React from 'react';
-import { View, Pressable, Image, ScrollView, Text, TextInput, ActivityIndicator, Modal } from 'react-native';
-import { lutImg, vibrateLight, fetchRangement, updateRangementTasks } from './utils.js';
+import { View, Pressable, Image, ScrollView, Text, TextInput, ActivityIndicator, Modal, Dimensions, ImageBackground } from 'react-native';
+import { lutImg, vibrateLight, fetchRangement, updateRangementTasks, updateTask, fetch_sport_results } from './utils.js';
 import { adminlist } from "./global.js";
+import { result_view } from "./trace.js";
+
 export function RangementScreen({ route }) {
     const [loading, setLoading] = React.useState(true)
     const [firstime, setFirstTime] = React.useState(true)
@@ -14,8 +16,14 @@ export function RangementScreen({ route }) {
     const [focus, setFocus] = React.useState(false)
     const [displayPoints, setDisplayPoints] = React.useState(true)
     const [displayState, setDisplayState] = React.useState(true)
+    const [year, setYear] = React.useState(2024);
+    const [results, setResults] = React.useState({ "1": {}, "2": {}, "3": {} });
     let tasks_list = tasks;
 
+
+    const dimensions = Dimensions.get('window');
+    const imageHeight = dimensions.height * .75;
+    const imageWidth = dimensions.width;
 
     React.useEffect(() => {
         if (loading) {
@@ -23,6 +31,16 @@ export function RangementScreen({ route }) {
                 r.tasks.sort((a, b) => a.state - b.state);
                 setTasks(r.tasks)
                 setPeople(r.Players)
+                console.log(r)
+                if (r.done == true) {
+                    if (adminlist.includes(route.params.username)) {
+                        setTab({ states: ["résumé", "results", "modif"], status: "results" })
+                    }
+                    else {
+                        setTab({ states: ["résumé", "results"], status: "results" })
+                    }
+                    fetch_sport_results("Rangement", setResults);
+                }
             }
             )
             setLoading(false);
@@ -121,86 +139,115 @@ export function RangementScreen({ route }) {
                     </View>
                 </View>
                 :
-                <View>
-                    <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={focus} style={{ paddingTop: "30%" }}>
-                        <View style={[styles.matchZoomView, { minHeight: 10 }]}>
-                            <Pressable style={[styles.closeButton, { marginBottom: 15 }]} onPress={() => { setFocus(false); updateRangementTasks(tasks_list, setShouldSave); setLoading(true) }}><Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/remove.png')} /></Pressable>
-                            <View style={{ flexDirection: "row", margin: 10 }}>
-                                <Text>Tache: </Text>
-                                <Text>{currentTask.title}</Text>
-                            </View>
-                            <View style={{ margin: 10 }}>
-                                {displayState ? <Text style={{ alignSelf: "center", marginRight: 10 }}>État: {currentTask.state == 0 ? "À faire" : currentTask.state == 1 ? "En cours" : "Fini"}</Text> : <Text style={{ alignSelf: "center", marginRight: 10 }}>État: {currentTask.state == 0 ? "À faire" : currentTask.state == 1 ? "En cours" : "Fini"}</Text>}
-                                <View style={{ marginTop: 10 }}>
-                                    {currentTask.state == 0 ?
-                                        <Pressable style={{ flexDirection: "row" }} onPressIn={() => { currentTask.state = 1; setDisplayState(false) }} onPressOut={() => { setDisplayState(true) }}>
-                                            <Text style={{ alignSelf: "center" }}>Commencer </Text><Image style={{ transform: [{ rotate: '90deg' }] }} source={require('./assets/simpleplus.png')} ></Image>
-                                        </Pressable>
-                                        :
-                                        <Pressable onPressIn={() => { currentTask.state == 1 ? currentTask.state = 2 : currentTask.state = 1; setDisplayState(false) }} onPressOut={() => { setDisplayState(true) }}>
-                                            {currentTask.state == 1 ? <View style={{ flexDirection: "row" }}><Text style={{ alignSelf: "center" }}>Terminer </Text><View style={{ width: 22, height: 22, borderRadius: 5, borderWidth: 1, marginRight: 5 }}></View></View> : null}
-                                        </Pressable>
-                                    }
-                                    {currentTask.state == 2 && adminlist.includes(route.params.username) ?
-                                        <Pressable style={{ flexDirection: "row" }} onPressIn={() => { currentTask.state = 0; setDisplayState(false) }} onPressOut={() => { setDisplayState(true) }}>
-                                            <Text style={{ alignSelf: "center" }}>Recommencer </Text><Image source={require('./assets/goback.png')} ></Image>
-                                        </Pressable> : null
-                                    }
+                tabs.status == "résumé" ?
+                    <View>
+                        <Modal
+                            animationType="slide"
+                            transparent={true}
+                            visible={focus} style={{ paddingTop: "30%" }}>
+                            <View style={[styles.matchZoomView, { minHeight: 10 }]}>
+                                <Pressable style={[styles.closeButton, { marginBottom: 15 }]} onPress={() => { setFocus(false); updateTask(currentTask, setShouldSave); setLoading(true) }}><Image style={{ alignSelf: "center", marginVertical: 4 }} resizeMode="cover" resizeMethod="resize" source={require('./assets/remove.png')} /></Pressable>
+                                <View style={{ flexDirection: "row", margin: 10 }}>
+                                    <Text>Tache: </Text>
+                                    <Text>{currentTask.title}</Text>
                                 </View>
-                            </View>
-                            {currentTask.state > 0 ?
-                                <View>
-                                    <View>
-                                        <View style={{ borderWidth: 5, borderRadius: 5, marginBottom: 10, width: 250 }}>
-                                            <Text style={{ alignSelf: "center", fontWeight: "bold", fontSize: 18, marginVertical: 3 }}>Participants</Text>
-                                        </View>
+                                <View style={{ margin: 10 }}>
+                                    {displayState ? <Text style={{ alignSelf: "center", marginRight: 10 }}>État: {currentTask.state == 0 ? "À faire" : currentTask.state == 1 ? "En cours" : "Fini"}</Text> : <Text style={{ alignSelf: "center", marginRight: 10 }}>État: {currentTask.state == 0 ? "À faire" : currentTask.state == 1 ? "En cours" : "Fini"}</Text>}
+                                    <View style={{ marginTop: 10 }}>
+                                        {currentTask.state == 0 ?
+                                            <Pressable style={{ flexDirection: "row" }} onPressIn={() => { currentTask.state = 1; setDisplayState(false) }} onPressOut={() => { setDisplayState(true) }}>
+                                                <Text style={{ alignSelf: "center" }}>Commencer </Text><Image style={{ transform: [{ rotate: '90deg' }] }} source={require('./assets/simpleplus.png')} ></Image>
+                                            </Pressable>
+                                            :
+                                            <Pressable onPressIn={() => { currentTask.state == 1 ? currentTask.state = 2 : currentTask.state = 1; setDisplayState(false) }} onPressOut={() => { setDisplayState(true) }}>
+                                                {currentTask.state == 1 ? <View style={{ flexDirection: "row" }}><Text style={{ alignSelf: "center" }}>Terminer </Text><View style={{ width: 22, height: 22, borderRadius: 5, borderWidth: 1, marginRight: 5 }}></View></View> : null}
+                                            </Pressable>
+                                        }
+                                        {currentTask.state == 2 && adminlist.includes(route.params.username) ?
+                                            <Pressable style={{ flexDirection: "row" }} onPressIn={() => { currentTask.state = 0; setDisplayState(false) }} onPressOut={() => { setDisplayState(true) }}>
+                                                <Text style={{ alignSelf: "center" }}>Recommencer </Text><Image source={require('./assets/goback.png')} ></Image>
+                                            </Pressable> : null
+                                        }
                                     </View>
-                                    <ScrollView style={{ maxHeight: 150 }}>
-                                        {people.map(r =>
-                                            <View style={{ flexDirection: "row", justifyContent: "space-around", marginBottom: 5 }}>
-                                                <Text style={{ height: 30, width: 100, fontWeight: "bold", fontSize: 18 }}>{r.name}</Text>
-                                                <Pressable onPress={() => { currentTask.participants.includes(r.name) ? currentTask.participants.pop(r.name) : currentTask.participants.push(r.name); setDisplayState(false) }} onPressOut={() => { setDisplayState(true) }} style={{ width: 22, height: 22, borderRadius: 5, borderWidth: 1, marginRight: 5 }}>
-                                                    {currentTask.participants.includes(r.name) ? <Image source={require("./assets/check.png")}></Image> : null}
-                                                </Pressable>
-                                            </View>
-                                        )}
-                                    </ScrollView>
                                 </View>
-                                : null}
-                        </View>
+                                {currentTask.state > 0 ?
+                                    <View>
+                                        <View>
+                                            <View style={{ borderWidth: 5, borderRadius: 5, marginBottom: 10, width: 250 }}>
+                                                <Text style={{ alignSelf: "center", fontWeight: "bold", fontSize: 18, marginVertical: 3 }}>Participants</Text>
+                                            </View>
+                                        </View>
+                                        <ScrollView style={{ maxHeight: 150 }}>
+                                            {people.map(r =>
+                                                <View key={r.name} style={{ flexDirection: "row", justifyContent: "space-around", marginBottom: 5 }}>
+                                                    <Text style={{ height: 30, width: 100, fontWeight: "bold", fontSize: 18 }}>{r.name}</Text>
+                                                    <Pressable onPress={() => { currentTask.participants.includes(r.name) ? currentTask.participants.pop(r.name) : currentTask.participants.push(r.name); setDisplayState(false) }} onPressOut={() => { setDisplayState(true) }} style={{ width: 22, height: 22, borderRadius: 5, borderWidth: 1, marginRight: 5 }}>
+                                                        {currentTask.participants.includes(r.name) ? <Image source={require("./assets/check.png")}></Image> : null}
+                                                    </Pressable>
+                                                </View>
+                                            )}
+                                        </ScrollView>
+                                    </View>
+                                    : null}
+                            </View>
 
-                    </Modal>
-                    <View style={{ flexDirection: "row" }}>
-                        <ScrollView style={{ marginBottom: 20, marginTop: 20, alignSelf: adminlist.includes(route.params.username) ? "" : "center", flex: adminlist.includes(route.params.username) ? 1 : 0 }}>
-                            <Text style={[styles.showPlayers, { height: 30, width: 200, fontWeight: "bold", fontSize: 18 }]}>Taches</Text>
-                            {tasks_list.map(r =>
-                                <Pressable key={r.title} onPress={() => { setCurrentTask(r); setFocus(true) }}>
-                                    <Text key={r.title} style={{ backgroundColor: r.state == 1 ? "orange" : r.state == 2 ? "green" : "lightgrey", minHeight: 30, width: 200, textAlignVertical: "center", textAlign: "left", padding: 5, paddingRight: 35, borderWidth: 1, borderColor: "#E0E0E0", marginLeft: 5 }}>{r.title}</Text>
-                                </Pressable>
-                            )
-                            }
-                            <View style={{ paddingTop: 50 }}></View>
-                        </ScrollView>
-                        {adminlist.includes(route.params.username) ?
-                            <ScrollView style={{ marginBottom: 20, marginTop: 20, flex: 1 }}>
-                                <Text style={[styles.showPlayers, { height: 30, fontWeight: "bold", fontSize: 18, marginLeft: 10 }]}>Personnes libres</Text>
-                                {people.map(r => {
-                                    if (!r.busy)
-                                        return (
-                                            <View style={{ justifyContent: "center" }}>
-                                                <Text style={[styles.showPlayers, { height: 30, fontWeight: "bold", fontSize: 18, marginLeft: 10 }]}>{r.name}</Text>
-                                            </View>)
-                                }
+                        </Modal>
+                        <View style={{ flexDirection: "row" }}>
+                            <ScrollView style={{ marginBottom: 20, marginTop: 20, alignSelf: adminlist.includes(route.params.username) ? "" : "center", flex: adminlist.includes(route.params.username) ? 1 : 0 }}>
+                                <Text style={[styles.showPlayers, { height: 30, width: 200, fontWeight: "bold", fontSize: 18 }]}>Taches</Text>
+                                {tasks_list.map(r =>
+                                    <Pressable key={r.title} onPress={() => { setCurrentTask(r); setFocus(true) }}>
+                                        <Text key={r.title} style={{ backgroundColor: r.state == 1 ? "orange" : r.state == 2 ? "green" : "lightgrey", minHeight: 30, width: 200, textAlignVertical: "center", textAlign: "left", padding: 5, paddingRight: 35, borderWidth: 1, borderColor: "#E0E0E0", marginLeft: 5 }}>{r.title}</Text>
+                                    </Pressable>
                                 )
-
                                 }
-                                <View style={{ paddingTop: 150 }}></View>
-                            </ScrollView> : null}
+                                <View style={{ paddingTop: 50 }}></View>
+                            </ScrollView>
+                            {adminlist.includes(route.params.username) ?
+                                <ScrollView style={{ marginBottom: 20, marginTop: 20, flex: 1 }}>
+                                    <Text style={[styles.showPlayers, { height: 30, fontWeight: "bold", fontSize: 18, marginLeft: 10 }]}>Personnes libres</Text>
+                                    {people.map(r => {
+                                        if (!r.busy)
+                                            return (
+                                                <View key={r.name} style={{ justifyContent: "center" }}>
+                                                    <Text key={r.name} style={[styles.showPlayers, { height: 30, fontWeight: "bold", fontSize: 18, marginLeft: 10 }]}>{r.name}</Text>
+                                                </View>)
+                                    }
+                                    )
+
+                                    }
+                                    <View style={{ paddingTop: 150 }}></View>
+                                </ScrollView> : null}
+                        </View>
                     </View>
-                </View>
+                    :
+                    <ImageBackground style={{ width: imageWidth, height: imageHeight }} source={require('./assets/podium3.png')}>
+                        <View style={{ flex: 2 }}>
+                            <View style={{ flexDirection: "row", alignSelf: "center", width: "100%", marginTop: 22 }}>
+                                <Pressable style={({ pressed }) => [{ opacity: (year - 1) in results["1"] ? pressed ? 0.2 : 1 : 0 }]} onPress={() => { if ((year - 1) in results["1"]) setYear(year - 1) }}>
+                                    <Image source={require('./assets/arrow_left.png')} />
+                                </Pressable>
+                                <View style={{ flex: 1 }}>
+                                    <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/calendar2.png')} />
+                                    <Text style={{ textAlign: "center", fontWeight: "bold", fontSize: 30, marginTop: "-40%" }}>{year}</Text>
+                                </View>
+                                <Pressable style={({ pressed }) => [{ opacity: (year + 1) in results["1"] ? pressed ? 0.2 : 1 : 0 }]} onPress={() => { if ((year + 1) in results["1"]) setYear(year + 1) }}>
+                                    <Image source={require('./assets/arrow_right.png')} />
+                                </Pressable>
+                            </View>
+                        </View>
+                        <View style={{ flex: 10, flexDirection: "row", alignSelf: "center", width: "100%" }}>
+                            <View style={{ flex: 1, flexDirection: "row", marginTop: "5%", justifyContent: "center" }}>
+                                {year in results["2"] ? results["2"][year].map(r => result_view(r)) : <Text></Text>}
+                            </View>
+                            <View style={{ flex: 1, flexDirection: "row", marginTop: "-5%", justifyContent: "center" }}>
+                                {year in results["1"] ? results["1"][year].map(r => result_view(r)) : <Text></Text>}
+                            </View>
+                            <View style={{ flex: 1, flexDirection: "row", marginTop: "7%", justifyContent: "center" }}>
+                                {year in results["3"] ? results["3"][year].map(r => result_view(r)) : <Text></Text>}
+                            </View>
+                        </View>
+                    </ImageBackground>
             }
         </View>
     )

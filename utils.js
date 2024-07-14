@@ -750,6 +750,19 @@ export function updateRangementTasks(tasks_list, setShouldSave) {
 
 }
 
+export function updateTask(task, setShouldSave) {
+    fetch("https://jo.pierrickperso.ddnsfree.com/update-task", { method: "POST", body: JSON.stringify({ "version": version, "task": task }) }).then(res => {
+        if (res.status == 200) {
+            alert("Saved", "Saved to server!", ["Ok"])
+            setShouldSave(false)
+        }
+        else {
+            alert("Wrong login or password!");
+        }
+    }).catch(err => console.log(err, "in update task"));
+
+}
+
 export function startKiller() {
     let ok = fetch("https://jo.pierrickperso.ddnsfree.com/killer-start", { method: "POST", body: JSON.stringify({ "version": version }) }).then(res => {
         if (res.status == 200) {

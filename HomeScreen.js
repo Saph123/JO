@@ -194,7 +194,7 @@ export function HomeScreen({ route, navigation }) {
                 }}
                 />
                 <Text style={{ fontWeight: "bold" }}>Tu dois te connecter d'abord!</Text>
-                <Text style={{ fontWeight: "bold" }}>Demande à Max tes identifiants</Text>
+                <Text style={{ fontWeight: "bold" }}>Demande tes identifiants à Max, Antoine ou Pierrick</Text>
                 <Pressable style={styles.loginbutton}
                     onPress={() => { vibrateLight(); navigation.navigate('LoginScreen', { planning: planning }) }}
                 >
