@@ -62,17 +62,20 @@ export function pushAnnonce(annonce) {
 
 
 export function firstDay(secondsleft, setSecondsleft, navigation, username, all_players, annonce, setAnnonce, edit, setEdit, planning) {
-    var startEvent = getNextEventseconds(planning)
+    console.log(planning)
+    var startEvent = getNextEventseconds(planning);
     setSecondsleft(startEvent.time);
     return (
         <View key={secondsleft}>
-            {secondsleft < 0 ? <View></View> : <View><Text style={{ alignSelf: "center" }}>{"Soirée d'ouverture dans :"}</Text><CountDown
+            {secondsleft < 0 ? <View></View> : <View><Text style={{fontSize:24, textAlign: "center" }}>{"Soirée d'ouverture dans :"}{'\n'}{countdown_homemade(secondsleft)}</Text>
+            {/* <CountDown
                 style={{ color: "black" }}
                 digitStyle={{ backgroundColor: "#FF8484" }}
                 until={secondsleft}
                 onFinish={() => { setSecondsleft(0); setTimeout(() => setSecondsleft(-1), 1000 * 5 * 60 * 60) }}
                 size={20}
-            /></View>}
+            /> */}
+            </View>}
             <View key={"details"} style={{ justifyContent: "center" }}>
                 <Text style={{ textAlign: "center", fontSize: 24, fontWeight: "bold" }}> BIENVENUE!</Text>
                 <Text style={{ textAlign: "center", fontSize: 18 }}>1605 Chemin des Pierres, 38440 Meyssiez, France</Text>
@@ -477,8 +480,28 @@ export function addth(rank) {
 
     }
 }
-
-
+function secondsToDhms(seconds) {
+    seconds = Number(seconds);
+    var d = Math.floor(seconds / (3600*24));
+    var h = Math.floor(seconds % (3600*24) / 3600);
+    var m = Math.floor(seconds % 3600 / 60);
+    var s = Math.floor(seconds % 60);
+    
+    return {days:d, hours:h, mins:m, seconds:s};
+    }
+export function countdown_homemade(secondsleft){
+    dhms = secondsToDhms(secondsleft);
+    const zeroPad = (num, places) => String(num).padStart(places, '0')
+            // {/* {dhms.hours}{dhms.mins}{dhms.seconds} */}
+    return <View>
+        <View style={{flex:1, minHeight:50, flexDirection:'row', justifyContent:'space-evenly'}}>
+        <View style={{width:60, height:60, borderWidth:4, borderColor:'black', borderRadius:40}}><Text style={{flex:1, fontSize:24, fontWeight:'bold', textAlignVertical:'center', textAlign:'center', justifyContent:'center'}}>{zeroPad(dhms.days, 2)}J</Text></View>
+        <View style={{width:60, height:60, borderWidth:4, borderColor:'black', borderRadius:40}}><Text style={{flex:1, fontSize:24, fontWeight:'bold', textAlignVertical:'center', textAlign:'center', justifyContent:'center'}}>{zeroPad(dhms.hours, 2)}H</Text></View>
+        <View style={{width:60, height:60, borderWidth:4, borderColor:'black', borderRadius:40}}><Text style={{flex:1, fontSize:24, fontWeight:'bold', textAlignVertical:'center', textAlign:'center', justifyContent:'center'}}>{zeroPad(dhms.mins, 2)}M</Text></View>
+        <View style={{width:60, height:60, borderWidth:4, borderColor:'black', borderRadius:40}}><Text style={{flex:1, fontSize:24, fontWeight:'bold', textAlignVertical:'center', textAlign:'center', justifyContent:'center'}}>{zeroPad(dhms.seconds, 2)}S</Text></View>
+        </View>
+        </View>
+}
 export function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentSport, navigateTo = 'SportDetails', timeBegin = new Date("9999-12-31T23:59:99+02:00"), summary = false) {
     let now = new Date()
     let planning = new Planning()
