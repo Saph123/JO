@@ -181,7 +181,12 @@ export function KillerScreen({ route }) {
                                                             <Text key={temp_mission} >{temp_mission}</Text>
                                                         </Pressable>
                                                         :
-                                                        <TextInput onChangeText={text => { setTempMission(text); setModifyingMission(true) }} onEndEditing={() => { setModifyingMission(false) }} autoFocus={true} placeholder="Tapez ici" key={currentMisson.title} style={{ minHeight: 90, width: 200, textAlignVertical: "center", textAlign: "left", padding: 5, paddingRight: 35, borderWidth: 1, borderColor: "#E0E0E0", marginLeft: 5, borderRadius: 10 }}>{currentMisson.title}</TextInput>
+                                                        <TextInput multiline={true} numberOfLines={5} autoFocus={true} placeholder="Tapez ici" key={currentMisson.title} onChangeText={text => {
+                                                            setTempMission(text);
+                                                            setModifyingMission(true)
+                                                        }} onEndEditing={
+                                                            () => { setModifyingMission(false) }
+                                                        } style={{ minHeight: 90, width: 200, textAlignVertical: "center", textAlign: "left", padding: 5, paddingRight: 35, borderWidth: 1, borderColor: "#E0E0E0", marginLeft: 5, borderRadius: 10 }}>{currentMisson.title}</TextInput>
                                                 }
                                             </View>
                                             <View style={{ flex: 1, flexDirection: "row" }}>

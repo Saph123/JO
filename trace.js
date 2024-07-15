@@ -62,12 +62,13 @@ export const Trace = (props) => {
     const [year, setYear] = React.useState(2023);
     let arbitres = props.status["arbitre"]
     const [appended, setAppended] = React.useState(false)
-    
+
     React.useEffect(() => {
         setloading(false)
-        if (!appended)
-        {
-            arbitres.push("")
+        if (!appended) {
+            if (arbitres != "error") {
+                arbitres.push("")
+            }
             setAppended(true)
         }
 
@@ -127,9 +128,11 @@ export const Trace = (props) => {
                         <View>
                             <Text style={[styles.showPlayers, { height: 60, minWidth: 20 }]}>Arbitres</Text>
                             {
+                                arbitres != "error" ?
                                 arbitres.map(r =>
-                                <TextInput key={r} onChangeText={(text) => { r = text; arbitres.pop(r); arbitres.push(text)}} style={[styles.showPlayers, { minWidth: 20, borderRadius: 5 }]}>{r}</TextInput>
-                            )
+                                    <TextInput key={r} onChangeText={(text) => { r = text; arbitres.pop(r); arbitres.push(text) }} style={[styles.showPlayers, { minWidth: 20, borderRadius: 5 }]}>{r}</TextInput>
+                                )
+                                : <View></View>
                             }
                         </View>
                         <View style={{ minWidth: 60, height: 60, backgroundColor: "lightgrey", justifyContent: "center" }}>
