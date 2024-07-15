@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, Image, Pressable } from 'react-native';
+import { View, Text, Image, Pressable, LogBox } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -19,7 +19,7 @@ import { ShifumiScreen } from "./ShifumiScreen.js";
 import { KillerScreen } from "./Killer.js";
 import { RangementScreen } from './RangementScreen.js';
 import { SportContext, ArbitreContext, ChatContext, calcInitLines, adminlist } from "./global.js"
-
+LogBox.ignoreAllLogs();
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
         shouldShowAlert: true,
