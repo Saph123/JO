@@ -75,7 +75,6 @@ function App() {
             setUsername(r)
         });
         fetchPlanning().then(response => {
-            console.log(response);
             setPlanning(new Planning(response));
             setLoad(false) ;
 
