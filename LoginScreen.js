@@ -24,7 +24,6 @@ export function LoginScreen({ route, navigation }) {
     const [events, setEvents] = React.useState([]);
     const [eventsDone, setEventsDone] = React.useState([]);
     const [eventsInProgress, setEventsInProgess] = React.useState([]);
-    const controller = new AbortController()
     // 5 second timeout:
     let now = new Date()
     React.useEffect(() => {
@@ -64,7 +63,6 @@ export function LoginScreen({ route, navigation }) {
         getValueFor("password").then(r => setpassword(r));
         setLoading(false);
     }, []);
-    const timeoutId = setTimeout(() => controller.abort(), 5000)
     if (loading) {
         return (<ActivityIndicator size="large" color="#000000" />)
     }
@@ -82,7 +80,7 @@ export function LoginScreen({ route, navigation }) {
                     <View style={{ margin: 30, flexDirection: "row" }}>
 
                         <Pressable style={{ width: 60, height: 30, borderRadius: 15, backgroundColor: "#ff8484", justifyContent: "center" }} title="Log in" onPress={() => {
-                            fetch("https://jo.pierrickperso.ddnsfree.com/login", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "username": userName, "password": password }) }).then(r => {
+                            fetch("https://jo.pierrickperso.ddnsfree.com/login", { method: "POST", body: JSON.stringify({ "version": version, "username": userName, "password": password }) }).then(r => {
                                 if (r.status == 200) {
                                     route.params.setUsername(userName);
                                     pushtoken(route.params.pushtoken, userName);
