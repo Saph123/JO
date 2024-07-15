@@ -5,7 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Audio } from 'expo-av';
 import * as Notifications from 'expo-notifications';
-import { getValueFor, lock_unlock, vibrateLight } from './utils.js';
+import { getValueFor, lock_unlock, vibrateLight, fetchPlanning } from './utils.js';
 
 import { HomeScreen } from "./HomeScreen.js";
 import { SummaryScreen } from "./SummaryScreen.js";
@@ -19,6 +19,7 @@ import { ShifumiScreen } from "./ShifumiScreen.js";
 import { KillerScreen } from "./Killer.js";
 import { RangementScreen } from './RangementScreen.js';
 import { SportContext, ArbitreContext, ChatContext, calcInitLines, adminlist } from "./global.js"
+import { Planning } from './planning.js';
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -38,6 +39,7 @@ function App() {
     const [newMessage, setNewMessage] = React.useState(false);
     const [lock, setLock] = React.useState(false);
     const [load, setLoad] = React.useState(true);
+    const [planning, setPlanning] = React.useState(new Planning([]));
 
     const [currentSport, setCurrentSport] = React.useState("Sportname");
     async function playmegaphone() {
@@ -72,6 +74,10 @@ function App() {
         getValueFor("username").then(r => {
             setUsername(r)
         });
+
+        fetchPlanning().then(response => {
+            setPlanning(new Planning(response))
+        })
         calcInitLines().then(r => { setLoad(false) });
     }, [username]);
     if (load) {
@@ -107,12 +113,12 @@ function App() {
                                             <Image style={{ borderRadius: 40, width: 20, height: 20, margin: 30 }} source={require('./assets/megaphone.png')} />
                                         </TouchableOpacity>
                                     </View>)
-                            })} initialParams={{ username: username, refresh: "" }} name="HomeScreen" component={HomeScreen} />
+                            })} initialParams={{ username: username, refresh: "", setPlanning: setPlanning }} name="HomeScreen" component={HomeScreen} />
 
                             <Stack.Screen options={{
                                 title: "Login", headerRight: () => <View style={{ flexDirection: "row", margin: 10 }}><Text style={{ color: "white", marginRight: 20, alignSelf: "center" }}>{username}</Text>
                                 </View>
-                            }} initialParams={{ pushtoken: "", username: username, setUsername: setUsername }} name="LoginScreen" component={LoginScreen} />
+                            }} initialParams={{ pushtoken: "", username: username, setUsername: setUsername, planning: planning }} name="LoginScreen" component={LoginScreen} />
 
                             <Stack.Screen options={({ navigation }) => ({
                                 title: currentSport, headerRight: () =>
