@@ -7,7 +7,6 @@ import * as Notifications from 'expo-notifications';
 import * as SecureStore from 'expo-secure-store';
 import { Planning } from './planning';
 import { version, initialLineNumber, adminlist } from "./global.js"
-import CountDown from 'react-native-countdown-component';
 import { getNextEventseconds } from "./planning";
 import * as Haptics from 'expo-haptics';
 class Liste {
