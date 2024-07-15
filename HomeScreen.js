@@ -28,8 +28,6 @@ export function HomeScreen({ route, navigation }) {
     const chatcontext = React.useContext(ChatContext);
     const [annonce, setAnnonce] = React.useState("")
     const [edit, setEdit] = React.useState(false);
-    const [planning, setPlanning] = React.useState(new Planning([]));
-    const [planningIsFetched, setPlanningIsFetched] = React.useState(false)
     const [all_players, setAllPlayers] = React.useState([[], [], []])
     let now = new Date(Date.now());
     var jeudi = 4;
@@ -76,25 +74,19 @@ export function HomeScreen({ route, navigation }) {
             default:
                 setDisplayDay(jeudi);
         }
-        if (!planningIsFetched) {
-            fetchPlanning().then(response => {
-                setPlanning(new Planning(response))
-                setPlanningIsFetched(true)
-            })
-        }
+
         fetchAthletes().then(response => {
             setAllPlayers(response)
         })
         getValueFor("username").then(r => {
             setusername(r);
-            setLoading(0)
+            setLoading(0);
+            
         }).catch(() => setLoading(0));
-        if (planningIsFetched) {
-            var startEvent = getNextEventseconds(planning)
-            manageEvents(setEventsDone, setCurrentEvents, planning)
-            setSecondsleft(startEvent.time);
-            setNextEvent(startEvent.name);
-        }
+        var startEvent = getNextEventseconds(route.params.planning)
+        manageEvents(setEventsDone, setCurrentEvents, route.params.planning)
+        setSecondsleft(startEvent.time);
+        setNextEvent(startEvent.name);
         chatcontext.setChatName("Home");
         fetchAnnonce(setAnnonce)
         registerForPushNotificationsAsync().then(token => { setExpoPushToken(token); pushtoken(token, username) });
@@ -171,9 +163,13 @@ export function HomeScreen({ route, navigation }) {
             let index = navigation.getState().index
             life(route.params.username, navigation.getState().routes[index].name)
         }, 3000);
-        // setLoading(0);
+        var countdown_interval = setInterval(() => {
+            setSecondsleft(secondsleft - 1);
+        }, 1000);
+        
         return () => {
             clearInterval(chatInterval);
+            clearInterval(countdown_interval);
             clearInterval(life_interval);
             Notifications.removeNotificationSubscription(notificationListener.current);
             Notifications.removeNotificationSubscription(responseListener.current);
@@ -196,7 +192,7 @@ export function HomeScreen({ route, navigation }) {
                 <Text style={{ fontWeight: "bold" }}>Tu dois te connecter d'abord!</Text>
                 <Text style={{ fontWeight: "bold" }}>Demande tes identifiants à Max, Antoine ou Pierrick</Text>
                 <Pressable style={styles.loginbutton}
-                    onPress={() => { vibrateLight(); navigation.navigate('LoginScreen', { planning: planning }) }}
+                    onPress={() => { vibrateLight(); navigation.navigate('LoginScreen', { planning: route.params.planning }) }}
                 >
                     <Text style={styles.texthomebutton}>Login</Text>
                 </Pressable>
@@ -227,12 +223,12 @@ export function HomeScreen({ route, navigation }) {
                             <View key={value} style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
                                 <View style={{ flex: 1 }}>
                                     {
-                                        planning["listeevent"].map(r => {
+                                        route.params.planning["listeevent"].map(r => {
                                             if (r.timeBegin.getDay() == displayDay) {
                                                 if (displayDay == jeudi) {
                                                     {
                                                         return (
-                                                            firstDay(secondsleft, setSecondsleft, navigation, username, all_players, annonce, setAnnonce, edit, setEdit, planning)
+                                                            firstDay(secondsleft, setSecondsleft, navigation, username, all_players, annonce, setAnnonce, edit, setEdit, route.params.planning)
                                                         )
                                                     }
                                                 }
@@ -268,7 +264,7 @@ export function HomeScreen({ route, navigation }) {
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >ShiFUmi</Text>
                 </Pressable> */}
                 <Pressable style={styles.bottomTabs}
-                    onPress={() => { vibrateLight(); navigation.navigate('LoginScreen', { pushtoken: expoPushToken, planning: planning }) }}
+                    onPress={() => { vibrateLight(); navigation.navigate('LoginScreen', { pushtoken: expoPushToken, planning: route.params.planning }) }}
                 >
                     <Image style={{ tintColor: "white", height: 35, marginBottom: 2 }} resizeMode="contain" source={require('./assets/person.png')} />
                     <Text style={{ color: "white", fontSize: 8, alignSelf: "center" }} >Mon profil</Text>
