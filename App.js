@@ -88,7 +88,7 @@ function App() {
         calcInitLines();
         // fetching planning
     }, [username]);
-    if (username == "" || load) {
+    if (load) {
         return (
             <View style={{flex:1, selfAlign:'center', justifyItems:'center'}}><Text>kekw!!!!</Text></View>
         )
