@@ -76,7 +76,7 @@ function App() {
         });
         var planningFetched = false;
         while(!planningFetched){
-
+            console.log("kekos");
             fetchPlanning().then(response => {
                 setPlanning(new Planning(response));
                 setLoad(false) ;
