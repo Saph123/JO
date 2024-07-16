@@ -66,6 +66,7 @@
     "stream-browserify": "^1.0.0",
     "string_decoder": "^0.10.31",
     "superagent": "^9.0.2",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
     "timers-browserify": "^1.0.1",
     "tty-browserify": "^0.0.0",
     "url": "^0.10.3",
