@@ -259,7 +259,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                     setgroups(JSON.parse(JSON.stringify(array_groups)));
                     setmatchesgroup(JSON.parse(JSON.stringify(array_matches_groups)));
                     allok = true;
-                }).catch((err => { console.error("oui", err); allok = false }));
+                }).catch((err => { console.info("oui", err); allok = false }));
             }
             if (status['states'].includes("playoff")) {
                 fetch("https://jo.pierrickperso.ddnsfree.com/teams/" + sportname + "_playoff.json").then(response => response.json()).then(data => {
@@ -451,7 +451,7 @@ export function chatView(text, setChatText, localText, setLocalText, sportname, 
 export function modalChat(value, text, setChatText, localText, setLocalText, sportname, username) {
     return (
         <Modal
-        key="localText"
+            key="localText"
             animationType="slide"
             transparent={false}
             visible={value.chat}
@@ -897,14 +897,19 @@ export function pushChat(sportname, text, username) {
 
 }
 
-export function updateTeams(sport, teams, arbitre) {
+export function updateTeams(sport, teams, arbitres) {
 
     // 5 second timeout:
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
-
+    let arbitres_list = []
+    for (let index in arbitres) {
+        if (arbitres[index].name != "") { 
+            arbitres_list.push(arbitres[index].name)
+        }
+    }
     // // push to server
-    fetch("https://jo.pierrickperso.ddnsfree.com/updateTeams", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sport, "teams": teams, "arbitre": arbitre }) }).then(r => {
+    fetch("https://jo.pierrickperso.ddnsfree.com/updateTeams", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sport, "teams": teams, "arbitre": arbitres_list }) }).then(r => {
         if (r.status == 200) {
             alert("Saved", "Saved to server!", ["Ok"])
         }

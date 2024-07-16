@@ -4,7 +4,7 @@ import { View, TextInput, Text, Pressable, ActivityIndicator } from 'react-nativ
 import { useNavigation } from '@react-navigation/native';
 import { askPushNotif, getOnlinePersons, getValueFor } from "./utils.js";
 
-export function pushNotifScreen() {
+export function PushNotifScreen() {
     const [title, setTitle] = React.useState("Title (doit etre court)");
     const [username, setUsername] = React.useState("");
     const [loading, setLoading] = React.useState(true);

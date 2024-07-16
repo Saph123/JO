@@ -59,6 +59,7 @@ export function SportDetailsScreen({ route }) {
     all_teams.setGroups = setGroups;
     all_teams.setmatchesgroup = setmatchesgroup;
     all_teams.setAuthoVote = setAuthoVote;
+    all_teams.arbitre = status["arbitre"];
     all_teams.status = status;
     all_teams.setStatus = setStatus;
     all_teams.setloading = setloading;

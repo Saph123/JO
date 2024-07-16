@@ -13,7 +13,7 @@ import { LastYearsResultsScreen } from "./LastYearsResultsScreen.js";
 import { SportDetailsScreen } from "./SportDetailsScreen.js";
 import { CanvaScreen } from "./CanvaScreen.js";
 import { ProfilScreen} from './ProfilScreen.js';
-import { pushNotifScreen } from "./PushNotifScreen.js";
+import { PushNotifScreen } from "./PushNotifScreen.js";
 import { LoginScreen } from "./LoginScreen.js";
 import { ShifumiScreen } from "./ShifumiScreen.js";
 import { KillerScreen } from "./Killer.js";
@@ -156,7 +156,7 @@ function App() {
 
                             <Stack.Screen options={() => ({
                                 title: "Notif tool"
-                            })} initialParams={{ username: username }} name="pushNotifScreen" component={pushNotifScreen} />
+                            })} initialParams={{ username: username }} name="pushNotifScreen" component={PushNotifScreen} />
 
                             <Stack.Screen options={() => ({
                                 title: "ShiFuMi"

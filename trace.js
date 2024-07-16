@@ -60,15 +60,20 @@ export const Trace = (props) => {
     const status = props.all_teams.status.status;
     const [loading, setloading] = React.useState(true);
     const [year, setYear] = React.useState(2023);
-    let arbitres = props.status["arbitre"]
+    const [arbitres, setArbitre] = React.useState([])
     const [appended, setAppended] = React.useState(false)
 
     React.useEffect(() => {
         setloading(false)
         if (!appended) {
-            if (arbitres != "error") {
-                arbitres.push("")
+            let tmp_arbitres = []
+            if (props.status["arbitre"] != "error") {
+                for (index in props.status["arbitre"]) {
+                    tmp_arbitres.push({ name: props.status["arbitre"][index] })
+                }
+                tmp_arbitres.push({ name: "" })
             }
+            setArbitre(tmp_arbitres)
             setAppended(true)
         }
 
@@ -129,10 +134,10 @@ export const Trace = (props) => {
                             <Text style={[styles.showPlayers, { height: 60, minWidth: 20 }]}>Arbitres</Text>
                             {
                                 arbitres != "error" ?
-                                arbitres.map(r =>
-                                    <TextInput key={r} onChangeText={(text) => { r = text; arbitres.pop(r); arbitres.push(text) }} style={[styles.showPlayers, { minWidth: 20, borderRadius: 5 }]}>{r}</TextInput>
-                                )
-                                : <View></View>
+                                    arbitres.map(r =>
+                                        <TextInput key={r.name} onChangeText={(text) => { r.name = text }} style={[styles.showPlayers, { minWidth: 20, borderRadius: 5 }]}>{r.name}</TextInput>
+                                    )
+                                    : <View></View>
                             }
                         </View>
                         <View style={{ minWidth: 60, height: 60, backgroundColor: "lightgrey", justifyContent: "center" }}>
