@@ -84,7 +84,7 @@ function App() {
     }, [username]);
     if (username == "" || load) {
         return (
-            <View></View>
+            <View>kekw!!!!</View>
         )
     }
     return (
@@ -135,7 +135,7 @@ function App() {
                                                 <Image style={{ borderRadius: 15, width: 30, height: 30, backgroundColor: "white" }} resizeMethod="auto" resizeMode='cover' source={lock ? require('./assets/lock.png') : require('./assets/unlock.png')} />
                                             </Pressable>
                                         </View> : <View></View>}
-                                        
+
                                         <View style={{ flex: 1, marginRight: 15 }}>
                                             <TouchableOpacity onPress={() => { setArbitre(true) }} onPressOut={() => setTimeout(() => { setArbitre(false) }, 3000)}>
                                                 <Image style={{ borderRadius: 15, width: 30, height: 30 }} source={require('./assets/sifflet.png')} />
