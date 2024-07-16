@@ -61,7 +61,6 @@ export function pushAnnonce(annonce) {
 
 
 export function firstDay(secondsleft, setSecondsleft, navigation, username, all_players, annonce, setAnnonce, edit, setEdit, planning) {
-    console.log(planning)
     var startEvent = getNextEventseconds(planning);
     setSecondsleft(startEvent.time);
     return (

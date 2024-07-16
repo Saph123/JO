@@ -203,7 +203,6 @@ function colorset(localColor, username, x, y, setPatch, patch, lineNb, colNb, se
     // globalpatch = [];
     let localid = Math.floor(y / 10) * cols_number + Math.floor(x / 10);
     if (localColor == "#8B4513") {
-        console.log(localColor);
         localColor = "brown";
     }
 

@@ -31,7 +31,6 @@ export function RangementScreen({ route }) {
                 r.tasks.sort((a, b) => a.state - b.state);
                 setTasks(r.tasks)
                 setPeople(r.Players)
-                console.log(r)
                 if (r.done == true) {
                     if (adminlist.includes(route.params.username)) {
                         setTab({ states: ["résumé", "results", "modif"], status: "results" })
