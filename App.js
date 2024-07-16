@@ -75,7 +75,6 @@ function App() {
             setUsername(r)
         });
         var planningFetched = false;
-        while(!planningFetched){
             console.log("kekos");
             fetchPlanning().then(response => {
                 setPlanning(new Planning(response));
@@ -83,7 +82,6 @@ function App() {
                 planningFetched=true;
             }).catch(r => console.log(r));
             console.log(planningFetched)
-        }
         calcInitLines();
         // fetching planning
     }, [username]);
