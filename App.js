@@ -82,6 +82,7 @@ function App() {
                 setLoad(false) ;
                 planningFetched=true;
                 console.log("done planning");
+                console.log(username, load);
             }).catch(r => console.log(r));
             console.log(planningFetched)
         calcInitLines();
