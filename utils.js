@@ -451,6 +451,7 @@ export function chatView(text, setChatText, localText, setLocalText, sportname, 
 export function modalChat(value, text, setChatText, localText, setLocalText, sportname, username) {
     return (
         <Modal
+        key="localText"
             animationType="slide"
             transparent={false}
             visible={value.chat}
