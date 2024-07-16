@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { View, Pressable, ActivityIndicator, Text, Image } from 'react-native';
-import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
+// import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
 import { modalChat, fetchChat, vibrateLight } from "./utils.js"
 import { paletteColors, ChatContext } from "./global";
 
@@ -76,7 +76,7 @@ export function CanvaScreen({ route }) {
 
             </ChatContext.Consumer>
 
-            <ReactNativeZoomableView
+            {/* <ReactNativeZoomableView
                 renderToHardwareTextureAndroid={true}
 
                 key={'zoom'}
@@ -94,7 +94,7 @@ export function CanvaScreen({ route }) {
                     </View>}
                     {patch.map((r, index) => {
                         if (r != undefined) {
-                            
+
                             return (<View pointerEvents="none" key={r.x + r.y + r.color + new Date() + index}
                             style={{ zIndex: 2000, width: 10, height: 10, position: "absolute", backgroundColor: r.color, top: r.y, left: r.x, borderColor: r.color, borderWidth: 1, shadowOpacity: 0 }}>
                             </View>)
@@ -102,7 +102,7 @@ export function CanvaScreen({ route }) {
                     })}
                     {livepatch.map((r, index) => {
                         if (r != undefined) {
-                            
+
                             return (<View pointerEvents="none" key={r.x + r.y + r.color + new Date() + index}
                             style={{ zIndex: 2000, width: 10, height: 10, position: "absolute", backgroundColor: r.color, top: r.y, left: r.x, borderColor: r.color, borderWidth: 1, shadowOpacity: 0 }}>
                             </View>)
@@ -111,7 +111,7 @@ export function CanvaScreen({ route }) {
                         <View pointerEvents="none" key={"carreselect"} style={{ elevation: 1999, zIndex: 1999, width: 10, height: 10, position: "absolute", backgroundColor: "white", top: coordY, left: coordX, borderColor: "black", borderWidth: 1, opacity: 0.5 }}></View>
 
                 </Pressable>
-            </ReactNativeZoomableView >
+            </ReactNativeZoomableView > */}
             <View pointerEvents="none" style={{ width: "100%", height: 30 }}>
                 <Text pointerEvents="none" style={{ textAlign: "center", color: "black", height: "100%", width: "100%", elevation: 2000, zIndex: 2000, fontSize: 20, flex: 1, margin: 0 }} key={"textname"}>{"(" + (Math.floor(coordX / 10)) + "," + Math.floor(coordY / 10) + ")" + (userId == "Whisky" ? "" : userId)}</Text>
             </View>
