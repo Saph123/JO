@@ -74,11 +74,15 @@ function App() {
         getValueFor("username").then(r => {
             setUsername(r)
         });
-        fetchPlanning().then(response => {
-            setPlanning(new Planning(response));
-            setLoad(false) ;
+        var planningFetched = false;
+        while(!planningFetched){
 
-        })
+            fetchPlanning().then(response => {
+                setPlanning(new Planning(response));
+                setLoad(false) ;
+                planningFetched=true;
+            }).catch(r => alert(r));
+        }
         calcInitLines();
         // fetching planning
     }, [username]);
