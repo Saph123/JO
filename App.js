@@ -84,7 +84,7 @@ function App() {
     }, [username]);
     if (username == "" || load) {
         return (
-            <View>kekw!!!!</View>
+            <View><Text>kekw!!!!</Text></View>
         )
     }
     return (
