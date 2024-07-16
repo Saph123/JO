@@ -77,6 +77,7 @@ function App() {
         var planningFetched = false;
             console.log("kekos");
             fetchPlanning().then(response => {
+                console.log(response);
                 setPlanning(new Planning(response));
                 setLoad(false) ;
                 planningFetched=true;
@@ -87,7 +88,7 @@ function App() {
     }, [username]);
     if (username == "" || load) {
         return (
-            <View><Text>kekw!!!!</Text></View>
+            <View style={{flex:1, selfAlign:'center', justifyItems:'center'}}><Text>kekw!!!!</Text></View>
         )
     }
     return (
