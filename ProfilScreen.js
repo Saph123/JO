@@ -1,7 +1,7 @@
 import styles from "./style.js";
 import * as React from 'react';
 import { View, Text, Image, Pressable } from 'react-native';
-import { getPalmares, lutImg } from "./utils.js";
+import { getPalmares, lutImg, personView } from "./utils.js";
 import { ActivityIndicator } from "react-native";
 import { SportContext } from "./global.js"
 import { ScrollView } from "react-native-gesture-handler";
@@ -25,7 +25,9 @@ export function ProfilScreen({ route }) {
 
                 <SportContext.Consumer>
                     {value =>
+                    <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>{personView(route.params.username, true)}
                         <View key={value} style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', flexDirection: "row" }}>
+                            
                             <View style={{ flex: 1 }}>
                                 {
                                     Object.keys(palmares).map((sport) => {
@@ -76,7 +78,7 @@ export function ProfilScreen({ route }) {
 
                                 </View>
                             </View>
-                        </View>
+                        </View></View>
                     }
                 </SportContext.Consumer>
             </ScrollView>
