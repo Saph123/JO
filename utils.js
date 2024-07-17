@@ -64,7 +64,7 @@ export function firstDay(secondsleft, setSecondsleft, navigation, username, all_
     var startEvent = getNextEventseconds(planning);
     setSecondsleft(startEvent.time);
     return (
-        <View key={secondsleft}>
+        <View key={'firstdayview'}>
             {secondsleft < 0 ?
                 <View></View>
                 :
