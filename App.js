@@ -76,7 +76,6 @@ function App() {
         });
         var planningFetched = false;
             fetchPlanning().then(response => {
-                console.log(response);
                 setPlanning(new Planning(response));
                 setLoad(false) ;
                 planningFetched=true;
@@ -86,7 +85,7 @@ function App() {
     }, [username]);
     if (load) {
         return (
-            <View style={{flex:1, selfAlign:'center', justifyItems:'center'}}><Text>kekw!!!!</Text></View>
+            <View style={{flex:1, selfAlign:'center', justifyItems:'center'}}><Text> Bug loading??</Text></View>
         )
     }
     return (

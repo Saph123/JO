@@ -84,7 +84,7 @@ export function firstDay(secondsleft, setSecondsleft, navigation, username, all_
                 {adminlist.includes(username) && edit ? <TextInput autoFocus={true} multiline={true} style={{ textAlign: "center" }} onChangeText={text => { setAnnonce(text) }} onEndEditing={() => { setEdit(false); pushAnnonce(annonce) }}  >{annonce}</TextInput> : <Text style={{ textAlign: "center" }}> {annonce}</Text>}
             </View>
             <View style={{ marginBottom: 10, marginTop: 50 }}>
-                <Text style={{ fontSize: 20, fontWeight: "bold", textAlign: "center" }}>Athlètes présents cette année:</Text>
+                <Text style={{ fontSize: 20, fontWeight: "bold", textAlign: "center" }}>Les {all_players[0].length + all_players[1].length + all_players[2].length} Athlètes </Text>
             </View>
             <View style={{ flexDirection: "row" }}>
                 {
