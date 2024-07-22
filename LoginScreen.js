@@ -202,7 +202,7 @@ export function LoginScreen({ route, navigation }) {
                                         return (
                                             <SportContext.Consumer key={q}>
                                                 {value => {
-                                                    return eventView(eventsInProgress, eventsDone, r, navigation, value.setCurrentSport, "SportDetails", q.timeBegin, true)
+                                                    return eventView(eventsInProgress, eventsDone, r, navigation, value.setCurrentSport, "SportDetails", q.timeBegin, true, route.params.planning)
                                                 }
                                                 }
                                             </SportContext.Consumer>
@@ -222,7 +222,7 @@ export function LoginScreen({ route, navigation }) {
                                     if (q.eventname == r) {
                                         return (
                                             <SportContext.Consumer key={q}>
-                                                {value => { return eventView(eventsInProgress, eventsDone, r, navigation, value.setCurrentSport, "SportDetails", q.timeBegin, true) }
+                                                {value => { return eventView(eventsInProgress, eventsDone, r, navigation, value.setCurrentSport, "SportDetails", q.timeBegin, true, route.params.planning) }
                                                 }
                                             </SportContext.Consumer>
                                         )

@@ -507,9 +507,8 @@ export function countdown_homemade(secondsleft) {
         </View>
     </View>
 }
-export function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentSport, navigateTo = 'SportDetails', timeBegin = new Date("9999-12-31T23:59:99+02:00"), summary = false) {
+export function eventView(currentEvents, eventsDone, sportname, navigation, setCurrentSport, navigateTo = 'SportDetails', timeBegin = new Date("9999-12-31T23:59:99+02:00"), summary = false, planning = null) {
     let now = new Date()
-    let planning = new Planning()
     if (!summary) {
         return (
 

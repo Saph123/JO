@@ -235,7 +235,7 @@ export function HomeScreen({ route, navigation }) {
                                                 else {
 
                                                     return (
-                                                        eventView(currentEvents, eventsDone, r.eventname, navigation, value.setCurrentSport, r.linksTo, r.timeBegin));
+                                                        eventView(currentEvents, eventsDone, r.eventname, navigation, value.setCurrentSport, r.linksTo, r.timeBegin, false, route.params.planning));
                                                 }
                                             }
                                         })}
