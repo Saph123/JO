@@ -26,6 +26,9 @@
       "package": "JO.apk",
       "googleServicesFile": "./google-services.json"
     },
-    "description": ""
+    "description": "",
+    "plugins": [
+      "expo-secure-store"
+    ]
   }
 }
