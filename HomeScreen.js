@@ -203,10 +203,10 @@ export function HomeScreen({ route, navigation }) {
     return (
         <View style={{ flex: 1, backgroundColor: "black" }}>
             <View style={{ backgroundColor: "black", height: 50, marginTop: 10, flexDirection: "row" }}>
-                <Pressable onPress={() => { vibrateLight(); setDisplayDay(jeudi) }} style={displayDay === jeudi ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay === jeudi ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>18 Juillet</Text></Pressable>
-                <Pressable onPress={() => { vibrateLight(); setDisplayDay(vendredi) }} style={displayDay === vendredi ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay === vendredi ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>19 Juillet</Text></Pressable>
-                <Pressable onPress={() => { vibrateLight(); setDisplayDay(samedi) }} style={displayDay === samedi ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay === samedi ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>20 Juillet</Text></Pressable>
-                <Pressable onPress={() => { vibrateLight(); setDisplayDay(dimanche) }} style={displayDay === dimanche ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay === dimanche ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>21 Juillet</Text></Pressable>
+                <Pressable onPress={() => { vibrateLight(); setDisplayDay(jeudi) }} style={displayDay === jeudi ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay === jeudi ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>10 Juillet</Text></Pressable>
+                <Pressable onPress={() => { vibrateLight(); setDisplayDay(vendredi) }} style={displayDay === vendredi ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay === vendredi ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>11 Juillet</Text></Pressable>
+                <Pressable onPress={() => { vibrateLight(); setDisplayDay(samedi) }} style={displayDay === samedi ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay === samedi ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>12 Juillet</Text></Pressable>
+                <Pressable onPress={() => { vibrateLight(); setDisplayDay(dimanche) }} style={displayDay === dimanche ? styles.dateTabsSelected : styles.dateTabsNotSelected}><Text style={displayDay === dimanche ? styles.dateTextTabs : styles.dateTextTabsNotSelected}>13 Juillet</Text></Pressable>
             </View>
             <View style={{ flex: 15, marginTop: 10, backgroundColor: "white" }}>
 

@@ -201,7 +201,7 @@ export function videoHandler(setVideoVisible, videoVisible, video, videoSource, 
         </Modal>
     )
 }
-export async function fetch_matches(username, setAutho, setStatus, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setRealListe, setSeriesLevel, setModifListe, setBetListe, setLock, setAuthoVote, setVoteListe) {
+export async function fetch_matches(username, setAutho, setStatus, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setRealListe, setSeedingListe, setSeriesLevel, setSeedingLevel, setModifListe, setBetListe, setLock, setAuthoVote, setVoteListe) {
 
 
     let allok = false
@@ -282,7 +282,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                     allok = true;
                 }).catch(err => { console.log(err, "err during playoff retrieval"), allok = false });
             }
-            if (status['states'].includes("final")) { // gestion listes (trail/tong)
+            if (status['states'].includes("final") || status['states'].includes("series")) { // gestion listes (trail/tong)
 
                 let liste = {};
                 fetch("https://jo.pierrickperso.ddnsfree.com/teams/" + sportname + "_series.json").then(response => response.json()).then(data => {
@@ -318,22 +318,44 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                         }
                         setListe([...local_liste]);
                     }
-                    if (status.status == "final") {
+                    if (status['states'].includes("final")) {
 
                         var temp_level_series = local_final.map(r => r.level);
                         setSeriesLevel([...new Set(temp_level_series)]); // unique levels
                         setRealListe(local_final);
                     }
-                    else if (status.status == "series") {
+                    else if (status['states'].includes("series")) {
                         var temp_level_series = local_liste.map(r => r.level);
                         setSeriesLevel([...new Set(temp_level_series)]); // unique levels
                         setRealListe(local_liste);
                     }
+                    console.log("level")
+                    console.log(temp_level_series)
                     allok = true;
                 }).catch(err => { console.log(err, "err in list"); allok = false; });
 
             }
-            if (status['states'].includes("votes")) { // gestion listes (trail/tong)
+            if (status['states'].includes("seeding")) {
+
+                let liste = {};
+                fetch("https://jo.pierrickperso.ddnsfree.com/teams/" + sportname + "_seeding.json").then(response => response.json()).then(data => {
+                    liste = data;
+                    var score = 0;
+                    let local_final = [];
+                    var score = 0;
+                    rank = 0;
+                    var templist = liste["Teams"]
+                    for (var i in liste["Teams"]) {
+                        local_final.push(new Liste(templist[i]["Players"], score, rank, 0));
+                    }
+                    var temp_level_series = local_final.map(r => r.level);
+                    setSeedingLevel([...new Set(temp_level_series)]); // unique levels
+                    setSeedingListe([...local_final]);
+                    allok = true;
+                }).catch(err => { console.log(err, "err in list"); allok = false; });
+
+            }
+            if (status['states'].includes("votes")) {
                 if (data["can_vote"].includes(username) || data["can_vote"].includes("all")) {
                     setAuthoVote(true)
                 }
@@ -585,6 +607,8 @@ export function lutImg(imgname) {
         "en cours": require('./assets/target.png'),
         "waiting": require('./assets/wait.png'),
         "votes": require('./assets/vote.png'),
+        "seeding" : require('./assets/chrono.png'),
+        "MarioKart": require('./assets/sports/mariokart.png'),
     };
     return lut[imgname];
 }
@@ -614,7 +638,8 @@ export function sportlist() {
         "Petanque",
         "Rangement",
         "Fairplay",
-        "Home"
+        "Home",
+        "MarioKart"
     ]
 }
 

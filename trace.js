@@ -59,7 +59,7 @@ export const Trace = (props) => {
     const username = props.username;
     const status = props.all_teams.status.status;
     const [loading, setloading] = React.useState(true);
-    const [year, setYear] = React.useState(2023);
+    const [year, setYear] = React.useState(2024);
     const [arbitres, setArbitre] = React.useState([])
     const [appended, setAppended] = React.useState(false)
 
@@ -255,8 +255,8 @@ export const Trace = (props) => {
         )
     }
     else { // Other (list like trail etc.)
-        let currentListe = status == "final" ? props.all_teams.realListe : props.all_teams.voteListe
-        if ((!props.all_teams.autho && status == "final") || (!props.all_teams.authoVote && status == "votes")) {
+        let currentListe = status == "vote" ? props.all_teams.voteListe : status == "seeding" ? props.all_teams.seedingListe : props.all_teams.realListe
+        if ((!props.all_teams.autho && (status == "final" || status == "seeding")) || (!props.all_teams.authoVote && status == "votes")) {
             return (
                 <ScrollView>
                     <ScrollView styles={{ flex: 1 }} horizontal={true} directionalLockEnabled={false}>
@@ -318,12 +318,12 @@ export const Trace = (props) => {
             )
         }
         else { // authorized so referee!
-
-
+            let level = status == "seeding" ? props.all_teams.seedingLevel : props.all_teams.seriesLevel;
+            console.log(level)
             return (
                 <ScrollView>
                     <ScrollView styles={{ height: "100%", flex: 1 }} horizontal={true} directionalLockEnabled={false}>
-                        {props.all_teams.seriesLevel.map(cur_level =>
+                        {level.map(cur_level =>
                             <View key={cur_level}>
                                 <View style={{ flexDirection: "row", marginTop: 22 }}>
                                     <View>
@@ -369,7 +369,7 @@ export const Trace = (props) => {
                                                     }
                                                 }
                                                 else {
-                                                    pushmatch(username, sport, currentListe, "liste", 0);
+                                                    pushmatch(username, sport, currentListe, status == "seeding" ? "seed" : "list", cur_level);
                                                     props.onRefresh();
                                                 }
                                             }
