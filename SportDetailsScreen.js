@@ -29,6 +29,7 @@ export function SportDetailsScreen({ route }) {
     const [results, setResults] = React.useState({ "1": {}, "2": {}, "3": {} });
     const [modifListe, setModifListe] = React.useState({"Teams": [], "Others": []});
     const [seriesLevel, setSeriesLevel] = React.useState([0]);
+    const [seriesName, setSeriesName] = React.useState(["Final"]);
     const [seedingLevel, setSeedingLevel] = React.useState([0]);
     const [groups, setGroups] = React.useState([]);
     const [groupmatches, setmatchesgroup] = React.useState([]);
@@ -46,6 +47,7 @@ export function SportDetailsScreen({ route }) {
     all_teams.betListe = betListe;
     all_teams.modifListe = modifListe;
     all_teams.seriesLevel = seriesLevel;
+    all_teams.seriesName = seriesName;
     all_teams.seedingLevel = seedingLevel;
     all_teams.groups = groups;
     all_teams.groupmatches = groupmatches;
@@ -61,6 +63,7 @@ export function SportDetailsScreen({ route }) {
     all_teams.setModifListe = setModifListe;
     all_teams.setBetListe = setBetListe;
     all_teams.setSeriesLevel = setSeriesLevel;
+    all_teams.setSeriesName = setSeriesName;
     all_teams.setSeedingLevel = setSeedingLevel;
     all_teams.setGroups = setGroups;
     all_teams.setmatchesgroup = setmatchesgroup;
@@ -76,7 +79,7 @@ export function SportDetailsScreen({ route }) {
         setRefreshing(true);
         setloading(true);
         fetch_sport_results(route.params.sportname, setResults);
-        fetch_matches(route.params.username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeedingListe, setSeriesLevel, setSeedingLevel, setModifListe, setBetListe, route.params.setLock, setAuthoVote, setVoteListe).then(r => {
+        fetch_matches(route.params.username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeedingListe, setSeriesLevel, setSeriesName, setSeedingLevel, setModifListe, setBetListe, route.params.setLock, setAuthoVote, setVoteListe).then(r => {
             if (prev_status.status != "error") {
                 console.error(prev_status.status);
                 setStatus(prev_status);
@@ -93,7 +96,7 @@ export function SportDetailsScreen({ route }) {
         if (firstTime) {
 
             fetch_sport_results(route.params.sportname, setResults);
-            fetch_matches(route.params.username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeedingListe, setSeriesLevel, setSeedingLevel, setModifListe, setBetListe, route.params.setLock, setAuthoVote, setVoteListe).then(r => {
+            fetch_matches(route.params.username, setAutho, setStatus, route.params.sportname, setmatches, setGroups, setlevels, setmatchesgroup, setListe, setFinal, setRealListe, setSeedingListe, setSeriesLevel, setSeriesName, setSeedingLevel, setModifListe, setBetListe, route.params.setLock, setAuthoVote, setVoteListe).then(r => {
                 setloading(false);
                 setFirstTime(false);
             }).catch(err => { console.log(err); navigation.navigate('HomeScreen') });

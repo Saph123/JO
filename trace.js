@@ -59,7 +59,7 @@ export const Trace = (props) => {
     const username = props.username;
     const status = props.all_teams.status.status;
     const [loading, setloading] = React.useState(true);
-    const [year, setYear] = React.useState(2024);
+    const [year, setYear] = React.useState(2025);
     const [arbitres, setArbitre] = React.useState([])
     const [appended, setAppended] = React.useState(false)
 
@@ -319,13 +319,13 @@ export const Trace = (props) => {
         }
         else { // authorized so referee!
             let level = status == "seeding" ? props.all_teams.seedingLevel : props.all_teams.seriesLevel;
-            console.log(level)
+            let series_name = status == "seeding" ? ["Seeding"] : props.all_teams.seriesName
             return (
-                <ScrollView>
-                    <ScrollView styles={{ height: "100%", flex: 1 }} horizontal={true} directionalLockEnabled={false}>
+                    <ScrollView styles={{ height: "100%"}}  directionalLockEnabled={false}>
                         {level.map(cur_level =>
-                            <View key={cur_level}>
-                                <View style={{ flexDirection: "row", marginTop: 22 }}>
+                            <View key={cur_level} style={{flex: 1, flexDirection: "column"}}>
+                                <Text style={[styles.showPlayers, { height: 25, backgroundColor: "#A1BFF3", fontSize: 18, marginTop: 22, borderRadius: 5, marginRight: 20 }]}>{series_name[cur_level - 1]}</Text>
+                                    <View style={{ flexDirection: "row", marginRight: 10 }}>
                                     <View>
                                         <Text style={[styles.showPlayers, { height: 60, backgroundColor: "#A1BFF3", fontSize: 18, fontStyle: "italic" }]}>Athlete</Text>
                                         {currentListe.map((r, index) => {
@@ -357,7 +357,7 @@ export const Trace = (props) => {
                                         }
                                     </View>
                                     <View>
-                                        <View style={{ width: 60, height: 60, backgroundColor: "#A1BFF3", justifyContent: "center" }}>
+                                        <View style={{ width: 60, height: 60, backgroundColor: "#A1BFF3", justifyContent: "center", borderRadius: 10 }}>
                                             <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => { // Function to save only the results!
                                                 props.all_teams.setListe([...currentListe]);
                                                 if (status == "votes") {
@@ -369,7 +369,7 @@ export const Trace = (props) => {
                                                     }
                                                 }
                                                 else {
-                                                    pushmatch(username, sport, currentListe, status == "seeding" ? "seed" : "list", cur_level);
+                                                    pushmatch(username, sport, currentListe, status == "seeding" ? "seed" : "liste", series_name[cur_level - 1]);
                                                     props.onRefresh();
                                                 }
                                             }
@@ -401,7 +401,6 @@ export const Trace = (props) => {
                                 </View>
                             </View>)}
                     </ScrollView>
-                </ScrollView>
             )
 
 
@@ -643,7 +642,7 @@ function pushmatch(username, sport, match, type, uniqueId) {
     // 5 second timeout:
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
-
+    console.log(match)
     // // push to server
     fetch("https://jo.pierrickperso.ddnsfree.com/pushmatch", { signal: controller.signal, method: "POST", body: JSON.stringify({ "version": version, "sport": sport, "username": username, "type": type, "match": match, uniqueId: uniqueId }) }).then(r => {
         if (r.status == 200) {

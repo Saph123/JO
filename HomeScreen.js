@@ -5,9 +5,8 @@ import { Audio } from 'expo-av';
 import { getNextEventseconds } from "./planning.js";
 import * as Notifications from 'expo-notifications';
 import { StatusBar } from 'expo-status-bar';
-import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo, firstDay, vibrateLight, fetchAnnonce, life, fetchPlanning, fetchAthletes } from './utils.js';
+import { getValueFor, manageEvents, registerForPushNotificationsAsync, videoHandler, modalChat, eventView, fetchChat, pushtoken, pushcluedo, firstDay, vibrateLight, fetchAnnonce, life, fetchAthletes } from './utils.js';
 import { SportContext, ChatContext, adminlist } from "./global.js"
-import { Planning } from "./planning.js";
 export function HomeScreen({ route, navigation }) {
     const [loading, setLoading] = React.useState(1);
     const [username, setusername] = React.useState("");

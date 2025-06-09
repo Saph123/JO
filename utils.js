@@ -5,16 +5,16 @@ import { Video } from 'expo-av';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import * as SecureStore from 'expo-secure-store';
-import { Planning } from './planning';
 import { version, initialLineNumber, adminlist } from "./global.js"
 import { getNextEventseconds } from "./planning";
 import * as Haptics from 'expo-haptics';
 class Liste {
-    constructor(username, score, rank = 0, level = 0) {
+    constructor(username, score, rank = 0, level = 0, series_name = "Final") {
         this.username = username;
         this.score = score;
         this.rank = rank;
-        this.level = level // 0 is final, the rest is series
+        this.level = level; // 0 is final, the rest is series
+        this.series_name = series_name;
     }
 }
 class Group {
@@ -201,7 +201,7 @@ export function videoHandler(setVideoVisible, videoVisible, video, videoSource, 
         </Modal>
     )
 }
-export async function fetch_matches(username, setAutho, setStatus, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setRealListe, setSeedingListe, setSeriesLevel, setSeedingLevel, setModifListe, setBetListe, setLock, setAuthoVote, setVoteListe) {
+export async function fetch_matches(username, setAutho, setStatus, sportname, setmatches, setgroups, setlevel, setmatchesgroup, setListe, setFinal, setRealListe, setSeedingListe, setSeriesLevel, setSeriesName, setSeedingLevel, setModifListe, setBetListe, setLock, setAuthoVote, setVoteListe) {
 
 
     let allok = false
@@ -293,7 +293,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                     var score = 0;
                     rank = 0;
                     for (var series in liste["Series"]) {
-                        if (liste["Series"][series]["Name"] == "Final") {
+                        if (liste["Series"][series]["Name"] == "Final" && status['states'].includes("final") ) {
                             var templist = liste["Series"][series]["Teams"];
                             for (var i in liste["Series"][series]["Teams"]) {
                                 if (sportname == "Pizza") {
@@ -304,7 +304,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                                     rank = templist[i]["rank"];
                                     score = templist[i]["score"];
                                 }
-                                local_final.push(new Liste(templist[i]["Players"], score, rank, 0));
+                                local_final.push(new Liste(templist[i]["Players"], score, rank, 1));
                             }
                             setFinal([...local_final])
 
@@ -312,7 +312,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                         else { // consolidation des series avant la finale
                             var templist = liste["Series"][series]["Teams"];
                             for (var i in liste["Series"][series]["Teams"]) {
-                                local_liste.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], levellist));
+                                local_liste.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], levellist, liste["Series"][series]["Name"]));
                             }
                             levellist += 1;
                         }
@@ -321,16 +321,18 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                     if (status['states'].includes("final")) {
 
                         var temp_level_series = local_final.map(r => r.level);
+                        var temp_series_name = local_final.map(r => r.series_name);
                         setSeriesLevel([...new Set(temp_level_series)]); // unique levels
+                        setSeriesName([...new Set(temp_series_name)])
                         setRealListe(local_final);
                     }
                     else if (status['states'].includes("series")) {
                         var temp_level_series = local_liste.map(r => r.level);
+                        var temp_series_name = local_liste.map(r => r.series_name);
                         setSeriesLevel([...new Set(temp_level_series)]); // unique levels
+                        setSeriesName([...new Set(temp_series_name)])
                         setRealListe(local_liste);
                     }
-                    console.log("level")
-                    console.log(temp_level_series)
                     allok = true;
                 }).catch(err => { console.log(err, "err in list"); allok = false; });
 
@@ -346,7 +348,7 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                     rank = 0;
                     var templist = liste["Teams"]
                     for (var i in liste["Teams"]) {
-                        local_final.push(new Liste(templist[i]["Players"], score, rank, 0));
+                        local_final.push(new Liste(templist[i]["Players"], score, rank, 1, "Seeding"));
                     }
                     var temp_level_series = local_final.map(r => r.level);
                     setSeedingLevel([...new Set(temp_level_series)]); // unique levels
@@ -369,10 +371,10 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                     for (var i in liste["Teams"]) {
                         rank = templist[i]["votes"].includes(username) ? 1 : templist[i]["Players"].includes(username) ? -1 : 0;
                         score = templist[i]["votes"].length;
-                        local_final.push(new Liste(templist[i]["Players"], score, rank, 0));
+                        local_final.push(new Liste(templist[i]["Players"], score, rank, 1));
                     }
                     setVoteListe(local_final)
-                    setSeriesLevel([0])
+                    setSeriesLevel([1])
                     allok = true;
                 }).catch(err => { console.log(err, "err in list"); allok = false; });
 
@@ -509,7 +511,7 @@ function secondsToDhms(seconds) {
     return { days: d, hours: h, mins: m, seconds: s };
 }
 export function countdown_homemade(secondsleft) {
-    dhms = secondsToDhms(secondsleft);
+    let dhms = secondsToDhms(secondsleft);
     const zeroPad = (num, places) => String(num).padStart(places, '0')
     // {/* {dhms.hours}{dhms.mins}{dhms.seconds} */}
     return <View>
