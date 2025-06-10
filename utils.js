@@ -342,13 +342,10 @@ export async function fetch_matches(username, setAutho, setStatus, sportname, se
                 let liste = {};
                 fetch("https://jo.pierrickperso.ddnsfree.com/teams/" + sportname + "_seeding.json").then(response => response.json()).then(data => {
                     liste = data;
-                    var score = 0;
                     let local_final = [];
-                    var score = 0;
-                    rank = 0;
                     var templist = liste["Teams"]
                     for (var i in liste["Teams"]) {
-                        local_final.push(new Liste(templist[i]["Players"], score, rank, 1, "Seeding"));
+                        local_final.push(new Liste(templist[i]["Players"], templist[i]["score"], templist[i]["rank"], 1, "Seeding"));
                     }
                     var temp_level_series = local_final.map(r => r.level);
                     setSeedingLevel([...new Set(temp_level_series)]); // unique levels

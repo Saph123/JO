@@ -256,151 +256,163 @@ export const Trace = (props) => {
     }
     else { // Other (list like trail etc.)
         let currentListe = status == "vote" ? props.all_teams.voteListe : status == "seeding" ? props.all_teams.seedingListe : props.all_teams.realListe
-        if ((!props.all_teams.autho && (status == "final" || status == "seeding")) || (!props.all_teams.authoVote && status == "votes")) {
+        let level = status == "seeding" ? props.all_teams.seedingLevel : props.all_teams.seriesLevel;
+        let series_name = status == "seeding" ? ["Seeding"] : props.all_teams.seriesName
+        if ((!props.all_teams.autho && (status == "final" || status == "seeding" || status == "series")) || (!props.all_teams.authoVote && status == "votes")) {
             return (
-                <ScrollView>
-                    <ScrollView styles={{ flex: 1 }} horizontal={true} directionalLockEnabled={false}>
+                <ScrollView styles={{ height: "100%" }} directionalLockEnabled={false}>
+                    {level.map(cur_level =>
+                        <View key={cur_level} style={{ flex: 1, flexDirection: "column" }}>
+                            <Text style={[styles.showPlayers, { height: 25, backgroundColor: "#A1BFF3", fontSize: 18, marginTop: 22, borderRadius: 5, marginRight: 20 }]}>{series_name[cur_level - 1]}</Text>
 
-                        <View style={{ flexDirection: "row", marginTop: 22 }}>
-                            <View>
-                                <Text style={[styles.showPlayers, { height: 60, backgroundColor: "#A1BFF3", fontSize: 18, fontStyle: "italic" }]}>Athlete</Text>
-                                {currentListe.map((r, index) =>
-                                    <Text key={r.username} style={[inTeam(username, r.username) ? styles.showPlayersIsIn : styles.showPlayers, { backgroundColor: index % 2 ? "#A1BFF3" : "#CCE5FF" }]}>{r.username}</Text>
-                                )
-                                }
-                            </View>
-                            <View>
-                                <Text style={[styles.inputScore, { height: 60, backgroundColor: "#A1BFF3", fontSize: 18, fontStyle: "italic" }]}>Score/Temps</Text>
-                                {currentListe.map((r, index) =>
-                                    <Text key={r.username} style={[styles.inputScore, { backgroundColor: index % 2 ? "#A1BFF3" : "#CCE5FF" }]}>{r.score}</Text>
-                                )
-                                }
-                            </View>
-                            <View>
-                                <View style={{ width: 20, height: 60, backgroundColor: "lightgrey" }}></View>
-                                {currentListe.map((r, index) => {
-                                    if (r.rank == 1) {
-                                        return (
-                                            <View key={index} style={{ flexDirection: "row" }} >
-                                                <View style={styles.medailleopaque}>
-                                                    <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
+                            <View style={{ flexDirection: "row", marginTop: 10 }}>
+                                <View>
+                                    <Text style={[styles.showPlayers, { height: 60, backgroundColor: "#A1BFF3", fontSize: 18, fontStyle: "italic" }]}>Athlete</Text>
+                                    {currentListe.map((r, index) => {
+                                        if (cur_level == r.level) {
+                                            return (
+                                                <View key={index}>
+                                                    <Text style={[inTeam(username, r.username) ? styles.showPlayersIsIn : styles.showPlayers, { backgroundColor: index % 2 ? "#A1BFF3" : "#CCE5FF" }]}>{r.username}</Text>
                                                 </View>
-                                            </View>)
+                                            )
+                                        }
+                                    }
+                                    )
+                                    }
+                                </View>
+                                <View>
+                                    <Text style={[styles.inputScore, { height: 60, backgroundColor: "#A1BFF3", fontSize: 18, fontStyle: "italic" }]}>Score / Temps</Text>
+                                    {currentListe.map((r, index) => {
+                                        if (cur_level == r.level) {
+                                            return (
+                                                    <Text key={index} style={[styles.inputScore, { backgroundColor: index % 2 ? "#A1BFF3" : "#CCE5FF" }]}>{r.score}</Text>
+                                            )
+                                        }
+                                    }
+                                    )
+                                    }
+                                </View>
+                                <View>
+                                    <View style={{ width: 20, height: 60, backgroundColor: "lightgrey" }}></View>
+                                    {currentListe.map((r, index) => {
+                                        if (cur_level == r.level) {
+                                            if (r.rank == 1) {
+                                                return (
+                                                    <View key={index} style={{ flexDirection: "row" }} >
+                                                        <View style={styles.medailleopaque}>
+                                                            <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/or.png')} />
+                                                        </View>
+                                                    </View>)
 
+                                            }
+                                            else if (r.rank == 2) {
+                                                return (
+                                                    <View key={index} style={styles.medailleopaque}>
+                                                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
+                                                    </View>)
+                                            }
+                                            else if (r.rank == 3) {
+                                                return (
+                                                    <View key={index} style={styles.medailleopaque}>
+                                                        <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
+                                                    </View>
+                                                )
+                                            }
+                                            else {
+                                                return (
+                                                    <View key={index} style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
+                                                )
+                                            }
+                                        }
                                     }
-                                    else if (r.rank == 2) {
-                                        return (
-                                            <View key={index} style={styles.medailleopaque}>
-                                                <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/argent.png')} />
-                                            </View>)
-                                    }
-                                    else if (r.rank == 3) {
-                                        return (
-                                            <View key={index} style={styles.medailleopaque}>
-                                                <Image resizeMode="cover" resizeMethod="resize" source={require('./assets/bronze.png')} />
-                                            </View>
-                                        )
-                                    }
-                                    else {
-                                        return (
-                                            <View key={index} style={{ width: 20, height: 30, backgroundColor: "lightgrey" }}></View>
-                                        )
-                                    }
-                                }
-                                )}
+                                    )}
+                                </View>
                             </View>
-
-                        </View>
-                    </ScrollView>
+                        </View>)}
                 </ScrollView>
-
 
             )
         }
         else { // authorized so referee!
-            let level = status == "seeding" ? props.all_teams.seedingLevel : props.all_teams.seriesLevel;
-            let series_name = status == "seeding" ? ["Seeding"] : props.all_teams.seriesName
             return (
-                    <ScrollView styles={{ height: "100%"}}  directionalLockEnabled={false}>
-                        {level.map(cur_level =>
-                            <View key={cur_level} style={{flex: 1, flexDirection: "column"}}>
-                                <Text style={[styles.showPlayers, { height: 25, backgroundColor: "#A1BFF3", fontSize: 18, marginTop: 22, borderRadius: 5, marginRight: 20 }]}>{series_name[cur_level - 1]}</Text>
-                                    <View style={{ flexDirection: "row", marginRight: 10 }}>
-                                    <View>
-                                        <Text style={[styles.showPlayers, { height: 60, backgroundColor: "#A1BFF3", fontSize: 18, fontStyle: "italic" }]}>Athlete</Text>
-                                        {currentListe.map((r, index) => {
-
-                                            if (cur_level == r.level) {
-                                                return (
-
-                                                    <View key={index}>
-                                                        <Text style={[inTeam(username, r.username) ? styles.showPlayersIsIn : styles.showPlayers, { backgroundColor: index % 2 ? "#A1BFF3" : "#CCE5FF" }]}>{r.username}</Text>
-                                                    </View>
-                                                )
-                                            }
+                <ScrollView styles={{ height: "100%" }} directionalLockEnabled={false}>
+                    {level.map(cur_level =>
+                        <View key={cur_level} style={{ flex: 1, flexDirection: "column" }}>
+                            <Text style={[styles.showPlayers, { height: 25, backgroundColor: "#A1BFF3", fontSize: 18, marginTop: 22, borderRadius: 5, marginRight: 20 }]}>{series_name[cur_level - 1]}</Text>
+                            <View style={{ flexDirection: "row", marginRight: 10 }}>
+                                <View>
+                                    <Text style={[styles.showPlayers, { height: 60, backgroundColor: "#A1BFF3", fontSize: 18, fontStyle: "italic" }]}>Athlete</Text>
+                                    {currentListe.map((r, index) => {
+                                        if (cur_level == r.level) {
+                                            return (
+                                                <View key={index}>
+                                                    <Text style={[inTeam(username, r.username) ? styles.showPlayersIsIn : styles.showPlayers, { backgroundColor: index % 2 ? "#A1BFF3" : "#CCE5FF" }]}>{r.username}</Text>
+                                                </View>
+                                            )
                                         }
-                                        )
+                                    }
+                                    )
+                                    }
+                                </View>
+                                <View>
+                                    <Text style={[styles.inputScore, { height: 60, backgroundColor: "#A1BFF3", fontSize: 18, fontStyle: "italic" }]}>Score / Temps</Text>
+                                    {currentListe.map((r, index) => {
+                                        if (cur_level == r.level) {
+                                            return (
+                                                status == "votes" ?
+                                                    <Text key={index} style={[styles.inputScore, { backgroundColor: index % 2 ? "#A1BFF3" : "#CCE5FF" }]}>{r.score}</Text> :
+                                                    <TextInput key={index} onChangeText={(text) => { r.score = text; }} style={[styles.inputScore, { backgroundColor: index % 2 ? "#A1BFF3" : "#CCE5FF" }]}>{r.score}</TextInput>
+                                            )
                                         }
-                                    </View>
-                                    <View>
-                                        <Text style={[styles.inputScore, { height: 60, backgroundColor: "#A1BFF3", fontSize: 18, fontStyle: "italic" }]}>Score / Temps</Text>
-                                        {currentListe.map((r, index) => {
-                                            if (cur_level == r.level) {
-                                                return (
-                                                    status == "votes" ?
-                                                        <Text key={index} style={[styles.inputScore, { backgroundColor: index % 2 ? "#A1BFF3" : "#CCE5FF" }]}>{r.score}</Text> :
-                                                        <TextInput key={index} onChangeText={(text) => { r.score = text; }} style={[styles.inputScore, { backgroundColor: index % 2 ? "#A1BFF3" : "#CCE5FF" }]}>{r.score}</TextInput>
-                                                )
-                                            }
-                                        }
-                                        )
-                                        }
-                                    </View>
-                                    <View>
-                                        <View style={{ width: 60, height: 60, backgroundColor: "#A1BFF3", justifyContent: "center", borderRadius: 10 }}>
-                                            <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => { // Function to save only the results!
-                                                props.all_teams.setListe([...currentListe]);
-                                                if (status == "votes") {
-                                                    for (let index = 0; index < currentListe.length; index++) {
-                                                        if (currentListe[index].rank == 1) {
-                                                            pushvote(username, currentListe[index].username, sport);
-                                                            props.onRefresh();
-                                                        }
+                                    }
+                                    )
+                                    }
+                                </View>
+                                <View>
+                                    <View style={{ width: 60, height: 60, backgroundColor: "#A1BFF3", justifyContent: "center", borderRadius: 10 }}>
+                                        <Pressable style={({ pressed }) => [{ opacity: pressed ? 0.2 : 1, alignSelf: "center" }]} onPress={() => { // Function to save only the results!
+                                            props.all_teams.setListe([...currentListe]);
+                                            if (status == "votes") {
+                                                for (let index = 0; index < currentListe.length; index++) {
+                                                    if (currentListe[index].rank == 1) {
+                                                        pushvote(username, currentListe[index].username, sport);
+                                                        props.onRefresh();
                                                     }
                                                 }
-                                                else {
-                                                    pushmatch(username, sport, currentListe, status == "seeding" ? "seed" : "liste", series_name[cur_level - 1]);
-                                                    props.onRefresh();
-                                                }
                                             }
-                                            }>
-                                                <Image resizeMode="cover" resizeMethod="resize" style={{ alignSelf: "center" }} source={require('./assets/save.png')}></Image>
-                                            </Pressable>
-
-                                        </View>
-                                        {currentListe.map((r, index) => {
-                                            if (cur_level == r.level) {
-                                                if (status == "votes")
-                                                    return (
-                                                        <View key={index} style={{ flexDirection: "row" }} >
-                                                            <MedailleView maxMedals={1} r={r} liste={currentListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/or.png')} rank={1} locked={false}></MedailleView>
-                                                        </View>
-                                                    )
-
-                                                return (
-                                                    <View key={index} style={{ flexDirection: "row" }} >
-                                                        <MedailleView maxMedals={2} color={index % 2} r={r} liste={currentListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/bronze.png')} rank={3} locked={false}></MedailleView>
-                                                        <MedailleView maxMedals={2} color={index % 2} r={r} liste={currentListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/argent.png')} rank={2} locked={false}></MedailleView>
-                                                        <MedailleView maxMedals={2} color={index % 2} r={r} liste={currentListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/or.png')} rank={1} locked={false}></MedailleView>
-                                                    </View>
-                                                )
+                                            else {
+                                                pushmatch(username, sport, currentListe, status == "seeding" ? "seeding" : "liste", series_name[cur_level - 1]);
+                                                props.onRefresh();
                                             }
                                         }
-                                        )}
+                                        }>
+                                            <Image resizeMode="cover" resizeMethod="resize" style={{ alignSelf: "center" }} source={require('./assets/save.png')}></Image>
+                                        </Pressable>
+
                                     </View>
+                                    {currentListe.map((r, index) => {
+                                        if (cur_level == r.level) {
+                                            if (status == "votes")
+                                                return (
+                                                    <View key={index} style={{ flexDirection: "row" }} >
+                                                        <MedailleView maxMedals={1} r={r} liste={currentListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/or.png')} rank={1} locked={false}></MedailleView>
+                                                    </View>
+                                                )
+
+                                            return (
+                                                <View key={index} style={{ flexDirection: "row" }} >
+                                                    <MedailleView maxMedals={2} color={index % 2} r={r} liste={currentListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/bronze.png')} rank={3} locked={false}></MedailleView>
+                                                    <MedailleView maxMedals={2} color={index % 2} r={r} liste={currentListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/argent.png')} rank={2} locked={false}></MedailleView>
+                                                    <MedailleView maxMedals={2} color={index % 2} r={r} liste={currentListe} setRealListe={props.all_teams.setRealListe} setloading={props.all_teams.setloading} metal={require('./assets/or.png')} rank={1} locked={false}></MedailleView>
+                                                </View>
+                                            )
+                                        }
+                                    }
+                                    )}
                                 </View>
-                            </View>)}
-                    </ScrollView>
+                            </View>
+                        </View>)}
+                </ScrollView>
             )
 
 
